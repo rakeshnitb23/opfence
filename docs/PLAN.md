@@ -365,7 +365,7 @@ opfence/
   docs/
 ```
 
-Until Launch 1 the catalog lives in `catalog/` in this repository, so schema, decoders and rules change together while there is one developer. Before Launch 1 it moves to its own repository (`opfence-catalog`, history kept with `git filter-repo`) so contributors never touch proxy code and other engines can depend on it alone. The binary embeds a snapshot and `opfence update` pulls signed newer versions.
+Until Launch 1 the catalog lives in `catalog/` in this repository, so schema, decoders and rules change together while the format settles. Before Launch 1 it moves to its own repository (`opfence-catalog`, history kept with `git filter-repo`) so contributors never touch proxy code and other engines can depend on it alone. The binary embeds a snapshot and `opfence update` pulls signed newer versions.
 
 **CLI surface**
 
@@ -383,11 +383,11 @@ Until Launch 1 the catalog lives in `catalog/` in this repository, so schema, de
 
 ## Roadmap and milestones
 
-Ship the catalog and exporters first, around 8 December 2026, and the local runner second, around 9 February 2027. The catalog is useful on day one to everyone already running OpenShell or Agent Vault, and it builds an audience before the hardest engineering starts. Dates assume one developer at about 25 hours a week, starting 19 October 2026.
+Ship the catalog and exporters first, around 8 December 2026, and the local runner second, around 9 February 2027. The catalog is useful on day one to everyone already running OpenShell or Agent Vault, and it builds an audience before the hardest engineering starts. Dates are targets, not a capacity estimate: the owner is building Opfence with Claude, so the plan does not budget weekly hours (decided 16 Oct 2026). Phases move forward as soon as each one's exit criteria are met.
 
 ```mermaid
 gantt
-  title Opfence roadmap (one developer, about 25 h a week)
+  title Opfence roadmap (target dates)
   dateFormat YYYY-MM-DD
   axisFormat %d %b
   section Validate
@@ -515,13 +515,10 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 | Date | Decision | Why |
 | --- | --- | --- |
 | 16 Oct 2026 | Name: **Opfence** | "Tripline" taken on PyPI; Opfence free on PyPI, npm, crates.io, Homebrew |
-| 16 Oct 2026 | One repository with a `catalog/` folder until Launch 1, then split out | One developer: schema, decoders and rules change together; a separate repo matters only once outside contributors arrive |
+| 16 Oct 2026 | One repository with a `catalog/` folder until Launch 1, then split out | While the format settles, schema, decoders and rules change together; a separate repo matters only once outside contributors arrive |
 | 16 Oct 2026 | Runner for Claude Code **replaces** Claude Code's sandbox proxy (`httpProxyPort`) rather than chaining behind it | One code path for Claude Code, Cursor, Codex and custom agents; Opfence must see decrypted requests to classify them and write approval cards, so it terminates TLS either way; Claude Code's masking settings are only honoured from user settings, which makes a chained setup fragile to install. Opfence also writes Claude Code `sandbox.credentials` `deny` entries for the keys it holds, and enforces MCP rules through Claude Code permission rules and hooks because MCP servers run outside the sandbox. Revisit chaining (Claude Code proxy → Opfence as upstream `HTTPS_PROXY`) only if the Gate 1 spike shows it is simpler for users |
+| 16 Oct 2026 | No weekly-hours budget in the plan | The owner builds Opfence with Claude; dates are targets and phases advance on exit criteria |
 | 16 Oct 2026 | Agent Vault dropped as a Launch 1 export target | It matches host and path only, so it cannot tell a Railway delete from a read; an exporter would give users false safety. Offer an upstream proposal instead; saves about a week for OpenShell and Claude Code |
-
-## Open questions for the owner
-
-- Weekly hours (the roadmap assumes 25; at 15 h a week Launch 1 moves to about late January 2027 and Launch 2 to about May 2027).
 
 ## Next 14 days
 
