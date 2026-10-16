@@ -482,15 +482,19 @@ A request that is not forwarded gets a `403` with a JSON body naming the card, c
 
 ### 8.5 Approvals
 
-The agent owns the terminal during `opfence run`, so approvals never use the agent's TTY.
+The agent owns the terminal during `opfence run`, so approvals never use the agent's TTY. `internal/approve` holds each `ask` or `confirm` request in a broker, shows it on every channel at once, and the first valid answer wins.
 
 | Channel | How | Default |
 | --- | --- | --- |
-| Desktop dialog | macOS `osascript` dialog with Approve / Deny; Linux `zenity` or `kdialog` | on when available |
-| Control socket | `opfence approve` in a second terminal lists pending requests and answers them over a 0600 Unix socket | always on |
+| Desktop dialog | macOS `osascript`; Linux `zenity` or `kdialog` when a display is available. Default button Deny. The card reaches the dialog as an argument, never as script source, and is escaped for zenity's Pango markup | on when available |
+| Control socket | `opfence approve` in a second terminal watches and asks about each request, or `opfence approve --list` / `opfence approve ID --yes [--typed X] [--for 10m]` / `--deny`, over a `0600` Unix socket in the state folder (a live socket means another proxy is running; a stale one is replaced) | always on |
 | Phone (ntfy) | action-button push | v1.0 |
 
-A grant is single-use and bound to the request's `Hash`. `Confirm` requires typing the resource name in the dialog or `opfence approve`. Timeouts (60 s default) deny. A scoped grant ("this rule on this resource for 10 minutes") is opt-in per approval and never available for `credential` or `confirm`.
+- **Single use, bound to the request.** An answer names one waiting request; approving it releases that request only, and the same answer cannot be replayed (the request is gone once answered, timed out or cancelled). Channels show the first 12 hex digits of the request hash so two similar requests can be told apart.
+- **Confirm** requires typing the resource name exactly (the host when a rule names no resource). A wrong text leaves the request waiting; the dialog shows again.
+- **Scoped grants** ("this operation on this resource for 10 minutes", at most an hour) cover later requests with the same rules, resource, environment and host. They are never offered for `confirm`, for anything that can be `credential`, or for operations no rule matched.
+- **Timeouts** deny (60 s by default, `approvals.timeout`). At most 20 requests wait at once; more are denied, so an agent cannot bury the human in prompts. With no channel at all, requests are denied at once with a message saying so.
+- **Who can answer.** The socket and the state folder must be out of the agent's reach, or it could approve its own requests: stage 9's launcher denies the sandbox the state folder, and `opfence doctor` checks it. A process running as the user outside the sandbox (an MCP server, for example) can reach the socket; Opfence does not defend against malicious local code that already runs with the user's privileges.
 
 ### 8.6 Audit log
 
@@ -546,6 +550,7 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | Proxy refuses non-public upstream addresses in every mode | Trust the sandbox's own rules | The proxy runs outside the sandbox; without this, open mode (or a DNS name pointing at 127.0.0.1) would reach local services and cloud metadata |
 | Built-in passthrough list of package registries | Strict means only catalog hosts | Installs must work in strict mode or users switch to open mode, which is weaker; the list is public registries only and can be turned off |
 | Blocked MCP calls answer with a JSON-RPC error | HTTP 403 for everything | Agents show a JSON-RPC error to the model, so it can explain the block to the user instead of retrying blindly |
+| Approval answers are single-use and name one waiting request | Grants keyed by hash that later identical requests reuse | A retry after a timeout is a new decision; reusable approvals exist only as explicit, short, scoped grants |
 | Audit write failures are logged, not fatal | Stop all traffic | A full disk should not take the agent down; the chain stays verifiable |
 | Stage 6 CA lives for one run | Persist the key in a file | Keys never touch disk; from stage 7 the root is kept in the keychain |
 | Placeholders keep the token's length, prefix and alphabet | `opf_<provider>_<random>` | Format-checking clients keep working, and scrubbing never changes lengths |

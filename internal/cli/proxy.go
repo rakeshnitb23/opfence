@@ -15,22 +15,25 @@ import (
 	"strings"
 	"syscall"
 	"text/tabwriter"
+	"time"
 
 	"github.com/spf13/cobra"
 
+	"github.com/rakeshnitb23/opfence/internal/approve"
 	"github.com/rakeshnitb23/opfence/internal/audit"
 	"github.com/rakeshnitb23/opfence/internal/proxy"
 )
 
 func newProxyCmd(g *globalOptions) *cobra.Command {
-	var httpAddr, socksAddr, mode, auditPath string
+	var httpAddr, socksAddr, mode, auditPath, controlSocket string
 	cmd := &cobra.Command{
 		Use:   "proxy",
 		Short: "Run the enforcing proxy on its own (opfence run will start it for you)",
 		Long: `Starts Opfence's HTTP and SOCKS5 proxies on loopback. HTTPS to APIs in the
 catalog is intercepted and every request is decided before it leaves the
 machine; passthrough hosts are tunnelled; anything else is refused in strict
-mode. Requests that need approval are blocked until approvals arrive.
+mode. Requests that need approval wait for you to answer in a desktop dialog
+or with "opfence approve" in another terminal, and are denied if nobody does.
 
 The certificate authority's key is kept in your keychain (or, if the keychain
 is unavailable, made for this run only) and its certificate is written to the
@@ -68,8 +71,16 @@ state folder; point your client at it, for example
 			if err := os.WriteFile(caFile, authority.CertPEM(), 0o644); err != nil {
 				return err
 			}
+			broker, ctl, how, err := startApprovals(cmd.ErrOrStderr(), eng.Policy.ApprovalChannels, eng.Policy.ApprovalTimeout, controlSocket)
+			if err != nil {
+				return err
+			}
+			if ctl != nil {
+				defer ctl.Close()
+				go func() { _ = ctl.Serve(broker) }()
+			}
 			srv, err := proxy.New(proxy.Config{
-				Engine: eng, CA: authority, Audit: log, Session: sessionID(), Mode: mode, Secrets: set,
+				Engine: eng, CA: authority, Audit: log, Session: sessionID(), Mode: mode, Secrets: set, Approver: broker,
 				Logf: func(f string, a ...any) { fmt.Fprintf(cmd.ErrOrStderr(), f+"\n", a...) },
 			})
 			if err != nil {
@@ -103,6 +114,7 @@ state folder; point your client at it, for example
 			fmt.Fprintf(out, "  CA certificate:  %s (%s)\n", caFile, lifetime)
 			fmt.Fprintf(out, "  Credentials:     %d from your keychain\n", set.Len())
 			fmt.Fprintf(out, "  Audit log:       %s\n", auditPath)
+			fmt.Fprintf(out, "  Approvals:       %s\n", how)
 
 			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()
@@ -118,7 +130,42 @@ state folder; point your client at it, for example
 	cmd.Flags().StringVar(&socksAddr, "socks", "127.0.0.1:0", "SOCKS5 proxy listen address (loopback only)")
 	cmd.Flags().StringVar(&mode, "mode", "", "strict or open (default from your policy, strict)")
 	cmd.Flags().StringVar(&auditPath, "audit", "", "audit log file (default ~/.local/state/opfence/audit.jsonl)")
+	cmd.Flags().StringVar(&controlSocket, "socket", "", "control socket for opfence approve (default in the state folder)")
 	return cmd
+}
+
+// startApprovals builds the approval broker from the policy's channels.
+func startApprovals(w io.Writer, channels []string, timeout time.Duration, socket string) (*approve.Broker, *approve.Control, string, error) {
+	var chans []approve.Channel
+	var how []string
+	var ctl *approve.Control
+	for _, name := range channels {
+		switch name {
+		case "desktop":
+			if d := approve.NewDesktop(); d != nil {
+				chans = append(chans, d)
+				how = append(how, "desktop dialogs")
+			} else {
+				fmt.Fprintln(w, "warning: no desktop dialog available (needs osascript, or zenity or kdialog with a display)")
+			}
+		case "cli":
+			path, err := controlPath(socket)
+			if err != nil {
+				return nil, nil, "", err
+			}
+			if ctl, err = approve.ListenControl(path); err != nil {
+				return nil, nil, "", err
+			}
+			chans = append(chans, ctl)
+			how = append(how, "opfence approve in another terminal")
+		case "ntfy":
+			fmt.Fprintln(w, "warning: the ntfy approval channel is not available yet")
+		}
+	}
+	if len(how) == 0 {
+		how = []string{"none; requests that need approval are denied"}
+	}
+	return approve.NewBroker(timeout, chans...), ctl, strings.Join(how, ", ") + fmt.Sprintf(" (denied after %s)", timeout), nil
 }
 
 // loopbackOnly refuses listen addresses other machines could reach: the
@@ -221,7 +268,11 @@ func printLog(w io.Writer, entries []audit.Entry) error {
 			}
 			what = strings.Join(cards, "; ")
 		}
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", e.Time.Local().Format("2006-01-02 15:04:05"), e.Outcome, e.Decision, target, what)
+		outcome := e.Outcome
+		if e.Approver != "" {
+			outcome += " (" + e.Approver + ")"
+		}
+		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", e.Time.Local().Format("2006-01-02 15:04:05"), outcome, e.Decision, target, what)
 	}
 	return tw.Flush()
 }
