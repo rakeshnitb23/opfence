@@ -1,0 +1,44 @@
+# Opfence
+
+**The open list of things your AI agent must never do without asking, and the tool that enforces it.**
+
+Coding agents run with real cloud credentials. In April 2026 one deleted a startup's production database and its backups with a single API call. Opfence reads each request an agent makes (REST, GraphQL, AWS, MCP tool calls), looks the operation up in a tested catalog, and decides whether it runs, needs your approval, or is blocked.
+
+> **Status: early development.** Nothing here is ready to protect real accounts yet. See [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md) for what is built and what is next.
+
+## What it is
+
+- **Catalog:** versioned YAML rules per provider (Railway, Vercel, Supabase, GitHub, AWS and more) and per MCP server. Each operation gets a risk class: `read`, `write`, `delete`, `irreversible`, `money`, `credential` or `access`. Every verified rule has a recorded request that proves it matches.
+- **Compiler:** `opfence export` turns the catalog into policy for NVIDIA OpenShell, Claude Code (permission rules and a PreToolUse hook) and MCP annotation overlays.
+- **Runner:** `opfence run -- claude` starts a local proxy that holds your keys, enforces the catalog and asks before anything destructive. The approval card is written from the decoded request, never by the agent.
+
+## Commands
+
+| Command | Status |
+| --- | --- |
+| `opfence version` | available |
+| `opfence catalog validate`, `opfence explain`, `opfence test` | planned (stages 1–3) |
+| `opfence export --target openshell / claude-code / mcp-annotations` | planned (stage 5) |
+| `opfence run -- <agent>`, `opfence init`, `opfence trust`, `opfence approve`, `opfence log` | planned (stages 6–9) |
+
+## Build from source
+
+```sh
+go install github.com/rakeshnitb23/opfence/cmd/opfence@latest
+# or, from a checkout
+make build && ./bin/opfence version
+```
+
+Requires Go 1.25 or newer.
+
+## Documentation
+
+- [docs/PLAN.md](docs/PLAN.md): the problem, the market, the threat model and the roadmap
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how it works
+- [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md): build stages and progress
+- [CONTRIBUTING.md](CONTRIBUTING.md): adding a catalog rule
+- [SECURITY.md](SECURITY.md): reporting vulnerabilities
+
+## Licence
+
+Apache License 2.0, for both code and catalog, so any engine can embed the rules.
