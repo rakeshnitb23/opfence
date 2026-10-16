@@ -78,11 +78,17 @@ type File struct {
 	Rules     []RuleOverride `yaml:"rules"`
 	Mode      string         `yaml:"mode"` // strict or open (runner)
 	Approvals *Approvals     `yaml:"approvals"`
+	// PassthroughDefaults turns the built-in DefaultPassthrough list off when
+	// false. A repository may turn it off but not back on.
+	PassthroughDefaults *bool `yaml:"passthrough_defaults"`
 
 	// User config only.
 	IncludeDraft bool              `yaml:"include_draft"` // use draft catalog rules
 	TrustRepo    bool              `yaml:"trust_repo"`    // treat opfence.yaml as user config
 	Servers      map[string]string `yaml:"servers"`       // MCP server name → catalog provider
+	// Passthrough lists hosts the runner tunnels without inspecting, such
+	// as an internal registry: exact names or *.suffix patterns.
+	Passthrough []string `yaml:"passthrough"`
 
 	Path string `yaml:"-"`
 }
@@ -118,7 +124,20 @@ var (
 	argPathRe  = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 	ruleGlobRe = regexp.MustCompile(`^[a-z0-9*][a-z0-9*.-]*$`)
 	serverRe   = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+	hostPatRe  = regexp.MustCompile(`^(\*\.)?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$`)
 )
+
+// DefaultPassthrough is what the runner tunnels without inspecting unless
+// passthrough_defaults is false: package registries and source downloads,
+// so installs work in strict mode. None of them is a catalog host. git over
+// HTTPS to github.com is here too until git ref decoding lands (stage 10).
+var DefaultPassthrough = []string{
+	"codeload.github.com", "crates.io", "files.pythonhosted.org", "github.com",
+	"index.crates.io", "index.rubygems.org", "objects.githubusercontent.com",
+	"proxy.golang.org", "pypi.org", "raw.githubusercontent.com",
+	"registry.npmjs.org", "registry.yarnpkg.com", "repo.maven.apache.org",
+	"repo1.maven.org", "rubygems.org", "static.crates.io", "sum.golang.org",
+}
 
 // Parse reads and validates a policy file.
 func Parse(data []byte, name string) (*File, error) {
@@ -197,6 +216,11 @@ func Parse(data []byte, name string) (*File, error) {
 			add("servers: %q: %q must map a server name to a provider id", name, prov)
 		}
 	}
+	for _, h := range f.Passthrough {
+		if !hostPatRe.MatchString(h) {
+			add("passthrough: %q must be a lower-case host name or *.suffix, without a port", h)
+		}
+	}
 	if len(problems) > 0 {
 		sort.Strings(problems)
 		return nil, fmt.Errorf("%s:\n  %s", name, strings.Join(problems, "\n  "))
@@ -243,6 +267,9 @@ func (f *File) userOnlyFields() []string {
 	}
 	if len(f.Servers) > 0 {
 		out = append(out, "servers")
+	}
+	if len(f.Passthrough) > 0 {
+		out = append(out, "passthrough")
 	}
 	return out
 }

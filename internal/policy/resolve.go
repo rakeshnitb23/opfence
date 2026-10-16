@@ -23,6 +23,8 @@ type Effective struct {
 	ApprovalTimeout    time.Duration
 	ApprovalChannels   []string
 	Servers            map[string]string
+	// Passthrough is every host pattern the runner tunnels uninspected.
+	Passthrough []string
 }
 
 // Resolve merges the user's config and the repository file; either may be
@@ -70,6 +72,19 @@ func Resolve(user, repo *File) *Effective {
 	if repo.Mode == "open" && user.Mode != "open" {
 		e.Warnings = append(e.Warnings, fmt.Sprintf("%s: mode open would loosen policy; ignored", repo.Path))
 	}
+
+	defaults := user.PassthroughDefaults == nil || *user.PassthroughDefaults
+	if repo.PassthroughDefaults != nil {
+		if !*repo.PassthroughDefaults {
+			defaults = false
+		} else if !defaults {
+			e.Warnings = append(e.Warnings, fmt.Sprintf("%s: passthrough_defaults true would loosen policy; ignored", repo.Path))
+		}
+	}
+	if defaults {
+		e.Passthrough = append(e.Passthrough, DefaultPassthrough...)
+	}
+	e.Passthrough = append(e.Passthrough, user.Passthrough...)
 
 	e.ApprovalTimeout = 60 * time.Second
 	if user.Approvals != nil && user.Approvals.Timeout != 0 {
@@ -126,6 +141,10 @@ func mergeTrusted(user, repo *File) *File {
 		}
 	}
 	m.Rules = append(append([]RuleOverride{}, user.Rules...), repo.Rules...) // first match wins: user first
+	m.Passthrough = append(append([]string{}, user.Passthrough...), repo.Passthrough...)
+	if m.PassthroughDefaults == nil {
+		m.PassthroughDefaults = repo.PassthroughDefaults
+	}
 	if m.DefaultEnvironment == "" {
 		m.DefaultEnvironment = repo.DefaultEnvironment
 	}

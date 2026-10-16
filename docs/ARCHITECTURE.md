@@ -436,24 +436,36 @@ sequenceDiagram
 
 ### 8.2 Listeners
 
-Claude Code's docs warn that a sandboxed command can reach **both** the HTTP and the SOCKS proxy ports, and that setting only one leaves the other uncontrolled. Opfence therefore listens on both, on `127.0.0.1` with random ports, and `opfence run` sets both `httpProxyPort` and `socksProxyPort`. Both feed the same connection handler.
+Claude Code's docs warn that a sandboxed command can reach **both** the HTTP and the SOCKS proxy ports, and that setting only one leaves the other uncontrolled. Opfence therefore listens on both, on loopback only (`opfence proxy` refuses any other address, because the proxy acts with the user's authority), and `opfence run` sets both `httpProxyPort` and `socksProxyPort`. Both front ends feed the same routing code (`internal/proxy`).
 
 Per destination host:
 
 | Host is | Mode `strict` (default) | Mode `open` |
 | --- | --- | --- |
-| A catalog provider host | intercept | intercept |
-| Listed under `passthrough:` in user config (package registries, model APIs) | tunnel without TLS interception | tunnel |
+| A catalog provider host, port 443 | intercept | intercept |
+| A catalog provider host, any other port, or plain HTTP | refuse (Opfence only inspects HTTPS on 443) | refuse |
+| On the passthrough list | tunnel without TLS interception | tunnel |
 | Anything else | refuse | tunnel, logged |
 
-Intercepted connections are served by `net/http` over the hijacked TLS connection, which negotiates HTTP/2 or HTTP/1.1 by ALPN. HTTP/3 never happens because the proxy only offers TCP. WebSocket upgrades on intercepted hosts are refused in v0.
+The passthrough list is a built-in set of package registries and source hosts (`policy.DefaultPassthrough`: npm, PyPI, Go proxy, crates.io, RubyGems, Maven Central, github.com and its download hosts), so installs work in strict mode, plus the user config's `passthrough:` (exact names or `*.suffix`). Only the user config may add hosts; a repository may set `passthrough_defaults: false` to drop the built-in set, never turn it back on. github.com is on the list until git ref decoding lands (stage 10), so `git push` is not inspected before then.
+
+Routing rules that close tunnel tricks:
+
+- For TLS on 443 to a catalog host or to an IP address, the proxy reads the ClientHello first (with crypto/tls's own parser, then replays the bytes). A server name that differs from the CONNECT host is refused, so a tunnel cannot be opened under one name and used for another. A tunnel to an IP is decided by its server name and then dials that *name*, so the name that was allowed is the one reached.
+- Inside an intercepted connection, a request whose `Host` differs from the TLS server name gets `421 Misdirected Request` (HTTP/2 clients then open a new connection, which gets its own decision).
+- What a passthrough tunnel carries is not visible: a client could send a different `Host` header inside the encrypted session (domain fronting). Requiring a matching server name stops the SNI form; the `Host` form gains nothing once stage 7 keeps real keys out of the agent's reach. Tunnels on ports other than 443 are not inspected at all.
+- Upstream dials refuse loopback, private, link-local, CGNAT and other non-public addresses after DNS resolution, in every mode, so the proxy cannot become a way around the sandbox to local services or cloud metadata (`169.254.169.254`). A host the user lists by exact name under `passthrough:` (an internal registry) is exempt.
+
+Intercepted connections are served by one `net/http` server, which negotiates HTTP/2 or HTTP/1.1 by ALPN; upstream requests go out over HTTP/2 where the server offers it. HTTP/3 never happens because the proxy only offers TCP. WebSocket and other `Upgrade` requests on intercepted hosts are blocked in v0. The first 64 KiB of a body is read for the decision and the whole body is then forwarded unchanged; larger bodies cannot be inspected and are decided as `unknown`. The forwarded path and query are byte-for-byte the ones that were evaluated (a path that cannot be forwarded unchanged is blocked). Responses stream without buffering, so MCP's server-sent events work.
+
+A request that is not forwarded gets a `403` with a JSON body naming the card, class, environment, rule and reason. A single MCP JSON-RPC request gets a JSON-RPC error instead (`code -32001`, with the same message), because agents show that to the model as the tool's result, so the agent learns why and can tell the user. `ask` and `confirm` go to an `Approver`; until stage 8 the only one is `NoApprover`, which blocks with "Opfence needs a human to approve this, and no approval channel is running."
 
 ### 8.3 Certificate authority
 
-- ECDSA P-256 root, 10-year validity, `CN=Opfence local CA (<hostname>)`, generated per machine by `opfence trust`.
-- Name constraints: permitted DNS names limited to the hosts of the catalog at generation time, plus user `intercept:` entries. Regenerated (one prompt) when the catalog gains hosts. Clients that ignore name constraints are no worse off than with an unconstrained CA.
-- The private key lives in the secret store, never in a file. Leaf certificates are minted in memory, cached per host for their 24 h lifetime.
-- `opfence trust` installs the root in the user's trust store (macOS login keychain via `security add-trusted-cert`; Linux: the runtime CA variables, plus distro trust store only with `--system`). `opfence trust --uninstall` reverses every step it took, recorded in a manifest.
+- ECDSA P-256 root, 10-year validity, `CN=Opfence local CA (<hostname>)`.
+- Name constraints (critical): permitted DNS names limited to the hosts of the catalog at generation time (`*.amazonaws.com` becomes `amazonaws.com`), so a leaked key cannot impersonate other sites to clients that enforce constraints (Go, OpenSSL, macOS do). Creating an unconstrained CA is an error. A catalog host the CA does not cover is refused with a message to regenerate it, not served with a certificate that would fail.
+- Leaf certificates: one P-256 key per CA instance, a certificate per host valid 24 h, cached in memory (renewed in the last hour, the cache capped at 1024 hosts).
+- Stage 6: `opfence proxy` generates a CA per run and writes only its certificate (`ca.pem`) to the state folder; the key never leaves memory. Stage 7 stores one long-lived root in the OS keychain (`ca.Load` / `KeyPEM`), and `opfence trust` (stage 9) installs it: macOS login keychain via `security add-trusted-cert`; Linux: the runtime CA variables, plus the distro trust store only with `--system`. `opfence trust --uninstall` reverses every step it took, recorded in a manifest. A per-run CA is not enough on its own because Go programs on macOS verify through the system trust store and ignore `SSL_CERT_FILE`.
 
 ### 8.4 Secrets and placeholders
 
@@ -476,7 +488,11 @@ A grant is single-use and bound to the request's `Hash`. `Confirm` requires typi
 
 ### 8.6 Audit log
 
-Append-only JSONL at `~/.local/state/opfence/audit.jsonl`. Each line: time, session, host, method, path, rule ids, classes, environment, decision, approver channel, grant hash, upstream status, and `prev` (SHA-256 of the previous line). Bodies and secrets are never written. `opfence log` prints it; `opfence log --verify` checks the chain.
+Append-only JSONL at `$XDG_STATE_HOME/opfence/audit.jsonl` (default `~/.local/state/opfence/audit.jsonl`), file `0600` in a `0700` folder. Each line: time, session, event (`request`, `tunnel`, `refused`), host, port, method, path **without the query string** (queries can carry tokens), one item per operation (rule, class, environment, decision, card), overall decision, outcome (`forwarded`, `approved`, `blocked`, `tunneled`, `refused`, `error`), reason, approver channel, request hash for approvals, upstream status, and `prev`: the SHA-256 of the previous line, empty for the first. Bodies, headers and secrets are never written.
+
+A forwarded request is logged when the upstream's response headers arrive, before any body streams, so a long stream is logged at once. An advisory file lock (`flock`) keeps the chain intact when several Opfence processes share the file. A failed write is reported on stderr and does not stop traffic; the next successful line still chains to the last one on disk.
+
+`opfence log` prints the last entries; `opfence log --verify` checks the chain and exits 1 at the first line that does not follow its predecessor, which catches edited, inserted, reordered and deleted lines, including deletions at the start. Lines cut from the end cannot be detected from the file alone; anchoring the latest hash elsewhere is a later option.
 
 ### 8.7 Launcher
 
@@ -503,7 +519,7 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | catalog content | `opfence test` replays every fixture; CI fails on any miss; a schema test validates every file |
 | exporters | golden files for every target and environment; OpenShell output decoded into strict schema structs and checked by a model of OpenShell matching (never looser than the engine) |
 | hook | decision tests over the embedded catalog (SQL, aliases, plugin and claude.ai names, unknown servers and tools), bad input → error; CLI test that errors exit 2 |
-| proxy, CA, inject, approve | end-to-end tests with `httptest` TLS upstreams, an in-memory keyring and a scripted approver; a PocketOS replay test asserts the upstream is never contacted |
+| proxy, CA, inject, approve | end-to-end tests with `httptest` TLS upstreams (HTTP/2 and HTTP/1.1, CONNECT and SOCKS5), an in-memory keyring and a scripted approver; a PocketOS replay test asserts the upstream is never contacted; tunnel tricks (server name mismatch, IP tunnels, Host mismatch, private addresses) each have a test |
 | launcher | settings JSON golden test; a smoke test that `claude --settings` accepts it runs only where Claude Code is installed |
 
 ## 10. Decisions made in this document
@@ -521,4 +537,9 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | Claude Code static rules use the floor decision | Strictest class, production column | Claude Code applies ask/deny rules over a hook's allow, so a stricter static rule would prompt for every safe call |
 | OpenShell export denies ask-class operations a broad allow would cover | Leave them to the broad allow | An export must never be looser than the engine |
 | AWS is not exported to OpenShell | Export by path | The action is in the body or a header OpenShell cannot match |
+| Proxy refuses non-public upstream addresses in every mode | Trust the sandbox's own rules | The proxy runs outside the sandbox; without this, open mode (or a DNS name pointing at 127.0.0.1) would reach local services and cloud metadata |
+| Built-in passthrough list of package registries | Strict means only catalog hosts | Installs must work in strict mode or users switch to open mode, which is weaker; the list is public registries only and can be turned off |
+| Blocked MCP calls answer with a JSON-RPC error | HTTP 403 for everything | Agents show a JSON-RPC error to the model, so it can explain the block to the user instead of retrying blindly |
+| Audit write failures are logged, not fatal | Stop all traffic | A full disk should not take the agent down; the chain stays verifiable |
+| Stage 6 CA lives for one run | Persist the key in a file | Keys never touch disk; the keychain-backed root arrives with the secret store in stage 7 |
 | `gzip`/`deflate` only; other encodings fail closed | Add brotli dependency | Clients send compressed request bodies rarely; fail-closed is safe; revisit with data |

@@ -19,18 +19,20 @@ func mustParse(t *testing.T, name, s string) *File {
 
 func TestParseErrors(t *testing.T) {
 	cases := map[string]string{
-		"version":       "version: 2\n",
-		"unknown field": "version: 1\ncolour: red\n",
-		"bad env":       "version: 1\nenvironments:\n  prod: {}\n",
-		"bad default":   "version: 1\ndefault_environment: qa\n",
-		"bad class":     "version: 1\ndecisions:\n  production: { fatal: deny }\n",
-		"bad decision":  "version: 1\ndecisions:\n  production: { write: maybe }\n",
-		"bad rule glob": "version: 1\nrules:\n  - { rule: \"GitHub.Repo\", decision: deny }\n",
-		"bad mode":      "version: 1\nmode: loose\n",
-		"bad timeout":   "version: 1\napprovals: { timeout: 1h }\n",
-		"bad channel":   "version: 1\napprovals: { channels: [email] }\n",
-		"empty values":  "version: 1\nenvironments:\n  production:\n    railway: { environmentId: [] }\n",
-		"bad arg path":  "version: 1\nenvironments:\n  production:\n    railway: { \"env id\": [x] }\n",
+		"version":          "version: 2\n",
+		"unknown field":    "version: 1\ncolour: red\n",
+		"bad env":          "version: 1\nenvironments:\n  prod: {}\n",
+		"bad default":      "version: 1\ndefault_environment: qa\n",
+		"bad class":        "version: 1\ndecisions:\n  production: { fatal: deny }\n",
+		"bad decision":     "version: 1\ndecisions:\n  production: { write: maybe }\n",
+		"bad rule glob":    "version: 1\nrules:\n  - { rule: \"GitHub.Repo\", decision: deny }\n",
+		"bad mode":         "version: 1\nmode: loose\n",
+		"bad timeout":      "version: 1\napprovals: { timeout: 1h }\n",
+		"bad channel":      "version: 1\napprovals: { channels: [email] }\n",
+		"empty values":     "version: 1\nenvironments:\n  production:\n    railway: { environmentId: [] }\n",
+		"bad arg path":     "version: 1\nenvironments:\n  production:\n    railway: { \"env id\": [x] }\n",
+		"bad passthrough":  "version: 1\npassthrough: [\"registry.corp:8080\"]\n",
+		"star passthrough": "version: 1\npassthrough: [\"*\"]\n",
 	}
 	for name, s := range cases {
 		if _, err := Parse([]byte(s), "opfence.yaml"); err == nil {
@@ -153,5 +155,37 @@ environments:
 	}
 	if d, _ := e.Decide("railway.volume.delete", classes.Irreversible, Production); d != classes.Confirm {
 		t.Errorf("trusted repo without loosening entries changed decision: %v", d)
+	}
+}
+
+func TestPassthrough(t *testing.T) {
+	has := func(e *Effective, h string) bool {
+		for _, x := range e.Passthrough {
+			if x == h {
+				return true
+			}
+		}
+		return false
+	}
+	e := Resolve(nil, nil)
+	if !has(e, "registry.npmjs.org") {
+		t.Fatal("defaults missing")
+	}
+	user := mustParse(t, "user", "version: 1\npassthrough: [npm.corp.example, \"*.internal.example\"]\npassthrough_defaults: false\n")
+	e = Resolve(user, nil)
+	if has(e, "registry.npmjs.org") || !has(e, "npm.corp.example") || !has(e, "*.internal.example") {
+		t.Fatalf("user list: %v", e.Passthrough)
+	}
+	// A repository can switch the defaults off, but cannot add hosts or
+	// switch them back on.
+	repo := mustParse(t, "opfence.yaml", "version: 1\npassthrough: [evil.example]\npassthrough_defaults: false\n")
+	e = Resolve(nil, repo)
+	if has(e, "registry.npmjs.org") || has(e, "evil.example") || !strings.Contains(strings.Join(e.Warnings, "\n"), "passthrough is only honoured") {
+		t.Fatalf("repo: %v %v", e.Passthrough, e.Warnings)
+	}
+	repo = mustParse(t, "opfence.yaml", "version: 1\npassthrough_defaults: true\n")
+	e = Resolve(user, repo)
+	if has(e, "registry.npmjs.org") || !strings.Contains(strings.Join(e.Warnings, "\n"), "passthrough_defaults true would loosen") {
+		t.Fatalf("repo re-enabling defaults: %v %v", e.Passthrough, e.Warnings)
 	}
 }

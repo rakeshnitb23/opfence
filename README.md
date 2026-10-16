@@ -19,7 +19,8 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 | `opfence version` | available |
 | `opfence catalog validate / list / providers`, `opfence explain`, `opfence test`, `opfence policy check` | available |
 | `opfence export --target openshell / claude-code / mcp-annotations`, `opfence hook claude-code` | available |
-| `opfence run -- <agent>`, `opfence init`, `opfence trust`, `opfence approve`, `opfence log` | planned (stages 6–9) |
+| `opfence proxy` (enforcing HTTP and SOCKS5 proxy; approvals not yet), `opfence log [--verify]` | available (preview) |
+| `opfence run -- <agent>`, `opfence init`, `opfence trust`, `opfence approve` | planned (stages 7–9) |
 
 ## Catalog
 
