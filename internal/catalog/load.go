@@ -83,7 +83,7 @@ func Load(fsys fs.FS) (*Catalog, error) {
 		}
 	}
 	sort.Slice(providers, func(i, j int) bool { return providers[i].ID < providers[j].ID })
-	c := &Catalog{Providers: providers, rules: map[string]*Rule{}}
+	c := &Catalog{Providers: providers, FS: fsys, rules: map[string]*Rule{}}
 	l.validate(c)
 	if len(l.problems) > 0 {
 		sort.SliceStable(l.problems, func(i, j int) bool {

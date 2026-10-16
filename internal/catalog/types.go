@@ -7,6 +7,7 @@
 package catalog
 
 import (
+	"io/fs"
 	"regexp"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
@@ -15,6 +16,7 @@ import (
 // Catalog is a loaded and validated set of providers.
 type Catalog struct {
 	Providers []*Provider // sorted by ID
+	FS        fs.FS       // the files it was loaded from, for reading fixtures
 
 	rules map[string]*Rule // by id and alias
 }

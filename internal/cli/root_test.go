@@ -81,3 +81,53 @@ func mustWrite(t *testing.T, path, data string) {
 		t.Fatal(err)
 	}
 }
+
+func TestExplain(t *testing.T) {
+	code, out, errOut := run(t, "--user-config", "/nonexistent", "explain", "../../catalog/railway/fixtures/volume-delete.http")
+	if code != exitOK {
+		t.Fatalf("exit %d: %s", code, errOut)
+	}
+	for _, want := range []string{"railway.volume.delete", "irreversible", "CONFIRM", "Delete Railway volume vol-pg-data"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("output lacks %q:\n%s", want, out)
+		}
+	}
+	code, out, _ = run(t, "--user-config", "/nonexistent", "explain", "--json", "../../catalog/railway/fixtures/volume-delete.http")
+	if code != exitOK || !strings.Contains(out, `"decision": "confirm"`) {
+		t.Errorf("json output:\n%s", out)
+	}
+	dir := t.TempDir()
+	mustWrite(t, dir+"/opfence.yaml", "version: 1\nenvironments:\n  development:\n    railway: { volumeId: [vol-pg-data] }\n")
+	mustWrite(t, dir+"/user.yaml", "version: 1\nenvironments:\n  development:\n    railway: { volumeId: [vol-pg-data] }\n")
+	code, out, _ = run(t, "--user-config", dir+"/user.yaml", "--policy", dir+"/opfence.yaml", "explain", "../../catalog/railway/fixtures/volume-delete.http")
+	if code != exitOK || !strings.Contains(out, "environment development") || !strings.Contains(out, "decision    ASK") {
+		t.Errorf("user mapping not applied:\n%s", out)
+	}
+	if code, _, _ := run(t, "--user-config", "/nonexistent", "--policy", dir+"/missing.yaml", "explain", "x.http"); code != exitError {
+		t.Errorf("missing --policy file accepted")
+	}
+}
+
+func TestTestCommand(t *testing.T) {
+	code, out, _ := run(t, "test")
+	if code != exitOK || !strings.Contains(out, "0 failed") {
+		t.Fatalf("exit %d:\n%s", code, out)
+	}
+	dir := t.TempDir()
+	mustWrite(t, dir+"/acme/provider.yaml", "provider: acme\ntitle: Acme\nhosts: [api.acme.dev]\n")
+	mustWrite(t, dir+"/acme/x.yaml", "operations:\n  - id: acme.x.delete\n    match: { rest: { method: DELETE, path: /x } }\n    class: delete\n    card: x\n    status: draft\n    tests: [{ fixture: fixtures/x.http, expect: irreversible }]\n")
+	mustWrite(t, dir+"/acme/fixtures/x.http", "DELETE /x HTTP/1.1\nHost: api.acme.dev\n\n")
+	code, out, _ = run(t, "--catalog", dir, "test")
+	if code != exitFail || !strings.Contains(out, "FAIL  acme.x.delete") {
+		t.Fatalf("broken rule passed: exit %d\n%s", code, out)
+	}
+}
+
+func TestPolicyCheck(t *testing.T) {
+	dir := t.TempDir()
+	mustWrite(t, dir+"/opfence.yaml", "version: 1\ndecisions:\n  production: { irreversible: allow }\n")
+	code, out, _ := run(t, "--user-config", "/nonexistent", "--policy", dir+"/opfence.yaml", "policy", "check")
+	if code != exitOK || !strings.Contains(out, "warning:") || !strings.Contains(out, "irreversible   ask          ask          confirm") {
+		t.Fatalf("exit %d:\n%s", code, out)
+	}
+}

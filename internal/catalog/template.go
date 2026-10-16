@@ -117,7 +117,17 @@ func (t *Template) MoreSpecific(u *Template) bool {
 	if tn != un {
 		return tn
 	}
-	return ts > us
+	if ts != us {
+		return ts > us
+	}
+	// Same counts: a literal earlier in the path wins (/a/{x} beats /{y}/b).
+	for i := range t.Segments {
+		tl, ul := t.Segments[i].Literal != "", u.Segments[i].Literal != ""
+		if tl != ul {
+			return tl
+		}
+	}
+	return false
 }
 
 // Match matches a raw request path (not unescaped, without the query) and

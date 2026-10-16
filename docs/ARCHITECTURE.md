@@ -335,7 +335,13 @@ user   = user override for (rule, env) ?? user override for (class, env) ?? Defa
 final  = max(user, repo override for (rule, env), repo override for (class, env))
 ```
 
-So a repository can turn `write` in development into `ask`, but cannot turn `irreversible` into `allow`; a loosening entry in `opfence.yaml` is reported as a warning by `opfence explain` and ignored. Environment *mappings* are a special case: a repo can only move an id towards production (adding an id to `production` is always honoured; adding an id to `development` that the user mapped to production is ignored).
+So a repository can turn `write` in development into `ask`, but cannot turn `irreversible` into `allow`; a loosening entry in `opfence.yaml` is reported as a warning by `opfence explain` and `opfence policy check` and ignored. The same holds for every other setting: a repository may set a stricter `default_environment`, `mode: strict` and a shorter approval timeout, never the reverse.
+
+Environment *mappings* follow the same rule: a repository mapping is honoured only when it makes the result stricter than the user's mappings and the default would. With the default `default_environment: production`, a repository can mark ids as production but cannot mark anything as development. Teams that keep their id mappings in the repository and accept that the agent can edit them set `trust_repo: true` in the user config, which treats `opfence.yaml` as user config; it is off by default and documented as weaker.
+
+Settings only the user config may hold: `include_draft` (use draft rules), `trust_repo`, and `servers` (MCP server name → catalog provider, for servers a user named differently).
+
+Conditions in rules compare case-insensitively (`SkipFinalSnapshot=True` still matches `equals: "true"`); `null` counts as absent.
 
 ## 6. Engine
 
@@ -358,7 +364,11 @@ func (e *Engine) Evaluate(r *request.Request) Result
 func (e *Engine) EvaluateTool(server, tool string, args map[string]any) Result  // hook path
 ```
 
-Card templates substitute `{arg}` with the decoded value, truncated to 80 characters and stripped of control characters and Unicode bidi overrides, so a crafted argument cannot fake the card layout.
+Card templates substitute `{arg}` with the decoded value, truncated to 80 characters and stripped of control characters, line breaks, zero-width characters and Unicode bidi overrides, so a crafted argument cannot fake the card layout. Operations with no rule get a generic card ("Vercel POST api.vercel.com/v9/projects").
+
+`Hash` covers the host, each operation's provider, rule, protocol fields and arguments, and the exact request body bytes, so a grant for one body can never cover another sent to the same operation.
+
+Unmatched operations are classified by provider defaults (`DefaultClass`): GraphQL queries, safe REST methods and AWS read actions where the provider declares them, MCP housekeeping messages as `read`, everything else `unknown`. An operation the decoder could not read never matches a rule.
 
 ## 7. Exporters
 

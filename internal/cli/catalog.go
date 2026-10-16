@@ -16,6 +16,8 @@ import (
 // globalOptions are flags shared by every command.
 type globalOptions struct {
 	catalogDir string
+	policyFile string
+	userConfig string
 }
 
 // loadCatalog returns the catalog from --catalog, or the embedded snapshot.

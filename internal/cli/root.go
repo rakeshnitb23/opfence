@@ -58,7 +58,9 @@ allowed, needs your approval, or is denied.`,
 	root.CompletionOptions.HiddenDefaultCmd = true
 	g := &globalOptions{}
 	root.PersistentFlags().StringVar(&g.catalogDir, "catalog", "", "load the catalog from this folder instead of the built-in snapshot")
-	root.AddCommand(newVersionCmd(), newCatalogCmd(g))
+	root.PersistentFlags().StringVar(&g.policyFile, "policy", "", "repository policy file (default ./opfence.yaml if present)")
+	root.PersistentFlags().StringVar(&g.userConfig, "user-config", "", "user config file (default $OPFENCE_CONFIG or ~/.config/opfence/config.yaml)")
+	root.AddCommand(newVersionCmd(), newCatalogCmd(g), newExplainCmd(g), newTestCmd(g), newPolicyCmd(g))
 	return root
 }
 
