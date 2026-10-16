@@ -19,8 +19,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
-	"github.com/rakeshnitb23/opfence/internal/ca"
-	"github.com/rakeshnitb23/opfence/internal/engine"
 	"github.com/rakeshnitb23/opfence/internal/proxy"
 )
 
@@ -34,8 +32,9 @@ catalog is intercepted and every request is decided before it leaves the
 machine; passthrough hosts are tunnelled; anything else is refused in strict
 mode. Requests that need approval are blocked until approvals arrive.
 
-The certificate authority is generated for this run only and its certificate
-is written to the state folder; point your client at it, for example
+The certificate authority's key is kept in your keychain (or, if the keychain
+is unavailable, made for this run only) and its certificate is written to the
+state folder; point your client at it, for example
   curl --proxy http://127.0.0.1:PORT --cacert CA_FILE https://...`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -60,7 +59,8 @@ is written to the state folder; point your client at it, for example
 			if err != nil {
 				return err
 			}
-			authority, err := newSessionCA(eng)
+			set, vault := loadSecrets(cmd.ErrOrStderr())
+			authority, persistent, err := loadCA(cmd.ErrOrStderr(), eng, vault)
 			if err != nil {
 				return err
 			}
@@ -69,7 +69,7 @@ is written to the state folder; point your client at it, for example
 				return err
 			}
 			srv, err := proxy.New(proxy.Config{
-				Engine: eng, CA: authority, Audit: log, Session: sessionID(), Mode: mode,
+				Engine: eng, CA: authority, Audit: log, Session: sessionID(), Mode: mode, Secrets: set,
 				Logf: func(f string, a ...any) { fmt.Fprintf(cmd.ErrOrStderr(), f+"\n", a...) },
 			})
 			if err != nil {
@@ -96,7 +96,12 @@ is written to the state folder; point your client at it, for example
 			fmt.Fprintf(out, "Opfence proxy running (%s mode). Press Ctrl-C to stop.\n", effMode)
 			fmt.Fprintf(out, "  HTTP proxy:      http://%s\n", hl.Addr())
 			fmt.Fprintf(out, "  SOCKS5 proxy:    %s\n", sl.Addr())
-			fmt.Fprintf(out, "  CA certificate:  %s (this run only)\n", caFile)
+			lifetime := "this run only"
+			if persistent {
+				lifetime = "key kept in your keychain"
+			}
+			fmt.Fprintf(out, "  CA certificate:  %s (%s)\n", caFile, lifetime)
+			fmt.Fprintf(out, "  Credentials:     %d from your keychain\n", set.Len())
 			fmt.Fprintf(out, "  Audit log:       %s\n", auditPath)
 
 			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
@@ -130,16 +135,6 @@ func loopbackOnly(addr string) error {
 		return fmt.Errorf("listen address %q: Opfence only listens on loopback (127.0.0.1 or ::1)", addr)
 	}
 	return nil
-}
-
-// newSessionCA creates a CA constrained to the catalog's hosts.
-func newSessionCA(eng *engine.Engine) (*ca.CA, error) {
-	var hosts []string
-	for _, p := range eng.Catalog.Providers {
-		hosts = append(hosts, p.Hosts...)
-	}
-	machine, _ := os.Hostname()
-	return ca.New(machine, ca.PermittedDomains(hosts))
 }
 
 func sessionID() string {

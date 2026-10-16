@@ -23,8 +23,10 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/audit"
 	"github.com/rakeshnitb23/opfence/internal/ca"
 	"github.com/rakeshnitb23/opfence/internal/engine"
+	"github.com/rakeshnitb23/opfence/internal/inject"
 	"github.com/rakeshnitb23/opfence/internal/policy"
 	"github.com/rakeshnitb23/opfence/internal/request"
+	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
 
 // Recorder receives audit entries.
@@ -68,6 +70,9 @@ type Config struct {
 	// Audit receives one entry per request, tunnel and refusal; nil disables
 	// the log.
 	Audit Recorder
+	// Secrets are swapped in for their placeholders on the way out and
+	// scrubbed from responses; nil means none.
+	Secrets *secrets.Set
 	// Approver answers ask and confirm decisions; nil means NoApprover.
 	Approver Approver
 	Session  string
@@ -88,6 +93,7 @@ type Config struct {
 // Server is a running proxy. One Server can serve several listeners.
 type Server struct {
 	cfg       Config
+	scrubber  *inject.Scrubber
 	transport *http.Transport
 	rp        *httputil.ReverseProxy
 	plainRP   *httputil.ReverseProxy
@@ -120,7 +126,7 @@ func New(cfg Config) (*Server, error) {
 	if cfg.Logf == nil {
 		cfg.Logf = log.Printf
 	}
-	s := &Server{cfg: cfg, conns: newChanListener()}
+	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: inject.NewScrubber(cfg.Secrets)}
 	s.transport = &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return s.dial(ctx, network, addr, false)
@@ -136,7 +142,7 @@ func New(cfg Config) (*Server, error) {
 		Rewrite:        rewriteIntercepted,
 		Transport:      s.transport,
 		FlushInterval:  -1, // stream server-sent events (MCP) as they arrive
-		ModifyResponse: s.recordForwarded,
+		ModifyResponse: s.modifyResponse,
 		ErrorHandler:   s.upstreamError,
 		ErrorLog:       log.New(io.Discard, "", 0),
 	}

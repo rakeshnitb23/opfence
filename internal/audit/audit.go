@@ -37,9 +37,11 @@ type Entry struct {
 	Outcome  string `json:"outcome"`
 	Reason   string `json:"reason,omitempty"`
 	Approver string `json:"approver,omitempty"`
-	Hash     string `json:"hash,omitempty"` // request hash approvals bind to
-	Status   int    `json:"status,omitempty"`
-	Prev     string `json:"prev"`
+	// Credentials names the secrets injected (provider/name), never values.
+	Credentials []string `json:"credentials,omitempty"`
+	Hash        string   `json:"hash,omitempty"` // request hash approvals bind to
+	Status      int      `json:"status,omitempty"`
+	Prev        string   `json:"prev"`
 }
 
 // Operation is the verdict on one operation of a request.

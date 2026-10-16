@@ -16,6 +16,7 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/decode"
 	"github.com/rakeshnitb23/opfence/internal/engine"
+	"github.com/rakeshnitb23/opfence/internal/inject"
 	"github.com/rakeshnitb23/opfence/internal/request"
 )
 
@@ -89,7 +90,17 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		s.block(w, req, &res, entry, http.StatusBadRequest, "Opfence could not forward this path unchanged, so it blocks it.")
 		return
 	}
-	f := &fwd{host: host, path: path, rawPath: req.Path, rawQuery: r.URL.RawQuery, entry: entry}
+	rawQuery, inj := inject.Request(res.Provider, r.Header, r.URL.RawQuery, s.cfg.Secrets)
+	entry.Credentials = inj.Injected
+	if len(inj.Foreign) > 0 {
+		entry.Reason = fmt.Sprintf("placeholder for %s sent to %s; not swapped in", strings.Join(inj.Foreign, ", "), host)
+	}
+	if s.scrubber != nil {
+		// Let the transport ask for gzip and decode it, so responses can be
+		// scrubbed.
+		r.Header.Del("Accept-Encoding")
+	}
+	f := &fwd{host: host, path: path, rawPath: req.Path, rawQuery: rawQuery, entry: entry}
 	if r.Body != nil && r.Body != http.NoBody {
 		r.Body = struct {
 			io.Reader
@@ -109,10 +120,18 @@ func rewriteIntercepted(pr *httputil.ProxyRequest) {
 	pr.Out.Host = f.host
 }
 
-// recordForwarded writes the audit entry once the upstream's response
-// headers arrive, before any body streams, so a long stream is logged
-// immediately.
-func (s *Server) recordForwarded(resp *http.Response) error {
+// modifyResponse scrubs secrets from the response and writes the audit
+// entry once the upstream's response headers arrive, before any body
+// streams, so a long stream is logged immediately. A response in an
+// encoding Opfence cannot read is refused when there are secrets to scrub.
+func (s *Server) modifyResponse(resp *http.Response) error {
+	if s.scrubber != nil {
+		if ce := strings.TrimSpace(resp.Header.Get("Content-Encoding")); ce != "" && !strings.EqualFold(ce, "identity") {
+			return fmt.Errorf("the response is encoded with %s, which Opfence cannot scrub for credentials", ce)
+		}
+		s.scrubber.Header(resp.Header)
+		resp.Body = s.scrubber.Reader(resp.Body)
+	}
 	if f, ok := resp.Request.Context().Value(fwdKey{}).(*fwd); ok {
 		f.entry.Status = resp.StatusCode
 		s.record(f.entry)

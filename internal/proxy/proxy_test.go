@@ -3,6 +3,7 @@ package proxy
 import (
 	"bufio"
 	"bytes"
+	"compress/gzip"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -29,6 +30,7 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/catalog"
 	"github.com/rakeshnitb23/opfence/internal/engine"
 	"github.com/rakeshnitb23/opfence/internal/policy"
+	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
 
 // env is a proxy wired to fake upstreams: an HTTPS API server answering for
@@ -53,6 +55,9 @@ type env struct {
 type opts struct {
 	mode        string
 	defaultDial bool // use the real dialer with its private-address guard
+	secrets     *secrets.Set
+	// respond, when set, answers upstream requests instead of the default.
+	respond func(w http.ResponseWriter, r *http.Request)
 }
 
 func newEnv(t *testing.T, o opts) *env {
@@ -83,6 +88,10 @@ func newEnv(t *testing.T, o opts) *env {
 		e.upstream = append(e.upstream, r)
 		e.bodies = append(e.bodies, string(body))
 		e.mu.Unlock()
+		if o.respond != nil {
+			o.respond(w, r)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `{"data":{"ok":true},"proto":%q}`, r.Proto)
 	}))
@@ -133,6 +142,7 @@ func newEnv(t *testing.T, o opts) *env {
 		Audit:           log,
 		Session:         "test",
 		Mode:            o.mode,
+		Secrets:         o.secrets,
 		UpstreamRootCAs: upCA.Pool(),
 		Logf:            t.Logf,
 	}
@@ -548,5 +558,87 @@ func TestCloseStopsListeners(t *testing.T) {
 	}
 	if err := e.srv.ServeSOCKS(nil); !errors.Is(err, net.ErrClosed) {
 		t.Fatalf("serve after close: %v", err)
+	}
+}
+
+var (
+	railwaySecret = &secrets.Secret{Provider: "railway", Name: "RAILWAY_TOKEN", Value: "4f1c2a7e-9b3d-4c8e-a1f2-0d9e8b7c6a5f", Placeholder: "0a9b8c7d-6e5f-4a3b-b2c1-d0e9f8a7b6c5"}
+	vercelSecret  = &secrets.Secret{Provider: "vercel", Name: "VERCEL_TOKEN", Value: "vcp_AbCdEfGhIjKlMnOpQrStUvWx", Placeholder: "vcp_ZyXwVuTsRqPoNmLkJiHgFeDc"}
+)
+
+// The stage 7 exit criteria: a placeholder is only swapped in for its own
+// provider, and real values echoed back are scrubbed.
+func TestInjectAndScrub(t *testing.T) {
+	set := secrets.NewSet([]*secrets.Secret{railwaySecret, vercelSecret})
+	e := newEnv(t, opts{secrets: set, respond: func(w http.ResponseWriter, r *http.Request) {
+		auth := r.Header.Get("Authorization")
+		w.Header().Set("X-Echo", auth)
+		w.Header().Set("X-AE", r.Header.Get("Accept-Encoding"))
+		body := fmt.Sprintf(`{"auth":%q,"env":{"RAILWAY_TOKEN":%q}}`, auth, railwaySecret.Value)
+		switch {
+		case r.URL.Path == "/br":
+			w.Header().Set("Content-Encoding", "br")
+			_, _ = w.Write([]byte("not really brotli"))
+		case strings.Contains(r.Header.Get("Accept-Encoding"), "gzip"):
+			w.Header().Set("Content-Encoding", "gzip")
+			zw := gzip.NewWriter(w)
+			_, _ = zw.Write([]byte(body))
+			_ = zw.Close()
+		default:
+			_, _ = w.Write([]byte(body))
+		}
+	}})
+	c := e.client(true)
+	get := func(u, auth string) (*http.Response, string) {
+		req, _ := http.NewRequest("GET", u, nil)
+		req.Header.Set("Authorization", "Bearer "+auth)
+		req.Header.Set("Accept-Encoding", "gzip") // explicit: the client does not decode
+		resp, err := c.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		b, _ := io.ReadAll(resp.Body)
+		return resp, string(b)
+	}
+
+	// Vercel's placeholder to Vercel: the API gets the real token, the
+	// client never sees it, even inside a gzip response.
+	resp, body := get("https://api.vercel.com/v2/user", vercelSecret.Placeholder)
+	e.mu.Lock()
+	upstreamAuth := e.upstream[len(e.upstream)-1].Header.Get("Authorization")
+	e.mu.Unlock()
+	if upstreamAuth != "Bearer "+vercelSecret.Value {
+		t.Fatalf("upstream got %q", upstreamAuth)
+	}
+	if resp.StatusCode != 200 || strings.Contains(body, vercelSecret.Value) || strings.Contains(body, railwaySecret.Value) ||
+		!strings.Contains(body, vercelSecret.Placeholder) || !strings.Contains(body, railwaySecret.Placeholder) ||
+		strings.Contains(resp.Header.Get("X-Echo"), vercelSecret.Value) || resp.Header.Get("Content-Encoding") != "" {
+		t.Fatalf("response leaked a secret: %d %v %s", resp.StatusCode, resp.Header, body)
+	}
+
+	// Railway's placeholder sent to Vercel is not swapped in.
+	_, _ = get("https://api.vercel.com/v2/user", railwaySecret.Placeholder)
+	e.mu.Lock()
+	upstreamAuth = e.upstream[len(e.upstream)-1].Header.Get("Authorization")
+	e.mu.Unlock()
+	if upstreamAuth != "Bearer "+railwaySecret.Placeholder {
+		t.Fatalf("foreign placeholder became %q", upstreamAuth)
+	}
+	es := e.entries()
+	if last := es[len(es)-1]; !strings.Contains(last.Reason, "placeholder for railway/RAILWAY_TOKEN sent to api.vercel.com") || len(last.Credentials) != 0 {
+		t.Fatalf("audit %+v", last)
+	}
+	if prev := es[len(es)-2]; len(prev.Credentials) != 1 || prev.Credentials[0] != "vercel/VERCEL_TOKEN" {
+		t.Fatalf("audit %+v", prev)
+	}
+	data, _ := os.ReadFile(e.auditPath)
+	if bytes.Contains(data, []byte(vercelSecret.Value)) || bytes.Contains(data, []byte(railwaySecret.Value)) {
+		t.Fatal("secret value in the audit log")
+	}
+
+	// A response Opfence cannot decode is refused rather than passed on.
+	if resp, body := get("https://api.vercel.com/br", vercelSecret.Placeholder); resp.StatusCode != http.StatusBadGateway {
+		t.Fatalf("br response: %d %s", resp.StatusCode, body)
 	}
 }
