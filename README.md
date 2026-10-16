@@ -29,7 +29,7 @@ go install github.com/rakeshnitb23/opfence/cmd/opfence@latest
 make build && ./bin/opfence version
 ```
 
-Requires Go 1.25 or newer.
+Requires Go 1.26 or newer (the oldest Go release still getting security fixes).
 
 ## Documentation
 

@@ -62,8 +62,8 @@ flowchart LR
 
 | # | Stage | Delivers | Exit criteria | Status |
 | --- | --- | --- | --- | --- |
-| 0 | Foundation | Go module, CLI skeleton (`opfence version`), Makefile, CI (build, vet, test, race, lint), LICENSE, README, SECURITY.md, CONTRIBUTING.md, outreach drafts | CI green on the PR | planned |
-| 1 | Catalog model | `classes`, `catalog` types, strict YAML loader, validator, JSON Schema, embedded catalog, `opfence catalog validate` and `catalog list` | Validator rejects every invalid case in its table tests; schema test passes | planned |
+| 0 | Foundation | Go module, CLI skeleton (`opfence version`), Makefile, CI (build, vet, test, race, lint), LICENSE, README, SECURITY.md, CONTRIBUTING.md, outreach drafts | CI green on the PR | done |
+| 1 | Catalog model | `classes`, `catalog` types, strict YAML loader, validator, JSON Schema, embedded catalog, `opfence catalog validate` and `catalog list` | Validator rejects every invalid case in its table tests; schema test passes | done |
 | 2 | Decoders | `request` (fixture parser, body limits, gzip/deflate), `decode` rest, graphql, mcp, aws, sql; fuzz targets | Decoder tests incl. aliases, fragments, batches, variables, JSON-RPC batches, AWS JSON + Query; fuzzers run clean for 60 s each | planned |
 | 3 | Engine, explain, test | `catalog.Match`, `policy` (opfence.yaml, environments, table, merge), `engine`, `opfence explain <file.http>`, `opfence test` | PocketOS fixture explains as irreversible/confirm in production; tighten-only merge tests; `opfence test` fails on a deliberately broken rule | planned |
 | 4 | Catalog content | 60+ rules across Railway, Vercel, Supabase MCP, GitHub, AWS, each from a primary source and with a fixture | `opfence test` passes; every `verified` rule has a source and date | planned |
@@ -85,4 +85,6 @@ Stages 4 and 5 can interleave; stage 6 does not depend on 4 or 5. The order abov
 
 Each closed stage gets a short entry: what shipped, what changed from the plan, and follow-ups.
 
-_(none yet)_
+**Stage 0 · Foundation (done 16 Oct 2026).** Go module, cobra CLI with `opfence version`, Makefile (`check`, `lint`, `fuzz`), CI on Linux and macOS, licence and project docs, outreach drafts. Changed from plan: minimum Go is 1.26, because Go 1.27 is current and 1.25 no longer gets security fixes.
+
+**Stage 1 · Catalog model (done 16 Oct 2026).** `internal/classes`, `internal/catalog` (types, strict loader, validator with 40 table-tested failure cases, REST path templates with normalisation), JSON Schemas with a test that keeps them in step with the loader, the embedded catalog, and `opfence catalog validate | list | providers` with a global `--catalog DIR`. The first real rule, `railway.volume.delete`, is checked against Railway's public GraphQL schema (the mutation exists and takes `volumeId`), which settles the open question in PLAN.md's review notes. Added beyond plan: `notes` on rules, wildcard host overlap checks, and the rule that `draft` rules don't drive decisions.

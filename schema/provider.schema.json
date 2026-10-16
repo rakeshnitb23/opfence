@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rakeshnitb23/opfence/schema/provider.schema.json",
+  "title": "Opfence catalog provider file (catalog/<provider>/provider.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["provider", "title"],
+  "properties": {
+    "provider": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "Provider id; must equal the folder name" },
+    "title": { "type": "string", "minLength": 1 },
+    "docs": { "type": "string", "pattern": "^https://" },
+    "hosts": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^(\\*\\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$" },
+      "uniqueItems": true
+    },
+    "graphql": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that carry GraphQL" },
+    "sigv4": { "type": "boolean", "description": "Requests are AWS SigV4-signed" },
+    "auth": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "header": { "type": "string" },
+          "scheme": { "type": "string" },
+          "query": { "type": "string" },
+          "basic": { "enum": ["username", "password"] }
+        },
+        "oneOf": [
+          { "required": ["header"], "not": { "anyOf": [{ "required": ["query"] }, { "required": ["basic"] }] } },
+          { "required": ["query"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["basic"] }, { "required": ["scheme"] }] } },
+          { "required": ["basic"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["query"] }, { "required": ["scheme"] }] } }
+        ]
+      }
+    },
+    "detect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "env": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z_][A-Z0-9_]*$" } },
+        "prefixes": { "type": "array", "items": { "type": "string", "minLength": 3 } }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "graphql_query": { "$ref": "rules.schema.json#/$defs/class" },
+        "rest_safe_methods": { "$ref": "rules.schema.json#/$defs/class" }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["names"],
+      "properties": {
+        "names": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" } },
+        "package": { "type": "string" }
+      }
+    }
+  }
+}

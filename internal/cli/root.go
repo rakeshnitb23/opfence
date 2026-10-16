@@ -56,7 +56,9 @@ allowed, needs your approval, or is denied.`,
 		SilenceErrors: true,
 	}
 	root.CompletionOptions.HiddenDefaultCmd = true
-	root.AddCommand(newVersionCmd())
+	g := &globalOptions{}
+	root.PersistentFlags().StringVar(&g.catalogDir, "catalog", "", "load the catalog from this folder instead of the built-in snapshot")
+	root.AddCommand(newVersionCmd(), newCatalogCmd(g))
 	return root
 }
 

@@ -1,0 +1,19 @@
+operations:
+  - id: railway.volume.delete
+    match: { graphql: { type: mutation, field: volumeDelete } }
+    class: irreversible
+    resource: { arg: volumeId, kind: volume }
+    card: "Delete Railway volume {volumeId} and all data on it"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://railway.com/changelog/2025-08-22-restore-deleted-volumes
+    notes: >-
+      The PocketOS call (April 2026). Railway can restore deleted volumes for
+      48 hours from its dashboard, but not through the API and not on the
+      legacy endpoint PocketOS hit, so the catalog treats it as irreversible.
+    tests:
+      - fixture: fixtures/volume-delete.http
+        expect: irreversible
+        resource: vol-pg-data

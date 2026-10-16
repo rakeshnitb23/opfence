@@ -63,7 +63,7 @@ schema/                 JSON Schema for catalog files and opfence.yaml
 docs/
 ```
 
-`catalog/` is embedded through a tiny package at the repository root (`catalog/embed.go`, package `catalogfs`) because `go:embed` cannot reach parent directories. When the catalog moves to its own repository before Launch 1, that package becomes a Go module dependency and nothing else changes.
+`catalog/` is embedded through a tiny package beside the YAML files (`catalog/embed.go`, imported as `catalogdata`) because `go:embed` cannot reach parent directories; `schema/embed.go` does the same for the JSON Schemas. When the catalog moves to its own repository before Launch 1, that package becomes a Go module dependency and nothing else changes.
 
 ### Dependencies
 
@@ -224,11 +224,15 @@ operations:
     card: "Delete Railway volume {volumeId} and all data on it"
     status: verified          # verified | community | draft
     verified: 2026-10-16      # last time a human checked the source
-    sources: ["https://docs.railway.com/integrations/api"]
+    sources: ["https://github.com/railwayapp/cli/blob/master/src/gql/schema.json"]
+    notes: "Railway can restore deleted volumes for 48 h from its dashboard, not via the API"
     tests:
       - fixture: fixtures/volume-delete.http
         expect: irreversible
+        resource: vol-pg-data   # optional: the resource value the fixture must yield
 ```
+
+`status` decides how a rule is used: `verified` and `community` rules drive decisions; `draft` rules are loaded and validated but ignored by the engine and exporters unless the user opts in, because an unreviewed rule could under-classify. `notes` records nuance a reviewer needs (why a class was chosen).
 
 Matchers, exactly one per rule:
 
@@ -238,7 +242,7 @@ Matchers, exactly one per rule:
 | `graphql` | `type`, `field` | Root field name; aliases are resolved to the field |
 | `mcp` | `tool` | Server is the provider |
 | `aws` | `service`, `action` | `service` is the SigV4 signing name (`rds`, `s3`, `iam`) |
-| `cli` | `command` | Advisory only: used by the Claude Code exporter to write `Bash(<command>:*)` rules, never by the proxy |
+| `cli` | `command` | Advisory only: used by the Claude Code exporter to write `Bash(<command>:*)` rules, never by the proxy; cannot have request fixtures |
 
 Rule ids are `provider.resource.verb`, globally unique, stable forever (users reference them in overrides; renames keep the old id under `aliases`).
 
@@ -269,9 +273,10 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
 - Ids unique and well-formed; exactly one matcher per rule; known classes; templates parse; `when` regexes compile.
 - `status: verified` requires at least one test, at least one source and a `verified` date.
 - Every fixture file referenced exists, and every fixture file is referenced by some rule.
-- No two rules in a provider can match the same operation with the same specificity (ambiguity is an error, not a silent first-wins).
+- No two rules in a provider can match the same operation with the same specificity (ambiguity is an error, not a silent first-wins). Two providers cannot claim the same host, and a wildcard host cannot overlap another provider's host.
+- Every problem is reported at once with `file:line`, so a contributor fixes a rule file in one pass.
 
-`schema/catalog.schema.json` describes the same shape for editors; a test validates every catalog file against it.
+`schema/provider.schema.json` and `schema/rules.schema.json` describe the same shapes for editors; a test validates every embedded catalog file against them, and checks that they reject the same mistakes the loader does.
 
 ## 5. Policy
 
