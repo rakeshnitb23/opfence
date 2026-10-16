@@ -9,12 +9,12 @@ Oct 16, 2026 · @ss
 Build **Opfence**: an open, tested catalog of dangerous operations for cloud APIs and MCP servers, a compiler that turns it into policy for existing agent proxies, and a thin local runner for people who have none. The credential-proxy idea stays; the proxy engine itself is already built by NVIDIA, Infisical and a YC startup, so Opfence supplies what they all lack: knowing which calls are dangerous.
 
 - **Catalog (the core asset):** versioned YAML rules per provider (Railway, Vercel, Supabase, GitHub, AWS, Stripe and more) and per popular MCP server. Each rule labels an operation as read, write, destructive, irreversible, money-moving or secret-revealing, with matchers for REST, GraphQL, AWS actions, MCP tools and CLI commands, plus recorded test requests.
-- **Compiler:** one command exports the catalog to NVIDIA OpenShell policy, Infisical Agent Vault service rules, Claude Code permission rules and hooks, and Opfence's own format. Write once, enforce in any engine.
+- **Compiler:** one command exports the catalog to NVIDIA OpenShell policy, Claude Code permission rules and hooks, MCP annotation overlays, and Opfence's own format. (Agent Vault was dropped as a Launch 1 target on 16 Oct 2026; see Decisions.) Write once, enforce in any engine.
 - **Runner:** `opfence run -- claude` starts a local proxy that holds the keys, enforces the catalog, and asks you before anything destructive. The approval card is written by the proxy from the decoded request, never by the agent. It plugs into Claude Code's sandbox through its bring-your-own-proxy setting; no container, server or database.
 - **Who it is for:** solo developers and small teams pointing Claude Code, Cursor, Codex or custom agents at real cloud accounts, and the maintainers of agent proxies who need rules.
 - **Why now:** an agent wiped PocketOS's production database in April 2026, and prompt injection stole keys from three major coding agents the same month. The engines exist; every user still hand-writes the rules.
 
-**The v1 promise:** "Install in one minute. Your agent keeps working, never sees a key, and cannot delete, wipe or pay for anything without your tap." v1.0 scope (April 2027): 15 providers, 25 MCP servers, exports to OpenShell, Agent Vault and Claude Code, macOS and Linux, Claude Code first.
+**The v1 promise:** "Install in one minute. Your agent keeps working, never sees a key, and cannot delete, wipe or pay for anything without your tap." v1.0 scope (April 2027): 15 providers, 25 MCP servers, exports to OpenShell and Claude Code (Agent Vault if it gains operation matching), macOS and Linux, Claude Code first.
 
 ## Review notes (16 Oct 2026)
 
@@ -132,7 +132,7 @@ Opfence serves two audiences with one asset: developers who want a safe agent in
 - `opfence init` scans the repo, `.env` files and MCP configs, moves found secrets into the local store, and leaves placeholders behind.
 - `opfence run -- claude` starts the proxy, configures Claude Code's sandbox to use it, and launches the agent.
 - A destructive call pauses. A native notification and a terminal prompt show the proxy's own reading of it, for example "Railway `volumeDelete` · volume `pg-data` · environment `production`". No answer within 60 seconds means deny.
-- `opfence export --target openshell` (and `--target agent-vault`, `--target claude-hooks`) writes policy for another engine.
+- `opfence export --target openshell` (and `--target claude-hooks`, `--target mcp-annotations`) writes policy for another engine.
 - `opfence test` replays every rule's recorded requests and fails if any rule misses.
 - `opfence log` lists every keyed request, its decision and who approved it.
 
@@ -359,13 +359,13 @@ opfence/
   internal/store/        keychain, migration from .env and MCP configs
   internal/launch/       Claude Code settings, srt wrapper, CA variables
   internal/audit/        hash-chained JSONL
-  internal/export/       openshell, agentvault, claudehooks, mcp-annotations
+  internal/export/       openshell, claudehooks, mcp-annotations
   schema/                JSON Schema for catalog and policy
+  catalog/               one folder per provider, rules + fixtures (own repo later)
   docs/
-opfence-catalog/        separate repo: one folder per provider, rules + fixtures
 ```
 
-The catalog lives in its own repository so contributors never touch proxy code, and so other engines can depend on it alone. The binary embeds a snapshot and `opfence update` pulls signed newer versions.
+Until Launch 1 the catalog lives in `catalog/` in this repository, so schema, decoders and rules change together while there is one developer. Before Launch 1 it moves to its own repository (`opfence-catalog`, history kept with `git filter-repo`) so contributors never touch proxy code and other engines can depend on it alone. The binary embeds a snapshot and `opfence update` pulls signed newer versions.
 
 **CLI surface**
 
@@ -377,7 +377,7 @@ The catalog lives in its own repository so contributors never touch proxy code, 
 | `opfence doctor` | Check that the sandbox is active and each runtime trusts the CA |
 | `opfence explain <file.http>` | Decode a saved request and show the rule and decision |
 | `opfence test` | Replay every fixture; fail if any rule misses |
-| `opfence export --target <engine>` | Write OpenShell policy, Agent Vault rules, Claude Code hooks or MCP annotation overlays |
+| `opfence export --target <engine>` | Write OpenShell policy, Claude Code permission rules and hooks, or MCP annotation overlays |
 | `opfence log` | Show keyed requests, decisions and approvals |
 | `opfence update` | Fetch a signed catalog update and show the diff |
 
@@ -395,7 +395,7 @@ gantt
   Gate 1 go or no-go                              :milestone, g1, 2026-11-01, 0d
   section Catalog
   Decoders, explain and test, 60 rules            :a2, 2026-11-02, 21d
-  Exporters for OpenShell, Agent Vault, MCP       :a3, 2026-11-23, 14d
+  Exporters for OpenShell, Claude Code, MCP       :a3, 2026-11-23, 14d
   Launch 1 catalog and exporters                  :milestone, l1, 2026-12-08, 0d
   section Runner
   Proxy, CA trust, keychain, init                 :a4, 2026-12-07, 28d
@@ -412,8 +412,8 @@ gantt
 | --- | --- | --- |
 | 0 · Validate (2 weeks) | 10 user interviews; hands-on trials of OpenShell, Agent Vault and OneCLI; catalog schema v0; 20 hand-written rules | At least 5 of 10 interviewees describe the problem unprompted and agree to try a beta; one engine maintainer replies with interest |
 | 1 · Catalog (3 weeks) | REST, GraphQL and MCP decoders; `opfence explain` and `opfence test`; 60 verified rules across Railway, Vercel, Supabase MCP, GitHub, AWS | Every rule has a fixture; CI fails on any miss; decoders fuzzed for 1 hour each |
-| 2 · Exporters (2 weeks) | `opfence export` to OpenShell, Agent Vault and an MCP annotation overlay | OpenShell blocks the replayed PocketOS `volumeDelete` using only exported policy |
-| **Launch 1** | Catalog repo, blog post, PRs or issues offering integration to OpenShell and Agent Vault | Posted; first outside contributor rule merged within 3 weeks |
+| 2 · Exporters (2 weeks) | `opfence export` to OpenShell, Claude Code (permission rules and hooks) and an MCP annotation overlay | OpenShell blocks the replayed PocketOS `volumeDelete` using only exported policy |
+| **Launch 1** | Catalog split into its own repo, blog post, integration offer to OpenShell, issue to Agent Vault proposing method and GraphQL matching | Posted; first outside contributor rule merged within 3 weeks |
 | 3 · Runner (6 weeks, includes holidays) | MITM proxy, `opfence trust`, keychain store, `opfence init`, placeholder injection, terminal and desktop approvals, Claude Code launcher, audit log | `opfence run -- claude` works on macOS and Ubuntu with `gh`, `vercel`, `supabase` and Railway API calls |
 | 4 · Harden (3 weeks) | Response scrubber, SigV4, `opfence doctor`, docs site, 2-minute demo video | No open high-severity issues; install-to-first-blocked-call under 5 minutes for 5 test users |
 | **Launch 2** | Show HN, Reddit, Claude Code community | See Success metrics |
@@ -457,7 +457,7 @@ Rejected: Holdline (an AI-agent guardrail tool already uses it), Redline, Tollga
 
 | When | Channel | Message |
 | --- | --- | --- |
-| Launch 1 | GitHub issues or PRs to OpenShell and Agent Vault | "Here are 60 tested rules in your format; want them upstream?" OpenShell already has an [open issue on MCP policy](https://github.com/NVIDIA/OpenShell/issues/1531) to build on |
+| Launch 1 | GitHub issues or PRs to OpenShell (rules in its format) and Agent Vault (a proposal for method and GraphQL matching, so it can use the catalog) | "Here are 60 tested rules in your format; want them upstream?" OpenShell already has an [open issue on MCP policy](https://github.com/NVIDIA/OpenShell/issues/1531) to build on |
 | Launch 1 | MCP server authors | A PR adding correct `destructiveHint` annotations, plus a "classified" badge for their README |
 | Launch 1 | Security newsletters and writers who cover agent sandboxing, such as [Simon Willison](https://www.simonwillison.net/2025/Sep/19/httpjail) | The catalog as a public good |
 | Launch 2 | Show HN, Tuesday to Thursday, US morning | The 90-second demo and the honest threat model |
@@ -510,12 +510,18 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 
 **Leading indicator to watch weekly:** time from install to first blocked call for a new user. Target under 5 minutes; if it is higher, fix onboarding before adding providers.
 
+## Decisions
+
+| Date | Decision | Why |
+| --- | --- | --- |
+| 16 Oct 2026 | Name: **Opfence** | "Tripline" taken on PyPI; Opfence free on PyPI, npm, crates.io, Homebrew |
+| 16 Oct 2026 | One repository with a `catalog/` folder until Launch 1, then split out | One developer: schema, decoders and rules change together; a separate repo matters only once outside contributors arrive |
+| 16 Oct 2026 | Agent Vault dropped as a Launch 1 export target | It matches host and path only, so it cannot tell a Railway delete from a read; an exporter would give users false safety. Offer an upstream proposal instead; saves about a week for OpenShell and Claude Code |
+
 ## Open questions for the owner
 
 - Weekly hours (the roadmap assumes 25).
-- One repository with a `catalog/` folder until Launch 1, or two repositories from day one?
-- Agent Vault: exporter at Launch 1, or upstream contribution only?
-- Runner for Claude Code users: replace Claude Code's proxy, or work beside its native credential masking?
+- Runner for Claude Code users: replace Claude Code's proxy, or work beside its native credential masking? (Decide at Gate 1 after the spike.)
 
 ## Next 14 days
 
