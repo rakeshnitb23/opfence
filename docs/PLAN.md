@@ -2,6 +2,8 @@
 
 Oct 16, 2026 · @ss
 
+> **Status:** plan under review, nothing built yet. Review notes from 16 Oct 2026 are in [Review notes](#review-notes-16-oct-2026); facts they corrected are fixed inline below. "Tripline" is a working name and must change before Launch 1 (see [Name](#name-candidates)).
+
 ## Executive summary
 
 Build **Tripline** (working name): an open, tested catalog of dangerous operations for cloud APIs and MCP servers, a compiler that turns it into policy for existing agent proxies, and a thin local runner for people who have none. The credential-proxy idea stays; the proxy engine itself is already built by NVIDIA, Infisical and a YC startup, so Tripline supplies what they all lack: knowing which calls are dangerous.
@@ -14,7 +16,31 @@ Build **Tripline** (working name): an open, tested catalog of dangerous operatio
 
 **The v1 promise:** "Install in one minute. Your agent keeps working, never sees a key, and cannot delete, wipe or pay for anything without your tap." v1.0 scope (April 2027): 15 providers, 25 MCP servers, exports to OpenShell, Agent Vault and Claude Code, macOS and Linux, Claude Code first.
 
-## Problem and evidence
+## Review notes (16 Oct 2026)
+
+Claims the plan leans on were checked against primary sources (the OpenShell and Agent Vault source trees as of 16 Oct 2026, and the Claude Code docs). Four findings change the plan.
+
+| # | Finding | Evidence | What it changes |
+| --- | --- | --- | --- |
+| 1 | **OpenShell does not ship operation-level rule packs.** The `_provider_` prefix is reserved for rules that *provider profiles* contribute. The repo has 17 example profiles (`providers/*.yaml`: anthropic, aws, aws-s3, github, openai, pypi and others). They are host-level (credential binding, endpoints, `read-only`/`read-write`/`full` presets), say "OpenShell does not compile them into any binary", and must be imported by an operator. None cover Railway, Vercel or Supabase. | `providers/README.md`, `providers/github.yaml`; [policy schema](https://docs.nvidia.com/openshell/how-it-works/policies/schema) | The biggest risk is **not** realised today. But the profile mechanism is exactly where a catalog would plug in, so NVIDIA could fill it. Pitch the catalog as importable provider profiles. |
+| 2 | **OpenShell is allow-list first, with an approval loop.** Its GitHub profile is read-only by default; writes need a policy proposal. RFC 0002 (accepted) adds agent-drafted proposals with a human review inbox. Its GitHub tutorial policy already hand-writes GraphQL `deny_rules` for `deleteRepository` and `deleteRef`. | `rfc/0002-agent-driven-policy-management`, [GitHub sandbox tutorial](https://docs.nvidia.com/openshell/latest/tutorials/github-sandbox) | A list of only *dangerous* operations is less useful to an allow-list engine. The catalog should classify **every** operation (including safe writes), so an engine or its policy advisor can auto-approve safe writes and flag dangerous ones. |
+| 3 | **Agent Vault cannot express operation-level rules.** Services match host plus optional path glob; there is no HTTP method or GraphQL matching. Railway's `volumeDelete` is a `POST /graphql/v2` like every other Railway call. | `internal/proposal/proposal.go`, `internal/broker` | Drop `--target agent-vault` from Launch 1, or make it an upstream contribution (method + GraphQL matching) instead of an exporter. |
+| 4 | **Claude Code's sandbox now injects credentials itself.** `sandbox.credentials` masks env vars and credential files with a per-session placeholder, injects the real value only on `injectHosts`, terminates TLS (`network.tlsTerminate`) and re-signs AWS SigV4. Setting `sandbox.network.httpProxyPort` replaces Claude Code's proxy, and with it these controls. MCP servers, hooks and file tools run **outside** the sandbox, so the proxy never sees MCP traffic. | [Sandboxing docs](https://code.claude.com/docs/en/sandboxing) (Mask credentials, Custom proxy configuration) | "Anthropic adds credential injection" has happened. Key-hiding is no longer Tripline's edge for Claude Code users; operation-level classification and approvals still are. MCP rules must be enforced through Claude Code permission rules and hooks, not the proxy. |
+
+Smaller corrections:
+
+- **PocketOS:** confirmed by mainstream reporting (Cursor agent on Claude Opus 4.6, Railway, one GraphQL call, volume backups wiped; [Decrypt](https://decrypt.co/365897/ai-agent-deletes-startup-database-9-seconds-founder-says)). The mutation name `volumeDelete` is **not** confirmed in reporting. Railway's founder said the call hit a legacy endpoint without "delayed delete"; Railway volumes otherwise have a [48-hour restore window](https://railway.com/changelog/2025-08-22-restore-deleted-volumes). Verify the mutation and whether it is still immediate before calling it `irreversible` in the hero demo.
+- **New competitor for MCP classification:** [PolicyLayer](https://policylayer.com/tools/mh8974-railway-mcp/volume-delete) is an MCP gateway with a registry claiming 515,000+ classified MCP tools and allow/deny/approval policies. It does not say how labels are made or whether it is open. Tripline's edge there is open, human-reviewed, fixture-tested labels, plus REST, GraphQL and AWS coverage.
+- **macOS Go CLIs:** Claude Code now documents `sandbox.enableWeakerNetworkIsolation: true` for Go CLIs behind a MITM proxy with a custom CA. `tripline trust` still has to install the CA, but the Seatbelt half of the problem has a documented switch.
+- **Star counts** (Agent Vault 2.4k, OneCLI about 3k) could not be re-checked from here.
+
+**Suggested changes to the plan** (pending the owner's decision):
+
+1. Make the catalog an operation *classifier*, not a deny list: every operation gets a class, including `read` and safe `write`.
+2. Launch 1 targets: OpenShell (as provider profiles plus `rules`/`deny_rules`), Claude Code (permission rules and PreToolUse hooks, which also cover MCP tools), and MCP annotation overlays. Agent Vault becomes an upstream PR, not an exporter.
+3. Re-scope the runner at Gate 1: for Claude Code, test whether running beside Claude Code's own masking (hooks for MCP, catalog for Bash traffic) beats replacing its proxy. Keep the full runner for agents with no sandbox of their own.
+4. Add a "Day 1" item: check whether NVIDIA plans operation-level content for provider profiles (ask in their discussions alongside the import question).
+
 
 Coding agents run with real, over-powered credentials in reach. They fail in two ways, and today's defenses act on the wrong layer for both.
 
@@ -60,14 +86,16 @@ The enforcement engines are built and well funded; the shared knowledge of which
 
 | Tool | What it does | How it runs | What it lacks |
 | --- | --- | --- | --- |
-| [NVIDIA OpenShell](https://docs.nvidia.com/openshell/latest/about/overview.html) | Sandboxed agent runtime with YAML egress policy at method and path level, plus [GraphQL, MCP and JSON-RPC inspection](https://docs.nvidia.com/openshell/how-it-works/policies/schema), credential injection and [AWS re-signing](https://docs.nvidia.com/openshell/latest/providers/aws-sigv4) | Container per sandbox, gateway control plane | No shared rule catalog; policies are hand-written or LLM-generated from API docs |
-| [Infisical Agent Vault](https://github.com/Infisical/agent-vault) | MITM credential broker; swaps placeholders for real keys; egress filtering by service and endpoint; `agent-vault run -- claude` | Single Go binary, SQLite; MIT; recommends a separate host | No operation-level rules, no approvals, no catalog |
+| [NVIDIA OpenShell](https://docs.nvidia.com/openshell/latest/about/overview.html) | Sandboxed agent runtime with YAML egress policy at method and path level, plus [GraphQL, MCP and JSON-RPC inspection](https://docs.nvidia.com/openshell/how-it-works/policies/schema), credential injection and [AWS re-signing](https://docs.nvidia.com/openshell/latest/providers/aws-sigv4) | Container per sandbox, gateway control plane | 17 example provider profiles, host-level only, imported by hand; operation rules are hand-written or agent-proposed (RFC 0002) |
+| [Infisical Agent Vault](https://github.com/Infisical/agent-vault) | MITM credential broker; swaps placeholders for real keys; egress filtering by service and endpoint; `agent-vault run -- claude` | Single Go binary, SQLite; MIT; recommends a separate host | Host and path matching only (no method or GraphQL matching), no approvals, no catalog |
 | [OneCLI](https://www.ycombinator.com/launches/RoJ-onecli-your-ai-agents-shouldn-t-be-holding-raw-secrets) | Credential gateway matching host and path; [approvals for writes](https://onecli.sh) in its hosted product | One Docker container; Apache-2.0 core; YC S26 | Moving toward hosted "AI teammates" for business apps |
 | [Cloudflare Outbound Workers](https://developers.cloudflare.com/changelog/post/2026-04-13-sandbox-outbound-workers-tls-auth/) | Credential injection and egress policy in code | Cloudflare Sandboxes only | Platform-locked |
 | [Fly.io tokenizer](https://github.com/superfly/tokenizer) | Proxy that unseals encrypted secrets into requests | Server you deploy | A building block, no agent policy |
 | [agent-airlock](https://github.com/es617/agent-airlock) | Allow/deny rules on GraphQL operations and MCP tool names | Local proxy | Users still write every rule |
 | [httpjail](https://www.simonwillison.net/2025/Sep/19/httpjail) (Coder) | Process-level HTTP(S) filtering with JavaScript rules | Local CLI | No credentials, no catalog |
-| [Anthropic sandbox-runtime](https://code.claude.com/docs/en/agent-sdk/secure-deployment) | OS-level file and network isolation for Claude Code | macOS Seatbelt, Linux bubblewrap | Accepts a [bring-your-own proxy](https://github.com/Electroid/sandbox-runtime) but holds no secrets |
+| [Anthropic sandbox-runtime](https://code.claude.com/docs/en/agent-sdk/secure-deployment) | OS-level file and network isolation | macOS Seatbelt, Linux bubblewrap | Accepts a [bring-your-own proxy](https://github.com/Electroid/sandbox-runtime) |
+| [Claude Code sandbox credentials](https://code.claude.com/docs/en/sandboxing) | Masks env vars and credential files with placeholders, injects real values only on listed hosts, TLS termination, AWS SigV4 re-signing | Built into Claude Code's sandboxed Bash | Host-level only; no operation classes or approvals; does not cover MCP servers |
+| [PolicyLayer](https://policylayer.com/tools/mh8974-railway-mcp/volume-delete) | MCP gateway with a registry of risk-graded MCP tools; allow, deny, rate-limit, approval | Hosted proxy URL | MCP only; labelling method and licence not stated |
 | [Destructive Command Guard](https://skills.cat/skills/dicklesworthstone/destructive-command-guard), [AgentLint](https://pypi.org/project/agentlint/) | Block risky shell commands in Claude Code hooks | Hook | Text matching; bypassed by scripts and raw API calls |
 | [Delego](https://pypi.org/project/delego/) | Policy and approval layer in front of a broker | Library | Broker is a stub; no provider knowledge |
 
@@ -174,6 +202,7 @@ sequenceDiagram
 **Sandbox integration**
 
 - **Claude Code:** set `sandbox.enabled`, point [`sandbox.network.httpProxyPort`](https://claudeissues.com/issue/10653-bug-documentation-custom-proxy-configuration-example-missing-network-wrapper-blo) at Tripline, and add Tripline's data folder to `denyRead`. Anthropic's guide already says credentials should be [injected through a proxy](https://code.claude.com/docs/en/agent-sdk/secure-deployment).
+- **Claude Code caveats (checked 16 Oct 2026):** setting `httpProxyPort` turns off Claude Code's own allowlist and credential masking for that traffic, so Tripline must do both. MCP servers run outside the sandbox, so MCP tool rules go into Claude Code permission rules and PreToolUse hooks. On macOS, `sandbox.enableWeakerNetworkIsolation` lets Go CLIs verify a custom CA.
 - **Cursor, Codex, Gemini CLI, custom agents:** wrap the process in [sandbox-runtime](https://github.com/Electroid/sandbox-runtime) with Tripline as its proxy.
 - **No sandbox available:** fall back to environment variables only and label it clearly as *weak mode*. Keys are still safe, because none are in the sandbox; only bypass of non-keyed egress is possible.
 
@@ -404,6 +433,18 @@ Lead with one story everyone already knows, the PocketOS deletion, and show it s
 
 **Name: decide before Launch 1.** "Tripline" is already used on [PyPI by an agent-safety tool](https://pypi.org/project/tripline/) that includes a network proxy, and "Airlock" by [agent-airlock](https://github.com/es617/agent-airlock). Shortlist 5 names, then check the GitHub org, PyPI, npm, crates.io, Homebrew and a `.dev` domain for each. Prefer a short noun that works as a CLI command and suggests a list or a boundary.
 
+<a id="name-candidates"></a>**Name candidates (checked 16 Oct 2026).** "Agent Vault" is Infisical's product, so it is out. All below were free on PyPI, npm, crates.io and Homebrew core on 16 Oct 2026; GitHub org and domains could not be checked from the review environment and must be checked by hand.
+
+| Name | Why | Notes |
+| --- | --- | --- |
+| **Brakeline** (recommended) | The brake on an agent; keeps the "line" of Tripline; `brakeline run -- claude` reads well | No product found with this name in a web search |
+| Stopcard | Names the product's signature move, the proxy-written approval card | |
+| Vetoline | "You hold the veto" | |
+| Blastwall | Limits blast radius | Slightly aggressive tone |
+| Opfence | "Operation fence"; short CLI | Less memorable |
+
+Rejected: Holdline (an AI-agent guardrail tool already uses it), Redline, Tollgate, Agentfence, Keyward, Keyfence, Guardlist (taken on PyPI or npm).
+
 **The hero demo (record it once, use it everywhere)**
 
 1. A fresh repo that looks like PocketOS's stack, with a Railway token in a config file.
@@ -437,8 +478,8 @@ The biggest risk is that the engines build their own catalogs; the answer is to 
 
 | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- |
-| OpenShell or Agent Vault ship their own rule packs | Medium | High | Offer the catalog in their format at Launch 1; Apache-2.0 so adoption is free; consider moving the catalog to a neutral foundation once it has outside maintainers |
-| Anthropic or OpenAI add credential injection to their sandboxes | Medium | Medium | The runner shrinks in importance, the catalog does not; add their sandbox as an export target |
+| OpenShell or Agent Vault ship their own rule packs | Medium (OpenShell's provider profiles are the natural home; today they are host-level examples) | High | Offer the catalog in their format at Launch 1; Apache-2.0 so adoption is free; consider moving the catalog to a neutral foundation once it has outside maintainers |
+| Anthropic or OpenAI add credential injection to their sandboxes | **Happened** (Claude Code `sandbox.credentials`) | Medium | The runner shrinks in importance, the catalog does not; add their sandbox as an export target |
 | Catalog rots as APIs change | High | Medium | Nightly job diffs OpenAPI specs, GraphQL schemas and MCP `tools/list`, then opens issues; every rule shows a "last verified" date |
 | Users feel safer than they are | Medium | High | Unknown operations ask by default; weak mode is labelled; a "What this does not protect against" page |
 | Approval fatigue makes users click Approve blindly | High | High | Reads never prompt; scoped time-boxed grants; prompt-rate shown in `tripline log` |
@@ -446,7 +487,8 @@ The biggest risk is that the engines build their own catalogs; the answer is to 
 | TLS edge cases: pinning, HTTP/3, WebSockets, gRPC | Medium | Medium | Intercept only catalog hosts; block HTTP/3 so clients fall back to TCP; WebSockets in v1.x |
 | A vulnerability in Tripline itself | Medium | High | Fuzzed decoders, few dependencies, signed releases, `SECURITY.md`, external review before v1.0 |
 | Solo-maintainer burnout | High | High | Catalog contributions are decentralised by design; recruit 2 co-maintainers by v1.0; strict scope |
-| Name clash | Certain | Low | Rename before Launch 1 (see Launch) |
+| Name clash | Certain | Low | Rename before Launch 1 (see [Name candidates](#name-candidates)) |
+| PolicyLayer or a similar registry becomes the default MCP risk source | Medium | Medium | Compete on open data, human review and fixtures; cover REST, GraphQL and AWS, which an MCP-only registry does not |
 | Blame after data loss despite the tool | Low | Medium | Licence disclaimer; never promise a guarantee; publish the threat model |
 
 ## Success metrics
@@ -467,6 +509,14 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 **What not to measure:** no usage telemetry by default. A security tool that phones home loses trust; use download counts, GitHub activity and an opt-in survey instead.
 
 **Leading indicator to watch weekly:** time from install to first blocked call for a new user. Target under 5 minutes; if it is higher, fix onboarding before adding providers.
+
+## Open questions for the owner
+
+- Final name (see [Name candidates](#name-candidates)).
+- Weekly hours (the roadmap assumes 25).
+- One repository with a `catalog/` folder until Launch 1, or two repositories from day one?
+- Agent Vault: exporter at Launch 1, or upstream contribution only?
+- Runner for Claude Code users: replace Claude Code's proxy, or work beside its native credential masking?
 
 ## Next 14 days
 
