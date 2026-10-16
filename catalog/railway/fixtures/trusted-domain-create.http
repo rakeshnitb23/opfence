@@ -1,0 +1,7 @@
+# description: Let anyone at example.com join workspace ws-acme as MEMBER
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TrustedDomainCreate($input: WorkspaceTrustedDomainCreateInput!) { trustedDomainCreate(input: $input) { __typename } }","variables":{"input":{"workspaceId":"ws-acme","domainName":"example.com","role":"MEMBER"}}}

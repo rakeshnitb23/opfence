@@ -1,0 +1,33 @@
+# Railway GraphQL API: custom-domain
+operations:
+  - id: railway.custom-domain.create
+    match: { graphql: { type: mutation, field: customDomainCreate } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Point {input.domain} at service {input.serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Makes the service reachable from the internet.
+    tests:
+      - fixture: fixtures/custom-domain-create.http
+        expect: access
+        resource: svc-api
+
+  - id: railway.custom-domain.delete
+    match: { graphql: { type: mutation, field: customDomainDelete } }
+    class: delete
+    resource: { arg: id, kind: domain }
+    card: "Delete custom domain {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/custom-domain-delete.http
+        expect: delete
+        resource: cd-1

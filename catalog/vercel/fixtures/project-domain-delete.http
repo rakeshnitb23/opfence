@@ -1,0 +1,5 @@
+# description: Remove domain example.com from project shop-web
+DELETE /v9/projects/shop-web/domains/example.com HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

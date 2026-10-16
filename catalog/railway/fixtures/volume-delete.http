@@ -4,4 +4,4 @@ Host: backboard.railway.com
 Authorization: Bearer opf_railway_EXAMPLE
 Content-Type: application/json
 
-{"query":"mutation volumeDelete($volumeId: String!) { volumeDelete(volumeId: $volumeId) }","variables":{"volumeId":"vol-pg-data"}}
+{"query":"mutation VolumeDelete($volumeId: String!) { volumeDelete(volumeId: $volumeId) }","variables":{"volumeId":"vol-pg-data"}}

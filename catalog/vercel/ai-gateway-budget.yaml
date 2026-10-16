@@ -1,0 +1,13 @@
+# Vercel REST API: ai-gateway-budget
+operations:
+  - id: vercel.ai-gateway-budget.set
+    match: { rest: { method: PUT, path: /ai-gateway/budgets } }
+    class: money
+    card: "Set an AI Gateway budget"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/ai-gateway-budget-set.http
+        expect: money

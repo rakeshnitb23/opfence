@@ -1,0 +1,7 @@
+# description: Update refs of R_kgDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateRefs($input: UpdateRefsInput!) { updateRefs(input: $input) { __typename } }","variables":{"input":{"repositoryId":"R_kgDOExample","refUpdates":[{"name":"refs/heads/a","afterOid":"4f2a9c1"}]}}}

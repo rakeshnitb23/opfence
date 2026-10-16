@@ -1,0 +1,7 @@
+# description: Allow 0.0.0.0/0 through the IP allow list
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateIpAllowListEntry($input: CreateIpAllowListEntryInput!) { createIpAllowListEntry(input: $input) { __typename } }","variables":{"input":{"ownerId":"O_kgDOExample","allowListValue":"0.0.0.0/0","isActive":true}}}

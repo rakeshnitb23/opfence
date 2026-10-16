@@ -1,0 +1,32 @@
+# Vercel REST API: team
+operations:
+  - id: vercel.team.delete
+    match: { rest: { method: DELETE, path: "/{version}/teams/{teamId}" } }
+    class: irreversible
+    resource: { arg: teamId, kind: team }
+    card: "Delete Vercel team {teamId} and every project in it"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-delete.http
+        expect: irreversible
+        resource: team_acme
+
+  - id: vercel.team.update
+    match: { rest: { method: PATCH, path: "/{version}/teams/{teamId}" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Change settings of team {teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Team settings include SAML, membership defaults and sensitive-variable
+      policy.
+    tests:
+      - fixture: fixtures/team-update.http
+        expect: access
+        resource: team_acme

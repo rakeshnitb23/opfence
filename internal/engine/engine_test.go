@@ -218,8 +218,8 @@ func TestConditions(t *testing.T) {
 	if ev := patch(`{"name":"x"}`); ev.Class != classes.Write {
 		t.Errorf("plain patch: %s", ev.Class)
 	}
-	if ev := patch(`{"ssoProtection":null}`); ev.Class != classes.Write {
-		t.Errorf("null counts as absent: %s", ev.Class)
+	if ev := patch(`{"ssoProtection":null}`); ev.Class != classes.Access {
+		t.Errorf("null turns protection off, so it counts as present: %s", ev.Class)
 	}
 	if ev := patch(`{"ssoProtection":{"deploymentType":"all"}}`); ev.Class != classes.Access {
 		t.Errorf("sso patch: %s", ev.Class)

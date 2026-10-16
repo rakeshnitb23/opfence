@@ -1,0 +1,25 @@
+# GitHub REST and GraphQL APIs: ssh-key
+operations:
+  - id: github.ssh-key.create
+    match: { rest: { method: POST, path: /user/keys } }
+    class: access
+    card: "Add SSH key {body.title} to the account"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ssh-key-create.http
+        expect: access
+
+  - id: github.ssh-key.delete
+    match: { rest: { method: DELETE, path: "/user/keys/{key_id}" } }
+    class: access
+    card: "Remove SSH key {key_id} from the account"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ssh-key-delete.http
+        expect: access

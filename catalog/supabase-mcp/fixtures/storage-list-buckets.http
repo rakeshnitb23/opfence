@@ -1,0 +1,8 @@
+# description: List storage buckets of project abcdefghijklmnopqrst
+POST /mcp HTTP/1.1
+Host: mcp.supabase.com
+Authorization: Bearer opf_supabase-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_storage_buckets","arguments":{"project_id":"abcdefghijklmnopqrst"}}}

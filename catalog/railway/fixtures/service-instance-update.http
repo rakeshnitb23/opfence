@@ -1,0 +1,7 @@
+# description: Change the settings of service svc-api in environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceUpdate($serviceId: String!, $environmentId: String, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) }","variables":{"serviceId":"svc-api","environmentId":"env-production","input":{"numReplicas":0}}}

@@ -1,0 +1,7 @@
+# description: Restore backup bak-nightly over volume vi-pg-data
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VolumeInstanceBackupRestore($volumeInstanceBackupId: String!, $volumeInstanceId: String!) { volumeInstanceBackupRestore(volumeInstanceBackupId: $volumeInstanceBackupId, volumeInstanceId: $volumeInstanceId) { __typename } }","variables":{"volumeInstanceBackupId":"bak-nightly","volumeInstanceId":"vi-pg-data"}}

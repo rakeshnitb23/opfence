@@ -1,0 +1,31 @@
+# GitHub REST and GraphQL APIs: environment
+operations:
+  - id: github.environment.update
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/environments/{environment_name}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Create or change environment {environment_name} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      Environment settings decide who must approve a deployment.
+    tests:
+      - fixture: fixtures/environment-update.http
+        expect: access
+        resource: shop
+
+  - id: github.environment.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/environments/{environment_name}" } }
+    class: irreversible
+    resource: { arg: repo, kind: repository }
+    card: "Delete environment {environment_name} of {owner}/{repo} and its secrets"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/environment-delete.http
+        expect: irreversible
+        resource: shop

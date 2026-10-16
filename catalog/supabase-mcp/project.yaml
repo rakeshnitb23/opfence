@@ -1,0 +1,114 @@
+# Supabase MCP server: project
+operations:
+  - id: supabase-mcp.project.list
+    match: { mcp: { tool: list_projects } }
+    class: read
+    card: "List Supabase projects"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: supabase-mcp.project.get
+    match: { mcp: { tool: get_project } }
+    class: read
+    card: "Show Supabase project {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/project-get.http
+        expect: read
+
+  - id: supabase-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: money
+    card: "Create Supabase project {name} in {region}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    notes: >-
+      New projects are billed.
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: money
+
+  - id: supabase-mcp.project.pause
+    match: { mcp: { tool: pause_project } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Pause Supabase project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    notes: >-
+      Takes the project's database and APIs offline until restored.
+    tests:
+      - fixture: fixtures/project-pause.http
+        expect: write
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.project.restore
+    match: { mcp: { tool: restore_project } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Restore Supabase project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/project-restore.http
+        expect: write
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.project.get-url
+    match: { mcp: { tool: get_project_url } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show the API URL of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/development-tools.ts
+    tests:
+      - fixture: fixtures/project-get-url.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.project.get-publishable-keys
+    match: { mcp: { tool: get_publishable_keys } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show the publishable keys of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/development-tools.ts
+    notes: >-
+      Publishable and legacy anon keys are meant to ship in browser code;
+      service-role keys are not returned.
+    tests:
+      - fixture: fixtures/project-get-publishable-keys.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.project.generate-types
+    match: { mcp: { tool: generate_typescript_types } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Generate TypeScript types for project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/development-tools.ts
+    tests:
+      - fixture: fixtures/project-generate-types.http
+        expect: read
+        resource: abcdefghijklmnopqrst

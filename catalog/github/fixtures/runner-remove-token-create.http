@@ -1,0 +1,7 @@
+# description: Create a runner removal token for acme/shop
+POST /repos/acme/shop/actions/runners/remove-token HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+

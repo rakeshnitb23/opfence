@@ -1,0 +1,7 @@
+# description: Remove user usr-42 from workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspaceUserRemove($workspaceId: String!, $input: WorkspaceUserRemoveInput!) { workspaceUserRemove(workspaceId: $workspaceId, input: $input) }","variables":{"workspaceId":"ws-acme","input":{"userId":"usr-42"}}}

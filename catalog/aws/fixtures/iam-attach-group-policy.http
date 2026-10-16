@@ -1,0 +1,8 @@
+# description: Attach arn:aws:iam::aws:policy/AdministratorAccess to IAM group devs
+POST / HTTP/1.1
+Host: iam.amazonaws.com
+X-Amz-Date: 20261016T120000Z
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAOPFENCEEXAMPLE/20261016/us-east-1/iam/aws4_request, SignedHeaders=host;x-amz-date, Signature=0000000000000000000000000000000000000000000000000000000000000000
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+
+Action=AttachGroupPolicy&Version=2010-05-08&GroupName=devs&PolicyArn=arn%3Aaws%3Aiam%3A%3Aaws%3Apolicy%2FAdministratorAccess

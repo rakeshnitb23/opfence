@@ -1,0 +1,13 @@
+# Vercel REST API: credits
+operations:
+  - id: vercel.credits.buy
+    match: { rest: { method: POST, path: "/{version}/billing/buy" } }
+    class: money
+    card: "Buy Vercel credits"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/credits-buy.http
+        expect: money

@@ -1,0 +1,477 @@
+# GitHub REST and GraphQL APIs: mutation
+operations:
+  - id: github.mutation.delete-ref
+    match: { graphql: { type: mutation, field: deleteRef } }
+    class: delete
+    card: "Delete ref {input.refId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-ref.http
+        expect: delete
+
+  - id: github.mutation.update-ref
+    match: { graphql: { type: mutation, field: updateRef } }
+    class: write
+    when:
+      - if: { arg: input.force, equals: "true" }
+        class: irreversible
+    card: "Move ref {input.refId} to {input.oid}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-ref.http
+        expect: write
+      - fixture: fixtures/mutation-update-ref-force.http
+        expect: irreversible
+
+  - id: github.mutation.update-refs
+    match: { graphql: { type: mutation, field: updateRefs } }
+    class: write
+    when:
+      - if: { arg: input.refUpdates.force, equals: "true" }
+        class: irreversible
+    card: "Update refs of {input.repositoryId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    notes: >-
+      Any forced update in the batch makes the whole request irreversible.
+    tests:
+      - fixture: fixtures/mutation-update-refs.http
+        expect: write
+      - fixture: fixtures/mutation-update-refs-force.http
+        expect: irreversible
+
+  - id: github.mutation.create-ref
+    match: { graphql: { type: mutation, field: createRef } }
+    class: write
+    card: "Create ref {input.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-ref.http
+        expect: write
+
+  - id: github.mutation.create-commit-on-branch
+    match: { graphql: { type: mutation, field: createCommitOnBranch } }
+    class: write
+    card: "Commit to a branch"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-commit-on-branch.http
+        expect: write
+
+  - id: github.mutation.merge-pull-request
+    match: { graphql: { type: mutation, field: mergePullRequest } }
+    class: write
+    card: "Merge pull request {input.pullRequestId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-merge-pull-request.http
+        expect: write
+
+  - id: github.mutation.merge-branch
+    match: { graphql: { type: mutation, field: mergeBranch } }
+    class: write
+    card: "Merge {input.head} into {input.base}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-merge-branch.http
+        expect: write
+
+  - id: github.mutation.create-issue
+    match: { graphql: { type: mutation, field: createIssue } }
+    class: write
+    card: "Open issue {input.title}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-issue.http
+        expect: write
+
+  - id: github.mutation.update-issue
+    match: { graphql: { type: mutation, field: updateIssue } }
+    class: write
+    card: "Change issue {input.id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-issue.http
+        expect: write
+
+  - id: github.mutation.close-issue
+    match: { graphql: { type: mutation, field: closeIssue } }
+    class: write
+    card: "Close issue {input.issueId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-close-issue.http
+        expect: write
+
+  - id: github.mutation.add-comment
+    match: { graphql: { type: mutation, field: addComment } }
+    class: write
+    card: "Comment on {input.subjectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-add-comment.http
+        expect: write
+
+  - id: github.mutation.create-pull-request
+    match: { graphql: { type: mutation, field: createPullRequest } }
+    class: write
+    card: "Open pull request {input.title}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-pull-request.http
+        expect: write
+
+  - id: github.mutation.update-pull-request
+    match: { graphql: { type: mutation, field: updatePullRequest } }
+    class: write
+    card: "Change pull request {input.pullRequestId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-pull-request.http
+        expect: write
+
+  - id: github.mutation.close-pull-request
+    match: { graphql: { type: mutation, field: closePullRequest } }
+    class: write
+    card: "Close pull request {input.pullRequestId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-close-pull-request.http
+        expect: write
+
+  - id: github.mutation.add-pull-request-review
+    match: { graphql: { type: mutation, field: addPullRequestReview } }
+    class: write
+    card: "Review pull request {input.pullRequestId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-add-pull-request-review.http
+        expect: write
+
+  - id: github.mutation.submit-pull-request-review
+    match: { graphql: { type: mutation, field: submitPullRequestReview } }
+    class: write
+    card: "Submit a pull request review"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-submit-pull-request-review.http
+        expect: write
+
+  - id: github.mutation.add-labels
+    match: { graphql: { type: mutation, field: addLabelsToLabelable } }
+    class: write
+    card: "Label {input.labelableId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-add-labels.http
+        expect: write
+
+  - id: github.mutation.transfer-issue
+    match: { graphql: { type: mutation, field: transferIssue } }
+    class: write
+    card: "Move issue {input.issueId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-transfer-issue.http
+        expect: write
+
+  - id: github.mutation.update-repository
+    match: { graphql: { type: mutation, field: updateRepository } }
+    class: write
+    card: "Change settings of repository {input.repositoryId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    notes: >-
+      This mutation cannot change visibility; renaming breaks clones and links
+      that use the old name.
+    tests:
+      - fixture: fixtures/mutation-update-repository.http
+        expect: write
+
+  - id: github.mutation.archive-repository
+    match: { graphql: { type: mutation, field: archiveRepository } }
+    class: write
+    card: "Archive repository {input.repositoryId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-archive-repository.http
+        expect: write
+
+  - id: github.mutation.unarchive-repository
+    match: { graphql: { type: mutation, field: unarchiveRepository } }
+    class: write
+    card: "Unarchive repository {input.repositoryId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-unarchive-repository.http
+        expect: write
+
+  - id: github.mutation.create-branch-protection-rule
+    match: { graphql: { type: mutation, field: createBranchProtectionRule } }
+    class: access
+    card: "Protect branches matching {input.pattern}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-branch-protection-rule.http
+        expect: access
+
+  - id: github.mutation.update-branch-protection-rule
+    match: { graphql: { type: mutation, field: updateBranchProtectionRule } }
+    class: access
+    card: "Change branch protection rule {input.branchProtectionRuleId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-branch-protection-rule.http
+        expect: access
+
+  - id: github.mutation.delete-branch-protection-rule
+    match: { graphql: { type: mutation, field: deleteBranchProtectionRule } }
+    class: access
+    card: "Delete branch protection rule {input.branchProtectionRuleId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-branch-protection-rule.http
+        expect: access
+
+  - id: github.mutation.create-repository-ruleset
+    match: { graphql: { type: mutation, field: createRepositoryRuleset } }
+    class: access
+    card: "Create ruleset {input.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-repository-ruleset.http
+        expect: access
+
+  - id: github.mutation.update-repository-ruleset
+    match: { graphql: { type: mutation, field: updateRepositoryRuleset } }
+    class: access
+    card: "Change ruleset {input.repositoryRulesetId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-repository-ruleset.http
+        expect: access
+
+  - id: github.mutation.delete-repository-ruleset
+    match: { graphql: { type: mutation, field: deleteRepositoryRuleset } }
+    class: access
+    card: "Delete ruleset {input.repositoryRulesetId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-repository-ruleset.http
+        expect: access
+
+  - id: github.mutation.remove-outside-collaborator
+    match: { graphql: { type: mutation, field: removeOutsideCollaborator } }
+    class: access
+    card: "Remove outside collaborator {input.userId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-remove-outside-collaborator.http
+        expect: access
+
+  - id: github.mutation.create-ip-allow-list-entry
+    match: { graphql: { type: mutation, field: createIpAllowListEntry } }
+    class: access
+    card: "Allow {input.allowListValue} through the IP allow list"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-create-ip-allow-list-entry.http
+        expect: access
+
+  - id: github.mutation.delete-ip-allow-list-entry
+    match: { graphql: { type: mutation, field: deleteIpAllowListEntry } }
+    class: access
+    card: "Delete IP allow list entry {input.ipAllowListEntryId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-ip-allow-list-entry.http
+        expect: access
+
+  - id: github.mutation.update-ip-allow-list-enabled
+    match: { graphql: { type: mutation, field: updateIpAllowListEnabledSetting } }
+    class: access
+    card: "Set the IP allow list of {input.ownerId} to {input.settingValue}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-update-ip-allow-list-enabled.http
+        expect: access
+
+  - id: github.mutation.delete-environment
+    match: { graphql: { type: mutation, field: deleteEnvironment } }
+    class: irreversible
+    card: "Delete environment {input.id} and its secrets"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-environment.http
+        expect: irreversible
+
+  - id: github.mutation.delete-issue
+    match: { graphql: { type: mutation, field: deleteIssue } }
+    class: irreversible
+    card: "Delete issue {input.issueId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    notes: >-
+      Deleted issues cannot be restored.
+    tests:
+      - fixture: fixtures/mutation-delete-issue.http
+        expect: irreversible
+
+  - id: github.mutation.delete-discussion
+    match: { graphql: { type: mutation, field: deleteDiscussion } }
+    class: irreversible
+    card: "Delete discussion {input.id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-discussion.http
+        expect: irreversible
+
+  - id: github.mutation.delete-package-version
+    match: { graphql: { type: mutation, field: deletePackageVersion } }
+    class: irreversible
+    card: "Delete package version {input.packageVersionId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    notes: >-
+      Anything that depends on the version breaks, and the version number
+      cannot be reused.
+    tests:
+      - fixture: fixtures/mutation-delete-package-version.http
+        expect: irreversible
+
+  - id: github.mutation.delete-project
+    match: { graphql: { type: mutation, field: deleteProjectV2 } }
+    class: irreversible
+    card: "Delete project {input.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-project.http
+        expect: irreversible
+
+  - id: github.mutation.delete-deployment
+    match: { graphql: { type: mutation, field: deleteDeployment } }
+    class: delete
+    card: "Delete deployment {input.id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-deployment.http
+        expect: delete
+
+  - id: github.mutation.delete-issue-comment
+    match: { graphql: { type: mutation, field: deleteIssueComment } }
+    class: delete
+    card: "Delete comment {input.id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/octokit/graphql-schema/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/mutation-delete-issue-comment.http
+        expect: delete

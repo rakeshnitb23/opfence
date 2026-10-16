@@ -1,0 +1,7 @@
+# description: Invite someone@example.com to project prj-shop as MEMBER
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectInvitationCreate($id: String!, $input: ProjectInvitee!) { projectInvitationCreate(id: $id, input: $input) { __typename } }","variables":{"id":"prj-shop","input":{"email":"someone@example.com","role":"MEMBER"}}}

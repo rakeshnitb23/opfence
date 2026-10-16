@@ -53,7 +53,14 @@ func TestRESTSpecificity(t *testing.T) {
 
 func TestConditionEval(t *testing.T) {
 	yes := "yes"
-	args := map[string]any{"a": map[string]any{"b": "YES", "n": nil, "list": []any{"x"}}, "flag": true}
+	args := map[string]any{
+		"a":       map[string]any{"b": "YES", "n": nil, "list": []any{"x"}},
+		"flag":    true,
+		"query":   map[string]any{"decrypt": []any{"false", "true"}},
+		"updates": []any{map[string]any{"force": false}, map[string]any{"force": true}, "junk"},
+		"nulls":   []any{nil},
+	}
+	tru := "true"
 	cases := []struct {
 		c    Condition
 		want bool
@@ -61,9 +68,15 @@ func TestConditionEval(t *testing.T) {
 		{Condition{Arg: "a.b", Equals: &yes}, true},
 		{Condition{Arg: "a.b", In: []string{"no", "yes"}}, true},
 		{Condition{Arg: "a.missing", Absent: true}, true},
-		{Condition{Arg: "a.n", Absent: true}, true},
-		{Condition{Arg: "a.n", Present: true}, false},
+		{Condition{Arg: "a.n", Absent: true}, false},
+		{Condition{Arg: "a.n", Present: true}, true},
 		{Condition{Arg: "a.list", Equals: &yes}, false},
+		{Condition{Arg: "a.list", In: []string{"x"}}, true},
+		{Condition{Arg: "query.decrypt", Equals: &tru}, true},
+		{Condition{Arg: "updates.force", Equals: &tru}, true},
+		{Condition{Arg: "updates.missing", Present: true}, false},
+		{Condition{Arg: "nulls", Present: true}, true},
+		{Condition{Arg: "nulls", Absent: true}, false},
 		{Condition{Arg: "flag", In: []string{"TRUE"}}, true},
 		{Condition{Arg: "a.b.c", Present: true}, false},
 	}
@@ -71,5 +84,24 @@ func TestConditionEval(t *testing.T) {
 		if got := c.c.Eval(args); got != c.want {
 			t.Errorf("case %d (%s): got %v", i, c.c.String(), got)
 		}
+	}
+}
+
+func TestLookupThroughLists(t *testing.T) {
+	args := map[string]any{"input": map[string]any{"refUpdates": []any{
+		map[string]any{"name": "a", "tags": []any{"x", "y"}},
+		map[string]any{"name": "b", "tags": []any{"z"}},
+		map[string]any{"other": 1},
+	}}}
+	v, ok := Lookup(args, "input.refUpdates.name")
+	if !ok || len(v.([]any)) != 2 {
+		t.Fatalf("names = %v, %v", v, ok)
+	}
+	v, ok = Lookup(args, "input.refUpdates.tags")
+	if !ok || len(v.([]any)) != 3 {
+		t.Fatalf("tags flattened = %v, %v", v, ok)
+	}
+	if _, ok := Lookup(args, "input.refUpdates.missing"); ok {
+		t.Fatal("missing field found")
 	}
 }

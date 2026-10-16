@@ -1,0 +1,14 @@
+# Railway GraphQL API: user
+operations:
+  - id: railway.user.delete
+    match: { graphql: { type: mutation, field: userDelete } }
+    class: irreversible
+    card: "Delete the Railway account"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-delete.http
+        expect: irreversible

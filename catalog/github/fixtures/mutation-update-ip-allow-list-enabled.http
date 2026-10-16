@@ -1,0 +1,7 @@
+# description: Set the IP allow list of O_kgDOExample to DISABLED
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateIpAllowListEnabledSetting($input: UpdateIpAllowListEnabledSettingInput!) { updateIpAllowListEnabledSetting(input: $input) { __typename } }","variables":{"input":{"ownerId":"O_kgDOExample","settingValue":"DISABLED"}}}

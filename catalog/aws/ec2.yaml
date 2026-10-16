@@ -1,0 +1,218 @@
+# AWS APIs: ec2
+operations:
+  - id: aws.ec2.terminate-instances
+    match: { aws: { service: ec2, action: TerminateInstances } }
+    class: irreversible
+    card: "Terminate EC2 instances {InstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    notes: >-
+      Instance-store data and volumes marked delete-on-termination are
+      destroyed with the instance.
+    tests:
+      - fixture: fixtures/ec2-terminate-instances.http
+        expect: irreversible
+
+  - id: aws.ec2.delete-volume
+    match: { aws: { service: ec2, action: DeleteVolume } }
+    class: irreversible
+    resource: { arg: VolumeId, kind: volume }
+    card: "Delete EBS volume {VolumeId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-delete-volume.http
+        expect: irreversible
+        resource: vol-0abc1234def567890
+
+  - id: aws.ec2.delete-snapshot
+    match: { aws: { service: ec2, action: DeleteSnapshot } }
+    class: irreversible
+    resource: { arg: SnapshotId, kind: snapshot }
+    card: "Delete EBS snapshot {SnapshotId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-delete-snapshot.http
+        expect: irreversible
+        resource: snap-0abc1234def567890
+
+  - id: aws.ec2.deregister-image
+    match: { aws: { service: ec2, action: DeregisterImage } }
+    class: delete
+    card: "Deregister AMI {ImageId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    notes: >-
+      The AMI's snapshots are kept unless deleted separately.
+    tests:
+      - fixture: fixtures/ec2-deregister-image.http
+        expect: delete
+
+  - id: aws.ec2.stop-instances
+    match: { aws: { service: ec2, action: StopInstances } }
+    class: write
+    card: "Stop EC2 instances {InstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-stop-instances.http
+        expect: write
+
+  - id: aws.ec2.modify-instance-attribute
+    match: { aws: { service: ec2, action: ModifyInstanceAttribute } }
+    class: write
+    card: "Change attributes of instance {InstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-modify-instance-attribute.http
+        expect: write
+
+  - id: aws.ec2.run-instances
+    match: { aws: { service: ec2, action: RunInstances } }
+    class: money
+    card: "Launch {MaxCount} {InstanceType} instances"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-run-instances.http
+        expect: money
+
+  - id: aws.ec2.request-spot-instances
+    match: { aws: { service: ec2, action: RequestSpotInstances } }
+    class: money
+    card: "Request {InstanceCount} spot instances"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-request-spot-instances.http
+        expect: money
+
+  - id: aws.ec2.purchase-reserved-instances-offering
+    match: { aws: { service: ec2, action: PurchaseReservedInstancesOffering } }
+    class: money
+    card: "Buy reserved instances {ReservedInstancesOfferingId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-purchase-reserved-instances-offering.http
+        expect: money
+
+  - id: aws.ec2.authorize-security-group-ingress
+    match: { aws: { service: ec2, action: AuthorizeSecurityGroupIngress } }
+    class: access
+    card: "Open inbound access to security group {GroupId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-authorize-security-group-ingress.http
+        expect: access
+
+  - id: aws.ec2.revoke-security-group-ingress
+    match: { aws: { service: ec2, action: RevokeSecurityGroupIngress } }
+    class: access
+    card: "Remove inbound rules from security group {GroupId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-revoke-security-group-ingress.http
+        expect: access
+
+  - id: aws.ec2.modify-snapshot-attribute
+    match: { aws: { service: ec2, action: ModifySnapshotAttribute } }
+    class: access
+    card: "Share EBS snapshot {SnapshotId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    notes: >-
+      Group all makes the snapshot public.
+    tests:
+      - fixture: fixtures/ec2-modify-snapshot-attribute.http
+        expect: access
+
+  - id: aws.ec2.modify-image-attribute
+    match: { aws: { service: ec2, action: ModifyImageAttribute } }
+    class: access
+    card: "Share AMI {ImageId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-modify-image-attribute.http
+        expect: access
+
+  - id: aws.ec2.create-key-pair
+    match: { aws: { service: ec2, action: CreateKeyPair } }
+    class: credential
+    card: "Create key pair {KeyName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    notes: >-
+      The response carries the private key.
+    tests:
+      - fixture: fixtures/ec2-create-key-pair.http
+        expect: credential
+
+  - id: aws.ec2.get-password-data
+    match: { aws: { service: ec2, action: GetPasswordData } }
+    class: credential
+    card: "Read the Windows password data of instance {InstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-get-password-data.http
+        expect: credential
+
+  - id: aws.ec2.delete-key-pair
+    match: { aws: { service: ec2, action: DeleteKeyPair } }
+    class: access
+    card: "Delete key pair {KeyName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-delete-key-pair.http
+        expect: access
+
+  - id: aws.ec2.delete-vpc
+    match: { aws: { service: ec2, action: DeleteVpc } }
+    class: delete
+    card: "Delete VPC {VpcId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ec2/2016-11-15/service-2.json
+    tests:
+      - fixture: fixtures/ec2-delete-vpc.http
+        expect: delete

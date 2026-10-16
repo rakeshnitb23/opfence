@@ -1,0 +1,7 @@
+# description: Delete SSH key ssh-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SshPublicKeyDelete($id: String!) { sshPublicKeyDelete(id: $id) }","variables":{"id":"ssh-1"}}

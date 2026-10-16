@@ -1,0 +1,25 @@
+# Vercel REST API: auth-token
+operations:
+  - id: vercel.auth-token.create
+    match: { rest: { method: POST, path: "/{version}/user/tokens" } }
+    class: credential
+    card: "Create Vercel token {body.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/auth-token-create.http
+        expect: credential
+
+  - id: vercel.auth-token.delete
+    match: { rest: { method: DELETE, path: "/{version}/user/tokens/{tokenId}" } }
+    class: access
+    card: "Revoke Vercel token {tokenId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/auth-token-delete.http
+        expect: access

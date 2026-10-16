@@ -1,0 +1,7 @@
+# description: Remove deploy key 7 from acme/shop
+DELETE /repos/acme/shop/keys/7 HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+

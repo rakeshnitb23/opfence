@@ -1,0 +1,316 @@
+# AWS APIs: s3
+operations:
+  - id: aws.s3.delete-object
+    match: { aws: { service: s3, action: DeleteObject } }
+    class: irreversible
+    resource: { arg: Bucket, kind: bucket }
+    card: "Delete s3://{Bucket}/{Key}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      Permanent in an unversioned bucket, and always when a versionId is
+      given. Opfence cannot see whether the bucket is versioned, so it assumes
+      the worst.
+    tests:
+      - fixture: fixtures/s3-delete-object.http
+        expect: irreversible
+        resource: shop-uploads
+
+  - id: aws.s3.delete-objects
+    match: { aws: { service: s3, action: DeleteObjects } }
+    class: irreversible
+    resource: { arg: Bucket, kind: bucket }
+    card: "Delete several objects from s3://{Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-delete-objects.http
+        expect: irreversible
+        resource: shop-uploads
+
+  - id: aws.s3.delete-bucket
+    match: { aws: { service: s3, action: DeleteBucket } }
+    class: delete
+    resource: { arg: Bucket, kind: bucket }
+    card: "Delete empty bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      S3 only deletes empty buckets, but the name can then be taken by anyone.
+    tests:
+      - fixture: fixtures/s3-delete-bucket.http
+        expect: delete
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-policy
+    match: { aws: { service: s3, action: PutBucketPolicy } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Replace the policy of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-bucket-policy.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.delete-bucket-policy
+    match: { aws: { service: s3, action: DeleteBucketPolicy } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Delete the policy of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-delete-bucket-policy.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-acl
+    match: { aws: { service: s3, action: PutBucketAcl } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change the ACL of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-bucket-acl.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.put-object-acl
+    match: { aws: { service: s3, action: PutObjectAcl } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change the ACL of s3://{Bucket}/{Key}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-object-acl.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.put-public-access-block
+    match: { aws: { service: s3, action: PutPublicAccessBlock } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change Block Public Access on bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-public-access-block.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.delete-public-access-block
+    match: { aws: { service: s3, action: DeletePublicAccessBlock } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Turn off Block Public Access on bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-delete-public-access-block.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-ownership-controls
+    match: { aws: { service: s3, action: PutBucketOwnershipControls } }
+    class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change object ownership of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      Can turn ACLs back on.
+    tests:
+      - fixture: fixtures/s3-put-bucket-ownership-controls.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-lifecycle-configuration
+    match: { aws: { service: s3, action: PutBucketLifecycleConfiguration } }
+    class: irreversible
+    resource: { arg: Bucket, kind: bucket }
+    card: "Replace the lifecycle rules of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      An expiration rule deletes matching objects, all of them if the filter
+      is empty.
+    tests:
+      - fixture: fixtures/s3-put-bucket-lifecycle-configuration.http
+        expect: irreversible
+        resource: shop-uploads
+
+  - id: aws.s3.delete-bucket-lifecycle
+    match: { aws: { service: s3, action: DeleteBucketLifecycle } }
+    class: write
+    resource: { arg: Bucket, kind: bucket }
+    card: "Delete the lifecycle rules of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-delete-bucket-lifecycle.http
+        expect: write
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-versioning
+    match: { aws: { service: s3, action: PutBucketVersioning } }
+    class: write
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change versioning on bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      Suspending versioning stops S3 keeping old versions of overwritten
+      objects.
+    tests:
+      - fixture: fixtures/s3-put-bucket-versioning.http
+        expect: write
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-replication
+    match: { aws: { service: s3, action: PutBucketReplication } }
+    class: write
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change replication of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-bucket-replication.http
+        expect: write
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-encryption
+    match: { aws: { service: s3, action: PutBucketEncryption } }
+    class: write
+    resource: { arg: Bucket, kind: bucket }
+    card: "Change default encryption of bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-bucket-encryption.http
+        expect: write
+        resource: shop-uploads
+
+  - id: aws.s3.put-bucket-website
+    match: { aws: { service: s3, action: PutBucketWebsite } }
+    class: write
+    resource: { arg: Bucket, kind: bucket }
+    card: "Serve bucket {Bucket} as a website"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-put-bucket-website.http
+        expect: write
+        resource: shop-uploads
+
+  - id: aws.s3.put-object
+    match: { aws: { service: s3, action: PutObject } }
+    class: write
+    when:
+      - if: { arg: headers.x-amz-acl, matches: "(?i)public-read|authenticated-read" }
+        class: access
+      - if: { arg: headers.x-amz-grant-read, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+      - if: { arg: headers.x-amz-grant-full-control, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Upload s3://{Bucket}/{Key}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    notes: >-
+      A public-read ACL or a grant to AllUsers publishes the object.
+    tests:
+      - fixture: fixtures/s3-put-object.http
+        expect: write
+        resource: shop-uploads
+      - fixture: fixtures/s3-put-object-public.http
+        expect: access
+        resource: shop-uploads
+      - fixture: fixtures/s3-put-object-public-grant.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.copy-object
+    match: { aws: { service: s3, action: CopyObject } }
+    class: write
+    when:
+      - if: { arg: headers.x-amz-acl, matches: "(?i)public-read|authenticated-read" }
+        class: access
+      - if: { arg: headers.x-amz-grant-read, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+      - if: { arg: headers.x-amz-grant-full-control, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Copy an object to s3://{Bucket}/{Key}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-copy-object.http
+        expect: write
+        resource: shop-uploads
+      - fixture: fixtures/s3-copy-object-public.http
+        expect: access
+        resource: shop-uploads
+
+  - id: aws.s3.create-bucket
+    match: { aws: { service: s3, action: CreateBucket } }
+    class: write
+    when:
+      - if: { arg: headers.x-amz-acl, matches: "(?i)public-read|authenticated-read" }
+        class: access
+      - if: { arg: headers.x-amz-grant-read, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+      - if: { arg: headers.x-amz-grant-full-control, matches: "(?i)AllUsers|AuthenticatedUsers" }
+        class: access
+    resource: { arg: Bucket, kind: bucket }
+    card: "Create bucket {Bucket}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/s3/2006-03-01/service-2.json
+    tests:
+      - fixture: fixtures/s3-create-bucket.http
+        expect: write
+        resource: shop-uploads
+      - fixture: fixtures/s3-create-bucket-public.http
+        expect: access
+        resource: shop-uploads

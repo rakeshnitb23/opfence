@@ -1,0 +1,7 @@
+# description: Delete a deployment branch policy of production
+DELETE /repos/acme/shop/environments/production/deployment-branch-policies/4 HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+

@@ -1,0 +1,7 @@
+# description: Change settings of Railway project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectUpdate($id: String!, $input: ProjectUpdateInput!) { projectUpdate(id: $id, input: $input) { __typename } }","variables":{"id":"prj-shop","input":{"isPublic":true}}}

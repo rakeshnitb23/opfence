@@ -1,0 +1,7 @@
+# description: Let an IP skip the firewall of project prj_shop
+POST /v1/security/firewall/bypass?projectId=prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"domain":"example.com","sourceIp":"203.0.113.7"}

@@ -1,0 +1,43 @@
+# Supabase MCP server: edge-function
+operations:
+  - id: supabase-mcp.edge-function.list
+    match: { mcp: { tool: list_edge_functions } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List edge functions of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/edge-function-tools.ts
+    tests:
+      - fixture: fixtures/edge-function-list.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.edge-function.get
+    match: { mcp: { tool: get_edge_function } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show edge function {function_slug} of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/edge-function-tools.ts
+    tests:
+      - fixture: fixtures/edge-function-get.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.edge-function.deploy
+    match: { mcp: { tool: deploy_edge_function } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Deploy edge function {name} to project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/edge-function-tools.ts
+    tests:
+      - fixture: fixtures/edge-function-deploy.http
+        expect: write
+        resource: abcdefghijklmnopqrst

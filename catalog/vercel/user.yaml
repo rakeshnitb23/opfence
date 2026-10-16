@@ -1,0 +1,15 @@
+# Vercel REST API: user
+operations:
+  - id: vercel.user.delete
+    match: { rest: { method: DELETE, path: "/{version}/user" } }
+    class: irreversible
+    card: "Request deletion of the Vercel account"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Vercel emails a confirmation link before it deletes the account.
+    tests:
+      - fixture: fixtures/user-delete.http
+        expect: irreversible

@@ -1,0 +1,32 @@
+# GitHub REST and GraphQL APIs: gist
+operations:
+  - id: github.gist.create
+    match: { rest: { method: POST, path: /gists } }
+    class: write
+    when:
+      - if: { arg: body.public, equals: "true" }
+        class: access
+    card: "Create a gist"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      A public gist publishes its files to anyone.
+    tests:
+      - fixture: fixtures/gist-create.http
+        expect: write
+      - fixture: fixtures/gist-create-public.http
+        expect: access
+
+  - id: github.gist.delete
+    match: { rest: { method: DELETE, path: "/gists/{gist_id}" } }
+    class: irreversible
+    card: "Delete gist {gist_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/gist-delete.http
+        expect: irreversible

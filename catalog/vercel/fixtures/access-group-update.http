@@ -1,0 +1,7 @@
+# description: Change access group ag_admins
+POST /v1/access-groups/ag_admins HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"Admins"}

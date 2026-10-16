@@ -1,0 +1,7 @@
+# description: Create an invite code for workspace ws-acme with role MEMBER
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspaceInviteCodeCreate($workspaceId: String!, $input: WorkspaceInviteCodeCreateInput!) { workspaceInviteCodeCreate(workspaceId: $workspaceId, input: $input) }","variables":{"workspaceId":"ws-acme","input":{"role":"MEMBER"}}}

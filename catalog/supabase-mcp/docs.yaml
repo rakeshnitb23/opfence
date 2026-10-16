@@ -1,0 +1,13 @@
+# Supabase MCP server: docs
+operations:
+  - id: supabase-mcp.docs.search
+    match: { mcp: { tool: search_docs } }
+    class: read
+    card: "Search the Supabase docs"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/docs-tools.ts
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read

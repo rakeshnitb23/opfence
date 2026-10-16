@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: workflow
+operations:
+  - id: github.workflow.dispatch
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Run workflow {workflow_id} on {body.ref}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/workflow-dispatch.http
+        expect: write
+        resource: shop

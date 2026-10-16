@@ -1,0 +1,9 @@
+# description: Delete an item from orders
+POST / HTTP/1.1
+Host: dynamodb.us-east-1.amazonaws.com
+X-Amz-Date: 20261016T120000Z
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAOPFENCEEXAMPLE/20261016/us-east-1/dynamodb/aws4_request, SignedHeaders=host;x-amz-date, Signature=0000000000000000000000000000000000000000000000000000000000000000
+X-Amz-Target: DynamoDB_20120810.DeleteItem
+Content-Type: application/x-amz-json-1.0
+
+{"TableName":"orders","Key":{"id":{"S":"42"}}}

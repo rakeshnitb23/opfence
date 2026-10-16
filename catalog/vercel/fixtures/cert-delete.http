@@ -1,0 +1,5 @@
+# description: Delete certificate cert_1
+DELETE /v8/certs/cert_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

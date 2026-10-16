@@ -1,0 +1,13 @@
+# Vercel REST API: integration
+operations:
+  - id: vercel.integration.delete
+    match: { rest: { method: DELETE, path: "/{version}/integrations/configuration/{id}" } }
+    class: delete
+    card: "Remove integration configuration {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-delete.http
+        expect: delete

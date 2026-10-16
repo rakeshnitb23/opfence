@@ -1,0 +1,7 @@
+# description: Restore volume instance vi-pg-data to 2026-10-15T09:00:00Z as new service pg-restored
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VolumeInstancePITRRestore($volumeInstanceId: String!, $targetTimestamp: DateTime!, $newServiceName: String) { volumeInstancePITRRestore(volumeInstanceId: $volumeInstanceId, targetTimestamp: $targetTimestamp, newServiceName: $newServiceName) { __typename } }","variables":{"volumeInstanceId":"vi-pg-data","targetTimestamp":"2026-10-15T09:00:00Z","newServiceName":"pg-restored"}}

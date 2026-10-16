@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: collaborator
+operations:
+  - id: github.collaborator.add
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/collaborators/{username}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Give {username} access to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/collaborator-add.http
+        expect: access
+        resource: shop
+
+  - id: github.collaborator.remove
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/collaborators/{username}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Remove {username} from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/collaborator-remove.http
+        expect: access
+        resource: shop

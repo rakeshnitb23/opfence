@@ -1,0 +1,41 @@
+# Vercel REST API: dns-record
+operations:
+  - id: vercel.dns-record.create
+    match: { rest: { method: POST, path: "/{version}/domains/{domain}/records" } }
+    class: write
+    resource: { arg: domain, kind: domain }
+    card: "Add a DNS record to {domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: example.com
+
+  - id: vercel.dns-record.update
+    match: { rest: { method: PATCH, path: "/{version}/domains/records/{recordId}" } }
+    class: write
+    card: "Change DNS record {recordId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: write
+
+  - id: vercel.dns-record.delete
+    match: { rest: { method: DELETE, path: "/{version}/domains/{domain}/records/{recordId}" } }
+    class: delete
+    resource: { arg: domain, kind: domain }
+    card: "Delete DNS record {recordId} of {domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: example.com

@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: release
+operations:
+  - id: github.release.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/releases" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Publish release {body.tag_name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/release-create.http
+        expect: write
+        resource: shop
+
+  - id: github.release.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/releases/{release_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete release {release_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/release-delete.http
+        expect: delete
+        resource: shop

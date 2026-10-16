@@ -1,0 +1,25 @@
+# Vercel REST API: access-group
+operations:
+  - id: vercel.access-group.update
+    match: { rest: { method: POST, path: "/{version}/access-groups/{idOrName}" } }
+    class: access
+    card: "Change access group {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-update.http
+        expect: access
+
+  - id: vercel.access-group.delete
+    match: { rest: { method: DELETE, path: "/{version}/access-groups/{idOrName}" } }
+    class: access
+    card: "Delete access group {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-delete.http
+        expect: access

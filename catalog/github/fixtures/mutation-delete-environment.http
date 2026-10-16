@@ -1,0 +1,7 @@
+# description: Delete environment EN_kwDOExample and its secrets
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeleteEnvironment($input: DeleteEnvironmentInput!) { deleteEnvironment(input: $input) { __typename } }","variables":{"input":{"id":"EN_kwDOExample"}}}

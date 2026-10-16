@@ -1,0 +1,31 @@
+# Railway GraphQL API: workspace
+operations:
+  - id: railway.workspace.delete
+    match: { graphql: { type: mutation, field: workspaceDelete } }
+    class: irreversible
+    resource: { arg: id, kind: workspace }
+    card: "Delete Railway workspace {id} and every project in it"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-delete.http
+        expect: irreversible
+        resource: ws-acme
+
+  - id: railway.workspace.two-factor
+    match: { graphql: { type: mutation, field: workspaceTwoFactorEnforcementUpdate } }
+    class: access
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Set two-factor enforcement for workspace {workspaceId} to {enabled}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-two-factor.http
+        expect: access
+        resource: ws-acme

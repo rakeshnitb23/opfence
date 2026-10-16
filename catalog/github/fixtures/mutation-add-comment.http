@@ -1,0 +1,7 @@
+# description: Comment on I_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation AddComment($input: AddCommentInput!) { addComment(input: $input) { __typename } }","variables":{"input":{"subjectId":"I_kwDOExample","body":"Fixed"}}}

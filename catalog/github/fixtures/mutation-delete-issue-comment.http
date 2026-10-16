@@ -1,0 +1,7 @@
+# description: Delete comment IC_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeleteIssueComment($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { __typename } }","variables":{"input":{"id":"IC_kwDOExample"}}}

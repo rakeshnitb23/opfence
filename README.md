@@ -17,9 +17,13 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 | Command | Status |
 | --- | --- |
 | `opfence version` | available |
-| `opfence catalog validate`, `opfence explain`, `opfence test` | planned (stages 1–3) |
+| `opfence catalog validate / list / providers`, `opfence explain`, `opfence test`, `opfence policy check` | available |
 | `opfence export --target openshell / claude-code / mcp-annotations` | planned (stage 5) |
 | `opfence run -- <agent>`, `opfence init`, `opfence trust`, `opfence approve`, `opfence log` | planned (stages 6–9) |
+
+## Catalog
+
+445 tested rules for Railway, Vercel, the Supabase MCP server, GitHub and AWS, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
 
 ## Build from source
 

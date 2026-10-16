@@ -1,0 +1,91 @@
+# Railway GraphQL API: deployment
+operations:
+  - id: railway.deployment.remove
+    match: { graphql: { type: mutation, field: deploymentRemove } }
+    class: delete
+    resource: { arg: id, kind: deployment }
+    card: "Remove Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-remove.http
+        expect: delete
+        resource: dep-123
+
+  - id: railway.deployment.stop
+    match: { graphql: { type: mutation, field: deploymentStop } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Stop Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-stop.http
+        expect: write
+        resource: dep-123
+
+  - id: railway.deployment.redeploy
+    match: { graphql: { type: mutation, field: deploymentRedeploy } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Redeploy Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-redeploy.http
+        expect: write
+        resource: dep-123
+
+  - id: railway.deployment.restart
+    match: { graphql: { type: mutation, field: deploymentRestart } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Restart Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-restart.http
+        expect: write
+        resource: dep-123
+
+  - id: railway.deployment.rollback
+    match: { graphql: { type: mutation, field: deploymentRollback } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Roll back to Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-rollback.http
+        expect: write
+        resource: dep-122
+
+  - id: railway.deployment.cancel
+    match: { graphql: { type: mutation, field: deploymentCancel } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Cancel Railway deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-cancel.http
+        expect: write
+        resource: dep-123

@@ -1,0 +1,5 @@
+# description: Delete DNS record rec_1 of example.com
+DELETE /v2/domains/example.com/records/rec_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

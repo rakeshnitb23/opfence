@@ -1,0 +1,16 @@
+# Railway GraphQL API: trusted-domain
+operations:
+  - id: railway.trusted-domain.create
+    match: { graphql: { type: mutation, field: trustedDomainCreate } }
+    class: access
+    resource: { arg: input.workspaceId, kind: workspace }
+    card: "Let anyone at {input.domainName} join workspace {input.workspaceId} as {input.role}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/trusted-domain-create.http
+        expect: access
+        resource: ws-acme

@@ -1,0 +1,8 @@
+# description: Merge branch br-develop into production
+POST /mcp HTTP/1.1
+Host: mcp.supabase.com
+Authorization: Bearer opf_supabase-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"merge_branch","arguments":{"branch_id":"br-develop"}}}

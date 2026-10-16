@@ -1,0 +1,7 @@
+# description: Delete DNS record rec-1 of example.com
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RailwayDomainDnsRecordDelete($input: RailwayDomainDnsRecordDeleteInput!) { railwayDomainDnsRecordDelete(input: $input) }","variables":{"input":{"workspaceId":"ws-acme","domain":"example.com","recordId":"rec-1"}}}

@@ -1,0 +1,301 @@
+# AWS APIs: iam
+operations:
+  - id: aws.iam.create-access-key
+    match: { aws: { service: iam, action: CreateAccessKey } }
+    class: credential
+    card: "Create an access key for IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-access-key.http
+        expect: credential
+
+  - id: aws.iam.create-login-profile
+    match: { aws: { service: iam, action: CreateLoginProfile } }
+    class: credential
+    card: "Set a console password for IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-login-profile.http
+        expect: credential
+
+  - id: aws.iam.update-login-profile
+    match: { aws: { service: iam, action: UpdateLoginProfile } }
+    class: credential
+    card: "Change the console password of IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-update-login-profile.http
+        expect: credential
+
+  - id: aws.iam.create-service-specific-credential
+    match: { aws: { service: iam, action: CreateServiceSpecificCredential } }
+    class: credential
+    card: "Create {ServiceName} credentials for {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-service-specific-credential.http
+        expect: credential
+
+  - id: aws.iam.reset-service-specific-credential
+    match: { aws: { service: iam, action: ResetServiceSpecificCredential } }
+    class: credential
+    card: "Reset service credential {ServiceSpecificCredentialId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-reset-service-specific-credential.http
+        expect: credential
+
+  - id: aws.iam.create-user
+    match: { aws: { service: iam, action: CreateUser } }
+    class: access
+    card: "Create IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-user.http
+        expect: access
+
+  - id: aws.iam.delete-user
+    match: { aws: { service: iam, action: DeleteUser } }
+    class: access
+    card: "Delete IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-delete-user.http
+        expect: access
+
+  - id: aws.iam.create-role
+    match: { aws: { service: iam, action: CreateRole } }
+    class: access
+    card: "Create IAM role {RoleName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-role.http
+        expect: access
+
+  - id: aws.iam.delete-role
+    match: { aws: { service: iam, action: DeleteRole } }
+    class: access
+    card: "Delete IAM role {RoleName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-delete-role.http
+        expect: access
+
+  - id: aws.iam.attach-user-policy
+    match: { aws: { service: iam, action: AttachUserPolicy } }
+    class: access
+    card: "Attach {PolicyArn} to IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-attach-user-policy.http
+        expect: access
+
+  - id: aws.iam.attach-role-policy
+    match: { aws: { service: iam, action: AttachRolePolicy } }
+    class: access
+    card: "Attach {PolicyArn} to IAM role {RoleName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-attach-role-policy.http
+        expect: access
+
+  - id: aws.iam.attach-group-policy
+    match: { aws: { service: iam, action: AttachGroupPolicy } }
+    class: access
+    card: "Attach {PolicyArn} to IAM group {GroupName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-attach-group-policy.http
+        expect: access
+
+  - id: aws.iam.put-user-policy
+    match: { aws: { service: iam, action: PutUserPolicy } }
+    class: access
+    card: "Set inline policy {PolicyName} on IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-put-user-policy.http
+        expect: access
+
+  - id: aws.iam.put-role-policy
+    match: { aws: { service: iam, action: PutRolePolicy } }
+    class: access
+    card: "Set inline policy {PolicyName} on IAM role {RoleName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-put-role-policy.http
+        expect: access
+
+  - id: aws.iam.add-user-to-group
+    match: { aws: { service: iam, action: AddUserToGroup } }
+    class: access
+    card: "Add IAM user {UserName} to group {GroupName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-add-user-to-group.http
+        expect: access
+
+  - id: aws.iam.update-assume-role-policy
+    match: { aws: { service: iam, action: UpdateAssumeRolePolicy } }
+    class: access
+    card: "Change who can assume IAM role {RoleName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-update-assume-role-policy.http
+        expect: access
+
+  - id: aws.iam.create-policy-version
+    match: { aws: { service: iam, action: CreatePolicyVersion } }
+    class: access
+    card: "Change managed policy {PolicyArn}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-policy-version.http
+        expect: access
+
+  - id: aws.iam.set-default-policy-version
+    match: { aws: { service: iam, action: SetDefaultPolicyVersion } }
+    class: access
+    card: "Switch managed policy {PolicyArn} to version {VersionId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-set-default-policy-version.http
+        expect: access
+
+  - id: aws.iam.delete-access-key
+    match: { aws: { service: iam, action: DeleteAccessKey } }
+    class: access
+    card: "Delete access key {AccessKeyId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-delete-access-key.http
+        expect: access
+
+  - id: aws.iam.update-access-key
+    match: { aws: { service: iam, action: UpdateAccessKey } }
+    class: access
+    card: "Set access key {AccessKeyId} to {Status}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-update-access-key.http
+        expect: access
+
+  - id: aws.iam.upload-ssh-public-key
+    match: { aws: { service: iam, action: UploadSSHPublicKey } }
+    class: access
+    card: "Add an SSH key to IAM user {UserName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-upload-ssh-public-key.http
+        expect: access
+
+  - id: aws.iam.create-open-id-connect-provider
+    match: { aws: { service: iam, action: CreateOpenIDConnectProvider } }
+    class: access
+    card: "Trust OIDC provider {Url}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-create-open-id-connect-provider.http
+        expect: access
+
+  - id: aws.iam.deactivate-mfa-device
+    match: { aws: { service: iam, action: DeactivateMFADevice } }
+    class: access
+    card: "Deactivate MFA device {SerialNumber}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-deactivate-mfa-device.http
+        expect: access
+
+  - id: aws.iam.update-account-password-policy
+    match: { aws: { service: iam, action: UpdateAccountPasswordPolicy } }
+    class: access
+    card: "Change the account password policy"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-update-account-password-policy.http
+        expect: access
+
+  - id: aws.iam.delete-account-password-policy
+    match: { aws: { service: iam, action: DeleteAccountPasswordPolicy } }
+    class: access
+    card: "Delete the account password policy"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/iam/2010-05-08/service-2.json
+    tests:
+      - fixture: fixtures/iam-delete-account-password-policy.http
+        expect: access

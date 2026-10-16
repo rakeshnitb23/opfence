@@ -1,0 +1,7 @@
+# description: Add user usr-42 to project prj-shop as ADMIN
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectMemberAdd($input: ProjectMemberAddInput!) { projectMemberAdd(input: $input) { __typename } }","variables":{"input":{"projectId":"prj-shop","userId":"usr-42","role":"ADMIN"}}}

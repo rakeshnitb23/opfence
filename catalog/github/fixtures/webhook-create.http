@@ -1,0 +1,9 @@
+# description: Send events of acme/shop to a webhook
+POST /repos/acme/shop/hooks HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"config":{"url":"https://example.com/hook"}}

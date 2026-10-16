@@ -1,0 +1,7 @@
+# description: Delete passkey pk-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PasskeyDelete($id: String!) { passkeyDelete(id: $id) }","variables":{"id":"pk-1"}}

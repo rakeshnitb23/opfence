@@ -1,0 +1,7 @@
+# description: Set service svc-api limits to 32 vCPU and 32 GB
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceLimitsUpdate($input: ServiceInstanceLimitsUpdateInput!) { serviceInstanceLimitsUpdate(input: $input) }","variables":{"input":{"serviceId":"svc-api","environmentId":"env-production","vCPUs":32,"memoryGB":32}}}

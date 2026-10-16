@@ -1,0 +1,14 @@
+# Railway GraphQL API: two-factor
+operations:
+  - id: railway.two-factor.delete
+    match: { graphql: { type: mutation, field: twoFactorInfoDelete } }
+    class: access
+    card: "Turn off two-factor authentication on the Railway account"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/two-factor-delete.http
+        expect: access

@@ -1,0 +1,7 @@
+# description: Change the firewall configuration of project prj_shop
+PATCH /v1/security/firewall/config?projectId=prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"action":"firewallEnabled","value":false}

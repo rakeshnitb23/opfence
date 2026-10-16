@@ -1,0 +1,32 @@
+# GitHub REST and GraphQL APIs: runner-token
+operations:
+  - id: github.runner-token.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/actions/runners/registration-token" } }
+    class: credential
+    resource: { arg: repo, kind: repository }
+    card: "Create a runner registration token for {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      A self-hosted runner registered with it receives the repository's
+      workflow secrets.
+    tests:
+      - fixture: fixtures/runner-token-create.http
+        expect: credential
+        resource: shop
+
+  - id: github.runner-token.create-for-org
+    match: { rest: { method: POST, path: "/orgs/{org}/actions/runners/registration-token" } }
+    class: credential
+    resource: { arg: org, kind: organization }
+    card: "Create a runner registration token for organization {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/runner-token-create-for-org.http
+        expect: credential
+        resource: acme

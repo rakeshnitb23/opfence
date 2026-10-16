@@ -1,0 +1,25 @@
+# Supabase MCP server: organization
+operations:
+  - id: supabase-mcp.organization.list
+    match: { mcp: { tool: list_organizations } }
+    class: read
+    card: "List Supabase organizations"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/organization-list.http
+        expect: read
+
+  - id: supabase-mcp.organization.get
+    match: { mcp: { tool: get_organization } }
+    class: read
+    card: "Show Supabase organization {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/organization-get.http
+        expect: read

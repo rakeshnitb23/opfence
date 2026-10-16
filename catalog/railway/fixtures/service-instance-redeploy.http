@@ -1,0 +1,7 @@
+# description: Redeploy service svc-api in environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceRedeploy($serviceId: String!, $environmentId: String!) { serviceInstanceRedeploy(serviceId: $serviceId, environmentId: $environmentId) }","variables":{"serviceId":"svc-api","environmentId":"env-production"}}

@@ -1,0 +1,46 @@
+# Vercel REST API: deployment
+operations:
+  - id: vercel.deployment.create
+    match: { rest: { method: POST, path: "/{version}/deployments" } }
+    class: write
+    resource: { arg: body.name, kind: project }
+    card: "Deploy {body.name} to {body.target}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.deployment.cancel
+    match: { rest: { method: PATCH, path: "/{version}/deployments/{id}/cancel" } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Cancel deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-cancel.http
+        expect: write
+        resource: dpl_123
+
+  - id: vercel.deployment.delete
+    match: { rest: { method: DELETE, path: "/{version}/deployments/{id}" } }
+    class: delete
+    resource: { arg: id, kind: deployment }
+    card: "Delete deployment {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A deleted deployment can be rebuilt from its commit, but its URL and
+      build output are gone.
+    tests:
+      - fixture: fixtures/deployment-delete.http
+        expect: delete
+        resource: dpl_123

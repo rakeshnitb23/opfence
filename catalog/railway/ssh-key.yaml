@@ -1,0 +1,14 @@
+# Railway GraphQL API: ssh-key
+operations:
+  - id: railway.ssh-key.delete
+    match: { graphql: { type: mutation, field: sshPublicKeyDelete } }
+    class: access
+    card: "Delete SSH key {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/ssh-key-delete.http
+        expect: access

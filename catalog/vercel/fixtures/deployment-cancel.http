@@ -1,0 +1,5 @@
+# description: Cancel deployment dpl_123
+PATCH /v12/deployments/dpl_123/cancel HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

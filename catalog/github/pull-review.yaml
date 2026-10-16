@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: pull-review
+operations:
+  - id: github.pull-review.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/pulls/{pull_number}/reviews" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Review pull request {pull_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/pull-review-create.http
+        expect: write
+        resource: shop

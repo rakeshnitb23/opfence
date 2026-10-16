@@ -1,0 +1,75 @@
+# AWS APIs: cloudformation
+operations:
+  - id: aws.cloudformation.delete-stack
+    match: { aws: { service: cloudformation, action: DeleteStack } }
+    class: irreversible
+    resource: { arg: StackName, kind: stack }
+    card: "Delete CloudFormation stack {StackName} and its resources"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    notes: >-
+      Deletes every resource in the stack, databases included, unless its
+      DeletionPolicy is Retain or Snapshot.
+    tests:
+      - fixture: fixtures/cloudformation-delete-stack.http
+        expect: irreversible
+        resource: shop-prod
+
+  - id: aws.cloudformation.create-stack
+    match: { aws: { service: cloudformation, action: CreateStack } }
+    class: write
+    card: "Create CloudFormation stack {StackName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    tests:
+      - fixture: fixtures/cloudformation-create-stack.http
+        expect: write
+
+  - id: aws.cloudformation.update-stack
+    match: { aws: { service: cloudformation, action: UpdateStack } }
+    class: write
+    resource: { arg: StackName, kind: stack }
+    card: "Update CloudFormation stack {StackName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    notes: >-
+      An update can replace resources, which deletes the old ones; review a
+      change set first.
+    tests:
+      - fixture: fixtures/cloudformation-update-stack.http
+        expect: write
+        resource: shop-prod
+
+  - id: aws.cloudformation.execute-change-set
+    match: { aws: { service: cloudformation, action: ExecuteChangeSet } }
+    class: write
+    resource: { arg: StackName, kind: stack }
+    card: "Apply change set {ChangeSetName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    tests:
+      - fixture: fixtures/cloudformation-execute-change-set.http
+        expect: write
+        resource: shop-prod
+
+  - id: aws.cloudformation.set-stack-policy
+    match: { aws: { service: cloudformation, action: SetStackPolicy } }
+    class: access
+    resource: { arg: StackName, kind: stack }
+    card: "Replace the stack policy of {StackName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    tests:
+      - fixture: fixtures/cloudformation-set-stack-policy.http
+        expect: access
+        resource: shop-prod

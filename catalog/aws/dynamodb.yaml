@@ -1,0 +1,150 @@
+# AWS APIs: dynamodb
+operations:
+  - id: aws.dynamodb.delete-table
+    match: { aws: { service: dynamodb, action: DeleteTable } }
+    class: irreversible
+    resource: { arg: TableName, kind: table }
+    card: "Delete DynamoDB table {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    notes: >-
+      Point-in-time recovery data goes with the table.
+    tests:
+      - fixture: fixtures/dynamodb-delete-table.http
+        expect: irreversible
+        resource: orders
+
+  - id: aws.dynamodb.delete-backup
+    match: { aws: { service: dynamodb, action: DeleteBackup } }
+    class: irreversible
+    card: "Delete DynamoDB backup {BackupArn}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-delete-backup.http
+        expect: irreversible
+
+  - id: aws.dynamodb.delete-item
+    match: { aws: { service: dynamodb, action: DeleteItem } }
+    class: delete
+    resource: { arg: TableName, kind: table }
+    card: "Delete an item from {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-delete-item.http
+        expect: delete
+        resource: orders
+
+  - id: aws.dynamodb.batch-write-item
+    match: { aws: { service: dynamodb, action: BatchWriteItem } }
+    class: delete
+    card: "Write or delete items in a batch"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    notes: >-
+      A batch can carry deletes; Opfence does not look inside it.
+    tests:
+      - fixture: fixtures/dynamodb-batch-write-item.http
+        expect: delete
+
+  - id: aws.dynamodb.put-item
+    match: { aws: { service: dynamodb, action: PutItem } }
+    class: write
+    resource: { arg: TableName, kind: table }
+    card: "Write an item to {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-put-item.http
+        expect: write
+        resource: orders
+
+  - id: aws.dynamodb.update-item
+    match: { aws: { service: dynamodb, action: UpdateItem } }
+    class: write
+    resource: { arg: TableName, kind: table }
+    card: "Update an item in {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-update-item.http
+        expect: write
+        resource: orders
+
+  - id: aws.dynamodb.update-table
+    match: { aws: { service: dynamodb, action: UpdateTable } }
+    class: write
+    resource: { arg: TableName, kind: table }
+    card: "Change DynamoDB table {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-update-table.http
+        expect: write
+        resource: orders
+
+  - id: aws.dynamodb.update-continuous-backups
+    match: { aws: { service: dynamodb, action: UpdateContinuousBackups } }
+    class: write
+    when:
+      - if: { arg: PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled, equals: "false" }
+        class: irreversible
+    resource: { arg: TableName, kind: table }
+    card: "Change point-in-time recovery of {TableName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    notes: >-
+      Turning point-in-time recovery off discards the recovery window.
+    tests:
+      - fixture: fixtures/dynamodb-update-continuous-backups.http
+        expect: write
+        resource: orders
+      - fixture: fixtures/dynamodb-update-continuous-backups-disable.http
+        expect: irreversible
+        resource: orders
+
+  - id: aws.dynamodb.execute-statement
+    match: { aws: { service: dynamodb, action: ExecuteStatement } }
+    class: unknown
+    classify: { sql: Statement }
+    card: "Run a PartiQL statement"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    notes: >-
+      The class comes from the statement, using the SQL classifier.
+    tests:
+      - fixture: fixtures/dynamodb-execute-statement.http
+        expect: read
+      - fixture: fixtures/dynamodb-execute-statement-delete.http
+        expect: delete
+
+  - id: aws.dynamodb.put-resource-policy
+    match: { aws: { service: dynamodb, action: PutResourcePolicy } }
+    class: access
+    card: "Change who can use {ResourceArn}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    tests:
+      - fixture: fixtures/dynamodb-put-resource-policy.http
+        expect: access

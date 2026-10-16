@@ -1,0 +1,43 @@
+# GitHub REST and GraphQL APIs: ruleset
+operations:
+  - id: github.ruleset.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/rulesets" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Create ruleset {body.name} on {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ruleset-create.http
+        expect: access
+        resource: shop
+
+  - id: github.ruleset.update
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/rulesets/{ruleset_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change ruleset {ruleset_id} on {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ruleset-update.http
+        expect: access
+        resource: shop
+
+  - id: github.ruleset.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/rulesets/{ruleset_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Delete ruleset {ruleset_id} on {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ruleset-delete.http
+        expect: access
+        resource: shop

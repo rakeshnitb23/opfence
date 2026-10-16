@@ -1,0 +1,14 @@
+# Railway GraphQL API: agent-usage-limit
+operations:
+  - id: railway.agent-usage-limit.set
+    match: { graphql: { type: mutation, field: agentUsageLimitSet } }
+    class: money
+    card: "Set agent usage limits for workspace {input.workspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/agent-usage-limit-set.http
+        expect: money

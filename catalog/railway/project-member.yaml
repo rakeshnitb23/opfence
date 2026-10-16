@@ -1,0 +1,46 @@
+# Railway GraphQL API: project-member
+operations:
+  - id: railway.project-member.add
+    match: { graphql: { type: mutation, field: projectMemberAdd } }
+    class: access
+    resource: { arg: input.projectId, kind: project }
+    card: "Add user {input.userId} to project {input.projectId} as {input.role}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-member-add.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project-member.remove
+    match: { graphql: { type: mutation, field: projectMemberRemove } }
+    class: access
+    resource: { arg: input.projectId, kind: project }
+    card: "Remove user {input.userId} from project {input.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-member-remove.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project-member.update
+    match: { graphql: { type: mutation, field: projectMemberUpdate } }
+    class: access
+    resource: { arg: input.projectId, kind: project }
+    card: "Make user {input.userId} {input.role} on project {input.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-member-update.http
+        expect: access
+        resource: prj-shop

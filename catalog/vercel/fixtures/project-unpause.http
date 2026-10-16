@@ -1,0 +1,5 @@
+# description: Unpause Vercel project prj_shop
+POST /v1/projects/prj_shop/unpause HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

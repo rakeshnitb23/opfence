@@ -1,0 +1,7 @@
+# description: Read the variable values of service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"query Variables($projectId: String!, $environmentId: String!, $serviceId: String) { variables(projectId: $projectId, environmentId: $environmentId, serviceId: $serviceId) }","variables":{"projectId":"prj-shop","environmentId":"env-production","serviceId":"svc-api"}}

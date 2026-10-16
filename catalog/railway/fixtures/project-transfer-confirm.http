@@ -1,0 +1,7 @@
+# description: Confirm transfer of project prj-shop to workspace ws-other
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectTransferConfirm($input: ProjectTransferConfirmInput!) { projectTransferConfirm(input: $input) }","variables":{"input":{"projectId":"prj-shop","destinationWorkspaceId":"ws-other","ownershipTransferId":"otr-1"}}}

@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: check-run
+operations:
+  - id: github.check-run.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/check-runs" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create a check run in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/check-run-create.http
+        expect: write
+        resource: shop

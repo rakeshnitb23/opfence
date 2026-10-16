@@ -1,0 +1,19 @@
+# Railway GraphQL API: shell-token
+operations:
+  - id: railway.shell-token.create
+    match: { graphql: { type: mutation, field: generateShellToken } }
+    class: credential
+    resource: { arg: input.serviceId, kind: service }
+    card: "Create a shell token for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The token opens a shell inside the running service, with its variables
+      in reach.
+    tests:
+      - fixture: fixtures/shell-token-create.http
+        expect: credential
+        resource: svc-api

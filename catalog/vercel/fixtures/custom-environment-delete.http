@@ -1,0 +1,5 @@
+# description: Delete custom environment qa of project shop-web
+DELETE /v9/projects/shop-web/custom-environments/qa HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

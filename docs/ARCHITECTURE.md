@@ -268,9 +268,23 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
     classify: { sql: query }        # derive the class from args.query
 ```
 
-`when` entries are checked in order; the first that matches wins. Conditions: `equals`, `in`, `present`, `absent`, `matches` (RE2). `classify.sql` hands an argument to the SQL classifier. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
+Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `matches` (RE2). `classify.sql` hands an argument to the SQL classifier. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
 
-### 4.5 Validation
+### 4.5 Classification conventions
+
+The catalog applies the same judgement everywhere, so a reviewer can check a rule against a rule, not against taste:
+
+- **When the API hides the state that decides the class, assume the worse case.** S3 `DeleteObject` is `irreversible` because Opfence cannot see whether the bucket is versioned; DynamoDB `BatchWriteItem` is `delete` because a batch can carry deletes.
+- **Reading a secret value is `credential`, wherever it hides.** Lambda `GetFunction` and `ListFunctions` return environment variables, Railway's `variables` query returns values, SSM `GetParameter` with `WithDecryption` returns plain text. Listing metadata about secrets stays `read`.
+- **Setting a value in a store meant for secrets is `credential`; setting a generic variable is `write`.** GitHub Actions secrets, Secrets Manager values, SSM `SecureString` and Vercel `encrypted`/`sensitive` variables are secrets. Railway variables and Vercel `plain` variables are not marked as secrets, so setting one is a write (it reveals nothing); deleting any variable is `irreversible` because no API keeps the old value.
+- **Deleting a secret is `irreversible`.** No provider returns a secret's value, so it cannot be put back.
+- **Running arbitrary commands is `irreversible`.** SSM `SendCommand` and `StartSession` can do anything the machine can.
+- **Exposing something to the internet is `access`.** A public domain or TCP proxy for a Railway service, a public function URL, a public ACL, a public gist.
+- **`delete` means it can be restored or rebuilt** (a deployment from its commit, a branch from any clone, a scheduled project deletion that can be cancelled); **`irreversible` means the data is gone** (volumes, backups, snapshots, tables, environments with their secrets).
+- **Turning off a safety net is as dangerous as what it protects**: RDS `BackupRetentionPeriod=0` deletes existing automated backups and DynamoDB disabling point-in-time recovery discards the window, so both are `irreversible`.
+- **Old API versions match too.** Vercel keeps serving older versions of an endpoint, so its rules use a `{version}` first segment.
+
+### 4.6 Validation
 
 `opfence catalog validate` (and a unit test over the embedded catalog) enforces:
 
@@ -341,7 +355,7 @@ Environment *mappings* follow the same rule: a repository mapping is honoured on
 
 Settings only the user config may hold: `include_draft` (use draft rules), `trust_repo`, and `servers` (MCP server name → catalog provider, for servers a user named differently).
 
-Conditions in rules compare case-insensitively (`SkipFinalSnapshot=True` still matches `equals: "true"`); `null` counts as absent.
+Conditions in rules compare case-insensitively (`SkipFinalSnapshot=True` still matches `equals: "true"`); an explicit `null` counts as present, because in a PATCH body it usually clears a setting (`"ssoProtection": null` turns Vercel deployment protection off). When the argument is a list (a repeated query parameter, or a path that runs through a list such as `input.refUpdates.force`), a condition holds if it holds for any element, so `?decrypt=false&decrypt=true` cannot hide the second value. Rules therefore use `when` only to make a class stricter.
 
 ## 6. Engine
 

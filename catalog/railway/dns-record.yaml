@@ -1,0 +1,16 @@
+# Railway GraphQL API: dns-record
+operations:
+  - id: railway.dns-record.delete
+    match: { graphql: { type: mutation, field: railwayDomainDnsRecordDelete } }
+    class: delete
+    resource: { arg: input.domain, kind: domain }
+    card: "Delete DNS record {input.recordId} of {input.domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: example.com

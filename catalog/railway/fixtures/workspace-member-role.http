@@ -1,0 +1,7 @@
+# description: Make user usr-42 ADMIN in workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspacePermissionChange($input: WorkspacePermissionChangeInput!) { workspacePermissionChange(input: $input) }","variables":{"input":{"workspaceId":"ws-acme","userId":"usr-42","role":"ADMIN"}}}

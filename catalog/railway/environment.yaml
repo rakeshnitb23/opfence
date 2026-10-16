@@ -1,0 +1,31 @@
+# Railway GraphQL API: environment
+operations:
+  - id: railway.environment.delete
+    match: { graphql: { type: mutation, field: environmentDelete } }
+    class: irreversible
+    resource: { arg: id, kind: environment }
+    card: "Delete Railway environment {id} with its services, volumes and variables"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/environment-delete.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.environment.create
+    match: { graphql: { type: mutation, field: environmentCreate } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Create environment {input.name} in project {input.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/environment-create.http
+        expect: write
+        resource: prj-shop

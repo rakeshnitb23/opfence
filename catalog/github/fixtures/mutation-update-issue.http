@@ -1,0 +1,7 @@
+# description: Change issue I_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateIssue($input: UpdateIssueInput!) { updateIssue(input: $input) { __typename } }","variables":{"input":{"id":"I_kwDOExample","title":"Bug"}}}

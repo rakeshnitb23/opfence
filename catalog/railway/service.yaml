@@ -1,0 +1,49 @@
+# Railway GraphQL API: service
+operations:
+  - id: railway.service.delete
+    match: { graphql: { type: mutation, field: serviceDelete } }
+    class: irreversible
+    resource: { arg: id, kind: service }
+    card: "Delete Railway service {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Removes the service with its variables and deployment history; the API
+      cannot bring it back.
+    tests:
+      - fixture: fixtures/service-delete.http
+        expect: irreversible
+        resource: svc-api
+
+  - id: railway.service.create
+    match: { graphql: { type: mutation, field: serviceCreate } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Create Railway service {input.name} in project {input.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-create.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.service.disconnect
+    match: { graphql: { type: mutation, field: serviceDisconnect } }
+    class: write
+    resource: { arg: id, kind: service }
+    card: "Disconnect Railway service {id} from its source repository"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-disconnect.http
+        expect: write
+        resource: svc-api

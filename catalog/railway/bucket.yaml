@@ -1,0 +1,16 @@
+# Railway GraphQL API: bucket
+operations:
+  - id: railway.bucket.credentials
+    match: { graphql: { type: query, field: bucketS3Credentials } }
+    class: credential
+    resource: { arg: bucketId, kind: bucket }
+    card: "Read the S3 credentials of bucket {bucketId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/bucket-credentials.http
+        expect: credential
+        resource: bkt-assets

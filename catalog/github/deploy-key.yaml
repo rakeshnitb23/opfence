@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: deploy-key
+operations:
+  - id: github.deploy-key.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/keys" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Add deploy key {body.title} to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deploy-key-create.http
+        expect: access
+        resource: shop
+
+  - id: github.deploy-key.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/keys/{key_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Remove deploy key {key_id} from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deploy-key-delete.http
+        expect: access
+        resource: shop

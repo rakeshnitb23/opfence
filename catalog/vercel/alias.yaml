@@ -1,0 +1,13 @@
+# Vercel REST API: alias
+operations:
+  - id: vercel.alias.delete
+    match: { rest: { method: DELETE, path: "/{version}/aliases/{aliasId}" } }
+    class: delete
+    card: "Delete alias {aliasId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/alias-delete.http
+        expect: delete

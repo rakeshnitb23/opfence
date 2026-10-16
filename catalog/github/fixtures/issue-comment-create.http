@@ -1,0 +1,9 @@
+# description: Comment on issue 12
+POST /repos/acme/shop/issues/12/comments HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"body":"Fixed in #43"}

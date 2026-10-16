@@ -1,0 +1,37 @@
+# Vercel REST API: firewall
+operations:
+  - id: vercel.firewall.put
+    match: { rest: { method: PUT, path: "/{version}/security/firewall/config" } }
+    class: access
+    card: "Replace the firewall configuration of project {query.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-put.http
+        expect: access
+
+  - id: vercel.firewall.update
+    match: { rest: { method: PATCH, path: "/{version}/security/firewall/config" } }
+    class: access
+    card: "Change the firewall configuration of project {query.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-update.http
+        expect: access
+
+  - id: vercel.firewall.bypass-add
+    match: { rest: { method: POST, path: "/{version}/security/firewall/bypass" } }
+    class: access
+    card: "Let an IP skip the firewall of project {query.projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-bypass-add.http
+        expect: access

@@ -144,8 +144,8 @@ type CLIMatch struct {
 	Command string `yaml:"command"`
 }
 
-// When overrides a rule's class when its condition holds. The first matching
-// When wins.
+// When overrides a rule's class when its condition holds. Every matching
+// When contributes its class; the strictest decision among them applies.
 type When struct {
 	If    Condition     `yaml:"if"`
 	Class classes.Class `yaml:"class"`

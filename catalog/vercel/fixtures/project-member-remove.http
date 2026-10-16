@@ -1,0 +1,5 @@
+# description: Remove member usr_42 from project shop-web
+DELETE /v1/projects/shop-web/members/usr_42 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

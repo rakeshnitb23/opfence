@@ -1,0 +1,34 @@
+# AWS APIs: route53
+operations:
+  - id: aws.route53.delete-hosted-zone
+    match: { aws: { service: route53, method: DELETE, path: "/2013-04-01/hostedzone/{Id}" } }
+    class: irreversible
+    resource: { arg: Id, kind: hosted-zone }
+    card: "Delete hosted zone {Id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/route53/2013-04-01/service-2.json
+    notes: >-
+      A recreated zone gets new name servers, so the domain stops resolving
+      until the registrar is updated.
+    tests:
+      - fixture: fixtures/route53-delete-hosted-zone.http
+        expect: irreversible
+        resource: Z0123456789EXAMPLE
+
+  - id: aws.route53.change-resource-record-sets
+    match: { aws: { service: route53, method: POST, path: "/2013-04-01/hostedzone/{Id}/rrset" } }
+    class: write
+    resource: { arg: Id, kind: hosted-zone }
+    card: "Change DNS records in hosted zone {Id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/route53/2013-04-01/service-2.json
+    notes: >-
+      The change batch can delete records; Opfence does not read XML bodies.
+    tests:
+      - fixture: fixtures/route53-change-resource-record-sets.http
+        expect: write
+        resource: Z0123456789EXAMPLE

@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: deployment-branch-policy
+operations:
+  - id: github.deployment-branch-policy.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/environments/{environment_name}/deployment-branch-policies/{branch_policy_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Delete a deployment branch policy of {environment_name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deployment-branch-policy-delete.http
+        expect: access
+        resource: shop

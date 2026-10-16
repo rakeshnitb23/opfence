@@ -1,0 +1,5 @@
+# description: Revoke Vercel token tok_1
+DELETE /v3/user/tokens/tok_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

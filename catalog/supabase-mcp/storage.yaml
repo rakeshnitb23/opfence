@@ -1,0 +1,43 @@
+# Supabase MCP server: storage
+operations:
+  - id: supabase-mcp.storage.list-buckets
+    match: { mcp: { tool: list_storage_buckets } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List storage buckets of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/storage-tools.ts
+    tests:
+      - fixture: fixtures/storage-list-buckets.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.storage.get-config
+    match: { mcp: { tool: get_storage_config } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show the storage settings of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/storage-tools.ts
+    tests:
+      - fixture: fixtures/storage-get-config.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.storage.update-config
+    match: { mcp: { tool: update_storage_config } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Change the storage settings of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/storage-tools.ts
+    tests:
+      - fixture: fixtures/storage-update-config.http
+        expect: write
+        resource: abcdefghijklmnopqrst

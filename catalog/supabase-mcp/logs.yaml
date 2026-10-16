@@ -1,0 +1,31 @@
+# Supabase MCP server: logs
+operations:
+  - id: supabase-mcp.logs.get
+    match: { mcp: { tool: get_logs } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Read {service} logs of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/debugging-tools.ts
+    tests:
+      - fixture: fixtures/logs-get.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.logs.query
+    match: { mcp: { tool: query_logs } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Query logs of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/debugging-tools.ts
+    notes: >-
+      Runs against the log store, not the project database.
+    tests:
+      - fixture: fixtures/logs-query.http
+        expect: read
+        resource: abcdefghijklmnopqrst

@@ -3,6 +3,7 @@ package catalog
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
@@ -148,10 +149,24 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 	if op.BodyErr != "" && r.readsBody() {
 		return []classes.Class{classes.Unknown}, "rule depends on a body that could not be read: " + op.BodyErr
 	}
+	// Every condition that holds contributes its class, so the order of
+	// when entries never hides a stricter one.
+	var hit []classes.Class
+	var why []string
 	for i, w := range r.When {
 		if w.If.Eval(args) {
-			return []classes.Class{w.Class}, fmt.Sprintf("rule condition %d (%s)", i+1, w.If.String())
+			if !slices.Contains(hit, w.Class) {
+				hit = append(hit, w.Class)
+			}
+			why = append(why, fmt.Sprintf("%d (%s)", i+1, w.If.String()))
 		}
+	}
+	if len(hit) > 0 {
+		label := "rule condition "
+		if len(why) > 1 {
+			label = "rule conditions "
+		}
+		return hit, label + strings.Join(why, ", ")
 	}
 	if r.Classify != nil && r.Classify.SQL != "" {
 		v, ok := Lookup(args, r.Classify.SQL)
@@ -176,19 +191,44 @@ func (r *Rule) readsBody() bool {
 	return false
 }
 
-// Lookup follows a dotted path through nested maps.
+// Lookup follows a dotted path through nested maps. A list on the way is
+// looked through: the path continues into every element and the values found
+// are returned as a list, so "refUpdates.force" finds the force flag of each
+// update in a batch.
 func Lookup(args map[string]any, path string) (any, bool) {
-	var cur any = args
-	for _, part := range strings.Split(path, ".") {
-		m, ok := cur.(map[string]any)
+	return lookup(args, strings.Split(path, "."))
+}
+
+func lookup(cur any, parts []string) (any, bool) {
+	if len(parts) == 0 {
+		return cur, true
+	}
+	switch t := cur.(type) {
+	case map[string]any:
+		next, ok := t[parts[0]]
 		if !ok {
 			return nil, false
 		}
-		if cur, ok = m[part]; !ok {
+		return lookup(next, parts[1:])
+	case []any:
+		var found []any
+		for _, el := range t {
+			v, ok := lookup(el, parts)
+			if !ok {
+				continue
+			}
+			if l, isList := v.([]any); isList {
+				found = append(found, l...)
+			} else {
+				found = append(found, v)
+			}
+		}
+		if found == nil {
 			return nil, false
 		}
+		return found, true
 	}
-	return cur, true
+	return nil, false
 }
 
 // Scalar renders a scalar argument as text, reporting false for lists,
@@ -215,20 +255,35 @@ func Scalar(v any) (string, bool) {
 }
 
 // Eval reports whether the condition holds for args. Comparisons are
-// case-insensitive, so "True" cannot slip past equals: "true".
+// case-insensitive, so "True" cannot slip past equals: "true". When the
+// argument is a list (a repeated query parameter, or a value found inside a
+// list), the condition holds if it holds for any element: a request cannot
+// hide "decrypt=true" behind an earlier "decrypt=false". Rules therefore use
+// conditions to make a class stricter, never to relax it.
 func (c *Condition) Eval(args map[string]any) bool {
 	v, ok := Lookup(args, c.Arg)
-	present := ok && v != nil
+	vals := []any{v}
+	if l, isList := v.([]any); isList {
+		vals = l
+	}
+	// An explicit null counts as present: in a PATCH body it usually clears
+	// the setting ("ssoProtection": null turns protection off).
+	present := ok
 	switch {
 	case c.Present:
 		return present
 	case c.Absent:
 		return !present
 	}
-	s, isScalar := Scalar(v)
-	if !present || !isScalar {
-		return false
+	for _, el := range vals {
+		if s, isScalar := Scalar(el); isScalar && c.match(s) {
+			return true
+		}
 	}
+	return false
+}
+
+func (c *Condition) match(s string) bool {
 	switch {
 	case c.Equals != nil:
 		return strings.EqualFold(s, *c.Equals)

@@ -1,0 +1,15 @@
+# Vercel REST API: blob-store
+operations:
+  - id: vercel.blob-store.delete
+    match: { rest: { method: DELETE, path: "/storage/stores/blob/{id}" } }
+    class: irreversible
+    resource: { arg: id, kind: blob-store }
+    card: "Delete Blob store {id} and every file in it"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/blob-store-delete.http
+        expect: irreversible
+        resource: store_assets

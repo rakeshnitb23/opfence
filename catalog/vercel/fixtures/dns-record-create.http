@@ -1,0 +1,5 @@
+# description: Add a DNS record to example.com
+POST /v2/domains/example.com/records HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

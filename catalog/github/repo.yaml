@@ -1,0 +1,113 @@
+# GitHub REST and GraphQL APIs: repo
+operations:
+  - id: github.repo.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}" } }
+    class: irreversible
+    resource: { arg: repo, kind: repository }
+    card: "Delete repository {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      Only an organization owner can restore a deleted repository, from the
+      web UI, and not always; the API cannot.
+    tests:
+      - fixture: fixtures/repo-delete.http
+        expect: irreversible
+        resource: shop
+
+  - id: github.repo.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}" } }
+    class: write
+    when:
+      - if: { arg: body.visibility, present: true }
+        class: access
+      - if: { arg: body.private, present: true }
+        class: access
+      - if: { arg: body.security_and_analysis, present: true }
+        class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change settings of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      Changing visibility or security settings changes who can see the code.
+    tests:
+      - fixture: fixtures/repo-update.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/repo-update-public.http
+        expect: access
+        resource: shop
+      - fixture: fixtures/repo-update-private-false.http
+        expect: access
+        resource: shop
+
+  - id: github.repo.transfer
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/transfer" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Transfer {owner}/{repo} to {body.new_owner}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/repo-transfer.http
+        expect: access
+        resource: shop
+
+  - id: github.repo.create
+    match: { rest: { method: POST, path: /user/repos } }
+    class: write
+    when:
+      - if: { arg: body.private, equals: "false" }
+        class: access
+    card: "Create repository {body.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      A public repository publishes whatever is pushed to it.
+    tests:
+      - fixture: fixtures/repo-create.http
+        expect: write
+      - fixture: fixtures/repo-create-public.http
+        expect: access
+
+  - id: github.repo.create-in-org
+    match: { rest: { method: POST, path: "/orgs/{org}/repos" } }
+    class: write
+    when:
+      - if: { arg: body.visibility, equals: public }
+        class: access
+      - if: { arg: body.private, equals: "false" }
+        class: access
+    card: "Create repository {org}/{body.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/repo-create-in-org.http
+        expect: write
+      - fixture: fixtures/repo-create-in-org-public.http
+        expect: access
+
+  - id: github.repo.fork
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/forks" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Fork {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/repo-fork.http
+        expect: write
+        resource: shop

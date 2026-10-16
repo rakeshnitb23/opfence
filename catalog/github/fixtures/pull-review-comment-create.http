@@ -1,0 +1,9 @@
+# description: Comment on a line of pull request 42
+POST /repos/acme/shop/pulls/42/comments HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"body":"nit","commit_id":"4f2a9c1","path":"src/app.ts","line":3}

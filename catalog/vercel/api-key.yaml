@@ -1,0 +1,13 @@
+# Vercel REST API: api-key
+operations:
+  - id: vercel.api-key.create
+    match: { rest: { method: POST, path: /api-keys } }
+    class: credential
+    card: "Create API keys"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/api-key-create.http
+        expect: credential

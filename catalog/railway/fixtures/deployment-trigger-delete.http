@@ -1,0 +1,7 @@
+# description: Delete deployment trigger trg-main
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeploymentTriggerDelete($id: String!) { deploymentTriggerDelete(id: $id) }","variables":{"id":"trg-main"}}

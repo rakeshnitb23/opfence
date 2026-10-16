@@ -1,0 +1,15 @@
+# Supabase MCP server: advisor
+operations:
+  - id: supabase-mcp.advisor.get
+    match: { mcp: { tool: get_advisors } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show {type} advisors of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/debugging-tools.ts
+    tests:
+      - fixture: fixtures/advisor-get.http
+        expect: read
+        resource: abcdefghijklmnopqrst

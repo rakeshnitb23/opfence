@@ -1,0 +1,31 @@
+# Railway GraphQL API: project-invite
+operations:
+  - id: railway.project-invite.send
+    match: { graphql: { type: mutation, field: projectInviteUser } }
+    class: access
+    resource: { arg: id, kind: project }
+    card: "Invite {input.email} to project {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-send.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project-invite.create
+    match: { graphql: { type: mutation, field: projectInvitationCreate } }
+    class: access
+    resource: { arg: id, kind: project }
+    card: "Invite {input.email} to project {id} as {input.role}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-create.http
+        expect: access
+        resource: prj-shop

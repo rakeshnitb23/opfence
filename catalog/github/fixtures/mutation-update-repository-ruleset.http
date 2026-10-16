@@ -1,0 +1,7 @@
+# description: Change ruleset RRS_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateRepositoryRuleset($input: UpdateRepositoryRulesetInput!) { updateRepositoryRuleset(input: $input) { __typename } }","variables":{"input":{"repositoryRulesetId":"RRS_kwDOExample","enforcement":"DISABLED"}}}

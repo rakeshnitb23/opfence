@@ -1,7 +1,10 @@
 package decode
 
 import (
+	"fmt"
 	"net/url"
+	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/request"
@@ -133,11 +136,18 @@ func decodeAWS(r *request.Request) []Operation {
 			return []Operation{op}
 		}
 		op.Action = acts[0]
+		flat := map[string]any{}
 		for k, v := range valuesToMap(params) {
 			if !strings.HasPrefix(k, "X-Amz-") {
-				op.Args[k] = v
+				flat[k] = v
 			}
 		}
+		args, err := nestQueryParams(flat)
+		if err != nil {
+			op.Error = err.Error()
+			return []Operation{op}
+		}
+		op.Args = args
 		return []Operation{op}
 	}
 
@@ -155,4 +165,103 @@ func decodeAWS(r *request.Request) []Operation {
 		}
 	}
 	return []Operation{op}
+}
+
+// nestQueryParams turns Query-protocol parameter names into structure:
+// "InstanceId.1" and "InstanceId.2" become the list InstanceId, and
+// "Tags.member.1.Key" becomes Tags[0].Key, so rules and cards can name
+// InstanceId or Tags.Key. A name that is both a value and a prefix of
+// another name ("A=1&A.1=2") is ambiguous and fails the request.
+func nestQueryParams(flat map[string]any) (map[string]any, error) {
+	keys := make([]string, 0, len(flat))
+	for k := range flat {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	root := map[string]any{}
+	for _, k := range keys {
+		parts := strings.Split(k, ".")
+		for _, p := range parts {
+			if p == "" {
+				parts = []string{k} // malformed: keep the name as it is
+				break
+			}
+		}
+		var segs []string
+		for i, p := range parts {
+			if p == "member" && i+1 < len(parts) && isIndex(parts[i+1]) {
+				continue
+			}
+			segs = append(segs, p)
+		}
+		cur := root
+		for i, p := range segs {
+			last := i == len(segs)-1
+			existing, ok := cur[p]
+			switch {
+			case last && ok:
+				return nil, fmt.Errorf("conflicting Query parameter %q", k)
+			case last:
+				cur[p] = flat[k]
+			case !ok:
+				next := map[string]any{}
+				cur[p] = next
+				cur = next
+			default:
+				next, isMap := existing.(map[string]any)
+				if !isMap {
+					return nil, fmt.Errorf("conflicting Query parameter %q", k)
+				}
+				cur = next
+			}
+		}
+	}
+	for k, v := range root {
+		root[k] = listify(v) // the top level stays a map even if every name is a number
+	}
+	return root, nil
+}
+
+func isIndex(s string) bool {
+	if s == "" || len(s) > 6 {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// listify turns maps whose keys are all indexes into lists ordered by index.
+func listify(v any) any {
+	m, ok := v.(map[string]any)
+	if !ok {
+		return v
+	}
+	allIndex := len(m) > 0
+	for k, x := range m {
+		m[k] = listify(x)
+		if !isIndex(k) {
+			allIndex = false
+		}
+	}
+	if !allIndex {
+		return m
+	}
+	idx := make([]string, 0, len(m))
+	for k := range m {
+		idx = append(idx, k)
+	}
+	sort.Slice(idx, func(i, j int) bool {
+		a, _ := strconv.Atoi(idx[i])
+		b, _ := strconv.Atoi(idx[j])
+		return a < b
+	})
+	list := make([]any, len(idx))
+	for i, k := range idx {
+		list[i] = m[k]
+	}
+	return list
 }

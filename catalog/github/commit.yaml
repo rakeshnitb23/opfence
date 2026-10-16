@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: commit
+operations:
+  - id: github.commit.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/git/commits" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create a commit in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/commit-create.http
+        expect: write
+        resource: shop

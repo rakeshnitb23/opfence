@@ -1,0 +1,13 @@
+# Vercel REST API: webhook
+operations:
+  - id: vercel.webhook.delete
+    match: { rest: { method: DELETE, path: "/{version}/webhooks/{id}" } }
+    class: delete
+    card: "Delete webhook {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/webhook-delete.http
+        expect: delete

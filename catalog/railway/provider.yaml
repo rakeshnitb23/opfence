@@ -4,11 +4,11 @@ docs: https://docs.railway.com/integrations/api
 hosts: [backboard.railway.com, backboard.railway.app]
 graphql: [/graphql/v2]
 auth:
-  - header: Authorization          # account and team tokens (RAILWAY_API_TOKEN)
+  - header: Authorization          # account and workspace tokens (RAILWAY_API_TOKEN)
     scheme: Bearer
   - header: Project-Access-Token   # project tokens (RAILWAY_TOKEN)
   - header: Team-Access-Token
 detect:
   env: [RAILWAY_API_TOKEN, RAILWAY_TOKEN]
 defaults:
-  graphql_query: read
+  graphql_query: read              # queries only read, except the ones listed as credential

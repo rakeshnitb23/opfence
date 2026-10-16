@@ -1,0 +1,269 @@
+# AWS APIs: rds
+operations:
+  - id: aws.rds.delete-db-instance
+    match: { aws: { service: rds, action: DeleteDBInstance } }
+    class: delete
+    when:
+      - if: { arg: SkipFinalSnapshot, equals: "true" }
+        class: irreversible
+      - if: { arg: DeleteAutomatedBackups, equals: "true" }
+        class: irreversible
+    resource: { arg: DBInstanceIdentifier, kind: db-instance }
+    card: "Delete RDS instance {DBInstanceIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    notes: >-
+      With a final snapshot the database can be restored from it.
+      SkipFinalSnapshot=true leaves only automated backups, and
+      DeleteAutomatedBackups removes those too.
+    tests:
+      - fixture: fixtures/rds-delete-db-instance.http
+        expect: delete
+        resource: shop-prod
+      - fixture: fixtures/rds-delete-db-instance-skip-snapshot.http
+        expect: irreversible
+        resource: shop-prod
+      - fixture: fixtures/rds-delete-db-instance-skip-snapshot-repeated.http
+        expect: irreversible
+        resource: shop-prod
+
+  - id: aws.rds.delete-db-cluster
+    match: { aws: { service: rds, action: DeleteDBCluster } }
+    class: delete
+    when:
+      - if: { arg: SkipFinalSnapshot, equals: "true" }
+        class: irreversible
+      - if: { arg: DeleteAutomatedBackups, equals: "true" }
+        class: irreversible
+    resource: { arg: DBClusterIdentifier, kind: db-cluster }
+    card: "Delete Aurora cluster {DBClusterIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-delete-db-cluster.http
+        expect: delete
+        resource: shop-prod
+      - fixture: fixtures/rds-delete-db-cluster-skip-snapshot.http
+        expect: irreversible
+        resource: shop-prod
+
+  - id: aws.rds.delete-db-snapshot
+    match: { aws: { service: rds, action: DeleteDBSnapshot } }
+    class: irreversible
+    resource: { arg: DBSnapshotIdentifier, kind: db-snapshot }
+    card: "Delete RDS snapshot {DBSnapshotIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-delete-db-snapshot.http
+        expect: irreversible
+        resource: shop-prod-final
+
+  - id: aws.rds.delete-db-cluster-snapshot
+    match: { aws: { service: rds, action: DeleteDBClusterSnapshot } }
+    class: irreversible
+    resource: { arg: DBClusterSnapshotIdentifier, kind: db-snapshot }
+    card: "Delete Aurora snapshot {DBClusterSnapshotIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-delete-db-cluster-snapshot.http
+        expect: irreversible
+        resource: shop-prod-final
+
+  - id: aws.rds.delete-db-instance-automated-backup
+    match: { aws: { service: rds, action: DeleteDBInstanceAutomatedBackup } }
+    class: irreversible
+    card: "Delete retained automated backups {DbiResourceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-delete-db-instance-automated-backup.http
+        expect: irreversible
+
+  - id: aws.rds.modify-db-instance
+    match: { aws: { service: rds, action: ModifyDBInstance } }
+    class: write
+    when:
+      - if: { arg: BackupRetentionPeriod, equals: "0" }
+        class: irreversible
+      - if: { arg: MasterUserPassword, present: true }
+        class: credential
+      - if: { arg: PubliclyAccessible, equals: "true" }
+        class: access
+    resource: { arg: DBInstanceIdentifier, kind: db-instance }
+    card: "Change RDS instance {DBInstanceIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    notes: >-
+      BackupRetentionPeriod=0 turns automated backups off and deletes the
+      existing ones. Setting the master password hands it to whoever made the
+      call. PubliclyAccessible=true gives the instance a public address.
+    tests:
+      - fixture: fixtures/rds-modify-db-instance.http
+        expect: write
+        resource: shop-prod
+      - fixture: fixtures/rds-modify-db-instance-no-backups.http
+        expect: irreversible
+        resource: shop-prod
+      - fixture: fixtures/rds-modify-db-instance-password.http
+        expect: credential
+        resource: shop-prod
+      - fixture: fixtures/rds-modify-db-instance-public.http
+        expect: access
+        resource: shop-prod
+      - fixture: fixtures/rds-modify-db-instance-public-and-password.http
+        expect: credential
+        resource: shop-prod
+
+  - id: aws.rds.modify-db-cluster
+    match: { aws: { service: rds, action: ModifyDBCluster } }
+    class: write
+    when:
+      - if: { arg: MasterUserPassword, present: true }
+        class: credential
+    resource: { arg: DBClusterIdentifier, kind: db-cluster }
+    card: "Change Aurora cluster {DBClusterIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-modify-db-cluster.http
+        expect: write
+        resource: shop-prod
+      - fixture: fixtures/rds-modify-db-cluster-password.http
+        expect: credential
+        resource: shop-prod
+
+  - id: aws.rds.modify-db-snapshot-attribute
+    match: { aws: { service: rds, action: ModifyDBSnapshotAttribute } }
+    class: access
+    resource: { arg: DBSnapshotIdentifier, kind: db-snapshot }
+    card: "Share RDS snapshot {DBSnapshotIdentifier} with {ValuesToAdd}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    notes: >-
+      The value all makes the snapshot public.
+    tests:
+      - fixture: fixtures/rds-modify-db-snapshot-attribute.http
+        expect: access
+        resource: shop-prod-final
+
+  - id: aws.rds.modify-db-cluster-snapshot-attribute
+    match: { aws: { service: rds, action: ModifyDBClusterSnapshotAttribute } }
+    class: access
+    resource: { arg: DBClusterSnapshotIdentifier, kind: db-snapshot }
+    card: "Share Aurora snapshot {DBClusterSnapshotIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-modify-db-cluster-snapshot-attribute.http
+        expect: access
+        resource: shop-prod-final
+
+  - id: aws.rds.create-db-instance
+    match: { aws: { service: rds, action: CreateDBInstance } }
+    class: money
+    card: "Create RDS instance {DBInstanceIdentifier} ({DBInstanceClass})"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-create-db-instance.http
+        expect: money
+
+  - id: aws.rds.create-db-cluster
+    match: { aws: { service: rds, action: CreateDBCluster } }
+    class: money
+    card: "Create Aurora cluster {DBClusterIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-create-db-cluster.http
+        expect: money
+
+  - id: aws.rds.restore-db-instance-from-db-snapshot
+    match: { aws: { service: rds, action: RestoreDBInstanceFromDBSnapshot } }
+    class: money
+    card: "Restore snapshot {DBSnapshotIdentifier} as {DBInstanceIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-restore-db-instance-from-db-snapshot.http
+        expect: money
+
+  - id: aws.rds.purchase-reserved-db-instances-offering
+    match: { aws: { service: rds, action: PurchaseReservedDBInstancesOffering } }
+    class: money
+    card: "Buy RDS reserved instances {ReservedDBInstancesOfferingId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-purchase-reserved-db-instances-offering.http
+        expect: money
+
+  - id: aws.rds.reboot-db-instance
+    match: { aws: { service: rds, action: RebootDBInstance } }
+    class: write
+    resource: { arg: DBInstanceIdentifier, kind: db-instance }
+    card: "Reboot RDS instance {DBInstanceIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-reboot-db-instance.http
+        expect: write
+        resource: shop-prod
+
+  - id: aws.rds.stop-db-instance
+    match: { aws: { service: rds, action: StopDBInstance } }
+    class: write
+    resource: { arg: DBInstanceIdentifier, kind: db-instance }
+    card: "Stop RDS instance {DBInstanceIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-stop-db-instance.http
+        expect: write
+        resource: shop-prod
+
+  - id: aws.rds.failover-db-cluster
+    match: { aws: { service: rds, action: FailoverDBCluster } }
+    class: write
+    resource: { arg: DBClusterIdentifier, kind: db-cluster }
+    card: "Fail over Aurora cluster {DBClusterIdentifier}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/rds/2014-10-31/service-2.json
+    tests:
+      - fixture: fixtures/rds-failover-db-cluster.http
+        expect: write
+        resource: shop-prod

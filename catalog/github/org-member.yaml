@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: org-member
+operations:
+  - id: github.org-member.remove
+    match: { rest: { method: DELETE, path: "/orgs/{org}/members/{username}" } }
+    class: access
+    resource: { arg: org, kind: organization }
+    card: "Remove {username} from {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/org-member-remove.http
+        expect: access
+        resource: acme

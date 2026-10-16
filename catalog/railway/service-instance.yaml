@@ -1,0 +1,63 @@
+# Railway GraphQL API: service-instance
+operations:
+  - id: railway.service-instance.update
+    match: { graphql: { type: mutation, field: serviceInstanceUpdate } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Change the settings of service {serviceId} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-instance-update.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service-instance.limits
+    match: { graphql: { type: mutation, field: serviceInstanceLimitsUpdate } }
+    class: money
+    resource: { arg: input.serviceId, kind: service }
+    card: "Set service {input.serviceId} limits to {input.vCPUs} vCPU and {input.memoryGB} GB"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Raises the most a service can bill.
+    tests:
+      - fixture: fixtures/service-instance-limits.http
+        expect: money
+        resource: svc-api
+
+  - id: railway.service-instance.redeploy
+    match: { graphql: { type: mutation, field: serviceInstanceRedeploy } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Redeploy service {serviceId} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-instance-redeploy.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service-instance.deploy
+    match: { graphql: { type: mutation, field: serviceInstanceDeployV2 } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Deploy commit {commitSha} to service {serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-instance-deploy.http
+        expect: write
+        resource: svc-api

@@ -1,0 +1,28 @@
+# Supabase MCP server: cost
+operations:
+  - id: supabase-mcp.cost.get
+    match: { mcp: { tool: get_cost } }
+    class: read
+    card: "Show the cost of a new {type}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    tests:
+      - fixture: fixtures/cost-get.http
+        expect: read
+
+  - id: supabase-mcp.cost.confirm
+    match: { mcp: { tool: confirm_cost } }
+    class: read
+    card: "Confirm the cost of a new {type}: {amount} USD {recurrence}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/account-tools.ts
+    notes: >-
+      Records that the cost was shown; spending happens in create_project or
+      create_branch.
+    tests:
+      - fixture: fixtures/cost-confirm.http
+        expect: read

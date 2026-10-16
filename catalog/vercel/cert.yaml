@@ -1,0 +1,13 @@
+# Vercel REST API: cert
+operations:
+  - id: vercel.cert.delete
+    match: { rest: { method: DELETE, path: "/{version}/certs/{id}" } }
+    class: delete
+    card: "Delete certificate {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/cert-delete.http
+        expect: delete

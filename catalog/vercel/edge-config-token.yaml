@@ -1,0 +1,43 @@
+# Vercel REST API: edge-config-token
+operations:
+  - id: vercel.edge-config-token.create
+    match: { rest: { method: POST, path: "/{version}/global-config/{edgeConfigId}/token" } }
+    class: credential
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Create a read token for Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-token-create.http
+        expect: credential
+        resource: ecfg_1
+
+  - id: vercel.edge-config-token.list
+    match: { rest: { method: GET, path: "/{version}/global-config/{edgeConfigId}/tokens" } }
+    class: credential
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "List the tokens of Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-token-list.http
+        expect: credential
+        resource: ecfg_1
+
+  - id: vercel.edge-config-token.delete
+    match: { rest: { method: DELETE, path: "/{version}/global-config/{edgeConfigId}/tokens" } }
+    class: access
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Revoke tokens of Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-token-delete.http
+        expect: access
+        resource: ecfg_1
