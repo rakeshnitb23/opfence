@@ -521,7 +521,7 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 
 ## Open questions for the owner
 
-- Weekly hours (the roadmap assumes 25; at 15 h a week Launch 1 moves to about late January 2027 and Launch 2 to about April 2027).
+- Weekly hours (the roadmap assumes 25; at 15 h a week Launch 1 moves to about late January 2027 and Launch 2 to about May 2027).
 
 ## Next 14 days
 
