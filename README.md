@@ -18,12 +18,22 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 | --- | --- |
 | `opfence version` | available |
 | `opfence catalog validate / list / providers`, `opfence explain`, `opfence test`, `opfence policy check` | available |
-| `opfence export --target openshell / claude-code / mcp-annotations` | planned (stage 5) |
+| `opfence export --target openshell / claude-code / mcp-annotations`, `opfence hook claude-code` | available |
 | `opfence run -- <agent>`, `opfence init`, `opfence trust`, `opfence approve`, `opfence log` | planned (stages 6–9) |
 
 ## Catalog
 
 445 tested rules for Railway, Vercel, the Supabase MCP server, GitHub and AWS, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
+
+## Use with Claude Code
+
+```sh
+opfence export --target claude-code -o opfence-settings.json
+```
+
+Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` is allowed, a `DROP TABLE` needs confirmation), and adds ask rules for tools that are risky whatever their arguments. Map your production and development project ids in `opfence.yaml` so the hook knows which is which; until then everything counts as production.
+
+For NVIDIA OpenShell, `opfence export --target openshell --environment production` writes network policies to merge into your sandbox policy.
 
 ## Build from source
 

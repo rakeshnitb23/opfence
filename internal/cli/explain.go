@@ -251,8 +251,19 @@ func newPolicyCmd(g *globalOptions) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			c, err := g.loadCatalog()
+			if err != nil {
+				return err
+			}
+			var ruleIDs, providerIDs []string
+			for _, r := range c.Rules() {
+				ruleIDs = append(ruleIDs, r.ID)
+			}
+			for _, p := range c.Providers {
+				providerIDs = append(providerIDs, p.ID)
+			}
 			out := cmd.OutOrStdout()
-			for _, w := range eff.Warnings {
+			for _, w := range append(eff.Warnings, eff.CatalogWarnings(ruleIDs, providerIDs)...) {
 				fmt.Fprintln(out, "warning:", w)
 			}
 			fmt.Fprintf(out, "default environment: %s\nmode: %s\napproval timeout: %s\n\n", eff.DefaultEnvironment, eff.Mode, eff.ApprovalTimeout)

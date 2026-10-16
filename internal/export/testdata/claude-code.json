@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "deny": [],
+    "ask": [
+      "mcp__mc__drop_items",
+      "mcp__mc__reveal_key",
+      "mcp__mc__spend"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "opfence hook claude-code",
+            "timeout": 30,
+            "onFailure": "block"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "mc": {
+    "drop_items": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "opfenceClasses": [
+        "irreversible"
+      ],
+      "rule": "mc.item.drop"
+    },
+    "list_items": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "opfenceClasses": [
+        "read"
+      ],
+      "rule": "mc.item.list"
+    },
+    "reveal_key": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "opfenceClasses": [
+        "credential"
+      ],
+      "rule": "mc.key.reveal"
+    },
+    "run_sql": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "opfenceClasses": [
+        "access",
+        "delete",
+        "irreversible",
+        "read",
+        "unknown",
+        "write"
+      ],
+      "rule": "mc.sql.run"
+    },
+    "spend": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "opfenceClasses": [
+        "money"
+      ],
+      "rule": "mc.money.spend"
+    }
+  }
+}

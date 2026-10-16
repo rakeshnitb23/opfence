@@ -206,6 +206,9 @@ func card(ev Evaluation, host string) string {
 		return fmt.Sprintf("%s GraphQL %s %s", name, op.GraphQLType, Sanitize(op.Field, 80))
 	case decode.MCP:
 		if op.Tool != "" {
+			if strings.HasSuffix(name, " MCP") {
+				return fmt.Sprintf("%s tool %s", name, Sanitize(op.Tool, 80))
+			}
 			return fmt.Sprintf("%s MCP tool %s", name, Sanitize(op.Tool, 80))
 		}
 		return fmt.Sprintf("%s MCP %s", name, Sanitize(op.MCPMethod, 80))

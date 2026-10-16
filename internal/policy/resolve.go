@@ -175,6 +175,49 @@ func ruleOverride(f *File, ruleID, env string) (classes.Decision, bool) {
 	return 0, false
 }
 
+// CatalogWarnings checks the policy against the catalog: rule overrides that
+// match no rule (usually a typo, which would otherwise do nothing silently),
+// environment mappings and server aliases naming providers it does not have.
+func (e *Effective) CatalogWarnings(ruleIDs, providerIDs []string) []string {
+	providers := map[string]bool{}
+	for _, id := range providerIDs {
+		providers[id] = true
+	}
+	var out []string
+	for _, f := range []*File{e.user, e.repo} {
+		if f == nil {
+			continue
+		}
+		src := userSrc(f)
+		for _, o := range f.Rules {
+			matched := false
+			for _, id := range ruleIDs {
+				if ok, _ := path.Match(o.Rule, id); ok {
+					matched = true
+					break
+				}
+			}
+			if !matched {
+				out = append(out, fmt.Sprintf("%s: rule %s matches no catalog rule", src, o.Rule))
+			}
+		}
+		for env, provs := range f.Environments {
+			for prov := range provs {
+				if !providers[prov] {
+					out = append(out, fmt.Sprintf("%s: environments.%s.%s: no catalog provider has that id", src, env, prov))
+				}
+			}
+		}
+		for name, prov := range f.Servers {
+			if !providers[prov] {
+				out = append(out, fmt.Sprintf("%s: servers.%s: no catalog provider has the id %s", src, name, prov))
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
 // Environment resolves which environment an operation targets, from the
 // provider's id mappings and the operation's arguments. lookup returns the
 // scalar text of an argument path. It reports where the answer came from.

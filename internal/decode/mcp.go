@@ -2,6 +2,7 @@ package decode
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/rakeshnitb23/opfence/internal/request"
 )
@@ -126,4 +127,14 @@ func mcpOperation(obj map[string]any, base Operation) (Operation, error) {
 		return op, fmt.Errorf("tools/call arguments is not an object")
 	}
 	return op, nil
+}
+
+// MCPReadMethods lists the MCP methods IsMCPReadMethod accepts, sorted.
+func MCPReadMethods() []string {
+	out := make([]string, 0, len(mcpReadMethods))
+	for m := range mcpReadMethods {
+		out = append(out, m)
+	}
+	sort.Strings(out)
+	return out
 }

@@ -375,7 +375,7 @@ type Result struct {
     Hash        [32]byte          // over canonical (provider, rule, args) of every op; grants bind to it
 }
 func (e *Engine) Evaluate(r *request.Request) Result
-func (e *Engine) EvaluateTool(server, tool string, args map[string]any) Result  // hook path
+func (e *Engine) EvaluateTool(p *catalog.Provider, tool string, args map[string]any) Result  // hook path
 ```
 
 Card templates substitute `{arg}` with the decoded value, truncated to 80 characters and stripped of control characters, line breaks, zero-width characters and Unicode bidi overrides, so a crafted argument cannot fake the card layout. Operations with no rule get a generic card ("Vercel POST api.vercel.com/v9/projects").
@@ -386,15 +386,26 @@ Unmatched operations are classified by provider defaults (`DefaultClass`): Graph
 
 ## 7. Exporters
 
-All exporters read the same catalog and the same policy and write deterministic output (sorted, stable), so diffs in a user's repo are reviewable.
+All exporters read the same catalog and the same policy and write deterministic output (sorted, stable), so diffs in a user's repo are reviewable. Exports are static: they cannot see a call's arguments. Two helpers in `internal/export` turn a rule's possible classes (its own class, each `when` class, and the SQL classes for `classify: sql`) into one static decision:
 
-| Target | Output | How classes map |
+- `Ceiling(rule, env)`: the strictest decision the rule can get in one environment. Used where the export must never allow something the engine would stop (OpenShell).
+- `Floor(rule)`: the most lenient decision the rule can get in any environment. Used where a static rule must never be stricter than the live answer (Claude Code permission rules).
+
+| Target | Output | How decisions map |
 | --- | --- | --- |
-| `openshell` | One network policy per provider: an endpoint for the provider's hosts with `rules` for allowed operations and `deny_rules` for denied ones, GraphQL rules by `operation_type` and `fields`, MCP by `tool`, REST by method and path | OpenShell has allow/deny only: `allow` → rule, `deny` → deny rule, `ask`/`confirm` → left out of the allow-list so OpenShell's own proposal flow asks the human. Exact schema is pinned to the OpenShell docs version checked at stage 5 |
-| `claude-code` | A settings fragment: `permissions.deny` and `permissions.ask` entries for MCP tools (`mcp__supabase__delete_branch`) and advisory `Bash(...)` rules from `cli` matchers, plus a `PreToolUse` hook running `opfence hook claude-code` for `mcp__.*` so argument-dependent rules (SQL, environments) are decided live | Static rules use the strictest class per tool and the production column, so they are safe even if the hook is missing; the hook can only make a call stricter than the static rules allow, never looser, because Claude Code applies `deny` rules first |
-| `mcp-annotations` | JSON overlay: `{server: {tool: {readOnlyHint, destructiveHint, idempotentHint, openWorldHint, opfenceClass, rule}}}` | read → `readOnlyHint: true`; delete, irreversible → `destructiveHint: true`; others → both false |
+| `openshell` | One network policy per provider, for one `--environment` (default production), as YAML with explanatory comments. GraphQL endpoints match `operation_type` and `fields`, REST endpoints `method` and a path glob, MCP endpoints JSON-RPC `method` and `tool` | OpenShell has allow and deny only. Ceiling `allow` → allow rule, `deny` → deny rule, `ask`/`confirm` → left out of the allow-list, so OpenShell blocks it and its proposal flow can ask a human. All endpoints use `enforcement: enforce` |
+| `claude-code` | A settings fragment: a `PreToolUse` hook (`matcher: "^mcp__"`, `onFailure: "block"`) running `opfence hook claude-code`, plus `permissions.deny` and `permissions.ask` for MCP tools under every server name (`mcp__supabase__delete_branch`) and `Bash(<command> *)` rules from `cli` matchers | Floor `deny` → deny rule, floor `ask`/`confirm` → ask rule, floor `allow` → nothing. The hook decides everything else live |
+| `mcp-annotations` | JSON: `{server: {tool: {readOnlyHint, destructiveHint, idempotentHint, opfenceClasses, rule}}}` | `readOnlyHint` only when every possible class is read; `destructiveHint` when any possible class is delete or irreversible; `idempotentHint` always false, since the catalog does not record it |
 
-The hook (`internal/hook`) reads Claude Code's PreToolUse JSON on stdin, maps `mcp__<server>__<tool>` to a provider through `mcp.names` plus any `servers:` aliases in the user config, evaluates, and prints `hookSpecificOutput` with `permissionDecision` `allow`/`ask`/`deny`. `Confirm` becomes `ask` with the resource name in the reason. Unknown servers produce no output (exit 0) so Opfence does not interfere with tools it knows nothing about; any internal error exits 2 so a broken install blocks instead of silently allowing.
+**Why Claude Code static rules use the floor.** Claude Code applies `deny` and `ask` permission rules whatever a hook returns (rules are checked deny, then ask, then allow; a hook's `allow` does not bypass them). A static `ask` on `execute_sql` would prompt even for a `SELECT` the hook allows, and a production-only `deny` would block a development call. So the static rules hold only what is true for every argument in every environment: they keep the always-dangerous tools gated if the hook is ever removed, and never contradict it. In the shipped catalog that is the money tools; everything argument- or environment-dependent is the hook's job.
+
+**OpenShell carve-outs.** A provider default can allow broad traffic: every GraphQL query, or `GET`/`HEAD`/`OPTIONS` on `/**` when `rest_safe_methods` is read. An operation that Opfence would only *ask* about but that such an allow rule (or an overlapping allow glob from another rule, checked by `globsOverlap`) would let through is written as a deny rule with a comment naming the rule that would have covered it. A rule whose class depends on arguments is denied outright when any argument could make it denied (for example `vercel.env.list`, credential with `decrypt=true`), with a comment, because OpenShell does not check those arguments. The export is therefore never looser than the engine and sometimes stricter; `opfence run` is the precise path.
+
+**What OpenShell does not get.** AWS (`sigv4: true` providers) is not exported: Query and JSON actions travel in the body or the `X-Amz-Target` header, which OpenShell's REST matchers cannot see. The output's footer says so. The schema was checked against the OpenShell policy schema reference on 2026-10-16 (`OpenShellSchemaChecked`); tests decode every export into strict structs that reject unknown fields, check that `access` and `rules` are never combined and that no key starts with `_provider_`, and model OpenShell's matching to prove no exported allow covers an operation the engine would stop.
+
+**The hook.** `internal/hook` reads Claude Code's PreToolUse JSON on stdin (capped at 4 MiB, numbers kept exact), maps `mcp__<server>__<tool>` to a provider through the user's `servers:` aliases, then the catalog's `mcp.names`, then the `claude_ai_<name>` (claude.ai connector) and `plugin_<plugin>_<name>` (plugin) forms, and evaluates with the repository's `opfence.yaml` from the `cwd` Claude Code reports. It prints `hookSpecificOutput` with `permissionDecision` `allow`/`ask`/`deny`; `confirm` becomes `ask` with "check that <resource> is the one you mean" in the reason. Other tools, other events and unknown servers produce no output (exit 0), so Opfence does not interfere with tools it knows nothing about; an unknown tool on a known server is `unknown` and asks. Any error (bad JSON, an alias to a missing provider, a broken policy file) exits 2, and the exported settings add `onFailure: "block"` so a crash or timeout also blocks instead of silently allowing.
+
+`opfence policy check` cross-checks the policy against the catalog and warns about rule overrides that match no rule, and environment mappings or server aliases naming providers the catalog does not have, since each would otherwise do nothing silently.
 
 ## 8. Runner
 
@@ -490,8 +501,8 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | --- | --- |
 | decode, catalog, policy | table tests; Go native fuzzing (`FuzzGraphQL`, `FuzzMCP`, `FuzzHTTPFixture`, `FuzzSQL`) with seeds from fixtures; CI runs each fuzzer for a short budget, nightly for longer |
 | catalog content | `opfence test` replays every fixture; CI fails on any miss; a schema test validates every file |
-| exporters | golden files; OpenShell output also validated against a vendored copy of its schema |
-| hook | stdin/stdout golden tests, including crash → exit 2 |
+| exporters | golden files for every target and environment; OpenShell output decoded into strict schema structs and checked by a model of OpenShell matching (never looser than the engine) |
+| hook | decision tests over the embedded catalog (SQL, aliases, plugin and claude.ai names, unknown servers and tools), bad input → error; CLI test that errors exit 2 |
 | proxy, CA, inject, approve | end-to-end tests with `httptest` TLS upstreams, an in-memory keyring and a scripted approver; a PocketOS replay test asserts the upstream is never contacted |
 | launcher | settings JSON golden test; a smoke test that `claude --settings` accepts it runs only where Claude Code is installed |
 
@@ -506,5 +517,8 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | Listen on both HTTP and SOCKS ports | HTTP only | Claude Code docs: an unset port stays reachable and uncontrolled |
 | Approvals via desktop dialog and a control socket, not the agent's terminal | Terminal prompt as in PLAN.md | The agent's TUI owns the terminal during `opfence run` |
 | Catalog-driven secret discovery, no gitleaks | gitleaks library | Only catalogued providers can be injected; far fewer dependencies |
-| Hook fails closed (exit 2) | Exit 1 | Claude Code treats exit 1 and timeouts as non-blocking |
+| Hook fails closed (exit 2, `onFailure: "block"`) | Exit 1 | Claude Code treats other exit codes and timeouts as non-blocking unless the hook sets `onFailure: "block"` |
+| Claude Code static rules use the floor decision | Strictest class, production column | Claude Code applies ask/deny rules over a hook's allow, so a stricter static rule would prompt for every safe call |
+| OpenShell export denies ask-class operations a broad allow would cover | Leave them to the broad allow | An export must never be looser than the engine |
+| AWS is not exported to OpenShell | Export by path | The action is in the body or a header OpenShell cannot match |
 | `gzip`/`deflate` only; other encodings fail closed | Add brotli dependency | Clients send compressed request bodies rarely; fail-closed is safe; revisit with data |
