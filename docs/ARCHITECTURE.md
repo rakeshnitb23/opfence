@@ -144,10 +144,14 @@ Decoders return `[]Operation`. A request decodes as:
 
 | Detection | Decoder | Operations |
 | --- | --- | --- |
-| Host belongs to an `aws` provider and the request is SigV4-signed | `aws` | One per request; service from the credential scope, action from `X-Amz-Target` (JSON protocol) or `Action` (Query protocol); REST-XML services (S3) by method + path rules |
-| Body is JSON-RPC 2.0 with `method: tools/call` (single or batch), or host is an MCP provider host | `mcp` | One per `tools/call`; other JSON-RPC methods (`initialize`, `tools/list`) become class `read` via provider defaults |
-| Provider declares `graphql` endpoints and the path matches | `graphql` | One per root selection after fragment spreads are inlined; batches (JSON array) expand; persisted-query-only requests become `unknown` |
-| Anything else | `rest` | One: method + path, query params as args |
+| Provider has `sigv4: true` | `aws` | One per request. Service from the SigV4 (or SigV4A) credential scope. S3 is resolved from method, bucket (virtual-hosted or path-style), key and sub-resource (`?delete`, `?policy`, …) and never from an `Action` parameter or `X-Amz-Target`, which S3 ignores. Other services: JSON protocol only on `POST /` with `X-Amz-Target`; Query protocol only on `/` for services known to speak it, with exactly one `Action`; anything else is a REST call (Lambda, API Gateway) matched by `aws: {service, method, path}`. Unsigned requests fail closed |
+| Provider has an `mcp` block | `mcp` | One per JSON-RPC message (batches expand). `tools/call` carries the tool and its arguments; other methods keep their name, and the engine treats the known housekeeping methods (`initialize`, `tools/list`, `ping`, …) as reads. `GET`/`DELETE` (stream, session end) carry no tool call |
+| Path matches the provider's `graphql` paths (after normalisation) | `graphql` | One per root field of **every** operation in the document, not only the one `operationName` selects; fragment spreads and inline fragments are flattened; aliases resolve to the field; variables (and their defaults) are substituted into args; batches expand; `@skip`/`@include` are ignored (a field that might run counts as running). Persisted queries without text, parse errors, multipart uploads and more than 200 operations fail closed |
+| Anything else | `rest` | One: method and raw path. Args are namespaced: `query.<name>`, `body.<field>` (JSON or form bodies) and, added by the matcher, path parameters at the top level. `X-HTTP-Method-Override` and its variants replace the method, since some servers honour them. An unreadable body sets `BodyErr`; rules whose conditions read `body.*` then classify as unknown |
+
+JSON bodies are parsed with a strict reader that rejects duplicate keys anywhere (`{"query":"safe","query":"mutation …"}` would otherwise be read differently by Opfence and by servers that keep the first value), trailing data and nesting deeper than 64 levels. Numbers stay as `json.Number`; GraphQL literals are converted to the same Go types, so conditions behave the same for both.
+
+Path normalisation (`request.NormalizePath`) collapses `//`, drops `.` and trailing slashes, and resolves `..` the way servers route, so an agent cannot dodge a rule with `/v9//projects/x/`. Percent-encoded slashes stay inside their segment.
 
 ### 3.4 SQL inside tools
 
@@ -198,6 +202,7 @@ detect:                               # used by `opfence init` (stage 7)
 defaults:                             # classify unlisted operations
   graphql_query: read                 # every GraphQL query is a read on this API
   rest_safe_methods: read             # GET/HEAD/OPTIONS (off unless declared)
+  # aws_read_actions: read            # sigv4 providers: Describe*, Get*, List*, Head*, BatchGet*, Scan, Query
 ```
 
 `defaults` is how the catalog classifies **every** operation without listing thousands of them (review suggestion 1): GraphQL queries and safe HTTP methods are reads on most APIs, and the exceptions (a `GET` that returns a decrypted secret) get explicit rules, which always beat defaults. Anything not covered by a rule or a default is `unknown`.
@@ -241,7 +246,7 @@ Matchers, exactly one per rule:
 | `rest` | `method`, `path` | Path template with `{name}` segments (captured into args) and a trailing `{name*}` for the rest of the path. Matching is on the raw path, segment by segment, case-sensitive. Most specific template wins (fewest wildcards, then longest) |
 | `graphql` | `type`, `field` | Root field name; aliases are resolved to the field |
 | `mcp` | `tool` | Server is the provider |
-| `aws` | `service`, `action` | `service` is the SigV4 signing name (`rds`, `s3`, `iam`) |
+| `aws` | `service` plus either `action`, or `method` and `path` | `service` is the SigV4 signing name (`rds`, `s3`, `iam`). `action` for Query/JSON services and S3; `method` + `path` template for REST-JSON services such as Lambda |
 | `cli` | `command` | Advisory only: used by the Claude Code exporter to write `Bash(<command>:*)` rules, never by the proxy; cannot have request fixtures |
 
 Rule ids are `provider.resource.verb`, globally unique, stable forever (users reference them in overrides; renames keep the old id under `aliases`).

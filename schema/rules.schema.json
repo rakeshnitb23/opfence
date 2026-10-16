@@ -97,11 +97,17 @@
         "aws": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["service", "action"],
+          "required": ["service"],
           "properties": {
             "service": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-            "action": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" }
-          }
+            "action": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "method": { "enum": ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] },
+            "path": { "type": "string", "pattern": "^/" }
+          },
+          "oneOf": [
+            { "required": ["action"], "not": { "anyOf": [{ "required": ["method"] }, { "required": ["path"] }] } },
+            { "required": ["method", "path"], "not": { "required": ["action"] } }
+          ]
         },
         "cli": {
           "type": "object",

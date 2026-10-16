@@ -47,7 +47,8 @@
       "additionalProperties": false,
       "properties": {
         "graphql_query": { "$ref": "rules.schema.json#/$defs/class" },
-        "rest_safe_methods": { "$ref": "rules.schema.json#/$defs/class" }
+        "rest_safe_methods": { "$ref": "rules.schema.json#/$defs/class" },
+        "aws_read_actions": { "$ref": "rules.schema.json#/$defs/class" }
       }
     },
     "mcp": {

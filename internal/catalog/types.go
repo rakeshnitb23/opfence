@@ -56,6 +56,7 @@ type Detect struct {
 type Defaults struct {
 	GraphQLQuery    classes.Class `yaml:"graphql_query"`     // class for any GraphQL query
 	RESTSafeMethods classes.Class `yaml:"rest_safe_methods"` // class for GET, HEAD and OPTIONS
+	AWSReadActions  classes.Class `yaml:"aws_read_actions"`  // class for Describe*, Get*, List*, Head*, BatchGet*, Scan, Query
 }
 
 // MCPInfo identifies an MCP server.
@@ -123,10 +124,16 @@ type MCPMatch struct {
 	Tool string `yaml:"tool"`
 }
 
-// AWSMatch matches an AWS API action.
+// AWSMatch matches an AWS API call by service and either the action name
+// (Query and JSON protocol services, and S3) or the method and path
+// (REST-JSON services such as Lambda).
 type AWSMatch struct {
 	Service string `yaml:"service"` // SigV4 signing name, e.g. rds
 	Action  string `yaml:"action"`
+	Method  string `yaml:"method"`
+	Path    string `yaml:"path"`
+
+	Template *Template `yaml:"-"`
 }
 
 // CLIMatch names a shell command. It is advisory: exporters may use it to

@@ -147,13 +147,16 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			l.addf(file, 0, "detect.prefixes %q is too short to identify a token", pre)
 		}
 	}
-	for name, c := range map[string]classes.Class{"graphql_query": p.Defaults.GraphQLQuery, "rest_safe_methods": p.Defaults.RESTSafeMethods} {
+	for name, c := range map[string]classes.Class{"graphql_query": p.Defaults.GraphQLQuery, "rest_safe_methods": p.Defaults.RESTSafeMethods, "aws_read_actions": p.Defaults.AWSReadActions} {
 		if c != "" && !c.Valid() {
 			l.addf(file, 0, "defaults.%s: unknown class %q", name, c)
 		}
 	}
 	if p.Defaults.GraphQLQuery != "" && len(p.GraphQL) == 0 {
 		l.addf(file, 0, "defaults.graphql_query needs graphql paths")
+	}
+	if p.Defaults.AWSReadActions != "" && !p.SigV4 {
+		l.addf(file, 0, "defaults.aws_read_actions needs sigv4: true")
 	}
 	if p.MCP != nil {
 		if len(p.MCP.Names) == 0 {
@@ -313,8 +316,23 @@ func (l *loader) validateMatch(r *Rule) {
 		if !awsServiceRe.MatchString(m.AWS.Service) {
 			l.addf(f, ln, "%s: aws.service %q must be a lower-case signing name", r.ID, m.AWS.Service)
 		}
-		if !awsActionRe.MatchString(m.AWS.Action) {
-			l.addf(f, ln, "%s: aws.action %q must be an action name like DeleteBucket", r.ID, m.AWS.Action)
+		switch {
+		case m.AWS.Action != "" && m.AWS.Method == "" && m.AWS.Path == "":
+			if !awsActionRe.MatchString(m.AWS.Action) {
+				l.addf(f, ln, "%s: aws.action %q must be an action name like DeleteBucket", r.ID, m.AWS.Action)
+			}
+		case m.AWS.Action == "" && m.AWS.Method != "" && m.AWS.Path != "":
+			if !restMethods[m.AWS.Method] {
+				l.addf(f, ln, "%s: aws.method %q must be an upper-case HTTP method", r.ID, m.AWS.Method)
+			}
+			t, err := ParseTemplate(m.AWS.Path)
+			if err != nil {
+				l.addf(f, ln, "%s: %v", r.ID, err)
+			} else {
+				m.AWS.Template = t
+			}
+		default:
+			l.addf(f, ln, "%s: aws needs either action, or method and path", r.ID)
 		}
 		if !p.SigV4 {
 			l.addf(f, ln, "%s: aws rules need sigv4: true in %s", r.ID, ProviderFile)
@@ -389,6 +407,8 @@ func matchKey(r *Rule) string {
 		return "graphql " + m.GraphQL.Type + " " + m.GraphQL.Field
 	case m.MCP != nil:
 		return "mcp " + m.MCP.Tool
+	case m.AWS != nil && m.AWS.Template != nil:
+		return "aws " + m.AWS.Service + " " + m.AWS.Method + " " + m.AWS.Template.Shape()
 	case m.AWS != nil:
 		return "aws " + m.AWS.Service + " " + m.AWS.Action
 	case m.CLI != nil:

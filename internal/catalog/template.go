@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+
+	"github.com/rakeshnitb23/opfence/internal/request"
 )
 
 // Template is a parsed REST path template such as
@@ -127,7 +129,7 @@ func (t *Template) MoreSpecific(u *Template) bool {
 // normalised (".." above the root, bad escapes) never matches; callers treat
 // that as unknown.
 func (t *Template) Match(rawPath string) (map[string]string, bool) {
-	segs, ok := NormalizePath(rawPath)
+	segs, ok := request.NormalizePath(rawPath)
 	if !ok {
 		return nil, false
 	}
@@ -165,33 +167,4 @@ func (t *Template) Match(rawPath string) (map[string]string, bool) {
 		return nil, false
 	}
 	return params, true
-}
-
-// NormalizePath splits a raw path into segments after collapsing repeated
-// slashes, dropping "." segments and a trailing slash, and resolving "..".
-// It reports false for a path that escapes the root or is not absolute.
-func NormalizePath(rawPath string) ([]string, bool) {
-	if !strings.HasPrefix(rawPath, "/") {
-		return nil, false
-	}
-	var out []string
-	for _, s := range strings.Split(rawPath, "/") {
-		// Unescape only to recognise dot segments; keep the raw form.
-		dec, err := url.PathUnescape(s)
-		if err != nil {
-			return nil, false
-		}
-		switch dec {
-		case "", ".":
-			continue
-		case "..":
-			if len(out) == 0 {
-				return nil, false
-			}
-			out = out[:len(out)-1]
-			continue
-		}
-		out = append(out, s)
-	}
-	return out, true
 }

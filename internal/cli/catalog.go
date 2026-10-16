@@ -159,6 +159,8 @@ func describeMatch(m catalog.Match) string {
 		return "graphql " + m.GraphQL.Type + " " + m.GraphQL.Field
 	case m.MCP != nil:
 		return "mcp tool " + m.MCP.Tool
+	case m.AWS != nil && m.AWS.Action == "":
+		return "aws " + m.AWS.Service + " " + m.AWS.Method + " " + m.AWS.Path
 	case m.AWS != nil:
 		return "aws " + m.AWS.Service + ":" + m.AWS.Action
 	case m.CLI != nil:

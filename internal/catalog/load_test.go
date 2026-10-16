@@ -104,6 +104,11 @@ func TestLoadInvalid(t *testing.T) {
 		{"graphql without paths", replace("acme/provider.yaml", "graphql: [/graphql]\n", ""), "graphql rules need graphql paths"},
 		{"mcp without block", replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, `match: { mcp: { tool: wipe } }`), "need an mcp block"},
 		{"aws without sigv4", replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, `match: { aws: { service: rds, action: DeleteDBInstance } }`), "sigv4: true"},
+		{"aws action and path", func(m fstest.MapFS) {
+			replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nsigv4: true")(m)
+			replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, `match: { aws: { service: lambda, action: DeleteFunction, method: DELETE, path: /f } }`)(m)
+		}, "either action, or method and path"},
+		{"aws read default without sigv4", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  aws_read_actions: read"), "needs sigv4"},
 		{"bad class", replace("acme/db.yaml", "class: irreversible\n    resource", "class: dangerous\n    resource"), "unknown class \"dangerous\""},
 		{"bad when class", replace("acme/db.yaml", "        class: irreversible", "        class: fatal"), "when[0]: unknown class"},
 		{"when two tests", replace("acme/db.yaml", `equals: "true"`, `equals: "true", present: true`), "exactly one of equals"},
