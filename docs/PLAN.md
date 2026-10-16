@@ -2,7 +2,7 @@
 
 Oct 16, 2026 · @ss
 
-> **Status:** plan under review, nothing built yet. Review notes from 16 Oct 2026 are in [Review notes](#review-notes-16-oct-2026); facts they corrected are fixed inline below. **Name decided on 16 Oct 2026: Opfence** (formerly the working name "Opfence", which is taken on PyPI).
+> **Status:** building started 16 Oct 2026; see [BUILD_PLAN.md](BUILD_PLAN.md) for stages and [ARCHITECTURE.md](ARCHITECTURE.md) for the design. Review notes from 16 Oct 2026 are in [Review notes](#review-notes-16-oct-2026); facts they corrected are fixed inline below. **Name decided on 16 Oct 2026: Opfence** (formerly the working name "Opfence", which is taken on PyPI).
 
 ## Executive summary
 
@@ -34,7 +34,7 @@ Smaller corrections:
 - **macOS Go CLIs:** Claude Code now documents `sandbox.enableWeakerNetworkIsolation: true` for Go CLIs behind a MITM proxy with a custom CA. `opfence trust` still has to install the CA, but the Seatbelt half of the problem has a documented switch.
 - **Star counts** (Agent Vault 2.4k, OneCLI about 3k) could not be re-checked from here.
 
-**Suggested changes to the plan** (pending the owner's decision):
+**Suggested changes to the plan** (resolved 16 Oct 2026: 1 adopted, 2 and 3 decided below in Decisions, 4 is in [outreach drafts](outreach/)):
 
 1. Make the catalog an operation *classifier*, not a deny list: every operation gets a class, including `read` and safe `write`.
 2. Launch 1 targets: OpenShell (as provider profiles plus `rules`/`deny_rules`), Claude Code (permission rules and PreToolUse hooks, which also cover MCP tools), and MCP annotation overlays. Agent Vault becomes an upstream PR, not an exporter.
@@ -519,6 +519,11 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 | 16 Oct 2026 | Runner for Claude Code **replaces** Claude Code's sandbox proxy (`httpProxyPort`) rather than chaining behind it | One code path for Claude Code, Cursor, Codex and custom agents; Opfence must see decrypted requests to classify them and write approval cards, so it terminates TLS either way; Claude Code's masking settings are only honoured from user settings, which makes a chained setup fragile to install. Opfence also writes Claude Code `sandbox.credentials` `deny` entries for the keys it holds, and enforces MCP rules through Claude Code permission rules and hooks because MCP servers run outside the sandbox. Revisit chaining (Claude Code proxy → Opfence as upstream `HTTPS_PROXY`) only if the Gate 1 spike shows it is simpler for users |
 | 16 Oct 2026 | No weekly-hours budget in the plan | The owner builds Opfence with Claude; dates are targets and phases advance on exit criteria |
 | 16 Oct 2026 | Agent Vault dropped as a Launch 1 export target | It matches host and path only, so it cannot tell a Railway delete from a read; an exporter would give users false safety. Offer an upstream proposal instead; saves about a week for OpenShell and Claude Code |
+| 16 Oct 2026 | Catalog classifies **every** operation: explicit rules plus per-provider defaults (GraphQL queries, safe HTTP methods); everything else is `unknown` | Allow-list engines need to know what is safe; review suggestion 1 |
+| 16 Oct 2026 | Approvals use a desktop dialog and `opfence approve` over a local socket, not a terminal prompt | During `opfence run -- claude` the agent's TUI owns the terminal |
+| 16 Oct 2026 | Runner sets both `httpProxyPort` and `socksProxyPort` and passes settings with `claude --settings` | Claude Code docs: an unset proxy port stays reachable and uncontrolled; `--settings` is a trusted scope and leaves user files untouched |
+| 16 Oct 2026 | Secret discovery is catalog-driven, not gitleaks | Only catalogued providers can be injected; fewer dependencies in a security tool |
+| 16 Oct 2026 | Unmapped environments default to production | Fail safe; `opfence explain` shows how to map ids |
 
 ## Next 14 days
 
