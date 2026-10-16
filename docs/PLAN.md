@@ -202,7 +202,7 @@ sequenceDiagram
 **Sandbox integration**
 
 - **Claude Code:** set `sandbox.enabled`, point [`sandbox.network.httpProxyPort`](https://claudeissues.com/issue/10653-bug-documentation-custom-proxy-configuration-example-missing-network-wrapper-blo) at Opfence, and add Opfence's data folder to `denyRead`. Anthropic's guide already says credentials should be [injected through a proxy](https://code.claude.com/docs/en/agent-sdk/secure-deployment).
-- **Claude Code caveats (checked 16 Oct 2026):** setting `httpProxyPort` turns off Claude Code's own allowlist and credential masking for that traffic, so Opfence must do both. MCP servers run outside the sandbox, so MCP tool rules go into Claude Code permission rules and PreToolUse hooks. On macOS, `sandbox.enableWeakerNetworkIsolation` lets Go CLIs verify a custom CA.
+- **Claude Code caveats (checked 16 Oct 2026):** setting `httpProxyPort` turns off Claude Code's own allowlist and credential masking for that traffic, so Opfence does both (decided 16 Oct 2026, see Decisions). `opfence run` also adds `sandbox.credentials` `deny` entries for every key it moved to the keychain, so a leftover copy can't be read inside the sandbox. MCP servers run outside the sandbox, so MCP tool rules go into Claude Code permission rules and PreToolUse hooks. On macOS, `sandbox.enableWeakerNetworkIsolation` lets Go CLIs verify a custom CA.
 - **Cursor, Codex, Gemini CLI, custom agents:** wrap the process in [sandbox-runtime](https://github.com/Electroid/sandbox-runtime) with Opfence as its proxy.
 - **No sandbox available:** fall back to environment variables only and label it clearly as *weak mode*. Keys are still safe, because none are in the sandbox; only bypass of non-keyed egress is possible.
 
@@ -516,12 +516,12 @@ Success at six months means matching today's leading brokers on adoption (Agent 
 | --- | --- | --- |
 | 16 Oct 2026 | Name: **Opfence** | "Tripline" taken on PyPI; Opfence free on PyPI, npm, crates.io, Homebrew |
 | 16 Oct 2026 | One repository with a `catalog/` folder until Launch 1, then split out | One developer: schema, decoders and rules change together; a separate repo matters only once outside contributors arrive |
+| 16 Oct 2026 | Runner for Claude Code **replaces** Claude Code's sandbox proxy (`httpProxyPort`) rather than chaining behind it | One code path for Claude Code, Cursor, Codex and custom agents; Opfence must see decrypted requests to classify them and write approval cards, so it terminates TLS either way; Claude Code's masking settings are only honoured from user settings, which makes a chained setup fragile to install. Opfence also writes Claude Code `sandbox.credentials` `deny` entries for the keys it holds, and enforces MCP rules through Claude Code permission rules and hooks because MCP servers run outside the sandbox. Revisit chaining (Claude Code proxy → Opfence as upstream `HTTPS_PROXY`) only if the Gate 1 spike shows it is simpler for users |
 | 16 Oct 2026 | Agent Vault dropped as a Launch 1 export target | It matches host and path only, so it cannot tell a Railway delete from a read; an exporter would give users false safety. Offer an upstream proposal instead; saves about a week for OpenShell and Claude Code |
 
 ## Open questions for the owner
 
-- Weekly hours (the roadmap assumes 25).
-- Runner for Claude Code users: replace Claude Code's proxy, or work beside its native credential masking? (Decide at Gate 1 after the spike.)
+- Weekly hours (the roadmap assumes 25; at 15 h a week Launch 1 moves to about late January 2027 and Launch 2 to about April 2027).
 
 ## Next 14 days
 
