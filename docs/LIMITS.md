@@ -29,6 +29,7 @@ These are never forwarded silently; they become `unknown` (which asks by default
 - **Force pushes.** A forced `git push` sends the same command as a normal one. Pushes to `main`, `master` and tag moves are treated as the worse case (`delete`); a force push to a feature branch counts as a `write`.
 - **State the API hides.** When the class depends on something Opfence cannot see (whether an S3 bucket is versioned, whether a DynamoDB batch contains deletes), the catalog assumes the worse case. That can ask more than necessary; it does not ask less.
 - **Operations missing from the catalog** get the provider's default (safe HTTP methods and GraphQL queries are usually reads) or `unknown`. A new endpoint that a provider ships as a `GET` with side effects would be classified as a read until the catalog learns it.
+- **SQL that hides its effect in the database.** `SELECT my_function()` is classed as a read unless the function is a known side-effect function or the same request creates it; a function, trigger or rule created earlier can do anything when it runs. A `WHERE` that reads a column counts as limiting even when it matches every row (`WHERE id = id`).
 - **Environments.** An operation is production unless your user config maps its ids to development or staging, so unmapped work asks more often, never less. A repository's `opfence.yaml` can only tighten.
 
 ## Credentials

@@ -2,6 +2,8 @@ package decode
 
 import (
 	"reflect"
+	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
@@ -24,8 +26,8 @@ func TestClassifySQL(t *testing.T) {
 		{"explain (analyze, buffers) delete from t where id = 1", []classes.Class{D}},
 		{"explain (analyze false) delete from t", []classes.Class{R}},
 		{"select * into backup_users from users", []classes.Class{W}},
-		{"select pg_terminate_backend(123)", []classes.Class{U}},
-		{"select net.http_post('https://x', '{}')", []classes.Class{U}},
+		{"select pg_terminate_backend(123)", []classes.Class{R, U}},
+		{"select net.http_post('https://x', '{}')", []classes.Class{R, U}},
 		{"insert into t values (1)", []classes.Class{W}},
 		{"insert into t values (1) on conflict (id) do update set x = 2", []classes.Class{W}},
 		{"update t set x = 1 where id = 2", []classes.Class{W}},
@@ -71,7 +73,7 @@ func TestClassifySQL(t *testing.T) {
 		{"call proc()", []classes.Class{U}},
 		{"vacuum full t", []classes.Class{W}},
 		{"with x as (select 1) select * from x", []classes.Class{R}},
-		{"with d as (delete from t returning *) select * from d", []classes.Class{I, R}},
+		{"with d as (delete from t returning *) select * from d", []classes.Class{R, I}},
 		{"with recursive r(n) as (select 1 union all select n+1 from r where n < 3) select * from r", []classes.Class{R}},
 		{"with a as (insert into t values (1) returning id), b as materialized (select 1) update u set x = 1 where id = 2", []classes.Class{W, R}},
 		{"with broken", []classes.Class{U}},
@@ -91,6 +93,42 @@ func TestClassifySQL(t *testing.T) {
 		{"select $x$ unterminated", []classes.Class{U}},
 		{"frobnicate everything", []classes.Class{U}},
 		{"42", []classes.Class{U}},
+		// What the parse tree adds over keywords (stage 11).
+		{"delete from t where id = 5 or true", []classes.Class{I}},
+		{"delete from t where id = 5 or 1 = 1", []classes.Class{I}},
+		{"update t set x = 1 where $1", []classes.Class{I}},
+		{"delete from t where exists (select 1 from u)", []classes.Class{I}},
+		{"delete from t where random() < 2", []classes.Class{I}},
+		{"delete from t where id = 5 and true", []classes.Class{D}},
+		{"delete from t where id = any($1)", []classes.Class{D}},
+		{"delete from t where current of c", []classes.Class{D}},
+		{"insert into t values (pg_terminate_backend(1))", []classes.Class{W, U}},
+		{"update t set x = 1 where id = (select pg_cancel_backend(2))", []classes.Class{W, U}},
+		{"select * from (select dblink_exec('x', 'drop table t')) s", []classes.Class{R, U}},
+		{"select lo_unlink(1)", []classes.Class{R, U}},
+		{"select extensions.http_get('https://x')", []classes.Class{R, U}},
+		{"select nextval('s')", []classes.Class{R, W}},
+		{"select * from vault.decrypted_secrets", []classes.Class{R, classes.Credential}},
+		{"select count(*), lower(name), now() from users", []classes.Class{R}},
+		// Postgres refuses a nested data-modifying CTE; it is still counted.
+		{"select * from t where x in (with d as (delete from u returning id) select id from d)", []classes.Class{R, I}},
+		{"create function f() returns int security definer as $$ select 1 $$ language sql", []classes.Class{W, A}},
+		{"alter function f() security definer", []classes.Class{W, A}},
+		{"alter function f() security invoker", []classes.Class{W}},
+		{"alter table t add column c int, drop column d", []classes.Class{W, I}},
+		{"create schema s create table x (id int) grant select on x to anon", []classes.Class{W, A}},
+		{"prepare p as delete from t", []classes.Class{I}},
+		{"execute p", []classes.Class{U}},
+		{"copy (delete from t returning *) to stdout", []classes.Class{I}},
+		{"copy t to '/tmp/t.csv'", []classes.Class{U}},
+		{"drop owned by someone", []classes.Class{I, A}},
+		{"load 'evil.so'", []classes.Class{U}},
+		{"select 1; frobnicate", []classes.Class{U}},
+		// A function the same batch creates is classified by its body.
+		{"create function f() returns void as $$ delete from t $$ language sql; select f()", []classes.Class{W, R, I}},
+		{"create function f() returns void language plpgsql as $$ begin delete from t; end $$; select f()", []classes.Class{W, R, U}},
+		{"create function f() returns int begin atomic delete from t; select 1; end; select f()", []classes.Class{W, R, I}},
+		{"create rule r as on select to t do instead delete from u", []classes.Class{W, I}},
 	}
 	for _, c := range cases {
 		if got := ClassifySQL(c.sql); !reflect.DeepEqual(got, c.want) {
@@ -114,4 +152,22 @@ func FuzzClassifySQL(f *testing.F) {
 			}
 		}
 	})
+}
+
+// The proxy classifies requests concurrently.
+func TestClassifySQLConcurrent(t *testing.T) {
+	var wg sync.WaitGroup
+	for i := range 16 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for range 200 {
+				if got := ClassifySQL("delete from t where id = 1; select " + strconv.Itoa(i)); !reflect.DeepEqual(got, []classes.Class{classes.Delete, classes.Read}) {
+					t.Errorf("got %v", got)
+					return
+				}
+			}
+		}()
+	}
+	wg.Wait()
 }
