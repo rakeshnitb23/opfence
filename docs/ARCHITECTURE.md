@@ -76,6 +76,7 @@ docs/
 | `github.com/santhosh-tekuri/jsonschema/v6` | tests only | Proves the published JSON Schema accepts every catalog file, so editor validation never drifts from the loader |
 | `github.com/zalando/go-keyring` | secrets | macOS Keychain and Linux Secret Service without cgo; brings `godbus/dbus` and `golang.org/x/sys`. Checked on 16 Oct 2026 that v0.2.8 passes values to `security` on stdin, not in process arguments |
 | `github.com/aws/aws-sdk-go-v2` (signer only) | inject (stage 10) | Official SigV4 signer; re-implementing signing is a footgun |
+| `github.com/multigres/multigres` (`go/common/parser` only) | decode/sql (stage 11) | Supabase's Go port of Postgres' grammar: pure Go, so the binary stays static and cross-compiled, and a process starts in milliseconds, which the per-call hook needs. `pg_query_go` needs cgo; `go-pgquery` (the same parser in WebAssembly) took 1.5 s to start. The package links `testify` through a helper file, about 6 MB of binary in all |
 
 Dropped from the original plan, with reasons:
 
@@ -157,18 +158,25 @@ Path normalisation (`request.NormalizePath`) collapses `//`, drops `.` and trail
 
 ### 3.4 SQL inside tools
 
-`decode/sql` classifies a SQL string for tools like Supabase `execute_sql`. v0 is a tokenizer, not a parser: it strips comments and string literals, splits statements on `;`, and classifies by leading keyword.
+`decode/sql` classifies a SQL string for tools like Supabase `execute_sql`. Since stage 11 it parses with multigres' Go port of Postgres' own grammar, so comments, quoting, dollar-quoted bodies and statement boundaries are read exactly as Postgres reads them. SQL that does not parse is unknown, and so is every statement type not listed.
 
 | Statement | Class |
 | --- | --- |
-| `SELECT`, `SHOW`, `EXPLAIN` (without `ANALYZE`), `WITH` whose body has no data-modifying verb | read |
-| `INSERT`, `UPDATE … WHERE`, `CREATE`, `ALTER … ADD`, `COMMENT`, `SET` | write |
-| `DELETE … WHERE` | delete |
-| `DROP`, `TRUNCATE`, `DELETE` or `UPDATE` without `WHERE`, `ALTER … DROP` | irreversible |
-| `GRANT`, `REVOKE`, `CREATE/ALTER ROLE`, `CREATE POLICY`, `ALTER … DISABLE ROW LEVEL SECURITY` | access |
-| `DO`, `CALL`, `COPY … PROGRAM`, anything unrecognised | unknown |
+| `SELECT`, `VALUES`, `TABLE`, `SHOW`, `EXPLAIN` (without `ANALYZE`), transaction control, cursors, harmless `SET` | read |
+| `INSERT`, `UPDATE` with a limiting `WHERE`, `MERGE` without `DELETE`, `CREATE …`, most `ALTER …`, `COMMENT`, `VACUUM`, `SELECT … INTO`, `COPY … FROM` | write |
+| `DELETE` with a limiting `WHERE`, `MERGE … DELETE` | delete |
+| `DROP …`, `TRUNCATE`, `DELETE` or `UPDATE` without a limiting `WHERE`, `ALTER TABLE … DROP COLUMN`, `ALTER COLUMN … TYPE … USING`, `DROP OWNED` | irreversible |
+| `GRANT`, `REVOKE`, roles, policies, `ALTER DEFAULT PRIVILEGES`, owners, `SET ROLE` / `SESSION AUTHORIZATION` / `session_replication_role` / `row_security` / `request.jwt.*` (also through `set_config` and `ALTER DATABASE … SET`), `RESET ALL`, `DISCARD ALL`, `DISABLE` or `NO FORCE ROW LEVEL SECURITY`, `SECURITY DEFINER` functions | access |
+| Reading `vault.decrypted_secrets` (Supabase Vault) | credential |
+| `DO`, `CALL`, `EXECUTE`, `LOAD`, `ALTER SYSTEM`, a trigger whose function the batch doesn't define, `COPY … PROGRAM`, `COPY … TO 'file'`, anything else | unknown |
 
-Multiple statements take the strictest decision. A real Postgres parser replaces this in v1.0 (PLAN.md phase 5).
+What the parse tree adds:
+- A `WHERE` limits rows only if it reads a column (or is `CURRENT OF`): `WHERE true`, `WHERE 1 = 1`, `WHERE $1`, `WHERE EXISTS (SELECT 1)`, an `OR` with any such branch (`WHERE id = 5 OR true`), an `AND` with no limiting branch, and the common tautologies `WHERE id IS NOT NULL` and `WHERE id = id` count as no `WHERE`. A filter like `WHERE deleted_at IS NOT NULL` is therefore irreversible, stricter than it needs to be.
+- Data-modifying CTEs are classified at any depth, since Postgres runs them even under a `SELECT`.
+- Functions with side effects are caught anywhere in a statement: server control (`pg_terminate_backend`, `pg_reload_conf`, replication slots), files (`pg_read_file`, `pg_ls_dir`, `lo_*`, `pg_file_*`), network (`dblink*`, `http*`, `net.http_*`), `set_config` (also access when it sets a privileged setting or one it can't read), and `query_to_xml` (which runs a query from a string) are unknown; `nextval` and `setval` are writes.
+- A function created in the same batch is classified by its body when it is SQL, and as unknown in any other language, so `CREATE FUNCTION f … AS $$ DELETE … $$; SELECT f()` is not a read. `CREATE TRIGGER` and `CREATE EVENT TRIGGER` add the class of their function when the batch defines it, and unknown otherwise. `CREATE RULE` adds the class of its actions; `PREPARE` the class of what it prepares; `EXPLAIN ANALYZE` and `COPY (query) TO` the class of the statement they run.
+
+Multiple statements take the strictest decision. SQL longer than 1 MB is unknown without parsing, because nesting that deep can overflow the parser's stack.
 
 ## 4. Catalog
 
@@ -598,4 +606,5 @@ A forwarded request is logged when the upstream's response headers arrive, befor
 | The sandbox may not write the project's Claude Code settings files (stage 10d) | Rely on Claude Code's own protection | Hooks in those files run unsandboxed at the next start; a write from inside the sandbox would be an escape |
 | AWS re-signing refuses customer-run hosts under amazonaws.com (stage 10d) | Re-sign for every AWS host | API Gateway, load balancers, EC2 names and VPC endpoints are run by whoever made them; IAM-authenticated API Gateway calls with a placeholder key are the cost |
 | Built-in passthrough hosts on port 443 only (stage 10d) | Any port | Off 443 nothing checks the server name, so a registry's shared CDN address could carry anything |
+| SQL is classified from a real Postgres parse tree (stage 11) | Keep the keyword tokenizer | Keywords cannot see structure: `WHERE id = 5 OR true` has a `WHERE`, and side-effect functions hide outside `SELECT`. Failing closed on anything unparsed or unlisted keeps a young parser library from loosening decisions |
 | Doctor checks the sandbox from inside it | Trust the settings | Settings keys change between Claude Code versions; only a probe from inside shows what an agent can actually reach |

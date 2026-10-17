@@ -58,6 +58,15 @@ flowchart LR
   S8 --> S9["9 Launcher, trust, doctor"]
   S9 --> S10["10 Hardening"]
   S10 --> L2(["Launch 2 ready"])
+  L2 --> S11["11 Postgres parser"]
+  L2 --> S12["12 Phone approvals"]
+  L2 --> S13["13 More providers + MCP servers"]
+  L2 --> S14["14 Cursor + Codex launchers"]
+  S13 --> S15["15 Catalog drift check"]
+  S11 --> V1(["v1.0 ready (after external review)"])
+  S12 --> V1
+  S14 --> V1
+  S15 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -73,6 +82,13 @@ flowchart LR
 | 8 | Approvals | Grants bound to request hash, timeouts, desktop dialog channel, control socket + `opfence approve`, confirm-by-typing, scoped grants | Grant for A can't be replayed for B; timeout denies; confirm requires the resource name | done |
 | 9 | Launcher, trust, doctor | `opfence run -- claude` (settings via `--settings`), srt wrapper, weak mode, `opfence trust` / `--uninstall`, `opfence doctor`, CA env vars | Settings golden test; doctor reports each check; trust manifest reverses cleanly | done |
 | 10 | Hardening | SigV4 re-signing, git smart-HTTP ref decoding, longer fuzzing, GoReleaser config, docs ("What this does not protect against") | No known high-severity issues; release dry-run builds macOS and Linux binaries | done |
+| 11 | Postgres parser | `decode.ClassifySQL` on a real Postgres grammar instead of the keyword tokenizer | Every tokenizer case keeps its class or gets a stricter, correct one; cases the tokenizer got wrong are fixed; unparsable SQL and unhandled statement types are unknown; the hook starts in milliseconds; fuzzer clean | in progress |
+| 12 | Phone approvals | ntfy channel: push with Approve / Deny action buttons, answers verified before they count | An answer for request A cannot approve B; a forged or replayed answer is refused; confirm still needs the typed name; works with ntfy.sh and a self-hosted server | planned |
+| 13 | More providers and MCP servers | Catalog to 15 providers and 25 MCP servers, each rule checked against the provider's own schema | Every rule has a fixture; `opfence test` green; source check passes | planned |
+| 14 | Cursor and Codex | `opfence run --srt` presets for Cursor's CLI agent and Codex CLI, their MCP configs in `init` | Each starts behind the proxy in srt with keys as placeholders; doctor probe passes inside | planned |
+| 15 | Catalog drift check | `opfence catalog check-sources` compares rules with providers' published schemas; nightly job | A renamed or removed operation fails the job | planned |
+
+v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
 Stages 4 and 5 can interleave; stage 6 does not depend on 4 or 5. The order above front-loads Launch 1 (catalog + exporters), matching PLAN.md's roadmap.
 
@@ -117,3 +133,10 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 - High: an `X-HTTP-Method-Override` could make a `DELETE` look like a `GET` (both methods are now decided, and a `Connection` header naming other headers is blocked); a JSON body sent as `text/plain` skipped body rules (JSON is parsed whatever the type; other bodies fail body rules closed); in srt mode the agent could write the project's `.claude/settings*.json`, whose hooks run unsandboxed (now denied for writes in both modes); a project's settings could point the hook at another config through `OPFENCE_CONFIG` or turn hooks off (the config is passed by absolute path, and `--settings` pins `disableAllHooks: false` and the environment).
 - Medium: AWS re-signing for customer-run hosts (API Gateway, load balancers, EC2 names, VPC endpoints) is refused; grants now bind every operation, so approving a delete of one branch for 10 minutes never covers another; resources are sanitised before prompts show them; built-in passthrough hosts get port 443 only; SOCKS host names are validated and `opfence log` and `opfence init` sanitise what they print.
 - Low: `1xx` responses and trailers are scrubbed, as are URL- and base64-encoded keys; `Range` is dropped on non-AWS APIs; at most four AWS bodies are buffered for re-signing at once; every key in a variable holding several is replaced; `opfence run` hides its environment (`PR_SET_DUMPABLE`, `Read(//proc/**)` denied); dialogs open one at a time with the strictest operation first.
+
+**Stage 11 · Postgres parser (plan, 17 Oct 2026).** The v0 classifier reads SQL as keywords. It is careful, but keywords cannot see structure: a `WHERE id = 5 OR true` deletes every row yet has a `WHERE`; dangerous functions are only caught in `SELECT`; a statement shape it did not expect is guessed from its first word. The plan:
+- Parser: [multigres](https://github.com/multigres/multigres)' `go/common/parser`, a Go port of Postgres' own grammar (`gram.y`) by Supabase, Apache-2.0, pure Go, one small dependency. Measured here: 0.2 ms to parse, a 4 ms process start. Rejected: `pg_query_go` (cgo, which breaks the static cross-compiled binaries), `go-pgquery` (Postgres' parser in WebAssembly: 1.5 s to start each process, and the hook is a process per MCP call), the CockroachDB-derived parser (a different dialect).
+- Fail closed: a parse error is `unknown`; every statement type is listed explicitly and anything unlisted is `unknown`.
+- Same table as ARCHITECTURE §3.4, with what structure adds: a `WHERE` that is constant, or has a constant branch at the top of an `OR`, counts as no `WHERE`; dangerous functions are caught anywhere in a statement (`INSERT … VALUES (pg_terminate_backend(1))`); data-modifying CTEs at any depth; `ALTER TABLE` read per subcommand; `CREATE FUNCTION … SECURITY DEFINER` is `access`; `PREPARE` is classified by the statement it prepares.
+- Tests: all current cases kept, plus the cases above; the fuzzer keeps running.
+- Plan review: serves the Supabase `execute_sql` story in PLAN.md (the most common way an agent wipes a database); does not contradict ARCHITECTURE (which already says a real parser replaces v0); nothing speculative. Risk: a young library. Mitigated by failing closed on anything it does not parse or we do not list.
