@@ -1,0 +1,12 @@
+# description: Protocol v2 ls-refs during a fetch of acme/shop
+POST /acme/shop.git/git-upload-pack HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+User-Agent: git/2.47.0
+Content-Type: application/x-git-upload-pack-request
+Git-Protocol: version=2
+
+0014command=ls-refs
+00010009peel
+001bref-prefix refs/heads/
+0000

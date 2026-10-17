@@ -1,0 +1,8 @@
+# description: Git LFS download of one object from acme/shop
+POST /acme/shop.git/info/lfs/objects/batch HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+Accept: application/vnd.git-lfs+json
+Content-Type: application/vnd.git-lfs+json
+
+{"operation":"download","transfers":["basic"],"objects":[{"oid":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","size":1024}]}

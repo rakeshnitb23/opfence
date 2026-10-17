@@ -1,10 +1,12 @@
 provider: github
 title: GitHub
 docs: https://docs.github.com/en/rest
-hosts: [api.github.com]
+hosts: [api.github.com, github.com]
+git: [github.com]                  # git over HTTPS and Git LFS
 graphql: [/graphql]
 auth:
   - header: Authorization          # "Bearer <token>" and the older "token <token>"
+  - basic: password                # git over HTTPS: any user name, the token as password
 detect:
   env: [GITHUB_TOKEN, GH_TOKEN]
   prefixes: [ghp_, gho_, ghu_, ghs_, ghr_, github_pat_]

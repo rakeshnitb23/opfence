@@ -1,0 +1,7 @@
+# description: List Git LFS locks of acme/shop
+GET /acme/shop.git/info/lfs/locks?path=assets%2Flogo.psd HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+User-Agent: git/2.47.0
+Accept: application/vnd.git-lfs+json
+

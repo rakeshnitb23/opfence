@@ -129,10 +129,10 @@ var (
 
 // DefaultPassthrough is what the runner tunnels without inspecting unless
 // passthrough_defaults is false: package registries and source downloads,
-// so installs work in strict mode. None of them is a catalog host. git over
-// HTTPS to github.com is here too until git ref decoding lands (stage 10).
+// so installs work in strict mode. None of them is a catalog host: github.com
+// is, and its git traffic is decoded.
 var DefaultPassthrough = []string{
-	"codeload.github.com", "crates.io", "files.pythonhosted.org", "github.com",
+	"codeload.github.com", "crates.io", "files.pythonhosted.org",
 	"index.crates.io", "index.rubygems.org", "objects.githubusercontent.com",
 	"proxy.golang.org", "pypi.org", "raw.githubusercontent.com",
 	"registry.npmjs.org", "registry.yarnpkg.com", "repo.maven.apache.org",

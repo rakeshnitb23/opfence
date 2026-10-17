@@ -9,6 +9,7 @@ package catalog
 import (
 	"io/fs"
 	"regexp"
+	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
 )
@@ -30,6 +31,7 @@ type Provider struct {
 	Hosts    []string `yaml:"hosts"`
 	GraphQL  []string `yaml:"graphql"` // request paths that carry GraphQL
 	SigV4    bool     `yaml:"sigv4"`   // requests are AWS SigV4-signed
+	Git      []string `yaml:"git"`     // hosts that serve git's smart HTTP protocol and Git LFS
 	Auth     []Auth   `yaml:"auth"`
 	Detect   Detect   `yaml:"detect"`
 	Defaults Defaults `yaml:"defaults"`
@@ -104,6 +106,7 @@ type Match struct {
 	GraphQL *GraphQLMatch `yaml:"graphql"`
 	MCP     *MCPMatch     `yaml:"mcp"`
 	AWS     *AWSMatch     `yaml:"aws"`
+	Git     *GitMatch     `yaml:"git"`
 	CLI     *CLIMatch     `yaml:"cli"`
 }
 
@@ -136,6 +139,25 @@ type AWSMatch struct {
 	Path    string `yaml:"path"`
 
 	Template *Template `yaml:"-"`
+}
+
+// GitMatch matches a git smart HTTP or Git LFS request by service and
+// command, and optionally by the ref a push updates. A rule with refs is
+// more specific than one without.
+type GitMatch struct {
+	Service string   `yaml:"service"` // upload-pack, receive-pack or lfs
+	Command string   `yaml:"command"` // see decode.Git* and decode.LFS*
+	Refs    []string `yaml:"refs"`    // full ref names; a trailing * matches any rest
+}
+
+// MatchesRef reports whether ref matches one of m's patterns.
+func (m *GitMatch) MatchesRef(ref string) bool {
+	for _, p := range m.Refs {
+		if p == ref || strings.HasSuffix(p, "*") && strings.HasPrefix(ref, p[:len(p)-1]) {
+			return true
+		}
+	}
+	return false
 }
 
 // CLIMatch names a shell command. It is advisory: exporters may use it to
@@ -192,6 +214,8 @@ func (m Match) Matcher() string {
 		return "mcp"
 	case m.AWS != nil:
 		return "aws"
+	case m.Git != nil:
+		return "git"
 	case m.CLI != nil:
 		return "cli"
 	}

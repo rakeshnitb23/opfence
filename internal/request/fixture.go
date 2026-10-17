@@ -51,7 +51,7 @@ func ParseFixture(data []byte) (*Request, Meta, error) {
 	body = bytes.TrimSuffix(body, []byte("\n"))
 	body = bytes.TrimSuffix(body, []byte("\r"))
 	if len(body) > MaxBody {
-		r.BodyErr = ErrBodyTooLarge
+		r.BodyErr, r.Prefix = ErrBodyTooLarge, body[:MaxBody]
 	} else if b, err := Decode(body, r.Header.Get("Content-Encoding")); err != nil {
 		r.BodyErr = err
 	} else {
@@ -143,7 +143,7 @@ func FromHTTP(hr *http.Request) (r *Request, raw []byte, err error) {
 	case err != nil:
 		r.BodyErr = fmt.Errorf("reading body: %w", err)
 	case len(raw) > MaxBody:
-		r.BodyErr = ErrBodyTooLarge
+		r.BodyErr, r.Prefix = ErrBodyTooLarge, raw[:MaxBody]
 	default:
 		if b, derr := Decode(raw, r.Header.Get("Content-Encoding")); derr != nil {
 			r.BodyErr = derr

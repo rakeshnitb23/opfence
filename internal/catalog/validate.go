@@ -5,10 +5,12 @@ import (
 	"net/url"
 	"path"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
+	"github.com/rakeshnitb23/opfence/internal/decode"
 )
 
 var (
@@ -22,6 +24,7 @@ var (
 	awsServiceRe = regexp.MustCompile(`^[a-z0-9-]+$`)
 	awsActionRe  = regexp.MustCompile(`^[A-Z][A-Za-z0-9]*$`)
 	cardParamRe  = regexp.MustCompile(`\{([^{}]*)\}`)
+	gitRefRe     = regexp.MustCompile(`^refs/[A-Za-z0-9._/-]*\*?$`)
 	argPathRe    = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 )
 
@@ -37,8 +40,17 @@ func (l *loader) validate(c *Catalog) {
 	for _, p := range c.Providers {
 		l.validateProvider(p, hostOwner, mcpNameOwner)
 		keys := map[string]*Rule{}
+		var gitRules []*Rule
 		for _, r := range p.Rules {
 			l.validateRule(r)
+			if g := r.Match.Git; g != nil && len(g.Refs) > 0 {
+				for _, prev := range gitRules {
+					if ref, ok := gitRefsOverlap(prev.Match.Git, g); ok {
+						l.addf(r.File, r.Line, "rule %s and %s (%s:%d) can both match %s; ref patterns of one command must not overlap", r.ID, prev.ID, prev.File, prev.Line, ref)
+					}
+				}
+				gitRules = append(gitRules, r)
+			}
 			for _, id := range append([]string{r.ID}, r.Aliases...) {
 				if id == "" {
 					continue
@@ -106,6 +118,11 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			l.addf(file, 0, "host %q is already claimed by provider %s", h, prev)
 		} else {
 			hostOwner[h] = p.ID
+		}
+	}
+	for _, h := range p.Git {
+		if !slices.Contains(p.Hosts, h) || strings.HasPrefix(h, "*.") {
+			l.addf(file, 0, "git host %q must be one of the provider's hosts, without a wildcard", h)
 		}
 	}
 	for _, g := range p.GraphQL {
@@ -270,13 +287,13 @@ func (l *loader) validateMatch(r *Rule) {
 	p, f, ln := r.Provider, r.File, r.Line
 	m := &r.Match
 	n := 0
-	for _, set := range []bool{m.REST != nil, m.GraphQL != nil, m.MCP != nil, m.AWS != nil, m.CLI != nil} {
+	for _, set := range []bool{m.REST != nil, m.GraphQL != nil, m.MCP != nil, m.AWS != nil, m.Git != nil, m.CLI != nil} {
 		if set {
 			n++
 		}
 	}
 	if n != 1 {
-		l.addf(f, ln, "%s: match needs exactly one of rest, graphql, mcp, aws or cli", r.ID)
+		l.addf(f, ln, "%s: match needs exactly one of rest, graphql, mcp, aws, git or cli", r.ID)
 		return
 	}
 	switch {
@@ -336,6 +353,24 @@ func (l *loader) validateMatch(r *Rule) {
 		}
 		if !p.SigV4 {
 			l.addf(f, ln, "%s: aws rules need sigv4: true in %s", r.ID, ProviderFile)
+		}
+	case m.Git != nil:
+		cmds, ok := gitCommands[m.Git.Service]
+		if !ok {
+			l.addf(f, ln, "%s: git.service must be upload-pack, receive-pack or lfs", r.ID)
+		} else if !slices.Contains(cmds, m.Git.Command) {
+			l.addf(f, ln, "%s: git.command for %s must be one of %s", r.ID, m.Git.Service, strings.Join(cmds, ", "))
+		}
+		if len(m.Git.Refs) > 0 && !(m.Git.Service == decode.GitReceivePack && m.Git.Command != decode.GitListRefs) {
+			l.addf(f, ln, "%s: git.refs only applies to receive-pack create, update and delete", r.ID)
+		}
+		for _, ref := range m.Git.Refs {
+			if !gitRefRe.MatchString(ref) {
+				l.addf(f, ln, "%s: git.refs %q must be a full ref name like refs/heads/main, with * only at the end", r.ID, ref)
+			}
+		}
+		if len(p.Git) == 0 {
+			l.addf(f, ln, "%s: git rules need git hosts in %s", r.ID, ProviderFile)
 		}
 	case m.CLI != nil:
 		if strings.TrimSpace(m.CLI.Command) == "" || m.CLI.Command != strings.TrimSpace(m.CLI.Command) {
@@ -411,10 +446,39 @@ func matchKey(r *Rule) string {
 		return "aws " + m.AWS.Service + " " + m.AWS.Method + " " + m.AWS.Template.Shape()
 	case m.AWS != nil:
 		return "aws " + m.AWS.Service + " " + m.AWS.Action
+	case m.Git != nil && len(m.Git.Refs) == 0:
+		return "git " + m.Git.Service + " " + m.Git.Command
 	case m.CLI != nil:
 		return "cli " + m.CLI.Command
 	}
 	return ""
+}
+
+// gitRefsOverlap reports a ref that two git rules for the same command
+// could both match.
+func gitRefsOverlap(a, b *GitMatch) (string, bool) {
+	if a.Service != b.Service || a.Command != b.Command {
+		return "", false
+	}
+	for _, x := range a.Refs {
+		for _, y := range b.Refs {
+			px, py := strings.TrimSuffix(x, "*"), strings.TrimSuffix(y, "*")
+			switch {
+			case x == y,
+				strings.HasSuffix(x, "*") && strings.HasPrefix(py, px),
+				strings.HasSuffix(y, "*") && strings.HasPrefix(px, py):
+				return y, true
+			}
+		}
+	}
+	return "", false
+}
+
+// gitCommands lists each git service's commands.
+var gitCommands = map[string][]string{
+	decode.GitUploadPack:  {decode.GitFetch},
+	decode.GitReceivePack: {decode.GitListRefs, decode.GitCreate, decode.GitUpdate, decode.GitDelete},
+	decode.GitLFS:         {decode.LFSDownload, decode.LFSUpload, decode.LFSListLocks, decode.LFSLock, decode.LFSUnlock},
 }
 
 func validHTTPSURL(s string) bool {

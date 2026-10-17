@@ -364,6 +364,12 @@ func matches(ep osEndpoint, m osMatcher, r *catalog.Rule, isAllow bool) bool {
 		return len(m.Fields) == 0 || contains(m.Fields, r.Match.GraphQL.Field)
 	case ep.Protocol == "rest" && r.Match.REST != nil:
 		return m.Method == r.Match.REST.Method && globsOverlap(m.Path, templateGlob(r.Match.REST.Path))
+	case ep.Protocol == "rest" && r.Match.Git != nil:
+		for _, rt := range gitRoutes(r.Match.Git) {
+			if m.Method == rt.method && globsOverlap(m.Path, rt.glob) {
+				return true
+			}
+		}
 	case ep.Protocol == "mcp" && r.Match.MCP != nil:
 		if m.Method != "tools/call" {
 			return false

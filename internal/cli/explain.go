@@ -147,6 +147,11 @@ func describeOp(ev engine.Evaluation) string {
 		s = "mcp tool " + op.Tool
 	case op.MCPMethod != "":
 		s = "mcp " + op.MCPMethod
+	case op.Protocol == "git":
+		s = "git " + op.Service + " " + op.Action
+		if ref, _ := op.Args["ref"].(string); ref != "" {
+			s += " " + ref
+		}
 	case op.Action != "":
 		s = "aws " + op.Service + ":" + op.Action
 	case op.Protocol == "aws":

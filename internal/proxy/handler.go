@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
@@ -187,6 +188,15 @@ func (s *Server) block(w http.ResponseWriter, req *request.Request, res *engine.
 		}
 	}
 	w.Header().Set("X-Opfence-Decision", "blocked")
+	if report, ok := gitPushReport(req, res, msg); ok {
+		// git shows a rejected ref with its reason, which a 403 would hide
+		// behind "RPC failed".
+		entry.Status = http.StatusOK
+		s.record(entry)
+		w.Header().Set("Content-Type", "application/x-git-receive-pack-result")
+		_, _ = w.Write(report)
+		return
+	}
 	if id, ok := jsonRPCID(req, res); ok {
 		entry.Status = http.StatusOK
 		s.record(entry)
@@ -213,6 +223,48 @@ func strictest(res *engine.Result) engine.Evaluation {
 		}
 	}
 	return res.Evaluations[0]
+}
+
+// gitPushReport answers a blocked git push with git's own report-status,
+// rejecting every ref with msg, so git prints "[remote rejected] (msg)".
+func gitPushReport(req *request.Request, res *engine.Result, msg string) ([]byte, bool) {
+	if req == nil || res == nil || len(res.Evaluations) == 0 {
+		return nil, false
+	}
+	var refs []string
+	for _, ev := range res.Evaluations {
+		ref, _ := ev.Op.Args["ref"].(string)
+		if ev.Op.Protocol != decode.Git || ev.Op.Service != decode.GitReceivePack || ev.Op.Error != "" || ref == "" {
+			return nil, false
+		}
+		refs = append(refs, ref)
+	}
+	msg = strings.Join(strings.Fields(msg), " ")
+	var report bytes.Buffer
+	pktLine(&report, "unpack ok\n")
+	for _, ref := range refs {
+		pktLine(&report, "ng "+ref+" "+msg+"\n")
+	}
+	report.WriteString("0000")
+	caps := decode.GitPushCapabilities(req)
+	if !slices.Contains(caps, "side-band-64k") && !slices.Contains(caps, "side-band") {
+		return report.Bytes(), true
+	}
+	// With side-band the report travels in band 1, in packets small enough
+	// for plain side-band (1000 bytes).
+	var out bytes.Buffer
+	data := report.Bytes()
+	for len(data) > 0 {
+		n := min(len(data), 995)
+		pktLine(&out, "\x01"+string(data[:n]))
+		data = data[n:]
+	}
+	out.WriteString("0000")
+	return out.Bytes(), true
+}
+
+func pktLine(b *bytes.Buffer, s string) {
+	fmt.Fprintf(b, "%04x%s", len(s)+4, s)
 }
 
 // jsonRPCID returns the id of a single MCP JSON-RPC request.

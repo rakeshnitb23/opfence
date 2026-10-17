@@ -3,6 +3,7 @@ package export
 import (
 	"bytes"
 	"fmt"
+	"slices"
 	"strings"
 
 	"go.yaml.in/yaml/v3"
@@ -83,6 +84,8 @@ func openShellEndpoints(p *policy.Effective, prov *catalog.Provider, host, env s
 		for _, path := range mcpPaths(prov) {
 			out = append(out, mcpEndpoint(p, rules, host, path, env))
 		}
+	case slices.Contains(prov.Git, host):
+		out = append(out, gitEndpoint(p, prov, rules, host, env))
 	default:
 		for _, path := range prov.GraphQL {
 			out = append(out, graphQLEndpoint(p, prov, rules, host, path, env))
@@ -226,6 +229,80 @@ func restEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catalog.
 				rule.HeadComment = x.r.ID + ": " + wouldAsk(x.r) + ", but " + by + " would let it through, so it is denied."
 				deny.Content = append(deny.Content, rule)
 			}
+		}
+	}
+	addRules(ep, allow, deny)
+	return ep
+}
+
+// gitRoute is a method and path glob that git smart HTTP or Git LFS uses.
+type gitRoute struct{ method, glob string }
+
+// gitRoutes lists the requests that can carry a git rule's operation.
+// OpenShell cannot read the ref updates inside a push, so every push
+// command shares one route.
+func gitRoutes(m *catalog.GitMatch) []gitRoute {
+	const repo = "/*/*/"
+	switch m.Service + " " + m.Command {
+	case decode.GitUploadPack + " " + decode.GitFetch:
+		return []gitRoute{{"GET", repo + "info/refs"}, {"POST", repo + "git-upload-pack"}}
+	case decode.GitReceivePack + " " + decode.GitListRefs:
+		return []gitRoute{{"GET", repo + "info/refs"}, {"POST", repo + "git-receive-pack"}}
+	case decode.GitLFS + " " + decode.LFSDownload, decode.GitLFS + " " + decode.LFSUpload:
+		return []gitRoute{{"POST", repo + "info/lfs/objects/batch"}}
+	case decode.GitLFS + " " + decode.LFSListLocks:
+		return []gitRoute{{"GET", repo + "info/lfs/locks"}, {"POST", repo + "info/lfs/locks/verify"}}
+	case decode.GitLFS + " " + decode.LFSLock:
+		return []gitRoute{{"POST", repo + "info/lfs/locks"}}
+	case decode.GitLFS + " " + decode.LFSUnlock:
+		return []gitRoute{{"POST", repo + "info/lfs/locks/*/unlock"}}
+	case decode.GitReceivePack + " " + decode.GitCreate, decode.GitReceivePack + " " + decode.GitUpdate, decode.GitReceivePack + " " + decode.GitDelete:
+		return []gitRoute{{"POST", repo + "git-receive-pack"}}
+	}
+	return nil
+}
+
+// gitEndpoint writes path rules for a git host. Each route gets the strictest
+// decision of the rules that share it: a push route is allowed only when
+// every kind of ref update would be.
+func gitEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catalog.Rule, host, env string) *yaml.Node {
+	ep := endpointHead(host, "", "rest")
+	allow, deny := seq(), seq()
+	safeDefault := prov.Defaults.RESTSafeMethods != "" && DefaultDecision(p, prov.Defaults.RESTSafeMethods, env) == classes.Allow
+	if safeDefault {
+		for _, m := range []string{"GET", "HEAD", "OPTIONS"} {
+			allow.Content = append(allow.Content, allowRule(pairs("method", scalar(m), "path", scalar("/**"))))
+		}
+	}
+	var order []gitRoute
+	decisions := map[gitRoute][]classes.Decision{}
+	ids := map[gitRoute][]string{}
+	for _, r := range rules {
+		if r.Match.Git == nil {
+			continue
+		}
+		for _, rt := range gitRoutes(r.Match.Git) {
+			if _, seen := decisions[rt]; !seen {
+				order = append(order, rt)
+			}
+			decisions[rt] = append(decisions[rt], Ceiling(p, r, env))
+			ids[rt] = append(ids[rt], r.ID)
+		}
+	}
+	for _, rt := range order {
+		rule := pairs("method", scalar(rt.method), "path", scalar(rt.glob))
+		safe := safeDefault && rt.method == "GET"
+		switch d := classes.Strictest(decisions[rt]...); {
+		case d == classes.Allow:
+			if !safe {
+				allow.Content = append(allow.Content, allowRule(rule))
+			}
+		case d == classes.Deny:
+			rule.HeadComment = "Opfence denies one of " + strings.Join(ids[rt], ", ") + ", which OpenShell cannot tell apart on this path."
+			deny.Content = append(deny.Content, rule)
+		case safe:
+			rule.HeadComment = "Opfence would ask about one of " + strings.Join(ids[rt], ", ") + ", but the GET allow rule above would let it through, so it is denied."
+			deny.Content = append(deny.Content, rule)
 		}
 	}
 	addRules(ep, allow, deny)

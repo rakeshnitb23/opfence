@@ -16,6 +16,12 @@
     },
     "graphql": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that carry GraphQL" },
     "sigv4": { "type": "boolean", "description": "Requests are AWS SigV4-signed" },
+    "git": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$" },
+      "uniqueItems": true,
+      "description": "Hosts (from hosts) that serve git's smart HTTP protocol and Git LFS"
+    },
     "auth": {
       "type": "array",
       "items": {

@@ -298,8 +298,6 @@ func printRunBanner(w io.Writer, s *session, kind, mode string, changes []launch
 			fmt.Fprintf(w, "  %s: placeholder for your stored %s key\n", c.Var, c.Provider)
 		case "session":
 			fmt.Fprintf(w, "  %s: placeholder for this session (the real %s key stays with Opfence)\n", c.Var, c.Provider)
-		case "kept":
-			fmt.Fprintf(w, "  warning: %s keeps its real %s key: %s\n", c.Var, c.Provider, c.Reason)
 		}
 	}
 }

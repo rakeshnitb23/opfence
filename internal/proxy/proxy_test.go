@@ -409,11 +409,17 @@ func TestStrictOpenAndPassthrough(t *testing.T) {
 	}
 	c.Close()
 	// Other ports are tunnelled by name without inspection.
-	c, code = connect(t, strict.httpAddr, "github.com:22")
+	c, code = connect(t, strict.httpAddr, "registry.npmjs.org:8080")
 	if code != 200 || !echoes(c) {
-		t.Fatalf("passthrough on port 22: %d", code)
+		t.Fatalf("passthrough on port 8080: %d", code)
 	}
 	c.Close()
+	// git over SSH to github.com cannot be inspected, so it is refused.
+	if c, code := connect(t, strict.httpAddr, "github.com:22"); code != http.StatusForbidden {
+		t.Fatalf("ssh to github.com got %d", code)
+	} else {
+		c.Close()
+	}
 	// Port 443 must be TLS, even to a passthrough host.
 	c, code = connect(t, strict.httpAddr, "registry.npmjs.org:443")
 	if code != 200 || echoes(c) {

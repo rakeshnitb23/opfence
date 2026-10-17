@@ -165,6 +165,10 @@ func describeMatch(m catalog.Match) string {
 		return "aws " + m.AWS.Service + " " + m.AWS.Method + " " + m.AWS.Path
 	case m.AWS != nil:
 		return "aws " + m.AWS.Service + ":" + m.AWS.Action
+	case m.Git != nil && len(m.Git.Refs) > 0:
+		return "git " + m.Git.Service + " " + m.Git.Command + " " + strings.Join(m.Git.Refs, ",")
+	case m.Git != nil:
+		return "git " + m.Git.Service + " " + m.Git.Command
 	case m.CLI != nil:
 		return "cli " + m.CLI.Command
 	}

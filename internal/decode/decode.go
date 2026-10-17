@@ -1,5 +1,6 @@
 // Package decode turns a request into the operations it performs: REST
-// method and path, GraphQL root fields, MCP tool calls, AWS actions.
+// method and path, GraphQL root fields, MCP tool calls, AWS actions, git
+// ref updates.
 //
 // Decoders fail closed. When a decoder cannot be sure what a request does
 // (a parse error, a body too large to inspect, an unsupported encoding), it
@@ -17,6 +18,7 @@ const (
 	GraphQL = "graphql"
 	MCP     = "mcp"
 	AWS     = "aws"
+	Git     = "git"
 )
 
 // MaxOperations caps how many operations one request may carry (GraphQL
@@ -35,8 +37,8 @@ type Operation struct {
 	Tool      string // MCP tool name, for tools/call
 	MCPMethod string // JSON-RPC method, or "http GET" etc. for non-POST requests
 
-	Service string // AWS signing name, from the credential scope
-	Action  string // AWS action; empty when it cannot be determined
+	Service string // AWS signing name, from the credential scope; git service
+	Action  string // AWS action, empty when it cannot be determined; git command
 
 	// Args holds decoded arguments: GraphQL field arguments with variables
 	// resolved, MCP tool arguments, AWS parameters, and for REST "query"
@@ -56,6 +58,7 @@ type Hints struct {
 	GraphQLPaths []string // request paths that carry GraphQL
 	SigV4        bool     // AWS SigV4-signed API
 	MCP          bool     // remote MCP server
+	Git          bool     // host serves git's smart HTTP protocol
 }
 
 // Decode returns the operations in r. It always returns at least one.
@@ -66,6 +69,8 @@ func Decode(r *request.Request, h Hints) []Operation {
 		ops = decodeAWS(r)
 	case h.MCP:
 		ops = decodeMCP(r)
+	case h.Git && isGitPath(r.Path):
+		ops = decodeGit(r)
 	case isGraphQLPath(r.Path, h.GraphQLPaths):
 		ops = decodeGraphQL(r)
 	default:

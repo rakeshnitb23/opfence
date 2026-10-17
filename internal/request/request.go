@@ -38,6 +38,10 @@ type Request struct {
 	// BodyErr is set when the body could not be fully read: too large,
 	// truncated, or in an encoding Opfence does not decode.
 	BodyErr error
+	// Prefix holds the first MaxBody bytes of a body too large to read
+	// whole, still encoded, for decoders that only need its start (git's
+	// ref updates come before the pack).
+	Prefix []byte
 }
 
 // ContentType returns the media type of the body, lower case, without

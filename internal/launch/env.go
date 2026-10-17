@@ -9,22 +9,13 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
 
-// keepReal lists providers whose keys stay real in the environment, and
-// why. Git over HTTPS to github.com is tunnelled without inspection until
-// Opfence decodes git's protocol (stage 10), so a placeholder in
-// GITHUB_TOKEN would break git push through credential helpers.
-var keepReal = map[string]string{
-	"github": "git over HTTPS to github.com is not inspected yet, so a placeholder would break git push",
-}
-
 // EnvChange reports what happened to one environment variable.
 type EnvChange struct {
 	Var      string
 	Provider string
-	// Action is "placeholder" (a key Opfence already holds), "session" (a
-	// key held for this session only) or "kept" (left real, see Reason).
+	// Action is "placeholder" (a key Opfence already holds) or "session"
+	// (a key held for this session only).
 	Action string
-	Reason string
 }
 
 // ProtectEnv replaces API keys in environ with placeholders, so the program
@@ -42,18 +33,15 @@ func ProtectEnv(environ []string, c *catalog.Catalog, stored []*secrets.Secret) 
 	var swaps []known
 	byValue := map[string]bool{}
 	for _, s := range stored {
-		if keepReal[s.Provider] == "" && len(s.Value) >= secrets.MinLength && !byValue[s.Value] {
+		if len(s.Value) >= secrets.MinLength && !byValue[s.Value] {
 			swaps = append(swaps, known{s, "placeholder"})
 			byValue[s.Value] = true
 		}
 	}
-	kept := map[string]EnvChange{}
 	for _, f := range secrets.ScanEnv(environ, c, secrets.NewSet(stored)) {
 		switch {
 		case f.Skip != "":
 			// A placeholder, a reference or a short value: not a key.
-		case keepReal[f.Provider] != "":
-			kept[f.Where] = EnvChange{Var: f.Where, Provider: f.Provider, Action: "kept", Reason: keepReal[f.Provider]}
 		case !byValue[f.Value]:
 			ph, perr := secrets.NewPlaceholder(f.Value, c.Provider(f.Provider).Detect.Prefixes)
 			if perr != nil {
@@ -83,11 +71,8 @@ func ProtectEnv(environ []string, c *catalog.Catalog, stored []*secrets.Secret) 
 				}
 			}
 		}
-		switch {
-		case change != nil:
+		if change != nil {
 			changes = append(changes, *change)
-		case kept[key].Var != "":
-			changes = append(changes, kept[key])
 		}
 		out = append(out, key+"="+value)
 	}

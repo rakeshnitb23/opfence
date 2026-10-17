@@ -26,7 +26,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 
 ## Catalog
 
-445 tested rules for Railway, Vercel, the Supabase MCP server, GitHub and AWS, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
+457 tested rules for Railway, Vercel, the Supabase MCP server, GitHub (its APIs and git over HTTPS) and AWS, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
 
 ## Use with Claude Code
 

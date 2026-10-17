@@ -263,10 +263,10 @@ func TestProtectEnv(t *testing.T) {
 	if !strings.Contains(joined, "MY_RAILWAY=00000000-1111-4222-8333-444444444444") || !strings.Contains(joined, "PATH=/bin") {
 		t.Errorf("env:\n%s", joined)
 	}
-	if !strings.Contains(joined, "GITHUB_TOKEN="+githubTok) || !strings.Contains(joined, "DATABASE_URL=postgres://x?token=sbp_") {
+	if strings.Contains(joined, githubTok) || !strings.Contains(joined, "DATABASE_URL=postgres://x?token=sbp_") {
 		t.Errorf("env:\n%s", joined)
 	}
-	if len(session) != 4 {
+	if len(session) != 5 {
 		t.Fatalf("session secrets: %d", len(session))
 	}
 	for _, s := range session {
@@ -278,7 +278,7 @@ func TestProtectEnv(t *testing.T) {
 	for _, ch := range changes {
 		acts = append(acts, ch.Var+":"+ch.Action)
 	}
-	want := "AWS_ACCESS_KEY_ID:session AWS_SECRET_ACCESS_KEY:session DATABASE_URL:session GITHUB_TOKEN:kept MY_RAILWAY:placeholder OTHER_VERCEL:session VERCEL_TOKEN:session"
+	want := "AWS_ACCESS_KEY_ID:session AWS_SECRET_ACCESS_KEY:session DATABASE_URL:session GITHUB_TOKEN:session MY_RAILWAY:placeholder OTHER_VERCEL:session VERCEL_TOKEN:session"
 	if strings.Join(acts, " ") != want {
 		t.Errorf("changes %s\nwant    %s", strings.Join(acts, " "), want)
 	}

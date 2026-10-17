@@ -108,6 +108,16 @@ func TestLoadInvalid(t *testing.T) {
 			replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nsigv4: true")(m)
 			replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, `match: { aws: { service: lambda, action: DeleteFunction, method: DELETE, path: /f } }`)(m)
 		}, "either action, or method and path"},
+		{"git without git hosts", replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, `match: { git: { service: receive-pack, command: delete } }`), "need git hosts"},
+		{"git host not a host", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ngit: [git.acme.dev]"), "must be one of the provider's hosts"},
+		{"git bad command", gitRule(`{ service: upload-pack, command: push }`), "git.command for upload-pack"},
+		{"git bad service", gitRule(`{ service: archive, command: fetch }`), "git.service must be"},
+		{"git refs on fetch", gitRule(`{ service: upload-pack, command: fetch, refs: [refs/heads/main] }`), "only applies to receive-pack"},
+		{"git bad ref", gitRule(`{ service: receive-pack, command: update, refs: ["heads/*/x"] }`), "must be a full ref name"},
+		{"git overlapping refs", func(m fstest.MapFS) {
+			gitRule(`{ service: receive-pack, command: update, refs: ["refs/heads/*"] }`)(m)
+			m["acme/more.yaml"] = &fstest.MapFile{Data: []byte("operations:\n  - id: acme.git.main\n    match: { git: { service: receive-pack, command: update, refs: [refs/heads/main] } }\n    class: delete\n    card: x\n    status: draft\n")}
+		}, "can both match refs/heads/main"},
 		{"aws read default without sigv4", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  aws_read_actions: read"), "needs sigv4"},
 		{"bad class", replace("acme/db.yaml", "class: irreversible\n    resource", "class: dangerous\n    resource"), "unknown class \"dangerous\""},
 		{"bad when class", replace("acme/db.yaml", "        class: irreversible", "        class: fatal"), "when[0]: unknown class"},
@@ -152,6 +162,14 @@ func TestLoadInvalid(t *testing.T) {
 				t.Fatalf("error does not mention %q:\n%v", c.wants, err)
 			}
 		})
+	}
+}
+
+// gitRule makes acme.db.wipe a git rule on a git host.
+func gitRule(match string) func(fstest.MapFS) {
+	return func(m fstest.MapFS) {
+		replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ngit: [api.acme.dev]")(m)
+		replace("acme/db.yaml", `match: { graphql: { type: mutation, field: dbWipe } }`, "match: { git: "+match+" }")(m)
 	}
 }
 

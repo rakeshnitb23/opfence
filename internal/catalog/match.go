@@ -43,9 +43,9 @@ func (c *Catalog) ProviderForMCPName(name string) *Provider {
 	return nil
 }
 
-// Hints tells the decoder what the provider speaks.
-func (p *Provider) Hints() decode.Hints {
-	return decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil}
+// Hints tells the decoder what the provider speaks on host.
+func (p *Provider) Hints(host string) decode.Hints {
+	return decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
 }
 
 // Match returns the rule for op and any path parameters it captured, or nil
@@ -58,6 +58,7 @@ func (p *Provider) Match(op decode.Operation, includeDraft bool) (*Rule, map[str
 	var best *Rule
 	var bestParams map[string]string
 	var bestTmpl *Template
+	bestGitRefs := false
 	for _, r := range p.Rules {
 		if r.Status == Draft && !includeDraft {
 			continue
@@ -96,6 +97,20 @@ func (p *Provider) Match(op decode.Operation, includeDraft bool) (*Rule, map[str
 			params, ok := m.AWS.Template.Match(op.Path)
 			if ok && (bestTmpl == nil || m.AWS.Template.MoreSpecific(bestTmpl)) {
 				best, bestParams, bestTmpl = r, params, m.AWS.Template
+			}
+		case m.Git != nil && op.Protocol == decode.Git:
+			if m.Git.Service != op.Service || m.Git.Command != op.Action {
+				continue
+			}
+			if len(m.Git.Refs) == 0 {
+				if best == nil {
+					best = r
+				}
+				continue
+			}
+			// Validation keeps ref patterns of one command from overlapping.
+			if ref, _ := op.Args["ref"].(string); m.Git.MatchesRef(ref) && !bestGitRefs {
+				best, bestGitRefs = r, true
 			}
 		}
 	}

@@ -1,0 +1,7 @@
+# description: Ref advertisement before a fetch of acme/shop
+GET /acme/shop.git/info/refs?service=git-upload-pack HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+User-Agent: git/2.47.0
+Git-Protocol: version=2
+

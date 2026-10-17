@@ -109,6 +109,16 @@
             { "required": ["method", "path"], "not": { "required": ["action"] } }
           ]
         },
+        "git": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["service", "command"],
+          "properties": {
+            "service": { "enum": ["upload-pack", "receive-pack", "lfs"] },
+            "command": { "enum": ["fetch", "list", "create", "update", "delete", "download", "upload", "list-locks", "lock", "unlock"] },
+            "refs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^refs/[A-Za-z0-9._/-]*\\*?$" } }
+          }
+        },
         "cli": {
           "type": "object",
           "additionalProperties": false,

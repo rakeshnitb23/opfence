@@ -1,6 +1,7 @@
 package catalog
 
 import (
+	"strings"
 	"testing"
 	"testing/fstest"
 
@@ -103,5 +104,47 @@ func TestLookupThroughLists(t *testing.T) {
 	}
 	if _, ok := Lookup(args, "input.refUpdates.missing"); ok {
 		t.Fatal("missing field found")
+	}
+}
+
+func TestGitRefSpecificity(t *testing.T) {
+	m := goodFS()
+	m["acme/provider.yaml"] = &fstest.MapFile{Data: []byte(strings.Replace(goodProvider, "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ngit: [api.acme.dev]", 1))}
+	m["acme/git.yaml"] = &fstest.MapFile{Data: []byte(`operations:
+  - id: acme.git.update
+    match: { git: { service: receive-pack, command: update } }
+    class: write
+    card: x
+    status: community
+  - id: acme.git.update-main
+    match: { git: { service: receive-pack, command: update, refs: [refs/heads/main] } }
+    class: delete
+    card: x
+    status: community
+  - id: acme.git.update-release
+    match: { git: { service: receive-pack, command: update, refs: ["refs/heads/release/*"] } }
+    class: delete
+    card: x
+    status: community
+`)}
+	c, err := Load(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := c.Provider("acme")
+	for ref, want := range map[string]string{
+		"refs/heads/main":        "acme.git.update-main",
+		"refs/heads/main2":       "acme.git.update",
+		"refs/heads/release/1.0": "acme.git.update-release",
+		"refs/heads/release":     "acme.git.update",
+		"refs/tags/v1":           "acme.git.update",
+	} {
+		op := decode.Operation{Protocol: decode.Git, Service: decode.GitReceivePack, Action: decode.GitUpdate, Args: map[string]any{"ref": ref}}
+		if r, _ := p.Match(op, false); r == nil || r.ID != want {
+			t.Errorf("%s: got %v, want %s", ref, r, want)
+		}
+	}
+	if !p.Hints("api.acme.dev").Git || p.Hints("other.acme.dev").Git {
+		t.Error("git hint is per host")
 	}
 }

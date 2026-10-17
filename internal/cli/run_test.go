@@ -22,6 +22,8 @@ func isolate(t *testing.T) (stateDir string) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { os.RemoveAll(base) })
+	// macOS ignores the XDG variables for the cache and config dirs.
+	t.Setenv("HOME", filepath.Join(base, "h"))
 	t.Setenv("XDG_STATE_HOME", filepath.Join(base, "s"))
 	t.Setenv("XDG_CACHE_HOME", filepath.Join(base, "c"))
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(base, "cfg"))

@@ -1,0 +1,196 @@
+# git over HTTPS to github.com: smart HTTP fetches and pushes, and Git LFS
+operations:
+  - id: github.git.fetch
+    match: { git: { service: upload-pack, command: fetch } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Fetch from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-http
+      - https://git-scm.com/docs/gitprotocol-v2
+    notes: >-
+      Every upload-pack request, the ref advertisement included, only reads,
+      in protocol v0, v1 and v2.
+    tests:
+      - fixture: fixtures/git-info-refs-fetch.http
+        expect: read
+        resource: shop
+      - fixture: fixtures/git-upload-pack.http
+        expect: read
+        resource: shop
+
+  - id: github.git.list-refs
+    match: { git: { service: receive-pack, command: list } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List refs of {owner}/{repo} before a push"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-http
+    notes: >-
+      The ref advertisement that starts a push, and the empty push git sends
+      to check credentials before a large upload. Neither changes a ref.
+    tests:
+      - fixture: fixtures/git-info-refs-push.http
+        expect: read
+        resource: shop
+      - fixture: fixtures/git-push-probe.http
+        expect: read
+        resource: shop
+
+  - id: github.git.create-ref
+    match: { git: { service: receive-pack, command: create } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Push new {ref} to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-pack
+    tests:
+      - fixture: fixtures/git-push-create.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/git-push-create-tag.http
+        expect: write
+        resource: shop
+
+  - id: github.git.update-ref
+    match: { git: { service: receive-pack, command: update } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Push {ref} of {owner}/{repo} to {new}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-pack
+    notes: >-
+      A forced push sends the same command as a fast-forward, so Opfence
+      cannot tell them apart. On feature branches that is accepted as a
+      write; the default branch and tags have their own rules.
+    tests:
+      - fixture: fixtures/git-push-update.http
+        expect: write
+        resource: shop
+
+  - id: github.git.update-default-branch
+    match: { git: { service: receive-pack, command: update, refs: [refs/heads/main, refs/heads/master] } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Push {ref} of {owner}/{repo} to {new} (may be a force push)"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-pack
+    notes: >-
+      The push may be forced, which rewrites the default branch; the old
+      commits can be pushed back from any clone, so the worst case is a
+      delete. Its own rule id lets a policy ask for every push to main.
+    tests:
+      - fixture: fixtures/git-push-update-main.http
+        expect: delete
+        resource: shop
+
+  - id: github.git.update-tag
+    match: { git: { service: receive-pack, command: update, refs: ["refs/tags/*"] } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Move tag {ref} of {owner}/{repo} to {new}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-pack
+    notes: Moving a tag changes what a release points at; the old target can be pushed back from a clone.
+    tests:
+      - fixture: fixtures/git-push-update-tag.http
+        expect: delete
+        resource: shop
+
+  - id: github.git.delete-ref
+    match: { git: { service: receive-pack, command: delete } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete {ref} from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://git-scm.com/docs/gitprotocol-pack
+    notes: The commits stay until garbage-collected and the ref can be pushed again from any clone.
+    tests:
+      - fixture: fixtures/git-push-delete.http
+        expect: delete
+        resource: shop
+
+  - id: github.git.lfs-download
+    match: { git: { service: lfs, command: download } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Download Git LFS objects from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/git-lfs/git-lfs/blob/main/docs/api/batch.md
+    tests:
+      - fixture: fixtures/lfs-batch-download.http
+        expect: read
+        resource: shop
+
+  - id: github.git.lfs-upload
+    match: { git: { service: lfs, command: upload } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Upload Git LFS objects to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/git-lfs/git-lfs/blob/main/docs/api/batch.md
+    tests:
+      - fixture: fixtures/lfs-batch-upload.http
+        expect: write
+        resource: shop
+
+  - id: github.git.lfs-list-locks
+    match: { git: { service: lfs, command: list-locks } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List Git LFS locks of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/git-lfs/git-lfs/blob/main/docs/api/locking.md
+    tests:
+      - fixture: fixtures/lfs-locks-list.http
+        expect: read
+        resource: shop
+
+  - id: github.git.lfs-lock
+    match: { git: { service: lfs, command: lock } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Lock {path} in {owner}/{repo} with Git LFS"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/git-lfs/git-lfs/blob/main/docs/api/locking.md
+    tests:
+      - fixture: fixtures/lfs-lock.http
+        expect: write
+        resource: shop
+
+  - id: github.git.lfs-unlock
+    match: { git: { service: lfs, command: unlock } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Remove Git LFS lock {id} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/git-lfs/git-lfs/blob/main/docs/api/locking.md
+    notes: With force set this removes another user's lock, which is still only a lock.
+    tests:
+      - fixture: fixtures/lfs-unlock.http
+        expect: write
+        resource: shop

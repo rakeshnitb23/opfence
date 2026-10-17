@@ -78,7 +78,7 @@ func (e *Engine) Evaluate(r *request.Request) Result {
 	if p == nil {
 		ops = decode.Decode(r, decode.Hints{})
 	} else {
-		ops = decode.Decode(r, p.Hints())
+		ops = decode.Decode(r, p.Hints(r.Host))
 	}
 	for _, op := range ops {
 		res.Evaluations = append(res.Evaluations, e.evaluate(p, r.Host, op))
