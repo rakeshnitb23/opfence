@@ -83,7 +83,6 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 			}
 			defer s.Close()
 
-			upstreamProxy := os.Getenv("HTTPS_PROXY") + os.Getenv("https_proxy") + os.Getenv("HTTP_PROXY") + os.Getenv("http_proxy")
 			env, extra, changes, err := launch.ProtectEnv(os.Environ(), s.eng.Catalog, s.stored)
 			if err != nil {
 				return err
@@ -171,11 +170,6 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 				effMode = s.eng.Policy.Mode
 			}
 			printRunBanner(stderr, s, kind, effMode, changes, logFile.Name())
-			if upstreamProxy != "" {
-				// The child's proxy variables now point at Opfence, which
-				// connects directly.
-				fmt.Fprintln(stderr, "  warning: your HTTPS_PROXY/HTTP_PROXY is replaced for this program, and Opfence connects directly; on a network that only allows its own proxy, connections will fail")
-			}
 			if kind == "claude" {
 				claudeWarnings(stderr, args[0])
 			}
@@ -292,6 +286,9 @@ func printRunBanner(w io.Writer, s *session, kind, mode string, changes []launch
 	fmt.Fprintf(w, "Opfence session %s: %s mode, %s.\n", s.id, mode, how)
 	fmt.Fprintf(w, "  Approvals: %s\n", s.approvals)
 	fmt.Fprintf(w, "  Credentials: %d; audit log %s; problems go to %s\n", s.credentials(), s.audit.Path(), logPath)
+	if s.upstream != nil {
+		fmt.Fprintf(w, "  Upstream proxy: %s (from HTTPS_PROXY; NO_PROXY hosts are reached directly)\n", s.upstream.URL.Redacted())
+	}
 	for _, c := range changes {
 		switch c.Action {
 		case "placeholder":

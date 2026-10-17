@@ -92,6 +92,10 @@ type Config struct {
 	// DialContext dials upstream connections. Nil uses a dialer that refuses
 	// loopback, private and link-local addresses (tests replace it).
 	DialContext func(ctx context.Context, network, addr string) (net.Conn, error)
+	// Upstream, when set, is a proxy every upstream connection goes
+	// through (a corporate proxy). The private-address check then covers IP
+	// literals only, since the upstream proxy resolves names.
+	Upstream *Upstream
 	// UpstreamRootCAs verifies upstream servers; nil uses the system roots.
 	UpstreamRootCAs *x509.CertPool
 	// Logf reports errors that have no client to go to; nil uses log.Printf.

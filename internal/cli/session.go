@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"path/filepath"
 
 	"github.com/rakeshnitb23/opfence/internal/approve"
@@ -30,6 +31,7 @@ type session struct {
 	broker       *approve.Broker
 	ctl          *approve.Control
 	approvals    string // how approvals reach the user, for banners
+	upstream     *proxy.Upstream
 	logf         func(format string, args ...any)
 
 	servers []*proxy.Server
@@ -57,6 +59,11 @@ func openSession(g *globalOptions, o sessionOptions) (*session, error) {
 		fmt.Fprintln(o.warn, "warning:", w)
 	}
 	s := &session{id: sessionID(), eng: eng, errc: make(chan error, 8), logf: o.logf}
+	// The proxy Opfence itself was started behind, before any child's
+	// variables point at Opfence.
+	if s.upstream, err = proxy.UpstreamFromEnv(os.Getenv); err != nil {
+		return nil, err
+	}
 	if s.logf == nil {
 		s.logf = func(f string, a ...any) { fmt.Fprintf(o.warn, f+"\n", a...) }
 	}
@@ -112,7 +119,7 @@ func (s *session) listen(spec listenSpec) (httpAddr, socksAddr string, err error
 	srv, err := proxy.New(proxy.Config{
 		Engine: s.eng, CA: s.ca, Audit: s.audit, Session: s.id, Via: spec.via, Mode: spec.mode,
 		PrivateTunnels: spec.privateTunnels, Secrets: secrets.NewSet(append(append([]*secrets.Secret{}, s.stored...), s.extra...)),
-		Approver: s.broker, Logf: s.logf,
+		Approver: s.broker, Logf: s.logf, Upstream: s.upstream,
 	})
 	if err != nil {
 		return "", "", err

@@ -29,6 +29,9 @@ func isolate(t *testing.T) (stateDir string) {
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(base, "cfg"))
 	t.Setenv("OPFENCE_CONFIG", "")
 	t.Setenv(envSession, "")
+	for _, k := range []string{"HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy", "NO_PROXY", "no_proxy"} {
+		t.Setenv(k, "")
+	}
 	return filepath.Join(base, "s", "opfence")
 }
 

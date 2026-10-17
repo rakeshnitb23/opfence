@@ -320,11 +320,33 @@ func splice(a, b net.Conn) {
 	wg.Wait()
 }
 
-// dial connects upstream. The default dialer refuses loopback, private,
-// link-local and other non-public addresses after DNS resolution (so a
-// public name that resolves to 127.0.0.1 is refused too), unless
-// allowPrivate is set for a host the user listed by name.
+// dial connects upstream, through the Upstream proxy unless NoProxy lists
+// the host.
 func (s *Server) dial(ctx context.Context, network, addr string, allowPrivate bool) (net.Conn, error) {
+	if up := s.cfg.Upstream; up != nil {
+		host, _, err := net.SplitHostPort(addr)
+		if err != nil {
+			return nil, err
+		}
+		if !up.Bypass(host) {
+			// The upstream proxy resolves names, so only an IP literal can
+			// be checked here.
+			if ip := net.ParseIP(host); ip != nil && !allowPrivate && !PublicIP(ip) {
+				return nil, fmt.Errorf("%s is not a public address", host)
+			}
+			return up.connect(ctx, func(ctx context.Context, network, addr string) (net.Conn, error) {
+				return s.directDial(ctx, network, addr, true) // the user chose this proxy
+			}, addr)
+		}
+	}
+	return s.directDial(ctx, network, addr, allowPrivate)
+}
+
+// directDial connects without the upstream proxy. The default dialer
+// refuses loopback, private, link-local and other non-public addresses after
+// DNS resolution (so a public name that resolves to 127.0.0.1 is refused
+// too), unless allowPrivate is set for a host the user listed by name.
+func (s *Server) directDial(ctx context.Context, network, addr string, allowPrivate bool) (net.Conn, error) {
 	if s.cfg.DialContext != nil {
 		return s.cfg.DialContext(ctx, network, addr)
 	}

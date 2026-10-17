@@ -69,6 +69,9 @@ state folder; point your client at it, for example
 			fmt.Fprintf(out, "  Credentials:     %d from your keychain\n", s.credentials())
 			fmt.Fprintf(out, "  Audit log:       %s\n", s.audit.Path())
 			fmt.Fprintf(out, "  Approvals:       %s\n", s.approvals)
+			if s.upstream != nil {
+				fmt.Fprintf(out, "  Upstream proxy:  %s\n", s.upstream.URL.Redacted())
+			}
 
 			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()

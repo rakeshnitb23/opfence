@@ -50,6 +50,8 @@ type env struct {
 	echoAddr string // plain TCP echo
 	tlsEcho  string // TLS echo, certificate from upPool (a separate CA)
 	upPool   *x509.CertPool
+
+	connects []string // CONNECT targets the fake upstream proxy received, with their auth
 }
 
 type opts struct {
@@ -58,6 +60,7 @@ type opts struct {
 	secrets     *secrets.Set
 	via         string
 	private     bool // PrivateTunnels
+	upstream    bool // go through a fake corporate proxy
 	// respond, when set, answers upstream requests instead of the default.
 	respond func(w http.ResponseWriter, r *http.Request)
 }
@@ -151,18 +154,23 @@ func newEnv(t *testing.T, o opts) *env {
 		UpstreamRootCAs: upCA.Pool(),
 		Logf:            t.Logf,
 	}
-	if !o.defaultDial {
-		cfg.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
-			host, port, _ := net.SplitHostPort(addr)
-			target := e.echoAddr
-			switch {
-			case cat.ProviderForHost(host) != nil:
-				target = api.Listener.Addr().String()
-			case port == "443":
-				target = e.tlsEcho
-			}
-			return (&net.Dialer{}).DialContext(ctx, network, target)
+	route := func(ctx context.Context, network, addr string) (net.Conn, error) {
+		host, port, _ := net.SplitHostPort(addr)
+		target := e.echoAddr
+		switch {
+		case cat.ProviderForHost(host) != nil:
+			target = api.Listener.Addr().String()
+		case port == "443":
+			target = e.tlsEcho
 		}
+		return (&net.Dialer{}).DialContext(ctx, network, target)
+	}
+	switch {
+	case o.upstream:
+		addr := e.fakeUpstream(route)
+		cfg.Upstream = &Upstream{URL: &url.URL{Scheme: "http", Host: addr, User: url.UserPassword("corp", "s3cret")}, NoProxy: "localhost,.internal.example"}
+	case !o.defaultDial:
+		cfg.DialContext = route
 	}
 	if e.srv, err = New(cfg); err != nil {
 		t.Fatal(err)
@@ -174,6 +182,48 @@ func newEnv(t *testing.T, o opts) *env {
 	go e.srv.ServeHTTPProxy(hl)
 	go e.srv.ServeSOCKS(sl)
 	return e
+}
+
+// fakeUpstream runs a CONNECT proxy that requires Basic auth and connects
+// every tunnel with route.
+func (e *env) fakeUpstream(route func(ctx context.Context, network, addr string) (net.Conn, error)) string {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		e.t.Fatal(err)
+	}
+	e.t.Cleanup(func() { l.Close() })
+	go func() {
+		for {
+			c, err := l.Accept()
+			if err != nil {
+				return
+			}
+			go func() {
+				defer c.Close()
+				br := bufio.NewReader(c)
+				req, err := http.ReadRequest(br)
+				if err != nil || req.Method != "CONNECT" {
+					return
+				}
+				e.mu.Lock()
+				e.connects = append(e.connects, req.Host+" "+req.Header.Get("Proxy-Authorization"))
+				e.mu.Unlock()
+				if req.Host == "refused.example.com:8443" {
+					fmt.Fprint(c, "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n")
+					return
+				}
+				up, err := route(context.Background(), "tcp", req.Host)
+				if err != nil {
+					return
+				}
+				defer up.Close()
+				fmt.Fprint(c, "HTTP/1.1 200 Connection established\r\n\r\n")
+				go func() { _, _ = io.Copy(up, br) }()
+				_, _ = io.Copy(c, up)
+			}()
+		}
+	}()
+	return l.Addr().String()
 }
 
 // client is an HTTP client using the proxy and trusting the Opfence CA.
