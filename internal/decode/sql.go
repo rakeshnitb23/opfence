@@ -18,6 +18,11 @@ import (
 // below, is unknown.
 func ClassifySQL(sql string) (out []classes.Class) {
 	unknown := []classes.Class{classes.Unknown}
+	if len(sql) > maxSQL {
+		// Deep enough nesting overflows the parser's stack, which recover
+		// cannot catch.
+		return unknown
+	}
 	defer func() {
 		if recover() != nil {
 			out = unknown
@@ -49,6 +54,10 @@ func ClassifySQL(sql string) (out []classes.Class) {
 	}
 	return out
 }
+
+// maxSQL is the longest SQL ClassifySQL parses. Request bodies are capped
+// well below it.
+const maxSQL = 1 << 20
 
 func one(c classes.Class) []classes.Class { return []classes.Class{c} }
 
@@ -124,13 +133,22 @@ func classifyStatement(n ast.Node) []classes.Class {
 		}
 		return one(classes.Read)
 	case *ast.VariableSetStmt:
-		switch strings.ToLower(st.Name) {
-		case "role", "session_authorization", "session_replication_role", "row_security":
-			return one(classes.Access)
+		if st.Kind == ast.VAR_RESET_ALL || privilegedSetting(st.Name) {
+			return one(classes.Access) // RESET ALL undoes an earlier SET ROLE
+		}
+		return one(classes.Read)
+	case *ast.AlterDatabaseSetStmt:
+		if st.Setstmt != nil && (st.Setstmt.Kind == ast.VAR_RESET_ALL || privilegedSetting(st.Setstmt.Name)) {
+			return []classes.Class{classes.Write, classes.Access}
+		}
+		return one(classes.Write)
+	case *ast.DiscardStmt:
+		if st.Target == ast.DISCARD_ALL {
+			return one(classes.Access) // includes RESET ALL
 		}
 		return one(classes.Read)
 	case *ast.VariableShowStmt, *ast.TransactionStmt, *ast.FetchStmt, *ast.ClosePortalStmt,
-		*ast.ListenStmt, *ast.UnlistenStmt, *ast.DeallocateStmt, *ast.DiscardStmt, *ast.ConstraintsSetStmt:
+		*ast.ListenStmt, *ast.UnlistenStmt, *ast.DeallocateStmt, *ast.ConstraintsSetStmt:
 		return one(classes.Read)
 
 	case *ast.GrantStmt, *ast.GrantRoleStmt, *ast.ReassignOwnedStmt, *ast.SecLabelStmt,
@@ -181,7 +199,7 @@ func classifyStatement(n ast.Node) []classes.Class {
 		*ast.AlterForeignServerStmt, *ast.CreateForeignTableStmt, *ast.ImportForeignSchemaStmt,
 		*ast.CreatePublicationStmt, *ast.AlterPublicationStmt, *ast.CreateSubscriptionStmt, *ast.AlterSubscriptionStmt,
 		*ast.CreateStatsStmt, *ast.AlterStatsStmt, *ast.CreateTableSpaceStmt, *ast.AlterTableSpaceStmt,
-		*ast.AlterTableMoveAllStmt, *ast.CreatedbStmt, *ast.AlterDatabaseStmt, *ast.AlterDatabaseSetStmt,
+		*ast.AlterTableMoveAllStmt, *ast.CreatedbStmt, *ast.AlterDatabaseStmt,
 		*ast.AlterDatabaseRefreshCollStmt, *ast.AlterCollationStmt, *ast.AlterTSConfigurationStmt,
 		*ast.AlterTSDictionaryStmt, *ast.AlterObjectSchemaStmt, *ast.AlterObjectDependsStmt, *ast.RenameStmt,
 		*ast.ReplicaIdentityStmt, *ast.CreateAssertionStmt, *ast.CommentStmt, *ast.VacuumStmt,
@@ -206,6 +224,10 @@ func classifyAlterTable(st *ast.AlterTableStmt) []classes.Class {
 		switch cmd.Subtype {
 		case ast.AT_DropColumn:
 			out = append(out, classes.Irreversible)
+		case ast.AT_AlterColumnType:
+			if d, ok := cmd.Def.(*ast.ColumnDef); ok && d.RawDefault != nil {
+				out = append(out, classes.Irreversible) // USING rewrites every row
+			}
 		case ast.AT_DisableRowSecurity, ast.AT_NoForceRowSecurity, ast.AT_ChangeOwner:
 			out = append(out, classes.Access)
 		}
@@ -293,7 +315,14 @@ func (c *sqlClassifier) classifyInside(st ast.Node) []classes.Class {
 			}
 			if len(parts) > 0 {
 				out = append(out, c.funcs[parts[len(parts)-1]]...)
+				if strings.EqualFold(parts[len(parts)-1], "set_config") && setConfigPrivileged(n.Args) {
+					out = append(out, classes.Access)
+				}
 			}
+		case *ast.CreateTriggerStmt:
+			out = append(out, c.triggerFunction(n.Funcname)...)
+		case *ast.CreateEventTrigStmt:
+			out = append(out, c.triggerFunction(n.FuncName)...)
 		case *ast.RangeVar:
 			if strings.EqualFold(n.SchemaName, "vault") && strings.EqualFold(n.RelName, "decrypted_secrets") {
 				out = append(out, classes.Credential) // Supabase Vault, decrypted
@@ -302,6 +331,49 @@ func (c *sqlClassifier) classifyInside(st ast.Node) []classes.Class {
 		return true
 	}, nil)
 	return out
+}
+
+// triggerFunction classifies the function a trigger runs on every later
+// statement it fires on: by its body when the batch defines it, otherwise
+// unknown.
+func (c *sqlClassifier) triggerFunction(name *ast.NodeList) []classes.Class {
+	parts := nameParts(name)
+	if len(parts) > 0 {
+		if cs, ok := c.funcs[parts[len(parts)-1]]; ok {
+			return cs
+		}
+	}
+	return one(classes.Unknown)
+}
+
+// privilegedSetting reports whether a setting changes whose privileges a
+// session acts with. Supabase's auth.uid() and auth.role(), which RLS
+// policies call, read request.jwt.*.
+func privilegedSetting(name string) bool {
+	name = strings.ToLower(name)
+	switch name {
+	case "role", "session_authorization", "session_replication_role", "row_security":
+		return true
+	}
+	return strings.HasPrefix(name, "request.jwt")
+}
+
+// setConfigPrivileged reports whether set_config's first argument names a
+// privileged setting, or cannot be read.
+func setConfigPrivileged(args *ast.NodeList) bool {
+	if args == nil || len(args.Items) == 0 {
+		return true
+	}
+	a := args.Items[0]
+	if t, ok := a.(*ast.TypeCast); ok {
+		a = t.Arg
+	}
+	if k, ok := a.(*ast.A_Const); ok {
+		if v, ok := k.Val.(*ast.String); ok {
+			return privilegedSetting(v.SVal)
+		}
+	}
+	return true
 }
 
 // sqlFunctionClass returns the class of a function call with side effects a
@@ -352,18 +424,42 @@ func nameParts(l *ast.NodeList) []string {
 // effectiveWhere reports whether a WHERE clause limits the rows an UPDATE
 // or DELETE touches. A missing clause does not, and neither does one that
 // reads no column (WHERE true, WHERE 1 = 1, WHERE $1, WHERE EXISTS (SELECT
-// 1)) or an OR with such a branch (WHERE id = 5 OR true).
+// 1)), an OR with such a branch (WHERE id = 5 OR true), an AND with no
+// limiting branch, or a common tautology (WHERE id IS NOT NULL, WHERE id =
+// id). Other tautologies can't be told apart from real filters; see
+// docs/LIMITS.md.
 func effectiveWhere(w ast.Node) bool {
-	if w == nil {
+	switch n := w.(type) {
+	case nil:
 		return false
-	}
-	if b, ok := w.(*ast.BoolExpr); ok && b.Boolop == ast.OR_EXPR && b.Args != nil {
-		for _, a := range b.Args.Items {
-			if !effectiveWhere(a) {
-				return false
-			}
+	case *ast.BoolExpr:
+		if n.Args == nil {
+			return false
 		}
-		return true
+		switch n.Boolop {
+		case ast.OR_EXPR:
+			for _, a := range n.Args.Items {
+				if !effectiveWhere(a) {
+					return false
+				}
+			}
+			return true
+		case ast.AND_EXPR:
+			for _, a := range n.Args.Items {
+				if effectiveWhere(a) {
+					return true
+				}
+			}
+			return false
+		}
+	case *ast.NullTest:
+		if n.Nulltesttype == ast.IS_NOT_NULL {
+			return false
+		}
+	case *ast.A_Expr:
+		if n.Lexpr != nil && n.Rexpr != nil && n.Lexpr.SqlString() == n.Rexpr.SqlString() {
+			return false // id = id, id >= id
+		}
 	}
 	limits := false
 	ast.Rewrite(w, func(c *ast.Cursor) bool {

@@ -165,18 +165,18 @@ Path normalisation (`request.NormalizePath`) collapses `//`, drops `.` and trail
 | `SELECT`, `VALUES`, `TABLE`, `SHOW`, `EXPLAIN` (without `ANALYZE`), transaction control, cursors, harmless `SET` | read |
 | `INSERT`, `UPDATE` with a limiting `WHERE`, `MERGE` without `DELETE`, `CREATE …`, most `ALTER …`, `COMMENT`, `VACUUM`, `SELECT … INTO`, `COPY … FROM` | write |
 | `DELETE` with a limiting `WHERE`, `MERGE … DELETE` | delete |
-| `DROP …`, `TRUNCATE`, `DELETE` or `UPDATE` without a limiting `WHERE`, `ALTER TABLE … DROP COLUMN`, `DROP OWNED` | irreversible |
-| `GRANT`, `REVOKE`, roles, policies, `ALTER DEFAULT PRIVILEGES`, owners, `SET ROLE` / `SESSION AUTHORIZATION` / `session_replication_role` / `row_security`, `DISABLE` or `NO FORCE ROW LEVEL SECURITY`, `SECURITY DEFINER` functions | access |
+| `DROP …`, `TRUNCATE`, `DELETE` or `UPDATE` without a limiting `WHERE`, `ALTER TABLE … DROP COLUMN`, `ALTER COLUMN … TYPE … USING`, `DROP OWNED` | irreversible |
+| `GRANT`, `REVOKE`, roles, policies, `ALTER DEFAULT PRIVILEGES`, owners, `SET ROLE` / `SESSION AUTHORIZATION` / `session_replication_role` / `row_security` / `request.jwt.*` (also through `set_config` and `ALTER DATABASE … SET`), `RESET ALL`, `DISCARD ALL`, `DISABLE` or `NO FORCE ROW LEVEL SECURITY`, `SECURITY DEFINER` functions | access |
 | Reading `vault.decrypted_secrets` (Supabase Vault) | credential |
-| `DO`, `CALL`, `EXECUTE`, `LOAD`, `ALTER SYSTEM`, `COPY … PROGRAM`, `COPY … TO 'file'`, anything else | unknown |
+| `DO`, `CALL`, `EXECUTE`, `LOAD`, `ALTER SYSTEM`, a trigger whose function the batch doesn't define, `COPY … PROGRAM`, `COPY … TO 'file'`, anything else | unknown |
 
 What the parse tree adds:
-- A `WHERE` limits rows only if it reads a column (or is `CURRENT OF`): `WHERE true`, `WHERE 1 = 1`, `WHERE $1`, `WHERE EXISTS (SELECT 1)`, and an `OR` with any such branch (`WHERE id = 5 OR true`) count as no `WHERE`.
+- A `WHERE` limits rows only if it reads a column (or is `CURRENT OF`): `WHERE true`, `WHERE 1 = 1`, `WHERE $1`, `WHERE EXISTS (SELECT 1)`, an `OR` with any such branch (`WHERE id = 5 OR true`), an `AND` with no limiting branch, and the common tautologies `WHERE id IS NOT NULL` and `WHERE id = id` count as no `WHERE`. A filter like `WHERE deleted_at IS NOT NULL` is therefore irreversible, stricter than it needs to be.
 - Data-modifying CTEs are classified at any depth, since Postgres runs them even under a `SELECT`.
-- Functions with side effects are caught anywhere in a statement: server control (`pg_terminate_backend`, `pg_reload_conf`, replication slots), files (`pg_read_file`, `pg_ls_dir`, `lo_*`, `pg_file_*`), network (`dblink*`, `http*`, `net.http_*`), `set_config`, and `query_to_xml` (which runs a query from a string) are unknown; `nextval` and `setval` are writes.
-- A function created in the same batch is classified by its body when it is SQL, and as unknown in any other language, so `CREATE FUNCTION f … AS $$ DELETE … $$; SELECT f()` is not a read. `CREATE RULE` adds the class of its actions; `PREPARE` the class of what it prepares; `EXPLAIN ANALYZE` and `COPY (query) TO` the class of the statement they run.
+- Functions with side effects are caught anywhere in a statement: server control (`pg_terminate_backend`, `pg_reload_conf`, replication slots), files (`pg_read_file`, `pg_ls_dir`, `lo_*`, `pg_file_*`), network (`dblink*`, `http*`, `net.http_*`), `set_config` (also access when it sets a privileged setting or one it can't read), and `query_to_xml` (which runs a query from a string) are unknown; `nextval` and `setval` are writes.
+- A function created in the same batch is classified by its body when it is SQL, and as unknown in any other language, so `CREATE FUNCTION f … AS $$ DELETE … $$; SELECT f()` is not a read. `CREATE TRIGGER` and `CREATE EVENT TRIGGER` add the class of their function when the batch defines it, and unknown otherwise. `CREATE RULE` adds the class of its actions; `PREPARE` the class of what it prepares; `EXPLAIN ANALYZE` and `COPY (query) TO` the class of the statement they run.
 
-Multiple statements take the strictest decision.
+Multiple statements take the strictest decision. SQL longer than 1 MB is unknown without parsing, because nesting that deep can overflow the parser's stack.
 
 ## 4. Catalog
 

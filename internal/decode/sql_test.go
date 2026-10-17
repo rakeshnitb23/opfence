@@ -3,6 +3,7 @@ package decode
 import (
 	"reflect"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 
@@ -129,6 +130,33 @@ func TestClassifySQL(t *testing.T) {
 		{"create function f() returns void language plpgsql as $$ begin delete from t; end $$; select f()", []classes.Class{W, R, U}},
 		{"create function f() returns int begin atomic delete from t; select 1; end; select f()", []classes.Class{W, R, I}},
 		{"create rule r as on select to t do instead delete from u", []classes.Class{W, I}},
+		// Triggers run their function on later statements.
+		{"create function f() returns trigger language plpgsql as $$ begin delete from t; return new; end $$; " +
+			"create trigger g after insert on u for each row execute function f(); insert into u values (1)", []classes.Class{W, U}},
+		{"create trigger g after insert on u for each row execute function existing_fn()", []classes.Class{W, U}},
+		{"create event trigger e on ddl_command_start execute function existing_fn()", []classes.Class{W, U}},
+		// Common tautologies don't limit a DELETE or UPDATE.
+		{"delete from t where id is not null", []classes.Class{I}},
+		{"delete from t where id = id", []classes.Class{I}},
+		{"delete from t where id is not null and true", []classes.Class{I}},
+		{"delete from t where id is not null and id = 5", []classes.Class{D}},
+		{"update t set a = 1 where t.id >= t.id", []classes.Class{I}},
+		{"delete from t where id is null", []classes.Class{D}},
+		{"alter table t alter column c type text using null", []classes.Class{W, I}},
+		{"alter table t alter column c type bigint", []classes.Class{W}},
+		// Settings that change whose privileges the session has.
+		{"set request.jwt.claims = '{\"role\":\"service_role\"}'", []classes.Class{A}},
+		{"set local request.jwt.claim.role = 'service_role'", []classes.Class{A}},
+		{"select set_config('request.jwt.claims', '{}', true)", []classes.Class{R, U, A}},
+		{"select set_config('role', 'postgres', false)", []classes.Class{R, U, A}},
+		{"select set_config($1, $2, false)", []classes.Class{R, U, A}},
+		{"select set_config('search_path', 'public', false)", []classes.Class{R, U}},
+		{"alter database postgres set row_security = off", []classes.Class{W, A}},
+		{"alter database postgres set work_mem = '64MB'", []classes.Class{W}},
+		{"reset all", []classes.Class{A}},
+		{"discard all", []classes.Class{A}},
+		{"discard plans", []classes.Class{R}},
+		{"set statement_timeout = 0", []classes.Class{R}},
 	}
 	for _, c := range cases {
 		if got := ClassifySQL(c.sql); !reflect.DeepEqual(got, c.want) {
@@ -170,4 +198,11 @@ func TestClassifySQLConcurrent(t *testing.T) {
 		}()
 	}
 	wg.Wait()
+}
+
+func TestClassifySQLTooLong(t *testing.T) {
+	sql := "select " + strings.Repeat("(", maxSQL) + "1"
+	if got := ClassifySQL(sql); !reflect.DeepEqual(got, []classes.Class{classes.Unknown}) {
+		t.Fatalf("got %v, want [unknown]", got)
+	}
 }
