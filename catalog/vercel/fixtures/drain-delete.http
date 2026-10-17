@@ -1,0 +1,5 @@
+# description: Delete drain drn_1
+DELETE /v1/drains/drn_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

@@ -1,0 +1,43 @@
+# AWS APIs: sts
+operations:
+  - id: aws.sts.assume-role
+    match: { aws: { service: sts, action: AssumeRole } }
+    class: credential
+    resource: { arg: RoleArn, kind: role }
+    card: "Assume IAM role {RoleArn}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/sts/2011-06-15/service-2.json
+    notes: >-
+      Returns working credentials for the role. The AWS CLI calls it by itself
+      for profiles with role_arn; map development role ARNs in opfence.yaml so
+      those calls are not treated as production.
+    tests:
+      - fixture: fixtures/sts-assume-role.http
+        expect: credential
+        resource: arn:aws:iam::123456789012:role/admin
+
+  - id: aws.sts.get-session-token
+    match: { aws: { service: sts, action: GetSessionToken } }
+    class: credential
+    card: "Create temporary credentials"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/sts/2011-06-15/service-2.json
+    tests:
+      - fixture: fixtures/sts-get-session-token.http
+        expect: credential
+
+  - id: aws.sts.get-federation-token
+    match: { aws: { service: sts, action: GetFederationToken } }
+    class: credential
+    card: "Create federated credentials for {Name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/sts/2011-06-15/service-2.json
+    tests:
+      - fixture: fixtures/sts-get-federation-token.http
+        expect: credential

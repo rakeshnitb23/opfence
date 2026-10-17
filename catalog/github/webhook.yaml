@@ -1,0 +1,60 @@
+# GitHub REST and GraphQL APIs: webhook
+operations:
+  - id: github.webhook.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/hooks" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Send events of {owner}/{repo} to a webhook"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      A webhook sends repository events, including code changes, to an outside
+      URL.
+    tests:
+      - fixture: fixtures/webhook-create.http
+        expect: access
+        resource: shop
+
+  - id: github.webhook.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/hooks/{hook_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change webhook {hook_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/webhook-update.http
+        expect: access
+        resource: shop
+
+  - id: github.webhook.update-config
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/hooks/{hook_id}/config" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change where webhook {hook_id} sends events"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/webhook-update-config.http
+        expect: access
+        resource: shop
+
+  - id: github.webhook.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/hooks/{hook_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete webhook {hook_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/webhook-delete.http
+        expect: delete
+        resource: shop

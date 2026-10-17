@@ -1,0 +1,94 @@
+# Railway GraphQL API: variable
+operations:
+  - id: railway.variable.delete
+    match: { graphql: { type: mutation, field: variableDelete } }
+    class: irreversible
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Delete variable {input.name} from service {input.serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The value is gone once deleted; Railway keeps no history of variable
+      values.
+    tests:
+      - fixture: fixtures/variable-delete.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.variable.upsert
+    match: { graphql: { type: mutation, field: variableUpsert } }
+    class: write
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Set variable {input.name} on service {input.serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A write, not credential: setting a value does not reveal one, and
+      Railway does not mark which variables are secrets. Overwriting a value
+      loses the old one.
+    tests:
+      - fixture: fixtures/variable-upsert.http
+        expect: write
+        resource: env-production
+
+  - id: railway.variable.collection-upsert
+    match: { graphql: { type: mutation, field: variableCollectionUpsert } }
+    class: write
+    when:
+      - if: { arg: input.replace, equals: "true" }
+        class: irreversible
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Set several variables on service {input.serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      With replace: true every variable not in the request is deleted.
+    tests:
+      - fixture: fixtures/variable-collection-upsert.http
+        expect: write
+        resource: env-production
+      - fixture: fixtures/variable-collection-upsert-replace.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.variable.list
+    match: { graphql: { type: query, field: variables } }
+    class: credential
+    resource: { arg: environmentId, kind: environment }
+    card: "Read the variable values of service {serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns variable values, which usually include database URLs and API
+      keys.
+    tests:
+      - fixture: fixtures/variable-list.http
+        expect: credential
+        resource: env-production
+
+  - id: railway.variable.list-for-deployment
+    match: { graphql: { type: query, field: variablesForServiceDeployment } }
+    class: credential
+    resource: { arg: environmentId, kind: environment }
+    card: "Read the rendered variables of service {serviceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/variable-list-for-deployment.http
+        expect: credential
+        resource: env-production

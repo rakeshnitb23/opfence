@@ -1,0 +1,87 @@
+# Vercel REST API: domain
+operations:
+  - id: vercel.domain.delete
+    match: { rest: { method: DELETE, path: "/{version}/domains/{domain}" } }
+    class: irreversible
+    resource: { arg: domain, kind: domain }
+    card: "Remove domain {domain} and its aliases from Vercel"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A domain registered through Vercel can be lost with it.
+    tests:
+      - fixture: fixtures/domain-delete.http
+        expect: irreversible
+        resource: example.com
+
+  - id: vercel.domain.buy
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/{domain}/buy" } }
+    class: money
+    resource: { arg: domain, kind: domain }
+    card: "Buy domain {domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/domain-buy.http
+        expect: money
+        resource: example.com
+
+  - id: vercel.domain.buy-many
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/buy" } }
+    class: money
+    card: "Buy several domains"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/domain-buy-many.http
+        expect: money
+
+  - id: vercel.domain.renew
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/{domain}/renew" } }
+    class: money
+    resource: { arg: domain, kind: domain }
+    card: "Renew domain {domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/domain-renew.http
+        expect: money
+        resource: example.com
+
+  - id: vercel.domain.transfer-in
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/{domain}/transfer" } }
+    class: money
+    resource: { arg: domain, kind: domain }
+    card: "Transfer domain {domain} to Vercel"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/domain-transfer-in.http
+        expect: money
+        resource: example.com
+
+  - id: vercel.domain.nameservers
+    match: { rest: { method: PATCH, path: "/{version}/registrar/domains/{domain}/nameservers" } }
+    class: write
+    resource: { arg: domain, kind: domain }
+    card: "Change the nameservers of {domain}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Wrong nameservers take every site on the domain offline.
+    tests:
+      - fixture: fixtures/domain-nameservers.http
+        expect: write
+        resource: example.com

@@ -1,0 +1,13 @@
+provider: supabase-mcp
+title: Supabase MCP
+docs: https://supabase.com/docs/guides/getting-started/mcp
+hosts: [mcp.supabase.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  env: [SUPABASE_ACCESS_TOKEN]
+  prefixes: [sbp_]
+mcp:
+  names: [supabase]
+  package: "@supabase/mcp-server-supabase"

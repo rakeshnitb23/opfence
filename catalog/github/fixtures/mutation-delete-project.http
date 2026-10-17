@@ -1,0 +1,7 @@
+# description: Delete project PVT_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeleteProjectV2($input: DeleteProjectV2Input!) { deleteProjectV2(input: $input) { __typename } }","variables":{"input":{"projectId":"PVT_kwDOExample"}}}

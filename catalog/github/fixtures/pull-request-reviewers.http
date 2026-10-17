@@ -1,0 +1,9 @@
+# description: Request reviewers on pull request 42
+POST /repos/acme/shop/pulls/42/requested_reviewers HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"reviewers":["octocat"]}

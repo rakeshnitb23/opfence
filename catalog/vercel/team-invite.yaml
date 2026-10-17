@@ -1,0 +1,15 @@
+# Vercel REST API: team-invite
+operations:
+  - id: vercel.team-invite.delete
+    match: { rest: { method: DELETE, path: "/{version}/teams/{teamId}/invites/{inviteId}" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Delete invite {inviteId} of team {teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-invite-delete.http
+        expect: access
+        resource: team_acme

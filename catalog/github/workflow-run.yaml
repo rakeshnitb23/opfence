@@ -1,0 +1,43 @@
+# GitHub REST and GraphQL APIs: workflow-run
+operations:
+  - id: github.workflow-run.rerun
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/actions/runs/{run_id}/rerun" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Re-run workflow run {run_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/workflow-run-rerun.http
+        expect: write
+        resource: shop
+
+  - id: github.workflow-run.cancel
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/actions/runs/{run_id}/cancel" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Cancel workflow run {run_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/workflow-run-cancel.http
+        expect: write
+        resource: shop
+
+  - id: github.workflow-run.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/actions/runs/{run_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete workflow run {run_id} and its logs"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/workflow-run-delete.http
+        expect: delete
+        resource: shop

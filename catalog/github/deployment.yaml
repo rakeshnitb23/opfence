@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: deployment
+operations:
+  - id: github.deployment.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/deployments" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create a deployment of {body.ref} to {body.environment}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deployment-create.http
+        expect: write
+        resource: shop
+
+  - id: github.deployment.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/deployments/{deployment_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete deployment {deployment_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deployment-delete.http
+        expect: delete
+        resource: shop

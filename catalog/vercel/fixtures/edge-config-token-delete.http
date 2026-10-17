@@ -1,0 +1,7 @@
+# description: Revoke tokens of Edge Config ecfg_1
+DELETE /v1/global-config/ecfg_1/tokens HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"tokens":["tok_1"]}

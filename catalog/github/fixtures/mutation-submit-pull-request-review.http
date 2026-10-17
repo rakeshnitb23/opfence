@@ -1,0 +1,7 @@
+# description: Submit a pull request review
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SubmitPullRequestReview($input: SubmitPullRequestReviewInput!) { submitPullRequestReview(input: $input) { __typename } }","variables":{"input":{"pullRequestReviewId":"PRR_kwDOExample","event":"APPROVE"}}}

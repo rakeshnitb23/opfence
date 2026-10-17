@@ -1,0 +1,17 @@
+# Vercel REST API: protection-bypass
+operations:
+  - id: vercel.protection-bypass.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/protection-bypass" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Change the protection bypass secrets of project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates or revokes the secret that skips deployment protection.
+    tests:
+      - fixture: fixtures/protection-bypass-update.http
+        expect: credential
+        resource: shop-web

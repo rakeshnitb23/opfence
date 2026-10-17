@@ -1,0 +1,7 @@
+# description: Transfer project prj-shop to team team-other
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectTransferToTeam($id: String!, $input: ProjectTransferToTeamInput!) { projectTransferToTeam(id: $id, input: $input) }","variables":{"id":"prj-shop","input":{"teamId":"team-other"}}}

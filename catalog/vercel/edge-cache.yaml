@@ -1,0 +1,15 @@
+# Vercel REST API: edge-cache
+operations:
+  - id: vercel.edge-cache.dangerously-delete
+    match: { rest: { method: POST, path: "/{version}/edge-cache/dangerously-delete-by-tags" } }
+    class: delete
+    card: "Delete edge cache entries tagged {body.tags}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Every request for those paths then goes to the origin at once.
+    tests:
+      - fixture: fixtures/edge-cache-dangerously-delete.http
+        expect: delete

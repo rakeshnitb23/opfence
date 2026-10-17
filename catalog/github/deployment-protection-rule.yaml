@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: deployment-protection-rule
+operations:
+  - id: github.deployment-protection-rule.disable
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/environments/{environment_name}/deployment_protection_rules/{protection_rule_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Disable a deployment protection rule of {environment_name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/deployment-protection-rule-disable.http
+        expect: access
+        resource: shop

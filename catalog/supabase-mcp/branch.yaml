@@ -1,0 +1,96 @@
+# Supabase MCP server: branch
+operations:
+  - id: supabase-mcp.branch.create
+    match: { mcp: { tool: create_branch } }
+    class: money
+    resource: { arg: project_id, kind: project }
+    card: "Create branch {name} of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    notes: >-
+      Branches are billed like small projects.
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: money
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.branch.list
+    match: { mcp: { tool: list_branches } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List branches of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    tests:
+      - fixture: fixtures/branch-list.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.branch.delete
+    match: { mcp: { tool: delete_branch } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete branch {branch_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    notes: >-
+      Branch databases hold development data that can be rebuilt from
+      migrations and seed files. Map a branch id to production in opfence.yaml
+      if one holds data you cannot rebuild.
+    tests:
+      - fixture: fixtures/branch-delete.http
+        expect: delete
+        resource: br-develop
+
+  - id: supabase-mcp.branch.merge
+    match: { mcp: { tool: merge_branch } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Merge branch {branch_id} into production"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    notes: >-
+      Applies the branch's migrations and edge functions to the production
+      project.
+    tests:
+      - fixture: fixtures/branch-merge.http
+        expect: write
+        resource: br-develop
+
+  - id: supabase-mcp.branch.reset
+    match: { mcp: { tool: reset_branch } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Reset branch {branch_id} to migration {migration_version}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    notes: >-
+      Discards the branch's data and untracked schema changes.
+    tests:
+      - fixture: fixtures/branch-reset.http
+        expect: delete
+        resource: br-develop
+
+  - id: supabase-mcp.branch.rebase
+    match: { mcp: { tool: rebase_branch } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Rebase branch {branch_id} on production"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/branching-tools.ts
+    tests:
+      - fixture: fixtures/branch-rebase.http
+        expect: write
+        resource: br-develop

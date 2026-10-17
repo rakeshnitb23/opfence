@@ -1,0 +1,92 @@
+# AWS APIs: kms
+operations:
+  - id: aws.kms.schedule-key-deletion
+    match: { aws: { service: kms, action: ScheduleKeyDeletion } }
+    class: delete
+    resource: { arg: KeyId, kind: kms-key }
+    card: "Schedule KMS key {KeyId} for deletion"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    notes: >-
+      Cancellable during the waiting period (CancelKeyDeletion); after it,
+      everything encrypted with the key is unreadable forever.
+    tests:
+      - fixture: fixtures/kms-schedule-key-deletion.http
+        expect: delete
+        resource: "1234abcd-12ab-34cd-56ef-1234567890ab"
+
+  - id: aws.kms.disable-key
+    match: { aws: { service: kms, action: DisableKey } }
+    class: write
+    resource: { arg: KeyId, kind: kms-key }
+    card: "Disable KMS key {KeyId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    notes: >-
+      Anything encrypted with the key fails to decrypt until it is re-enabled.
+    tests:
+      - fixture: fixtures/kms-disable-key.http
+        expect: write
+        resource: "1234abcd-12ab-34cd-56ef-1234567890ab"
+
+  - id: aws.kms.decrypt
+    match: { aws: { service: kms, action: Decrypt } }
+    class: credential
+    card: "Decrypt data with KMS"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    notes: >-
+      Ciphertext held by applications is usually a secret.
+    tests:
+      - fixture: fixtures/kms-decrypt.http
+        expect: credential
+
+  - id: aws.kms.generate-data-key
+    match: { aws: { service: kms, action: GenerateDataKey } }
+    class: credential
+    resource: { arg: KeyId, kind: kms-key }
+    card: "Generate a data key under {KeyId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    notes: >-
+      The response carries the plaintext key.
+    tests:
+      - fixture: fixtures/kms-generate-data-key.http
+        expect: credential
+        resource: "1234abcd-12ab-34cd-56ef-1234567890ab"
+
+  - id: aws.kms.put-key-policy
+    match: { aws: { service: kms, action: PutKeyPolicy } }
+    class: access
+    resource: { arg: KeyId, kind: kms-key }
+    card: "Replace the policy of KMS key {KeyId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    tests:
+      - fixture: fixtures/kms-put-key-policy.http
+        expect: access
+        resource: "1234abcd-12ab-34cd-56ef-1234567890ab"
+
+  - id: aws.kms.create-grant
+    match: { aws: { service: kms, action: CreateGrant } }
+    class: access
+    resource: { arg: KeyId, kind: kms-key }
+    card: "Grant {GranteePrincipal} use of KMS key {KeyId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/kms/2014-11-01/service-2.json
+    tests:
+      - fixture: fixtures/kms-create-grant.http
+        expect: access
+        resource: "1234abcd-12ab-34cd-56ef-1234567890ab"

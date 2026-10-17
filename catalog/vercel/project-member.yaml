@@ -1,0 +1,29 @@
+# Vercel REST API: project-member
+operations:
+  - id: vercel.project-member.add
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/members" } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Add a member to project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-member-add.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel.project-member.remove
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}/members/{uid}" } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Remove member {uid} from project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-member-remove.http
+        expect: access
+        resource: shop-web

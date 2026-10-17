@@ -1,0 +1,5 @@
+# description: Read the decrypted value of variable env_db_url in project shop-web
+GET /v1/projects/shop-web/env/env_db_url HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

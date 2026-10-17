@@ -1,0 +1,13 @@
+# Vercel REST API: drain
+operations:
+  - id: vercel.drain.delete
+    match: { rest: { method: DELETE, path: "/{version}/drains/{id}" } }
+    class: delete
+    card: "Delete drain {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/drain-delete.http
+        expect: delete

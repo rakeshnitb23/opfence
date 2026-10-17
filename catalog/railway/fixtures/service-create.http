@@ -1,0 +1,7 @@
+# description: Create Railway service worker in project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceCreate($input: ServiceCreateInput!) { serviceCreate(input: $input) { __typename } }","variables":{"input":{"projectId":"prj-shop","name":"worker"}}}

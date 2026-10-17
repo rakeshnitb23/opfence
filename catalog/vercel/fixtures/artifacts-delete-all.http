@@ -1,0 +1,5 @@
+# description: Delete every Remote Cache artifact
+DELETE /v8/artifacts HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

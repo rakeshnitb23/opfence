@@ -1,0 +1,7 @@
+# description: Set usage limits for customer cus-1 to 10000 dollars
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UsageLimitSet($input: UsageLimitSetInput!) { usageLimitSet(input: $input) }","variables":{"input":{"customerId":"cus-1","hardLimitDollars":10000}}}

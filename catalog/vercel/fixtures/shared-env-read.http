@@ -1,0 +1,5 @@
+# description: Read the decrypted value of shared variable env_shared_stripe
+GET /v1/env/env_shared_stripe HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

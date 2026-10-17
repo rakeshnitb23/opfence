@@ -1,0 +1,15 @@
+# Vercel REST API: edge-config
+operations:
+  - id: vercel.edge-config.delete
+    match: { rest: { method: DELETE, path: "/{version}/global-config/{edgeConfigId}" } }
+    class: irreversible
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Delete Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-delete.http
+        expect: irreversible
+        resource: ecfg_1

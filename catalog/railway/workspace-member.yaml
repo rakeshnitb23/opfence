@@ -1,0 +1,46 @@
+# Railway GraphQL API: workspace-member
+operations:
+  - id: railway.workspace-member.invite
+    match: { graphql: { type: mutation, field: workspaceUserInvite } }
+    class: access
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Invite {input.email} to workspace {workspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-member-invite.http
+        expect: access
+        resource: ws-acme
+
+  - id: railway.workspace-member.remove
+    match: { graphql: { type: mutation, field: workspaceUserRemove } }
+    class: access
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Remove user {input.userId} from workspace {workspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-member-remove.http
+        expect: access
+        resource: ws-acme
+
+  - id: railway.workspace-member.role
+    match: { graphql: { type: mutation, field: workspacePermissionChange } }
+    class: access
+    resource: { arg: input.workspaceId, kind: workspace }
+    card: "Make user {input.userId} {input.role} in workspace {input.workspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-member-role.http
+        expect: access
+        resource: ws-acme

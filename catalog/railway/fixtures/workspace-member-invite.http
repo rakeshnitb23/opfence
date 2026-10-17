@@ -1,0 +1,7 @@
+# description: Invite someone@example.com to workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspaceUserInvite($workspaceId: String!, $input: WorkspaceUserInviteInput!) { workspaceUserInvite(workspaceId: $workspaceId, input: $input) }","variables":{"workspaceId":"ws-acme","input":{"email":"someone@example.com","code":"inv-1"}}}

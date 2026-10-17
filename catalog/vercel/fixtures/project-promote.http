@@ -1,0 +1,5 @@
+# description: Promote deployment dpl_123 to production for project prj_shop
+POST /v10/projects/prj_shop/promote/dpl_123 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Set agent usage limits for workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation AgentUsageLimitSet($input: AgentUsageLimitSetInput!) { agentUsageLimitSet(input: $input) }","variables":{"input":{"workspaceId":"ws-acme","hardLimitCents":1000000}}}

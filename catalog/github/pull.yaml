@@ -1,0 +1,57 @@
+# GitHub REST and GraphQL APIs: pull
+operations:
+  - id: github.pull.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/pulls" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Open a pull request from {body.head}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/pull-create.http
+        expect: write
+        resource: shop
+
+  - id: github.pull.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/pulls/{pull_number}" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pull_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/pull-update.http
+        expect: write
+        resource: shop
+
+  - id: github.pull.merge
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/pulls/{pull_number}/merge" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Merge pull request {pull_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/pull-merge.http
+        expect: write
+        resource: shop
+
+  - id: github.pull.request-reviewers
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Request reviewers on pull request {pull_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/pull-request-reviewers.http
+        expect: write
+        resource: shop

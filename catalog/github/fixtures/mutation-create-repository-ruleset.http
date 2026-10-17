@@ -1,0 +1,7 @@
+# description: Create ruleset main
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateRepositoryRuleset($input: CreateRepositoryRulesetInput!) { createRepositoryRuleset(input: $input) { __typename } }","variables":{"input":{"sourceId":"R_kgDOExample","name":"main","enforcement":"ACTIVE","rules":[]}}}

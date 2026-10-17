@@ -1,0 +1,7 @@
+# description: Merge pull request PR_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation MergePullRequest($input: MergePullRequestInput!) { mergePullRequest(input: $input) { __typename } }","variables":{"input":{"pullRequestId":"PR_kwDOExample"}}}

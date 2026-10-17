@@ -1,0 +1,5 @@
+# description: Delete Vercel project shop-web with its deployments, domains and variables
+DELETE /v9/projects/shop-web HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

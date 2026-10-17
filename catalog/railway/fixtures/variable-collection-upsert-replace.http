@@ -1,0 +1,7 @@
+# description: Set several variables on service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VariableCollectionUpsert($input: VariableCollectionUpsertInput!) { variableCollectionUpsert(input: $input) }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","serviceId":"svc-api","variables":{"LOG_LEVEL":"debug"},"replace":true}}}

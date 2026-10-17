@@ -1,0 +1,8 @@
+# description: Authentication probe git sends before a large push to acme/shop
+POST /acme/shop.git/git-receive-pack HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+User-Agent: git/2.47.0
+Content-Type: application/x-git-receive-pack-request
+
+0000

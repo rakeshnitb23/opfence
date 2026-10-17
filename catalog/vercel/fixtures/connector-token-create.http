@@ -1,0 +1,5 @@
+# description: Get an access token for connector slack
+POST /v1/connect/token/slack HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

@@ -1,0 +1,15 @@
+# Vercel REST API: project-domain
+operations:
+  - id: vercel.project-domain.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}/domains/{domain}" } }
+    class: delete
+    resource: { arg: idOrName, kind: project }
+    card: "Remove domain {domain} from project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-domain-delete.http
+        expect: delete
+        resource: shop-web

@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: workflow-permissions
+operations:
+  - id: github.workflow-permissions.set
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/actions/permissions/workflow" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change the default GITHUB_TOKEN permissions of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/workflow-permissions-set.http
+        expect: access
+        resource: shop

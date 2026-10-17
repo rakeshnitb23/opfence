@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: push-protection-bypass
+operations:
+  - id: github.push-protection-bypass.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/secret-scanning/push-protection-bypasses" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Allow pushing a detected secret to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/push-protection-bypass-create.http
+        expect: access
+        resource: shop

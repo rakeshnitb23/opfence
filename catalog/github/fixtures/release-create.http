@@ -1,0 +1,9 @@
+# description: Publish release v1.2.0
+POST /repos/acme/shop/releases HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"tag_name":"v1.2.0"}

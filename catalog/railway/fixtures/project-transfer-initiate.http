@@ -1,0 +1,7 @@
+# description: Start transferring project prj-shop to member usr-42
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectTransferInitiate($input: ProjectTransferInitiateInput!) { projectTransferInitiate(input: $input) }","variables":{"input":{"projectId":"prj-shop","memberId":"usr-42"}}}

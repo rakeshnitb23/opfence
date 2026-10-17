@@ -1,0 +1,9 @@
+/opfence
+/dist/
+/bin/
+*.test
+*.out
+coverage.*
+.DS_Store
+.claude/settings.local.json
+testdata/fuzz/**/corpus-local/

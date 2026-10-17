@@ -1,0 +1,55 @@
+# GoReleaser configuration: `goreleaser release --snapshot --clean` builds
+# every binary locally; the release workflow runs it on a version tag.
+version: 2
+project_name: opfence
+
+before:
+  hooks:
+    - go mod verify
+
+builds:
+  - id: opfence
+    main: ./cmd/opfence
+    binary: opfence
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/rakeshnitb23/opfence/internal/version.Version={{ .Version }}
+      - -X github.com/rakeshnitb23/opfence/internal/version.Commit={{ .ShortCommit }}
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE*
+      - README.md
+      - docs/LIMITS.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+
+release:
+  draft: true
+  prerelease: auto

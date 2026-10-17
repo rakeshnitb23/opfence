@@ -1,0 +1,7 @@
+# description: Set variable LOG_LEVEL on service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VariableUpsert($input: VariableUpsertInput!) { variableUpsert(input: $input) }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","serviceId":"svc-api","name":"LOG_LEVEL","value":"debug"}}}

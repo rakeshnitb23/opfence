@@ -1,0 +1,15 @@
+# Vercel REST API: artifacts
+operations:
+  - id: vercel.artifacts.delete-all
+    match: { rest: { method: DELETE, path: "/{version}/artifacts" } }
+    class: delete
+    card: "Delete every Remote Cache artifact"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Build caches regenerate, at the cost of slower builds.
+    tests:
+      - fixture: fixtures/artifacts-delete-all.http
+        expect: delete

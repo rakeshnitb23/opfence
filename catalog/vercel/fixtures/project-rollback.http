@@ -1,0 +1,5 @@
+# description: Roll project prj_shop back to deployment dpl_123
+POST /v1/projects/prj_shop/rollback/dpl_123 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

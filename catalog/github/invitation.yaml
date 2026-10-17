@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: invitation
+operations:
+  - id: github.invitation.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/invitations/{invitation_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change invitation {invitation_id} to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/invitation-update.http
+        expect: access
+        resource: shop
+
+  - id: github.invitation.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/invitations/{invitation_id}" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Cancel invitation {invitation_id} to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/invitation-delete.http
+        expect: access
+        resource: shop

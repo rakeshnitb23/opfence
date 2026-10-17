@@ -1,0 +1,69 @@
+# Railway GraphQL API: volume-backup
+operations:
+  - id: railway.volume-backup.delete
+    match: { graphql: { type: mutation, field: volumeInstanceBackupDelete } }
+    class: irreversible
+    resource: { arg: volumeInstanceId, kind: volume-instance }
+    card: "Delete Railway volume backup {volumeInstanceBackupId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Backups are the last copy after a bad delete; PocketOS lost its backups
+      in the same call.
+    tests:
+      - fixture: fixtures/volume-backup-delete.http
+        expect: irreversible
+        resource: vi-pg-data
+
+  - id: railway.volume-backup.restore
+    match: { graphql: { type: mutation, field: volumeInstanceBackupRestore } }
+    class: irreversible
+    resource: { arg: volumeInstanceId, kind: volume-instance }
+    card: "Restore backup {volumeInstanceBackupId} over volume {volumeInstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Restoring replaces the volume's current data with the backup, so
+      everything written since the backup is lost.
+    tests:
+      - fixture: fixtures/volume-backup-restore.http
+        expect: irreversible
+        resource: vi-pg-data
+
+  - id: railway.volume-backup.create
+    match: { graphql: { type: mutation, field: volumeInstanceBackupCreate } }
+    class: write
+    resource: { arg: volumeInstanceId, kind: volume-instance }
+    card: "Back up Railway volume instance {volumeInstanceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/volume-backup-create.http
+        expect: write
+        resource: vi-pg-data
+
+  - id: railway.volume-backup.schedule
+    match: { graphql: { type: mutation, field: volumeInstanceBackupScheduleUpdate } }
+    class: write
+    resource: { arg: volumeInstanceId, kind: volume-instance }
+    card: "Change the backup schedule of volume instance {volumeInstanceId} to {kinds}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      An empty list turns scheduled backups off.
+    tests:
+      - fixture: fixtures/volume-backup-schedule.http
+        expect: write
+        resource: vi-pg-data

@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: actions-permissions
+operations:
+  - id: github.actions-permissions.set
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/actions/permissions" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Change which actions may run in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/actions-permissions-set.http
+        expect: access
+        resource: shop

@@ -1,0 +1,43 @@
+# GitHub REST and GraphQL APIs: issue
+operations:
+  - id: github.issue.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/issues" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Open an issue in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-create.http
+        expect: write
+        resource: shop
+
+  - id: github.issue.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/issues/{issue_number}" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-update.http
+        expect: write
+        resource: shop
+
+  - id: github.issue.add-labels
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/issues/{issue_number}/labels" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Label issue {issue_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-add-labels.http
+        expect: write
+        resource: shop

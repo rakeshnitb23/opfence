@@ -1,0 +1,109 @@
+# Supabase MCP server: database
+operations:
+  - id: supabase-mcp.database.list-tables
+    match: { mcp: { tool: list_tables } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List tables of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/database-operation-tools.ts
+    tests:
+      - fixture: fixtures/database-list-tables.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.database.list-extensions
+    match: { mcp: { tool: list_extensions } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List extensions of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/database-operation-tools.ts
+    tests:
+      - fixture: fixtures/database-list-extensions.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.database.list-migrations
+    match: { mcp: { tool: list_migrations } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List migrations of project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/database-operation-tools.ts
+    tests:
+      - fixture: fixtures/database-list-migrations.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.database.apply-migration
+    match: { mcp: { tool: apply_migration } }
+    class: unknown
+    classify: { sql: query }
+    resource: { arg: project_id, kind: project }
+    card: "Apply migration {name} to project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/database-operation-tools.ts
+    notes: >-
+      The class comes from the SQL: SELECT is read, INSERT and UPDATE ...
+      WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and UPDATE
+      or DELETE without WHERE are irreversible, GRANT, REVOKE and role changes
+      are access, and anything the classifier cannot read is unknown. A
+      request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/database-apply-migration.http
+        expect: write
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-apply-migration-drop.http
+        expect: irreversible
+        resource: abcdefghijklmnopqrst
+
+  - id: supabase-mcp.database.execute-sql
+    match: { mcp: { tool: execute_sql } }
+    class: unknown
+    classify: { sql: query }
+    resource: { arg: project_id, kind: project }
+    card: "Run SQL on project {project_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/supabase-community/supabase-mcp/blob/main/packages/mcp-server-supabase/src/tools/database-operation-tools.ts
+    notes: >-
+      The class comes from the SQL: SELECT is read, INSERT and UPDATE ...
+      WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and UPDATE
+      or DELETE without WHERE are irreversible, GRANT, REVOKE and role changes
+      are access, and anything the classifier cannot read is unknown. A
+      request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/database-execute-sql.http
+        expect: read
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-delete-where.http
+        expect: delete
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-delete-all.http
+        expect: irreversible
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-truncate.http
+        expect: irreversible
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-grant.http
+        expect: access
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-update.http
+        expect: write
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-multi.http
+        expect: irreversible
+        resource: abcdefghijklmnopqrst
+      - fixture: fixtures/database-execute-sql-hidden-in-comment.http
+        expect: irreversible
+        resource: abcdefghijklmnopqrst

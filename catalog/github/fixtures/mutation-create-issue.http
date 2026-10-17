@@ -1,0 +1,7 @@
+# description: Open issue Bug
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateIssue($input: CreateIssueInput!) { createIssue(input: $input) { __typename } }","variables":{"input":{"repositoryId":"R_kgDOExample","title":"Bug"}}}

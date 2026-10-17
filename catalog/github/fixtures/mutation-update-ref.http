@@ -1,0 +1,7 @@
+# description: Move ref REF_kwDOExample to 4f2a9c1
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateRef($input: UpdateRefInput!) { updateRef(input: $input) { __typename } }","variables":{"input":{"refId":"REF_kwDOExample","oid":"4f2a9c1"}}}

@@ -1,0 +1,7 @@
+# description: Archive repository R_kgDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ArchiveRepository($input: ArchiveRepositoryInput!) { archiveRepository(input: $input) { __typename } }","variables":{"input":{"repositoryId":"R_kgDOExample"}}}

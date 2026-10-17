@@ -1,0 +1,15 @@
+# Vercel REST API: feature-flag
+operations:
+  - id: vercel.feature-flag.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{projectIdOrName}/feature-flags/flags/{flagIdOrSlug}" } }
+    class: delete
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Delete feature flag {flagIdOrSlug} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-delete.http
+        expect: delete
+        resource: shop-web

@@ -1,0 +1,14 @@
+# Railway GraphQL API: passkey
+operations:
+  - id: railway.passkey.delete
+    match: { graphql: { type: mutation, field: passkeyDelete } }
+    class: access
+    card: "Delete passkey {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/passkey-delete.http
+        expect: access

@@ -1,0 +1,7 @@
+# description: Close issue I_kwDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CloseIssue($input: CloseIssueInput!) { closeIssue(input: $input) { __typename } }","variables":{"input":{"issueId":"I_kwDOExample"}}}

@@ -1,0 +1,7 @@
+# description: Schedule Railway project prj-shop for deletion
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectScheduleDelete($id: String!) { projectScheduleDelete(id: $id) }","variables":{"id":"prj-shop"}}

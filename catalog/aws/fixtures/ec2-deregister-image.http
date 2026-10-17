@@ -1,0 +1,8 @@
+# description: Deregister AMI ami-0abc1234def567890
+POST / HTTP/1.1
+Host: ec2.us-east-1.amazonaws.com
+X-Amz-Date: 20261016T120000Z
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAOPFENCEEXAMPLE/20261016/us-east-1/ec2/aws4_request, SignedHeaders=host;x-amz-date, Signature=0000000000000000000000000000000000000000000000000000000000000000
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+
+Action=DeregisterImage&Version=2016-11-15&ImageId=ami-0abc1234def567890

@@ -1,0 +1,149 @@
+# AWS APIs: ssm
+operations:
+  - id: aws.ssm.get-parameter
+    match: { aws: { service: ssm, action: GetParameter } }
+    class: read
+    when:
+      - if: { arg: WithDecryption, equals: "true" }
+        class: credential
+    resource: { arg: Name, kind: parameter }
+    card: "Read parameter {Name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    notes: >-
+      WithDecryption returns SecureString values in plain text.
+    tests:
+      - fixture: fixtures/ssm-get-parameter.http
+        expect: read
+        resource: /prod/db/url
+      - fixture: fixtures/ssm-get-parameter-decrypt.http
+        expect: credential
+        resource: /prod/db/url
+
+  - id: aws.ssm.get-parameters
+    match: { aws: { service: ssm, action: GetParameters } }
+    class: read
+    when:
+      - if: { arg: WithDecryption, equals: "true" }
+        class: credential
+    card: "Read parameters {Names}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-get-parameters.http
+        expect: read
+      - fixture: fixtures/ssm-get-parameters-decrypt.http
+        expect: credential
+
+  - id: aws.ssm.get-parameters-by-path
+    match: { aws: { service: ssm, action: GetParametersByPath } }
+    class: read
+    when:
+      - if: { arg: WithDecryption, equals: "true" }
+        class: credential
+    card: "Read parameters under {Path}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-get-parameters-by-path.http
+        expect: read
+      - fixture: fixtures/ssm-get-parameters-by-path-decrypt.http
+        expect: credential
+
+  - id: aws.ssm.get-parameter-history
+    match: { aws: { service: ssm, action: GetParameterHistory } }
+    class: read
+    when:
+      - if: { arg: WithDecryption, equals: "true" }
+        class: credential
+    card: "Read the history of parameter {Name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-get-parameter-history.http
+        expect: read
+      - fixture: fixtures/ssm-get-parameter-history-decrypt.http
+        expect: credential
+
+  - id: aws.ssm.put-parameter
+    match: { aws: { service: ssm, action: PutParameter } }
+    class: write
+    when:
+      - if: { arg: Type, equals: SecureString }
+        class: credential
+    resource: { arg: Name, kind: parameter }
+    card: "Set parameter {Name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-put-parameter.http
+        expect: write
+        resource: /prod/log-level
+      - fixture: fixtures/ssm-put-parameter-secure.http
+        expect: credential
+        resource: /prod/db/url
+
+  - id: aws.ssm.delete-parameter
+    match: { aws: { service: ssm, action: DeleteParameter } }
+    class: irreversible
+    resource: { arg: Name, kind: parameter }
+    card: "Delete parameter {Name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-delete-parameter.http
+        expect: irreversible
+        resource: /prod/db/url
+
+  - id: aws.ssm.delete-parameters
+    match: { aws: { service: ssm, action: DeleteParameters } }
+    class: irreversible
+    card: "Delete parameters {Names}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    tests:
+      - fixture: fixtures/ssm-delete-parameters.http
+        expect: irreversible
+
+  - id: aws.ssm.send-command
+    match: { aws: { service: ssm, action: SendCommand } }
+    class: irreversible
+    card: "Run {DocumentName} on instances {InstanceIds}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    notes: >-
+      Runs arbitrary commands as root on the instances, so the catalog assumes
+      the worst.
+    tests:
+      - fixture: fixtures/ssm-send-command.http
+        expect: irreversible
+
+  - id: aws.ssm.start-session
+    match: { aws: { service: ssm, action: StartSession } }
+    class: irreversible
+    card: "Open a shell on {Target}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/ssm/2014-11-06/service-2.json
+    notes: >-
+      An interactive shell can do anything the instance can.
+    tests:
+      - fixture: fixtures/ssm-start-session.http
+        expect: irreversible

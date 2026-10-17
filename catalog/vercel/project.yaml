@@ -1,0 +1,151 @@
+# Vercel REST API: project
+operations:
+  - id: vercel.project.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}" } }
+    class: irreversible
+    resource: { arg: idOrName, kind: project }
+    card: "Delete Vercel project {idOrName} with its deployments, domains and variables"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: irreversible
+        resource: shop-web
+
+  - id: vercel.project.create
+    match: { rest: { method: POST, path: "/{version}/projects" } }
+    class: write
+    card: "Create Vercel project {body.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+
+  - id: vercel.project.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}" } }
+    class: write
+    when:
+      - if: { arg: body.ssoProtection, present: true }
+        class: access
+      - if: { arg: body.passwordProtection, present: true }
+        class: access
+      - if: { arg: body.trustedIps, present: true }
+        class: access
+      - if: { arg: body.publicSource, present: true }
+        class: access
+      - if: { arg: body.oidcTokenConfig, present: true }
+        class: access
+      - if: { arg: body.optionsAllowlist, present: true }
+        class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Change settings of project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Deployment protection, trusted IPs, public source and OIDC settings
+      change who can reach the project or its source. Setting ssoProtection to
+      null turns protection off.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: shop-web
+      - fixture: fixtures/project-update-protection-off.http
+        expect: access
+        resource: shop-web
+      - fixture: fixtures/project-update-password.http
+        expect: access
+        resource: shop-web
+      - fixture: fixtures/project-update-public-source.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel.project.pause
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/pause" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Pause Vercel project {projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Pausing takes the production deployment offline until unpaused.
+    tests:
+      - fixture: fixtures/project-pause.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project.unpause
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/unpause" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Unpause Vercel project {projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-unpause.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project.promote
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/promote/{deploymentId}" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Promote deployment {deploymentId} to production for project {projectId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-promote.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project.rollback
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/rollback/{deploymentId}" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Roll project {projectId} back to deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-rollback.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project.transfer
+    match: { rest: { method: POST, path: "/projects/{idOrName}/transfer-request" } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Start transferring project {idOrName} to another team"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-transfer.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel.project.transfer-accept
+    match: { rest: { method: PUT, path: "/projects/transfer-request/{code}" } }
+    class: access
+    card: "Accept project transfer {code}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-transfer-accept.http
+        expect: access

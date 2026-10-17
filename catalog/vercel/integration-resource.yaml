@@ -1,0 +1,18 @@
+# Vercel REST API: integration-resource
+operations:
+  - id: vercel.integration-resource.delete
+    match: { rest: { method: DELETE, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}" } }
+    class: irreversible
+    resource: { arg: resourceId, kind: resource }
+    card: "Delete Marketplace resource {resourceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Marketplace resources include databases (Postgres, Redis); deleting one
+      deletes its data.
+    tests:
+      - fixture: fixtures/integration-resource-delete.http
+        expect: irreversible
+        resource: res_pg

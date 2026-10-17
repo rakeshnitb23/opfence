@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: commit-status
+operations:
+  - id: github.commit-status.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/statuses/{sha}" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Set a commit status on {sha}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/commit-status-create.http
+        expect: write
+        resource: shop

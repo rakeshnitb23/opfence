@@ -1,0 +1,55 @@
+# GitHub REST and GraphQL APIs: ref
+operations:
+  - id: github.ref.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/git/refs" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create ref {body.ref} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/ref-create.http
+        expect: write
+        resource: shop
+
+  - id: github.ref.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/git/refs/{ref*}" } }
+    class: write
+    when:
+      - if: { arg: body.force, equals: "true" }
+        class: irreversible
+    resource: { arg: repo, kind: repository }
+    card: "Move ref {ref} of {owner}/{repo} to {body.sha}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      A forced update can drop commits from the branch; GitHub keeps no reflog
+      the API can restore.
+    tests:
+      - fixture: fixtures/ref-update.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/ref-update-force.http
+        expect: irreversible
+        resource: shop
+
+  - id: github.ref.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/git/refs/{ref*}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete ref {ref} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      The commits stay until garbage-collected and the branch can be pushed
+      again from any clone.
+    tests:
+      - fixture: fixtures/ref-delete.http
+        expect: delete
+        resource: shop

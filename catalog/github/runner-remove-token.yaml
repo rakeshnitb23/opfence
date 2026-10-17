@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: runner-remove-token
+operations:
+  - id: github.runner-remove-token.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/actions/runners/remove-token" } }
+    class: credential
+    resource: { arg: repo, kind: repository }
+    card: "Create a runner removal token for {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/runner-remove-token-create.http
+        expect: credential
+        resource: shop

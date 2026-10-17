@@ -1,0 +1,33 @@
+# Railway GraphQL API: tcp-proxy
+operations:
+  - id: railway.tcp-proxy.create
+    match: { graphql: { type: mutation, field: tcpProxyCreate } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Expose port {input.applicationPort} of service {input.serviceId} to the internet"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Exposing a database port lets anyone with the password connect.
+    tests:
+      - fixture: fixtures/tcp-proxy-create.http
+        expect: access
+        resource: svc-api
+
+  - id: railway.tcp-proxy.delete
+    match: { graphql: { type: mutation, field: tcpProxyDelete } }
+    class: delete
+    resource: { arg: id, kind: tcp-proxy }
+    card: "Delete TCP proxy {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/tcp-proxy-delete.http
+        expect: delete
+        resource: tcp-1

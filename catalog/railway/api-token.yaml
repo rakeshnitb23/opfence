@@ -1,0 +1,29 @@
+# Railway GraphQL API: api-token
+operations:
+  - id: railway.api-token.create
+    match: { graphql: { type: mutation, field: apiTokenCreate } }
+    class: credential
+    card: "Create Railway API token {input.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/api-token-create.http
+        expect: credential
+
+  - id: railway.api-token.delete
+    match: { graphql: { type: mutation, field: apiTokenDelete } }
+    class: access
+    resource: { arg: id, kind: token }
+    card: "Revoke Railway API token {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/api-token-delete.http
+        expect: access
+        resource: tok-ci

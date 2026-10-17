@@ -1,0 +1,10 @@
+# description: Delete branch feature-x from acme/shop
+POST /acme/shop.git/git-receive-pack HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+User-Agent: git/2.47.0
+Content-Type: application/x-git-receive-pack-request
+Accept: application/x-git-receive-pack-result
+
+006b4f2a9c1e8b7d6a5f4e3d2c1b0a9f8e7d6c5b4a39 0000000000000000000000000000000000000000 refs/heads/feature-x
+0000

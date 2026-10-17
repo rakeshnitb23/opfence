@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: merge
+operations:
+  - id: github.merge.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/merges" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Merge {body.head} into {body.base}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/merge-create.http
+        expect: write
+        resource: shop

@@ -1,0 +1,29 @@
+# Railway GraphQL API: usage-limit
+operations:
+  - id: railway.usage-limit.remove
+    match: { graphql: { type: mutation, field: usageLimitRemove } }
+    class: money
+    card: "Remove the usage limit for customer {input.customerId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Removes the cap that stops runaway spend.
+    tests:
+      - fixture: fixtures/usage-limit-remove.http
+        expect: money
+
+  - id: railway.usage-limit.set
+    match: { graphql: { type: mutation, field: usageLimitSet } }
+    class: money
+    card: "Set usage limits for customer {input.customerId} to {input.hardLimitDollars} dollars"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/usage-limit-set.http
+        expect: money

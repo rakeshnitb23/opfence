@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: release-asset
+operations:
+  - id: github.release-asset.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/releases/assets/{asset_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete release asset {asset_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/release-asset-delete.http
+        expect: delete
+        resource: shop

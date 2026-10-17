@@ -1,0 +1,99 @@
+# GitHub REST and GraphQL APIs: branch-protection
+operations:
+  - id: github.branch-protection.update
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/branches/{branch}/protection" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Replace branch protection on {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-update.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Remove branch protection from {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-delete.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.admin-delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Let admins bypass protection on {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-admin-delete.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.reviews-delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Stop requiring reviews on {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-reviews-delete.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.checks-delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Stop requiring status checks on {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-checks-delete.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.signatures-delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection/required_signatures" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Stop requiring signed commits on {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-signatures-delete.http
+        expect: access
+        resource: shop
+
+  - id: github.branch-protection.restrictions-delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/branches/{branch}/protection/restrictions" } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Let anyone with write access push to {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/branch-protection-restrictions-delete.http
+        expect: access
+        resource: shop

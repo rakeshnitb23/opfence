@@ -1,0 +1,32 @@
+# GitHub REST and GraphQL APIs: org
+operations:
+  - id: github.org.delete
+    match: { rest: { method: DELETE, path: "/orgs/{org}" } }
+    class: irreversible
+    resource: { arg: org, kind: organization }
+    card: "Delete organization {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/org-delete.http
+        expect: irreversible
+        resource: acme
+
+  - id: github.org.update
+    match: { rest: { method: PATCH, path: "/orgs/{org}" } }
+    class: access
+    resource: { arg: org, kind: organization }
+    card: "Change settings of organization {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      Organization settings include default repository permissions and who may
+      create repositories.
+    tests:
+      - fixture: fixtures/org-update.http
+        expect: access
+        resource: acme

@@ -1,0 +1,18 @@
+# Railway GraphQL API: plugin
+operations:
+  - id: railway.plugin.delete
+    match: { graphql: { type: mutation, field: pluginDelete } }
+    class: irreversible
+    resource: { arg: id, kind: plugin }
+    card: "Delete Railway database plugin {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Legacy database plugins hold their data inside the plugin.
+    tests:
+      - fixture: fixtures/plugin-delete.http
+        expect: irreversible
+        resource: plg-postgres

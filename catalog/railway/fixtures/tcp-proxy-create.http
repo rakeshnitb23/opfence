@@ -1,0 +1,7 @@
+# description: Expose port 5432 of service svc-api to the internet
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TcpProxyCreate($input: TCPProxyCreateInput!) { tcpProxyCreate(input: $input) { __typename } }","variables":{"input":{"serviceId":"svc-api","environmentId":"env-production","applicationPort":5432}}}

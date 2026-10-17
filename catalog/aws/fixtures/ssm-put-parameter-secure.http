@@ -1,0 +1,9 @@
+# description: Set parameter /prod/db/url
+POST / HTTP/1.1
+Host: ssm.us-east-1.amazonaws.com
+X-Amz-Date: 20261016T120000Z
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAOPFENCEEXAMPLE/20261016/us-east-1/ssm/aws4_request, SignedHeaders=host;x-amz-date, Signature=0000000000000000000000000000000000000000000000000000000000000000
+X-Amz-Target: AmazonSSM.PutParameter
+Content-Type: application/x-amz-json-1.1
+
+{"Name":"/prod/db/url","Value":"postgres://x","Type":"SecureString","Overwrite":true}

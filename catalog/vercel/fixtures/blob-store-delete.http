@@ -1,0 +1,5 @@
+# description: Delete Blob store store_assets and every file in it
+DELETE /storage/stores/blob/store_assets HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

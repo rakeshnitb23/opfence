@@ -1,0 +1,16 @@
+# Railway GraphQL API: deployment-trigger
+operations:
+  - id: railway.deployment-trigger.delete
+    match: { graphql: { type: mutation, field: deploymentTriggerDelete } }
+    class: delete
+    resource: { arg: id, kind: deployment-trigger }
+    card: "Delete deployment trigger {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-trigger-delete.http
+        expect: delete
+        resource: trg-main

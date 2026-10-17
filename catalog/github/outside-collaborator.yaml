@@ -1,0 +1,29 @@
+# GitHub REST and GraphQL APIs: outside-collaborator
+operations:
+  - id: github.outside-collaborator.remove
+    match: { rest: { method: DELETE, path: "/orgs/{org}/outside_collaborators/{username}" } }
+    class: access
+    resource: { arg: org, kind: organization }
+    card: "Remove outside collaborator {username} from {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/outside-collaborator-remove.http
+        expect: access
+        resource: acme
+
+  - id: github.outside-collaborator.convert
+    match: { rest: { method: PUT, path: "/orgs/{org}/outside_collaborators/{username}" } }
+    class: access
+    resource: { arg: org, kind: organization }
+    card: "Make {username} an outside collaborator of {org}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/outside-collaborator-convert.http
+        expect: access
+        resource: acme

@@ -1,0 +1,5 @@
+# description: Delete invite inv_1 of team team_acme
+DELETE /v1/teams/team_acme/invites/inv_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

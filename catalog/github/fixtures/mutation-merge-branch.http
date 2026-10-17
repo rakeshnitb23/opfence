@@ -1,0 +1,7 @@
+# description: Merge feature-x into main
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation MergeBranch($input: MergeBranchInput!) { mergeBranch(input: $input) { __typename } }","variables":{"input":{"repositoryId":"R_kgDOExample","base":"main","head":"feature-x"}}}

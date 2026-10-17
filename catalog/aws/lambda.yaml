@@ -1,0 +1,245 @@
+# AWS APIs: lambda
+operations:
+  - id: aws.lambda.delete-function
+    match: { aws: { service: lambda, method: DELETE, path: "/2015-03-31/functions/{FunctionName}" } }
+    class: delete
+    resource: { arg: FunctionName, kind: function }
+    card: "Delete Lambda function {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      The code is usually still in the repository and can be redeployed.
+    tests:
+      - fixture: fixtures/lambda-delete-function.http
+        expect: delete
+        resource: billing
+
+  - id: aws.lambda.get-function
+    match: { aws: { service: lambda, method: GET, path: "/2015-03-31/functions/{FunctionName}" } }
+    class: credential
+    resource: { arg: FunctionName, kind: function }
+    card: "Read Lambda function {FunctionName} and its environment"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      The response includes environment variables, which often hold secrets.
+    tests:
+      - fixture: fixtures/lambda-get-function.http
+        expect: credential
+        resource: billing
+
+  - id: aws.lambda.get-function-configuration
+    match: { aws: { service: lambda, method: GET, path: "/2015-03-31/functions/{FunctionName}/configuration" } }
+    class: credential
+    resource: { arg: FunctionName, kind: function }
+    card: "Read the configuration of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      The response includes environment variables, which often hold secrets.
+    tests:
+      - fixture: fixtures/lambda-get-function-configuration.http
+        expect: credential
+        resource: billing
+
+  - id: aws.lambda.list-functions
+    match: { aws: { service: lambda, method: GET, path: /2015-03-31/functions } }
+    class: credential
+    card: "List Lambda functions and their environments"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      Every function in the response includes its environment variables.
+    tests:
+      - fixture: fixtures/lambda-list-functions.http
+        expect: credential
+
+  - id: aws.lambda.update-function-code
+    match: { aws: { service: lambda, method: PUT, path: "/2015-03-31/functions/{FunctionName}/code" } }
+    class: write
+    resource: { arg: FunctionName, kind: function }
+    card: "Deploy new code to {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-update-function-code.http
+        expect: write
+        resource: billing
+
+  - id: aws.lambda.update-function-configuration
+    match: { aws: { service: lambda, method: PUT, path: "/2015-03-31/functions/{FunctionName}/configuration" } }
+    class: write
+    resource: { arg: FunctionName, kind: function }
+    card: "Change the configuration of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-update-function-configuration.http
+        expect: write
+        resource: billing
+
+  - id: aws.lambda.create-function
+    match: { aws: { service: lambda, method: POST, path: /2015-03-31/functions } }
+    class: write
+    card: "Create Lambda function {body.FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-create-function.http
+        expect: write
+
+  - id: aws.lambda.invoke
+    match: { aws: { service: lambda, method: POST, path: "/2015-03-31/functions/{FunctionName}/invocations" } }
+    class: write
+    resource: { arg: FunctionName, kind: function }
+    card: "Invoke Lambda function {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      Runs the function's code, with whatever effects it has.
+    tests:
+      - fixture: fixtures/lambda-invoke.http
+        expect: write
+        resource: billing
+
+  - id: aws.lambda.add-permission
+    match: { aws: { service: lambda, method: POST, path: "/2015-03-31/functions/{FunctionName}/policy" } }
+    class: access
+    resource: { arg: FunctionName, kind: function }
+    card: "Let {body.Principal} invoke {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-add-permission.http
+        expect: access
+        resource: billing
+
+  - id: aws.lambda.remove-permission
+    match: { aws: { service: lambda, method: DELETE, path: "/2015-03-31/functions/{FunctionName}/policy/{StatementId}" } }
+    class: access
+    resource: { arg: FunctionName, kind: function }
+    card: "Remove permission {StatementId} from {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-remove-permission.http
+        expect: access
+        resource: billing
+
+  - id: aws.lambda.create-function-url-config
+    match: { aws: { service: lambda, method: POST, path: "/2021-10-31/functions/{FunctionName}/url" } }
+    class: write
+    when:
+      - if: { arg: body.AuthType, equals: NONE }
+        class: access
+    resource: { arg: FunctionName, kind: function }
+    card: "Give {FunctionName} a function URL"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      AuthType NONE lets anyone on the internet call the function.
+    tests:
+      - fixture: fixtures/lambda-create-function-url-config.http
+        expect: write
+        resource: billing
+      - fixture: fixtures/lambda-create-function-url-config-public.http
+        expect: access
+        resource: billing
+
+  - id: aws.lambda.update-function-url-config
+    match: { aws: { service: lambda, method: PUT, path: "/2021-10-31/functions/{FunctionName}/url" } }
+    class: write
+    when:
+      - if: { arg: body.AuthType, equals: NONE }
+        class: access
+    resource: { arg: FunctionName, kind: function }
+    card: "Change the function URL of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-update-function-url-config.http
+        expect: write
+        resource: billing
+      - fixture: fixtures/lambda-update-function-url-config-public.http
+        expect: access
+        resource: billing
+
+  - id: aws.lambda.delete-function-url-config
+    match: { aws: { service: lambda, method: DELETE, path: "/2021-10-31/functions/{FunctionName}/url" } }
+    class: delete
+    resource: { arg: FunctionName, kind: function }
+    card: "Delete the function URL of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-delete-function-url-config.http
+        expect: delete
+        resource: billing
+
+  - id: aws.lambda.put-function-concurrency
+    match: { aws: { service: lambda, method: PUT, path: "/2017-10-31/functions/{FunctionName}/concurrency" } }
+    class: write
+    resource: { arg: FunctionName, kind: function }
+    card: "Set reserved concurrency of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    notes: >-
+      Zero stops every invocation.
+    tests:
+      - fixture: fixtures/lambda-put-function-concurrency.http
+        expect: write
+        resource: billing
+
+  - id: aws.lambda.delete-alias
+    match: { aws: { service: lambda, method: DELETE, path: "/2015-03-31/functions/{FunctionName}/aliases/{Name}" } }
+    class: delete
+    resource: { arg: FunctionName, kind: function }
+    card: "Delete alias {Name} of {FunctionName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-delete-alias.http
+        expect: delete
+        resource: billing
+
+  - id: aws.lambda.delete-event-source-mapping
+    match: { aws: { service: lambda, method: DELETE, path: "/2015-03-31/event-source-mappings/{UUID}" } }
+    class: delete
+    card: "Delete event source mapping {UUID}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/boto/botocore/blob/develop/botocore/data/lambda/2015-03-31/service-2.json
+    tests:
+      - fixture: fixtures/lambda-delete-event-source-mapping.http
+        expect: delete

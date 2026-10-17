@@ -1,0 +1,15 @@
+# GitHub REST and GraphQL APIs: blob
+operations:
+  - id: github.blob.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/git/blobs" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create a blob in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/blob-create.http
+        expect: write
+        resource: shop

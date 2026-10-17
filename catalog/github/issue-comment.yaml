@@ -1,0 +1,43 @@
+# GitHub REST and GraphQL APIs: issue-comment
+operations:
+  - id: github.issue-comment.create
+    match: { rest: { method: POST, path: "/repos/{owner}/{repo}/issues/{issue_number}/comments" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Comment on issue {issue_number}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-comment-create.http
+        expect: write
+        resource: shop
+
+  - id: github.issue-comment.update
+    match: { rest: { method: PATCH, path: "/repos/{owner}/{repo}/issues/comments/{comment_id}" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Edit comment {comment_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-comment-update.http
+        expect: write
+        resource: shop
+
+  - id: github.issue-comment.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/issues/comments/{comment_id}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete comment {comment_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/issue-comment-delete.http
+        expect: delete
+        resource: shop

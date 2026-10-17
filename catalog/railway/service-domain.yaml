@@ -1,0 +1,33 @@
+# Railway GraphQL API: service-domain
+operations:
+  - id: railway.service-domain.create
+    match: { graphql: { type: mutation, field: serviceDomainCreate } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Give service {input.serviceId} a public railway.app domain"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Makes the service reachable from the internet.
+    tests:
+      - fixture: fixtures/service-domain-create.http
+        expect: access
+        resource: svc-api
+
+  - id: railway.service-domain.delete
+    match: { graphql: { type: mutation, field: serviceDomainDelete } }
+    class: delete
+    resource: { arg: id, kind: domain }
+    card: "Delete service domain {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-domain-delete.http
+        expect: delete
+        resource: sd-1

@@ -1,0 +1,8 @@
+# description: Remove Git LFS lock 4 in acme/shop
+POST /acme/shop.git/info/lfs/locks/4/unlock HTTP/1.1
+Host: github.com
+Authorization: Basic eC1hY2Nlc3MtdG9rZW46b3BmX2dpdGh1Yl9FWEFNUExF
+Accept: application/vnd.git-lfs+json
+Content-Type: application/vnd.git-lfs+json
+
+{"force":false}

@@ -1,0 +1,31 @@
+# GitHub REST and GraphQL APIs: content
+operations:
+  - id: github.content.put
+    match: { rest: { method: PUT, path: "/repos/{owner}/{repo}/contents/{path*}" } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Commit {path} to {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/content-put.http
+        expect: write
+        resource: shop
+
+  - id: github.content.delete
+    match: { rest: { method: DELETE, path: "/repos/{owner}/{repo}/contents/{path*}" } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Delete {path} from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    notes: >-
+      The file stays in history.
+    tests:
+      - fixture: fixtures/content-delete.http
+        expect: delete
+        resource: shop

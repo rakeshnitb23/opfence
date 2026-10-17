@@ -1,0 +1,13 @@
+# GitHub REST and GraphQL APIs: installation-token
+operations:
+  - id: github.installation-token.create
+    match: { rest: { method: POST, path: "/app/installations/{installation_id}/access_tokens" } }
+    class: credential
+    card: "Create an access token for app installation {installation_id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/github/rest-api-description/blob/main/descriptions/api.github.com/api.github.com.json
+    tests:
+      - fixture: fixtures/installation-token-create.http
+        expect: credential

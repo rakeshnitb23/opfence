@@ -1,0 +1,7 @@
+# description: Remove outside collaborator U_kgDOExample
+POST /graphql HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RemoveOutsideCollaborator($input: RemoveOutsideCollaboratorInput!) { removeOutsideCollaborator(input: $input) { __typename } }","variables":{"input":{"organizationId":"O_kgDOExample","userId":"U_kgDOExample"}}}

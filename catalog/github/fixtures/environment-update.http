@@ -1,0 +1,9 @@
+# description: Create or change environment production of acme/shop
+PUT /repos/acme/shop/environments/production HTTP/1.1
+Host: api.github.com
+Authorization: Bearer opf_github_EXAMPLE
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2022-11-28
+Content-Type: application/json
+
+{"wait_timer":0,"reviewers":[]}

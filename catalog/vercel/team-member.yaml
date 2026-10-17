@@ -1,0 +1,43 @@
+# Vercel REST API: team-member
+operations:
+  - id: vercel.team-member.invite
+    match: { rest: { method: POST, path: "/{version}/teams/{teamId}/members" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Invite someone to team {teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-member-invite.http
+        expect: access
+        resource: team_acme
+
+  - id: vercel.team-member.remove
+    match: { rest: { method: DELETE, path: "/{version}/teams/{teamId}/members/{uid}" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Remove member {uid} from team {teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-member-remove.http
+        expect: access
+        resource: team_acme
+
+  - id: vercel.team-member.update
+    match: { rest: { method: PATCH, path: "/{version}/teams/{teamId}/members/{uid}" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Change the role of {uid} in team {teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-member-update.http
+        expect: access
+        resource: team_acme

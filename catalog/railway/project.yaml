@@ -1,0 +1,175 @@
+# Railway GraphQL API: project
+operations:
+  - id: railway.project.delete
+    match: { graphql: { type: mutation, field: projectDelete } }
+    class: irreversible
+    resource: { arg: id, kind: project }
+    card: "Delete Railway project {id} now, with everything in it"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: irreversible
+        resource: prj-shop
+
+  - id: railway.project.schedule-delete
+    match: { graphql: { type: mutation, field: projectScheduleDelete } }
+    class: delete
+    resource: { arg: id, kind: project }
+    card: "Schedule Railway project {id} for deletion"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Scheduled deletion can be cancelled (projectScheduleDeleteCancel) until
+      it runs.
+    tests:
+      - fixture: fixtures/project-schedule-delete.http
+        expect: delete
+        resource: prj-shop
+
+  - id: railway.project.force-delete
+    match: { graphql: { type: mutation, field: projectScheduleDeleteForce } }
+    class: irreversible
+    resource: { arg: id, kind: project }
+    card: "Delete Railway project {id} now, skipping the grace period"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-force-delete.http
+        expect: irreversible
+        resource: prj-shop
+
+  - id: railway.project.cancel-delete
+    match: { graphql: { type: mutation, field: projectScheduleDeleteCancel } }
+    class: write
+    resource: { arg: id, kind: project }
+    card: "Cancel the scheduled deletion of project {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-cancel-delete.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.project.create
+    match: { graphql: { type: mutation, field: projectCreate } }
+    class: write
+    card: "Create Railway project {input.name}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+
+  - id: railway.project.update
+    match: { graphql: { type: mutation, field: projectUpdate } }
+    class: write
+    when:
+      - if: { arg: input.isPublic, present: true }
+        class: access
+    resource: { arg: id, kind: project }
+    card: "Change settings of Railway project {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changing isPublic changes who can see the project.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: prj-shop
+      - fixture: fixtures/project-update-public.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project.transfer
+    match: { graphql: { type: mutation, field: projectTransfer } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Transfer project {projectId} to workspace {input.workspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-transfer.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project.transfer-initiate
+    match: { graphql: { type: mutation, field: projectTransferInitiate } }
+    class: access
+    resource: { arg: input.projectId, kind: project }
+    card: "Start transferring project {input.projectId} to member {input.memberId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-transfer-initiate.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project.transfer-confirm
+    match: { graphql: { type: mutation, field: projectTransferConfirm } }
+    class: access
+    resource: { arg: input.projectId, kind: project }
+    card: "Confirm transfer of project {input.projectId} to workspace {input.destinationWorkspaceId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-transfer-confirm.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project.transfer-to-team
+    match: { graphql: { type: mutation, field: projectTransferToTeam } }
+    class: access
+    resource: { arg: id, kind: project }
+    card: "Transfer project {id} to team {input.teamId}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-transfer-to-team.http
+        expect: access
+        resource: prj-shop
+
+  - id: railway.project.leave
+    match: { graphql: { type: mutation, field: projectLeave } }
+    class: access
+    resource: { arg: id, kind: project }
+    card: "Leave Railway project {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-leave.http
+        expect: access
+        resource: prj-shop

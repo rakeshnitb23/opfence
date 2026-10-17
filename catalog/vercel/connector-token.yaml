@@ -1,0 +1,13 @@
+# Vercel REST API: connector-token
+operations:
+  - id: vercel.connector-token.create
+    match: { rest: { method: POST, path: "/{version}/connect/token/{connector}" } }
+    class: credential
+    card: "Get an access token for connector {connector}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/connector-token-create.http
+        expect: credential

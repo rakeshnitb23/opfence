@@ -1,0 +1,15 @@
+# Vercel REST API: project-token
+operations:
+  - id: vercel.project-token.create
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/token" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Create an OIDC token for project {idOrName}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-token-create.http
+        expect: credential
+        resource: shop-web

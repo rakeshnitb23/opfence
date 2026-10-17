@@ -1,0 +1,13 @@
+provider: vercel
+title: Vercel
+docs: https://vercel.com/docs/rest-api
+hosts: [api.vercel.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  env: [VERCEL_TOKEN]
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Rules match any version prefix (/{version}/projects/...): Vercel keeps
+# serving older versions of an endpoint, and an agent may use one from old docs.

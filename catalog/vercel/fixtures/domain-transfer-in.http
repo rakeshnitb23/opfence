@@ -1,0 +1,5 @@
+# description: Transfer domain example.com to Vercel
+POST /v1/registrar/domains/example.com/transfer HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

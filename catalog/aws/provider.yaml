@@ -1,0 +1,10 @@
+provider: aws
+title: AWS
+docs: https://docs.aws.amazon.com/
+hosts: ["*.amazonaws.com", "*.api.aws"]
+sigv4: true                        # every request is SigV4-signed; the service comes from the signature
+detect:
+  env: [AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN]
+  prefixes: [AKIA, ASIA]
+defaults:
+  aws_read_actions: read           # Describe*, Get*, List*, Head*, BatchGet*, Scan, Query; exceptions are listed

@@ -1,0 +1,45 @@
+# Vercel REST API: shared-env
+operations:
+  - id: vercel.shared-env.read
+    match: { rest: { method: GET, path: "/{version}/env/{id}" } }
+    class: credential
+    card: "Read the decrypted value of shared variable {id}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/shared-env-read.http
+        expect: credential
+
+  - id: vercel.shared-env.create
+    match: { rest: { method: POST, path: "/{version}/env" } }
+    class: write
+    when:
+      - if: { arg: body.type, in: [encrypted, sensitive, secret] }
+        class: credential
+    card: "Create shared variables of type {body.type}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A write for plain variables; encrypted, sensitive and secret variables
+      are secrets, so setting one is credential.
+    tests:
+      - fixture: fixtures/shared-env-create.http
+        expect: write
+      - fixture: fixtures/shared-env-create-encrypted.http
+        expect: credential
+
+  - id: vercel.shared-env.delete
+    match: { rest: { method: DELETE, path: "/{version}/env" } }
+    class: irreversible
+    card: "Delete shared variables {body.ids}"
+    status: verified
+    verified: 2026-10-16
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/shared-env-delete.http
+        expect: irreversible

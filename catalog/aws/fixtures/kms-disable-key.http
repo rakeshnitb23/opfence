@@ -1,0 +1,9 @@
+# description: Disable KMS key 1234abcd-12ab-34cd-56ef-1234567890ab
+POST / HTTP/1.1
+Host: kms.us-east-1.amazonaws.com
+X-Amz-Date: 20261016T120000Z
+Authorization: AWS4-HMAC-SHA256 Credential=AKIAOPFENCEEXAMPLE/20261016/us-east-1/kms/aws4_request, SignedHeaders=host;x-amz-date, Signature=0000000000000000000000000000000000000000000000000000000000000000
+X-Amz-Target: TrentService.DisableKey
+Content-Type: application/x-amz-json-1.1
+
+{"KeyId":"1234abcd-12ab-34cd-56ef-1234567890ab"}
