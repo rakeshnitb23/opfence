@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -18,6 +19,12 @@ type Desktop struct {
 	// run executes the dialog; tests replace it. It returns stdout and the
 	// exit code (-1 when the program could not run or was killed).
 	run func(ctx context.Context, name string, args ...string) (string, int)
+
+	// One dialog at a time: dialogs opened together stack in one place,
+	// where a request timed to open as the human clicks on another could
+	// take that click.
+	once sync.Once
+	slot chan struct{}
 }
 
 // ScopeOffer is the time-limited grant dialogs offer for ask decisions.
@@ -66,6 +73,13 @@ func (*Desktop) Name() string { return "desktop" }
 // Show implements Channel. A wrong confirmation text shows the dialog again
 // until the request is answered or expires.
 func (d *Desktop) Show(ctx context.Context, v View, b *Broker) {
+	d.once.Do(func() { d.slot = make(chan struct{}, 1) })
+	select {
+	case d.slot <- struct{}{}:
+		defer func() { <-d.slot }()
+	case <-ctx.Done():
+		return
+	}
 	note := ""
 	for ctx.Err() == nil {
 		secs := int(time.Until(v.Expires).Seconds())
@@ -85,11 +99,19 @@ func (d *Desktop) Show(ctx context.Context, v View, b *Broker) {
 	}
 }
 
+// maxDialogCards is how many operations a dialog lists.
+const maxDialogCards = 10
+
 // dialogText is the message every dialog shows.
 func dialogText(v View, note string) string {
 	var s strings.Builder
 	s.WriteString("Opfence: an agent wants to\n\n")
-	for _, c := range v.Cards {
+	// Cards come strictest first; past maxDialogCards the rest are counted.
+	for i, c := range v.Cards {
+		if i == maxDialogCards {
+			fmt.Fprintf(&s, "+%d more (opfence approve lists them all)\n", len(v.Cards)-i)
+			break
+		}
 		s.WriteString(c + "\n")
 	}
 	fmt.Fprintf(&s, "\n%s · %s · %s %s%s\nRequest %s", strings.Join(uniq(v.Classes), ", "), v.Environment, v.Method, v.Host, v.Path, v.Hash)

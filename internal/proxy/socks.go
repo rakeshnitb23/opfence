@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -104,8 +105,8 @@ func socksHandshake(br *bufio.Reader, w io.Writer) (host, port string, err error
 			return "", "", err
 		}
 		host, _ = splitTarget(string(name))
-		if host == "" {
-			return fail(socksAtypNotSupp, "empty host name")
+		if !validHostName(host) {
+			return fail(socksAtypNotSupp, "invalid host name")
 		}
 	default:
 		return fail(socksAtypNotSupp, "unsupported address type")
@@ -115,4 +116,26 @@ func socksHandshake(br *bufio.Reader, w io.Writer) (host, port string, err error
 		return "", "", err
 	}
 	return host, strconv.Itoa(int(binary.BigEndian.Uint16(p[:]))), nil
+}
+
+// validHostName reports whether s is a DNS name or IP address, so nothing
+// else from a SOCKS request reaches the audit log or a dial.
+func validHostName(s string) bool {
+	if net.ParseIP(s) != nil {
+		return true
+	}
+	if s == "" || len(s) > 253 {
+		return false
+	}
+	for _, label := range strings.Split(s, ".") {
+		if label == "" || len(label) > 63 {
+			return false
+		}
+		for i := 0; i < len(label); i++ {
+			if c := label[i]; !(c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '-' || c == '_') {
+				return false
+			}
+		}
+	}
+	return true
 }

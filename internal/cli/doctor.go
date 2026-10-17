@@ -286,7 +286,8 @@ func claudeChecks(env doctorEnv) []check {
 			Fix: "use WSL2 for a sandboxed agent"})
 	}
 	home, _ := os.UserHomeDir()
-	for _, w := range launch.ClaudeSettingsWarnings(launch.UserSettingsPath(env.getenv, home), launch.ManagedSettingsPath(env.goos)) {
+	cwd, _ := os.Getwd()
+	for _, w := range launch.ClaudeSettingsWarnings(launch.UserSettingsPath(env.getenv, home), launch.ManagedSettingsPath(env.goos), launch.ProjectSettingsFiles(cwd)...) {
 		out = append(out, check{Name: "Claude Code settings", Status: "warn", Detail: w})
 	}
 	return out

@@ -95,6 +95,9 @@ func SigV4(prov *catalog.Provider, r AWSRequest, set *secrets.Set) (Result, []by
 		res.Foreign = append(res.Foreign, id.Provider+"/"+id.Name)
 		return res, nil, nil
 	}
+	if kind := customerHost(r.Host); kind != "" {
+		return res, nil, refuse(r.Host + " is " + kind + ", which anyone with an AWS account can run, so Opfence does not send your real key's signature there")
+	}
 	if alg == sigV4AAlg {
 		return res, nil, refuse("it is signed with SigV4A (multi-Region), which Opfence cannot re-sign")
 	}
@@ -187,6 +190,28 @@ func SigV4(prov *catalog.Provider, r AWSRequest, set *secrets.Set) (Result, []by
 		}
 	}
 	return res, full, nil
+}
+
+// customerHost reports what kind of customer-run endpoint an AWS host name
+// is, or "". These hosts are under amazonaws.com but are served by whoever
+// created them (an API Gateway API, a load balancer, an EC2 instance, a VPC
+// endpoint), so a request re-signed for one would hand that owner the real
+// access key ID, session token and a valid signature.
+func customerHost(host string) string {
+	labels := strings.Split(strings.ToLower(host), ".")
+	for _, l := range labels[1:] {
+		switch l {
+		case "execute-api":
+			return "an API Gateway API"
+		case "elb":
+			return "a load balancer"
+		case "compute", "compute-1":
+			return "an EC2 instance's public name"
+		case "vpce":
+			return "a VPC endpoint"
+		}
+	}
+	return ""
 }
 
 func refuse(why string) error {

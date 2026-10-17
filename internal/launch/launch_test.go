@@ -20,6 +20,7 @@ var testPaths = Paths{
 	ConfigFile: "/home/dev/.config/opfence/config.yaml",
 	CertDir:    "/home/dev/.cache/opfence",
 	Executable: "/home/dev/Program Files/opfence",
+	ProjectDir: "/home/dev/project",
 }
 
 func golden(t *testing.T, name string, got []byte) {
@@ -42,7 +43,8 @@ func golden(t *testing.T, name string, got []byte) {
 func TestClaudeSettingsGolden(t *testing.T) {
 	for _, goos := range []string{"linux", "darwin"} {
 		o := ClaudeOptions{HTTPPort: 41001, SOCKSPort: 41002, GOOS: goos, Paths: testPaths,
-			HookArgs: []string{"--user-config", "/home/dev/it's here/config.yaml"}}
+			HookArgs: []string{"--user-config", "/home/dev/it's here/config.yaml"},
+			Env:      map[string]string{"OPFENCE_CONFIG": "/home/dev/it's here/config.yaml", "HTTPS_PROXY": "http://127.0.0.1:41003"}}
 		if goos == "linux" {
 			o.DenyRead = []string{"/run/user/1000/bus", "/run/user/1000/keyring"}
 		}
@@ -59,8 +61,10 @@ func TestClaudeSettingsGolden(t *testing.T) {
 				Network                                              struct{ HTTPProxyPort, SOCKSProxyPort int }
 				Filesystem                                           struct{ DenyRead, DenyWrite []string }
 			}
-			Permissions struct{ Deny []string }
-			Hooks       map[string][]struct {
+			Permissions     struct{ Deny []string }
+			DisableAllHooks *bool
+			Env             map[string]string
+			Hooks           map[string][]struct {
 				Matcher string
 				Hooks   []struct{ Command, OnFailure string }
 			}
@@ -78,7 +82,10 @@ func TestClaudeSettingsGolden(t *testing.T) {
 		if sb.Filesystem.DenyRead[0] != testPaths.StateDir {
 			t.Errorf("%s: denyRead %v", goos, sb.Filesystem.DenyRead)
 		}
-		for _, want := range []string{"/home/dev/.config/opfence", testPaths.StateDir, testPaths.CertDir, testPaths.Executable} {
+		// A project's settings files hold hooks, which run outside the
+		// sandbox, so the sandbox may not write them.
+		for _, want := range []string{"/home/dev/.config/opfence", testPaths.StateDir, testPaths.CertDir, testPaths.Executable,
+			"/home/dev/project/.claude/settings.json", "/home/dev/project/.claude/settings.local.json"} {
 			if !contains(sb.Filesystem.DenyWrite, want) {
 				t.Errorf("%s: denyWrite lacks %s", goos, want)
 			}
@@ -87,6 +94,12 @@ func TestClaudeSettingsGolden(t *testing.T) {
 			if !contains(s.Permissions.Deny, want) {
 				t.Errorf("%s: permissions.deny lacks %s: %v", goos, want, s.Permissions.Deny)
 			}
+		}
+		if contains(s.Permissions.Deny, "Read(//proc/**)") != (goos == "linux") {
+			t.Errorf("%s: Read(//proc/**) deny rule: %v", goos, s.Permissions.Deny)
+		}
+		if s.DisableAllHooks == nil || *s.DisableAllHooks || s.Env["OPFENCE_CONFIG"] != "/home/dev/it's here/config.yaml" {
+			t.Errorf("%s: disableAllHooks %v, env %v", goos, s.DisableAllHooks, s.Env)
 		}
 		h := s.Hooks["PreToolUse"][0]
 		if h.Matcher != "^mcp__" || h.Hooks[0].OnFailure != "block" ||
@@ -219,6 +232,13 @@ func TestClaudeSettingsWarnings(t *testing.T) {
 	if len(got) != 2 || !strings.Contains(got[0], "docker *") || !strings.Contains(got[1], "ignore Opfence's proxy ports") {
 		t.Fatal(got)
 	}
+	// A project's settings: hooks and environment variables are reported.
+	local := filepath.Join(dir, "settings.local.json")
+	os.WriteFile(local, []byte(`{"hooks":{"SessionStart":[]},"env":{"OPFENCE_CONFIG":"/tmp/evil.yaml"}}`), 0o644)
+	got = ClaudeSettingsWarnings(filepath.Join(dir, "none"), filepath.Join(dir, "none"), local)
+	if len(got) != 2 || !strings.Contains(got[0], "SessionStart hooks") || !strings.Contains(got[1], "OPFENCE_CONFIG") {
+		t.Fatal(got)
+	}
 	if got := ClaudeSettingsWarnings(filepath.Join(dir, "none"), filepath.Join(dir, "none")); len(got) != 0 {
 		t.Fatal(got)
 	}
@@ -246,6 +266,7 @@ func TestProtectEnv(t *testing.T) {
 		"OTHER_VERCEL=" + vercelTok, // same key twice: one session secret
 		"DATABASE_URL=postgres://x?token=" + sbpTok,
 		"GITHUB_TOKEN=" + githubTok,
+		"MIXED=" + githubTok + " " + sbpTok + "2", // two keys in one variable: both found
 		"AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE",
 		"AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
 		"RAILWAY_TOKEN=00000000-1111-4222-8333-444444444444", // already a placeholder
@@ -255,7 +276,7 @@ func TestProtectEnv(t *testing.T) {
 		t.Fatal(err)
 	}
 	joined := strings.Join(out, "\n")
-	for _, real := range []string{railwayTok, vercelTok, sbpTok, "AKIAIOSFODNN7EXAMPLE", "bPxRfiCYEXAMPLEKEY"} {
+	for _, real := range []string{railwayTok, vercelTok, sbpTok, sbpTok + "2", "AKIAIOSFODNN7EXAMPLE", "bPxRfiCYEXAMPLEKEY"} {
 		if strings.Contains(joined, real) {
 			t.Errorf("real key %s left in the environment:\n%s", real, joined)
 		}
@@ -266,7 +287,7 @@ func TestProtectEnv(t *testing.T) {
 	if strings.Contains(joined, githubTok) || !strings.Contains(joined, "DATABASE_URL=postgres://x?token=sbp_") {
 		t.Errorf("env:\n%s", joined)
 	}
-	if len(session) != 5 {
+	if len(session) != 6 {
 		t.Fatalf("session secrets: %d", len(session))
 	}
 	for _, s := range session {
@@ -278,7 +299,7 @@ func TestProtectEnv(t *testing.T) {
 	for _, ch := range changes {
 		acts = append(acts, ch.Var+":"+ch.Action)
 	}
-	want := "AWS_ACCESS_KEY_ID:session AWS_SECRET_ACCESS_KEY:session DATABASE_URL:session GITHUB_TOKEN:session MY_RAILWAY:placeholder OTHER_VERCEL:session VERCEL_TOKEN:session"
+	want := "AWS_ACCESS_KEY_ID:session AWS_SECRET_ACCESS_KEY:session DATABASE_URL:session GITHUB_TOKEN:session MIXED:session MY_RAILWAY:placeholder OTHER_VERCEL:session VERCEL_TOKEN:session"
 	if strings.Join(acts, " ") != want {
 		t.Errorf("changes %s\nwant    %s", strings.Join(acts, " "), want)
 	}

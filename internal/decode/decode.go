@@ -74,7 +74,7 @@ func Decode(r *request.Request, h Hints) []Operation {
 	case isGraphQLPath(r.Path, h.GraphQLPaths):
 		ops = decodeGraphQL(r)
 	default:
-		ops = []Operation{decodeREST(r)}
+		ops = decodeREST(r)
 	}
 	if len(ops) == 0 {
 		ops = []Operation{failed(r, "", "request carries no operation")}

@@ -1,50 +1,73 @@
 package decode
 
 import (
+	"bytes"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/request"
 )
 
 // methodOverrideHeaders are honoured by some servers to tunnel one method
-// through another (POST carrying a DELETE). The overriding method is used
-// for matching: accurate when the server honours it, stricter when not.
+// through another (POST carrying a DELETE). Whether a server honours them is
+// not known, so the request is decoded once for its real method and once for
+// each overriding method, and the strictest decision wins.
 var methodOverrideHeaders = []string{"X-Http-Method-Override", "X-Http-Method", "X-Method-Override"}
 
-func decodeREST(r *request.Request) Operation {
+func decodeREST(r *request.Request) []Operation {
 	op := Operation{Protocol: REST, Method: r.Method, Path: r.Path, Args: map[string]any{}}
+	op.Args["query"] = valuesToMap(r.Query)
+	decodeRESTBody(r, &op)
+	ops := []Operation{op}
+	methods := []string{r.Method}
 	for _, h := range methodOverrideHeaders {
-		if v := strings.ToUpper(strings.TrimSpace(r.Header.Get(h))); v != "" {
-			op.Method = v
+		for _, v := range r.Header.Values(h) {
+			m := strings.ToUpper(strings.TrimSpace(v))
+			if m == "" || slices.Contains(methods, m) {
+				continue
+			}
+			methods = append(methods, m)
+			o := op
+			o.Method = m
+			ops = append(ops, o)
 		}
 	}
-	op.Args["query"] = valuesToMap(r.Query)
+	return ops
+}
+
+// decodeRESTBody puts the body's fields in op.Args["body"]. A body that
+// looks like JSON is parsed as JSON whatever its Content-Type, because many
+// APIs (GitHub's among them) parse it anyway. A body that is neither JSON
+// nor a form sets BodyErr, so rules that read body fields fail closed.
+func decodeRESTBody(r *request.Request, op *Operation) {
 	if r.BodyErr != nil {
 		op.BodyErr = r.BodyErr.Error()
-		return op
+		return
 	}
-	if len(r.Body) == 0 {
-		return op
+	body := bytes.TrimLeft(r.Body, " \t\r\n")
+	if len(body) == 0 {
+		return
 	}
 	ct := r.ContentType()
 	switch {
-	case ct == "application/json" || strings.HasSuffix(ct, "+json"):
+	case body[0] == '{' || body[0] == '[' || ct == "application/json" || strings.HasSuffix(ct, "+json"):
 		v, err := parseJSON(r.Body)
 		if err != nil {
 			op.BodyErr = err.Error()
-			return op
+			return
 		}
 		op.Args["body"] = v
 	case ct == "application/x-www-form-urlencoded":
 		vals, err := url.ParseQuery(string(r.Body))
 		if err != nil {
 			op.BodyErr = "invalid form body: " + err.Error()
-			return op
+			return
 		}
 		op.Args["body"] = valuesToMap(vals)
+	default:
+		op.BodyErr = "the body is neither JSON nor a form"
 	}
-	return op
 }
 
 // valuesToMap turns url.Values into args: a single value stays a string,

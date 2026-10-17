@@ -67,6 +67,9 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 				return err
 			}
 			stderr := cmd.ErrOrStderr()
+			if err := hideEnviron(); err != nil {
+				return fmt.Errorf("hiding Opfence's environment from other processes: %w", err)
+			}
 			stateDir, err := audit.StateDir()
 			if err != nil {
 				return err
@@ -119,9 +122,16 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 						vars[k] = v
 					}
 					vars[envAgentPort] = strconv.Itoa(launch.Port(agent))
+					pinned := map[string]string{}
+					for k, v := range vars {
+						pinned[k] = v
+					}
+					if paths.ConfigFile != "" {
+						pinned["OPFENCE_CONFIG"] = paths.ConfigFile
+					}
 					settings, err := launch.ClaudeSettings(launch.ClaudeOptions{
 						HTTPPort: launch.Port(h), SOCKSPort: launch.Port(so), GOOS: runtime.GOOS,
-						Paths: paths, DenyRead: denyRead, HookArgs: g.hookArgs(),
+						Paths: paths, DenyRead: denyRead, HookArgs: g.hookArgs(paths.ConfigFile), Env: pinned,
 					})
 					if err != nil {
 						return err
@@ -241,21 +251,25 @@ func runPaths(g *globalOptions, stateDir string) (launch.Paths, error) {
 			exe = r
 		}
 	}
-	return launch.Paths{StateDir: stateDir, ConfigFile: cfg, CertDir: certDir, Executable: exe}, nil
+	cwd, err := os.Getwd()
+	if err != nil {
+		return launch.Paths{}, err
+	}
+	return launch.Paths{StateDir: stateDir, ConfigFile: cfg, CertDir: certDir, Executable: exe, ProjectDir: cwd}, nil
 }
 
-// hookArgs passes the global flags that change the catalog or policy on to
-// the hook, so it decides with the same rules as the proxy.
-func (g *globalOptions) hookArgs() []string {
+// hookArgs passes the catalog and policy files on to the hook, so it decides
+// with the same rules as the proxy. The user config is always passed by its
+// absolute path: left to the hook, it would be found through environment
+// variables a project's Claude Code settings can set.
+func (g *globalOptions) hookArgs(userConfig string) []string {
 	var out []string
-	if g.catalogDir != "" {
-		if d, err := filepath.Abs(g.catalogDir); err == nil {
-			out = append(out, "--catalog", d)
+	for _, f := range []struct{ flag, path string }{{"--catalog", g.catalogDir}, {"--user-config", userConfig}, {"--policy", g.policyFile}} {
+		if f.path == "" {
+			continue
 		}
-	}
-	if g.userConfig != "" {
-		if f, err := filepath.Abs(g.userConfig); err == nil {
-			out = append(out, "--user-config", f)
+		if p, err := filepath.Abs(f.path); err == nil {
+			out = append(out, f.flag, p)
 		}
 	}
 	return out
@@ -311,7 +325,8 @@ func claudeWarnings(w io.Writer, claude string) {
 		}
 	}
 	home, _ := os.UserHomeDir()
-	for _, m := range launch.ClaudeSettingsWarnings(launch.UserSettingsPath(os.Getenv, home), launch.ManagedSettingsPath(runtime.GOOS)) {
+	cwd, _ := os.Getwd()
+	for _, m := range launch.ClaudeSettingsWarnings(launch.UserSettingsPath(os.Getenv, home), launch.ManagedSettingsPath(runtime.GOOS), launch.ProjectSettingsFiles(cwd)...) {
 		fmt.Fprintln(w, "  warning:", m)
 	}
 }

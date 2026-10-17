@@ -106,6 +106,7 @@ type Config struct {
 type Server struct {
 	cfg       Config
 	scrubber  *inject.Scrubber
+	resign    chan struct{} // slots for AWS re-signing that buffers a body
 	transport *http.Transport
 	rp        *httputil.ReverseProxy
 	plainRP   *httputil.ReverseProxy
@@ -138,7 +139,7 @@ func New(cfg Config) (*Server, error) {
 	if cfg.Logf == nil {
 		cfg.Logf = log.Printf
 	}
-	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: inject.NewScrubber(cfg.Secrets)}
+	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: inject.NewScrubber(cfg.Secrets), resign: make(chan struct{}, maxResigning)}
 	s.transport = &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return s.dial(ctx, network, addr, false)
@@ -181,6 +182,10 @@ func New(cfg Config) (*Server, error) {
 	go func() { _ = s.inner.Serve(s.conns) }()
 	return s, nil
 }
+
+// maxResigning is how many AWS requests may buffer a body to re-sign it at
+// once, each up to inject.MaxSignedBody.
+const maxResigning = 4
 
 // ServeHTTPProxy serves HTTP proxy clients (CONNECT and plain HTTP) on l
 // until Close.
@@ -284,6 +289,20 @@ func (s *Server) isCatalogHost(host string) bool {
 // passthrough reports whether host is on the passthrough list.
 func (s *Server) passthrough(host string) bool {
 	for _, p := range s.cfg.Passthrough {
+		if host == p || (strings.HasPrefix(p, "*.") && strings.HasSuffix(host, p[1:])) {
+			return true
+		}
+	}
+	return false
+}
+
+// userPassthrough reports whether host is on the passthrough list through
+// an entry other than the built-in defaults.
+func (s *Server) userPassthrough(host string) bool {
+	for _, p := range s.cfg.Passthrough {
+		if slices.Contains(policy.DefaultPassthrough, p) {
+			continue
+		}
 		if host == p || (strings.HasPrefix(p, "*.") && strings.HasSuffix(host, p[1:])) {
 			return true
 		}

@@ -169,7 +169,9 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 	if ev.Rule != nil && ev.Rule.Resource != nil {
 		if v, ok := catalog.Lookup(ev.Args, ev.Rule.Resource.Arg); ok {
 			if s, ok := catalog.Scalar(v); ok {
-				ev.Resource = s
+				// The resource is shown in approval prompts and the hook's
+				// reason, and comes from the request.
+				ev.Resource = Sanitize(s, 200)
 			}
 		}
 	}

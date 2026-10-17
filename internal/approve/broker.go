@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"slices"
@@ -15,6 +16,7 @@ import (
 	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
+	"github.com/rakeshnitb23/opfence/internal/engine"
 	"github.com/rakeshnitb23/opfence/internal/proxy"
 )
 
@@ -70,7 +72,33 @@ type Grant struct {
 	Resource    string
 	Environment string
 	Host        string
-	Expires     time.Time
+	// Ops identifies every operation the approved request ran: rule,
+	// environment, resource and top-level arguments (path parameters, a
+	// repository's owner, a ref). A later request is covered only when it
+	// runs the same set.
+	Ops     []string
+	Expires time.Time
+}
+
+// volatileArgs change on every request of the same kind (git object ids),
+// so a grant does not compare them.
+var volatileArgs = map[string]bool{"old": true, "new": true}
+
+// opScope identifies one operation for grants.
+func opScope(ev engine.Evaluation) string {
+	rule := ""
+	if ev.Rule != nil {
+		rule = ev.Rule.ID
+	}
+	var args []string
+	for k, v := range ev.Args {
+		if s, ok := v.(string); ok && !volatileArgs[k] {
+			args = append(args, k+"="+s)
+		}
+	}
+	slices.Sort(args)
+	b, _ := json.Marshal([]any{rule, ev.Environment, ev.Resource, args})
+	return string(b)
 }
 
 type pending struct {
@@ -164,7 +192,11 @@ func (b *Broker) describe(p proxy.Pending) (View, Grant) {
 		Expires:  b.now().Add(b.timeout),
 	}
 	scopable := res.Decision == classes.Ask
-	for _, ev := range res.Evaluations {
+	// Strictest first, so the operation that needs approval leads the list
+	// however many harmless ones the request carries.
+	evs := slices.Clone(res.Evaluations)
+	slices.SortStableFunc(evs, func(a, b engine.Evaluation) int { return int(b.Decision) - int(a.Decision) })
+	for _, ev := range evs {
 		v.Cards = append(v.Cards, ev.Card)
 		v.Classes = append(v.Classes, string(ev.Class))
 		if ev.Rule != nil && !slices.Contains(v.Rules, ev.Rule.ID) {
@@ -190,7 +222,14 @@ func (b *Broker) describe(p proxy.Pending) (View, Grant) {
 		}
 	}
 	v.Scopable = scopable
-	return v, Grant{Rules: v.Rules, Resource: v.Resource, Environment: v.Environment, Host: p.Host}
+	var ops []string
+	for _, ev := range res.Evaluations {
+		if sc := opScope(ev); !slices.Contains(ops, sc) {
+			ops = append(ops, sc)
+		}
+	}
+	slices.Sort(ops)
+	return v, Grant{Rules: v.Rules, Resource: v.Resource, Environment: v.Environment, Host: p.Host, Ops: ops}
 }
 
 // ViaNote says where a request came from when that is not the agent's
@@ -211,7 +250,7 @@ func (b *Broker) granted(g Grant) bool {
 	now := b.now()
 	b.grants = slices.DeleteFunc(b.grants, func(x Grant) bool { return !now.Before(x.Expires) })
 	for _, x := range b.grants {
-		if slices.Equal(x.Rules, g.Rules) && x.Resource == g.Resource && x.Environment == g.Environment && x.Host == g.Host {
+		if slices.Equal(x.Rules, g.Rules) && x.Resource == g.Resource && x.Environment == g.Environment && x.Host == g.Host && slices.Equal(x.Ops, g.Ops) {
 			return true
 		}
 	}

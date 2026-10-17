@@ -18,7 +18,9 @@
       "/home/dev/.config/opfence",
       "/home/dev/.local/state/opfence",
       "/home/dev/.cache/opfence",
-      "/home/dev/Program Files/opfence"
+      "/home/dev/Program Files/opfence",
+      "/home/dev/project/.claude/settings.json",
+      "/home/dev/project/.claude/settings.local.json"
     ]
   },
   "enableWeakerNetworkIsolation": false

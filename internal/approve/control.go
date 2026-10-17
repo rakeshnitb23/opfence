@@ -28,6 +28,10 @@ type controlResponse struct {
 	Error   string `json:"error,omitempty"`
 }
 
+// maxSocketPath is the longest Unix socket path every supported system
+// accepts (sun_path is 104 bytes on macOS, including the terminating NUL).
+const maxSocketPath = 103
+
 // Control is the control-socket channel. It shows nothing itself: clients
 // list and watch pending requests over the socket.
 type Control struct{ l net.Listener }
@@ -41,6 +45,9 @@ func (*Control) Show(context.Context, View, *Broker) {}
 // ListenControl opens the control socket at path. A stale socket left by a
 // crashed process is replaced; a live one means another proxy is running.
 func ListenControl(path string) (*Control, error) {
+	if len(path) > maxSocketPath {
+		return nil, fmt.Errorf("the control socket path %s is %d bytes, longer than Unix sockets allow (%d); set XDG_STATE_HOME to a shorter folder", path, len(path), maxSocketPath)
+	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return nil, err
 	}

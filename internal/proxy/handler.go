@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
@@ -58,6 +59,13 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if h := endToEndConnectionHeader(r.Header); h != "" {
+		// The reverse proxy drops headers named in Connection, so the API
+		// would see a different request from the one decided.
+		s.block(w, req, nil, entry, http.StatusBadRequest, "Opfence blocks requests whose Connection header names "+strconv.Quote(h)+", because it would remove that header before forwarding.")
+		return
+	}
+
 	res := s.cfg.Engine.Evaluate(req)
 	entry.Decision = res.Decision.String()
 	for _, ev := range res.Evaluations {
@@ -96,13 +104,31 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 	if len(inj.Foreign) > 0 {
 		entry.Reason = fmt.Sprintf("placeholder for %s sent to %s; not swapped in", strings.Join(inj.Foreign, ", "), host)
 	}
+	sigV4 := res.Provider != nil && res.Provider.SigV4
 	if s.scrubber != nil {
 		// Let the transport ask for gzip and decode it, so responses can be
 		// scrubbed.
 		r.Header.Del("Accept-Encoding")
+		if !sigV4 {
+			// A key split across two ranged reads would not be scrubbed in
+			// either. AWS keeps Range: S3 downloads in parts depend on it.
+			r.Header.Del("Range")
+			r.Header.Del("If-Range")
+		}
 	}
 	var whole []byte
-	if res.Provider != nil && res.Provider.SigV4 {
+	if sigV4 {
+		if len(raw) > request.MaxBody && r.Header.Get("X-Amz-Content-Sha256") == "" {
+			// Re-signing may read up to MaxSignedBody into memory; a few at a
+			// time.
+			select {
+			case s.resign <- struct{}{}:
+				defer func() { <-s.resign }()
+			case <-r.Context().Done():
+				s.block(w, req, &res, entry, http.StatusServiceUnavailable, "the request was cancelled while waiting for other large AWS uploads")
+				return
+			}
+		}
 		// After every header change, so the new signature covers what is
 		// sent.
 		signed, body, err := inject.SigV4(res.Provider, inject.AWSRequest{
@@ -131,8 +157,29 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 			io.Closer
 		}{rd, r.Body}
 	}
-	s.rp.ServeHTTP(w, r.WithContext(contextWith(r, f)))
+	var rw http.ResponseWriter = w
+	if s.scrubber != nil {
+		rw = scrubWriter{w, s}
+	}
+	s.rp.ServeHTTP(rw, r.WithContext(contextWith(r, f)))
 }
+
+// scrubWriter scrubs the headers of informational (1xx) responses, which the
+// reverse proxy forwards as they arrive, before modifyResponse runs.
+type scrubWriter struct {
+	http.ResponseWriter
+	s *Server
+}
+
+func (w scrubWriter) WriteHeader(code int) {
+	if code < 200 {
+		w.s.scrubber.Header(w.Header())
+	}
+	w.ResponseWriter.WriteHeader(code)
+}
+
+// Unwrap lets http.ResponseController flush streamed responses.
+func (w scrubWriter) Unwrap() http.ResponseWriter { return w.ResponseWriter }
 
 func rewriteIntercepted(pr *httputil.ProxyRequest) {
 	f := pr.In.Context().Value(fwdKey{}).(*fwd)
@@ -154,7 +201,7 @@ func (s *Server) modifyResponse(resp *http.Response) error {
 			return fmt.Errorf("the response is encoded with %s, which Opfence cannot scrub for credentials", ce)
 		}
 		s.scrubber.Header(resp.Header)
-		resp.Body = s.scrubber.Reader(resp.Body)
+		resp.Body = s.scrubber.Reader(resp.Body, func() { s.scrubber.Header(resp.Trailer) })
 	}
 	if f, ok := resp.Request.Context().Value(fwdKey{}).(*fwd); ok {
 		f.entry.Status = resp.StatusCode
@@ -280,6 +327,22 @@ func jsonRPCID(req *request.Request, res *engine.Result) (json.RawMessage, bool)
 		return nil, false
 	}
 	return msg.ID, true
+}
+
+// connectionTokens are the Connection header values clients normally send.
+var connectionTokens = map[string]bool{"close": true, "keep-alive": true, "te": true, "upgrade": true}
+
+// endToEndConnectionHeader returns the first header the Connection header
+// names other than the usual hop-by-hop tokens.
+func endToEndConnectionHeader(h http.Header) string {
+	for _, v := range h.Values("Connection") {
+		for _, tok := range strings.Split(v, ",") {
+			if tok = strings.ToLower(strings.TrimSpace(tok)); tok != "" && !connectionTokens[tok] {
+				return tok
+			}
+		}
+	}
+	return ""
 }
 
 func auditPath(p string) string {

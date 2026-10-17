@@ -6,7 +6,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 // MinClaudeVersion is the first Claude Code release that ignores a
@@ -70,12 +72,15 @@ type settingsProbe struct {
 		} `json:"network"`
 		AllowUnsandboxedCommands *bool `json:"allowUnsandboxedCommands"`
 	} `json:"sandbox"`
+	Hooks           map[string]json.RawMessage `json:"hooks"`
+	Env             map[string]json.RawMessage `json:"env"`
+	DisableAllHooks bool                       `json:"disableAllHooks"`
 }
 
-// ClaudeSettingsWarnings reads the user's and the administrator's Claude
-// Code settings for anything that would undo what opfence run sets up.
-// Unreadable or missing files are skipped.
-func ClaudeSettingsWarnings(userFile, managedFile string) []string {
+// ClaudeSettingsWarnings reads the user's, the administrator's and the
+// project's Claude Code settings for anything that would undo what opfence
+// run sets up. Unreadable or missing files are skipped.
+func ClaudeSettingsWarnings(userFile, managedFile string, projectFiles ...string) []string {
 	var out []string
 	if s, ok := readSettings(userFile); ok && len(s.Sandbox.ExcludedCommands) > 0 {
 		out = append(out, fmt.Sprintf("%s lists sandbox.excludedCommands %q: those commands run outside the sandbox and can reach APIs without Opfence", userFile, s.Sandbox.ExcludedCommands))
@@ -89,6 +94,34 @@ func ClaudeSettingsWarnings(userFile, managedFile string) []string {
 		}
 		if len(s.Sandbox.ExcludedCommands) > 0 {
 			out = append(out, fmt.Sprintf("%s lists sandbox.excludedCommands %q: those commands run outside the sandbox", managedFile, s.Sandbox.ExcludedCommands))
+		}
+		if s.DisableAllHooks {
+			out = append(out, fmt.Sprintf("%s turns off all hooks, so Opfence's hook cannot decide MCP tool calls", managedFile))
+		}
+	}
+	// A repository's settings, or an earlier agent, can add hooks: they run
+	// outside the sandbox with your access. Opfence keeps the sandbox from
+	// writing these files but cannot vouch for what is already there.
+	for _, f := range projectFiles {
+		s, ok := readSettings(f)
+		if !ok {
+			continue
+		}
+		if len(s.Hooks) > 0 {
+			events := make([]string, 0, len(s.Hooks))
+			for e := range s.Hooks {
+				events = append(events, e)
+			}
+			sort.Strings(events)
+			out = append(out, fmt.Sprintf("%s adds %s hooks: they run outside the sandbox with your access, so check what they run", f, strings.Join(events, ", ")))
+		}
+		if len(s.Env) > 0 {
+			names := make([]string, 0, len(s.Env))
+			for k := range s.Env {
+				names = append(names, k)
+			}
+			sort.Strings(names)
+			out = append(out, fmt.Sprintf("%s sets environment variables %s for Claude Code and its MCP servers; Opfence's own proxy, certificate and config variables override them", f, strings.Join(names, ", ")))
 		}
 	}
 	return out

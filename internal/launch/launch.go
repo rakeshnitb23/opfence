@@ -27,6 +27,15 @@ type Paths struct {
 	CertDir string
 	// Executable is the opfence binary the hook runs; nothing may replace it.
 	Executable string
+	// ProjectDir is the folder the agent starts in. Claude Code reads hooks,
+	// environment variables and permissions from settings files there, and
+	// hooks run outside the sandbox, so the sandbox may not write them.
+	ProjectDir string
+}
+
+// ProjectSettingsFiles are the Claude Code settings files in a project.
+func ProjectSettingsFiles(dir string) []string {
+	return []string{filepath.Join(dir, ".claude", "settings.json"), filepath.Join(dir, ".claude", "settings.local.json")}
 }
 
 // CertDir is where the CA files live: the user cache folder, outside the
@@ -62,6 +71,11 @@ func (p Paths) protectedWrites() []protectedPath {
 			out = append(out, x)
 		}
 	}
+	if p.ProjectDir != "" {
+		for _, f := range ProjectSettingsFiles(p.ProjectDir) {
+			out = append(out, protectedPath{f, false})
+		}
+	}
 	return out
 }
 
@@ -84,12 +98,17 @@ type ClaudeOptions struct {
 	// HookArgs are global flags the hook needs to load the same catalog and
 	// policy as the proxy (--catalog DIR, --user-config FILE).
 	HookArgs []string
+	// Env pins environment variables Claude Code, its hooks and its MCP
+	// servers get, so a project's settings cannot point them elsewhere.
+	Env map[string]string
 }
 
 type claudeSettings struct {
-	Sandbox     claudeSandbox          `json:"sandbox"`
-	Permissions claudePermissions      `json:"permissions"`
-	Hooks       map[string][]hookGroup `json:"hooks"`
+	Sandbox         claudeSandbox          `json:"sandbox"`
+	Permissions     claudePermissions      `json:"permissions"`
+	Hooks           map[string][]hookGroup `json:"hooks"`
+	DisableAllHooks bool                   `json:"disableAllHooks"`
+	Env             map[string]string      `json:"env,omitempty"`
 }
 
 type claudeSandbox struct {
@@ -137,6 +156,9 @@ type hookHandler struct {
 // Permission deny rules keep the file tools off Opfence's state, config and
 // binary; the PreToolUse hook decides MCP tool calls; and the agent
 // listener (see opfence run) sees MCP servers' traffic to catalog APIs.
+// disableAllHooks and env are set because --settings outranks a project's
+// settings: a project cannot turn the hook off or move the proxy, CA or
+// config the hook and MCP servers use.
 func ClaudeSettings(o ClaudeOptions) ([]byte, error) {
 	deny := append([]string{}, o.DenyRead...)
 	if o.Paths.StateDir != "" {
@@ -155,6 +177,7 @@ func ClaudeSettings(o ClaudeOptions) ([]byte, error) {
 			EnableWeakerNetworkIsolation: o.GOOS == "darwin",
 		},
 		Permissions: claudePermissions{Deny: []string{}},
+		Env:         o.Env,
 		Hooks: map[string][]hookGroup{"PreToolUse": {{
 			Matcher: "^mcp__",
 			Hooks: []hookHandler{{
@@ -165,6 +188,11 @@ func ClaudeSettings(o ClaudeOptions) ([]byte, error) {
 	}
 	if o.Paths.StateDir != "" {
 		s.Permissions.Deny = append(s.Permissions.Deny, "Read("+ruleGlob(protectedPath{o.Paths.StateDir, true})+")")
+	}
+	if o.GOOS == "linux" {
+		// Opfence's own environment, in /proc/<pid>/environ, holds the real
+		// keys it replaced with placeholders.
+		s.Permissions.Deny = append(s.Permissions.Deny, "Read(//proc/**)")
 	}
 	for _, p := range writes {
 		s.Permissions.Deny = append(s.Permissions.Deny, "Edit("+ruleGlob(p)+")")

@@ -15,7 +15,9 @@
         "/home/dev/.config/opfence",
         "/home/dev/.local/state/opfence",
         "/home/dev/.cache/opfence",
-        "/home/dev/Program Files/opfence"
+        "/home/dev/Program Files/opfence",
+        "/home/dev/project/.claude/settings.json",
+        "/home/dev/project/.claude/settings.local.json"
       ]
     },
     "enableWeakerNetworkIsolation": true
@@ -26,7 +28,9 @@
       "Edit(//home/dev/.config/opfence/**)",
       "Edit(//home/dev/.local/state/opfence/**)",
       "Edit(//home/dev/.cache/opfence/**)",
-      "Edit(//home/dev/Program Files/opfence)"
+      "Edit(//home/dev/Program Files/opfence)",
+      "Edit(//home/dev/project/.claude/settings.json)",
+      "Edit(//home/dev/project/.claude/settings.local.json)"
     ]
   },
   "hooks": {
@@ -43,5 +47,10 @@
         ]
       }
     ]
+  },
+  "disableAllHooks": false,
+  "env": {
+    "HTTPS_PROXY": "http://127.0.0.1:41003",
+    "OPFENCE_CONFIG": "/home/dev/it's here/config.yaml"
   }
 }

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
 )
@@ -44,5 +45,18 @@ func TestProxyRefusesNonLoopback(t *testing.T) {
 	code, _, errOut := run(t, noUser(t), "proxy", "--http", "0.0.0.0:0", "--audit", filepath.Join(t.TempDir(), "a.jsonl"))
 	if code != exitError || !strings.Contains(errOut, "only listens on loopback") {
 		t.Fatalf("exit %d %s", code, errOut)
+	}
+}
+
+// Hosts and reasons in the audit log come from requests, so opfence log
+// never prints their terminal escapes or line breaks.
+func TestPrintLogSanitizes(t *testing.T) {
+	var out strings.Builder
+	err := printLog(&out, []audit.Entry{{Time: time.Now(), Event: "refused", Host: "a\x1b[8m.example.com", Outcome: "refused", Reason: "x\r\nforwarded ok"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if lines := strings.Split(strings.TrimSpace(out.String()), "\n"); strings.ContainsAny(out.String(), "\x1b\r") || len(lines) != 2 {
+		t.Fatalf("%q", out.String())
 	}
 }

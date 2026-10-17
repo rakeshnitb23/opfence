@@ -38,6 +38,10 @@ Merge the result into `.claude/settings.json`. It installs a PreToolUse hook tha
 
 For NVIDIA OpenShell, `opfence export --target openshell --environment production` writes network policies to merge into your sandbox policy.
 
+## Install
+
+Release builds for macOS, Linux and Windows are attached to each [GitHub release](https://github.com/rakeshnitb23/opfence/releases), with a `checksums.txt` and signed build provenance (`gh attestation verify opfence_*.tar.gz --repo rakeshnitb23/opfence`).
+
 ## Build from source
 
 ```sh
@@ -52,6 +56,7 @@ Requires Go 1.26 or newer (the oldest Go release still getting security fixes).
 
 - [docs/PLAN.md](docs/PLAN.md): the problem, the market, the threat model and the roadmap
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how it works
+- [docs/LIMITS.md](docs/LIMITS.md): what Opfence does not protect against
 - [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md): build stages and progress
 - [CONTRIBUTING.md](CONTRIBUTING.md): adding a catalog rule
 - [SECURITY.md](SECURITY.md): reporting vulnerabilities

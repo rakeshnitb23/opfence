@@ -179,9 +179,27 @@ func TestREST(t *testing.T) {
 	if bad.BodyErr == "" || bad.Error != "" {
 		t.Errorf("duplicate-key body should set BodyErr only: %+v", bad)
 	}
-	override := Decode(fixture(t, "POST /v9/projects/web HTTP/1.1\nHost: api.vercel.com\nX-HTTP-Method-Override: delete\n\n"), Hints{})[0]
-	if override.Method != "DELETE" {
-		t.Errorf("method override ignored: %s", override.Method)
+	// Both the real and the overriding method are decoded, so neither can
+	// hide the other.
+	for _, tc := range []struct{ method, override string }{{"POST", "delete"}, {"DELETE", "GET"}} {
+		ops := Decode(fixture(t, tc.method+" /v9/projects/web HTTP/1.1\nHost: api.vercel.com\nX-HTTP-Method-Override: "+tc.override+"\nX-Method-Override: "+tc.method+"\n\n"), Hints{})
+		if len(ops) != 2 || ops[0].Method != tc.method || ops[1].Method != strings.ToUpper(tc.override) {
+			t.Errorf("%s with override %s: ops = %+v", tc.method, tc.override, ops)
+		}
+	}
+	for _, tc := range []struct{ ct, body, want string }{
+		{"text/plain", `{"force":true}`, ""},                    // JSON whatever the Content-Type
+		{"", " [1]", ""},                                        // no Content-Type
+		{"text/plain", "force=true", "neither JSON nor a form"}, // fails closed
+		{"application/x-www-form-urlencoded", `{"force":true}`, ""},
+	} {
+		op := Decode(fixture(t, "PATCH /x HTTP/1.1\nHost: api.github.com\nContent-Type: "+tc.ct+"\n\n"+tc.body), Hints{})[0]
+		if !strings.Contains(op.BodyErr, tc.want) || (tc.want == "") != (op.BodyErr == "") {
+			t.Errorf("%s body %q: BodyErr = %q", tc.ct, tc.body, op.BodyErr)
+		}
+		if tc.want == "" && op.Args["body"] == nil {
+			t.Errorf("%s body %q not decoded", tc.ct, tc.body)
+		}
 	}
 	big := Decode(fixture(t, "PUT /x HTTP/1.1\nHost: api.github.com\n\n"+strings.Repeat("a", request.MaxBody+1)), Hints{})[0]
 	if big.BodyErr == "" {

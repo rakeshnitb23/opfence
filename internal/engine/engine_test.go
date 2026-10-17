@@ -262,6 +262,10 @@ func TestCardSanitized(t *testing.T) {
 	if strings.ContainsAny(c, "\u202e\n\x1b") || !strings.HasSuffix(c, "…") || len([]rune(c)) > 120 {
 		t.Errorf("card not sanitized: %q", c)
 	}
+	// The resource is shown in approval prompts and the hook's reason too.
+	if r := res.Evaluations[0].Resource; strings.ContainsAny(r, "\u202e\n\x1b") || !strings.HasPrefix(r, "vol") {
+		t.Errorf("resource not sanitized: %q", r)
+	}
 }
 
 func TestHash(t *testing.T) {

@@ -147,7 +147,8 @@ func (s *Server) refused(host, port, reason string) {
 // refused, so a tunnel opened for a passthrough host cannot carry a TLS
 // session for an API (on a shared CDN that would reach the API uninspected),
 // and a tunnel to an IP address is decided by its server name and dials that
-// name. Other ports are tunnelled by name without inspection.
+// name. Other ports are tunnelled by name without inspection, for hosts the
+// user listed under passthrough or in open mode.
 func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 	defer c.Close()
 	isIP := net.ParseIP(host) != nil
@@ -167,6 +168,13 @@ func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 		}
 	}
 	if port != "443" {
+		if s.cfg.Mode != "open" && !isIP && !s.userPassthrough(host) {
+			// The built-in passthrough hosts are HTTPS registries. On another
+			// port nothing checks the TLS server name, so the tunnel could
+			// carry anything to a shared CDN address.
+			refuse(fmt.Sprintf("%s is on the built-in passthrough list for HTTPS on port 443 only; list it under passthrough in your user config to allow port %s", host, port))
+			return
+		}
 		if ok, why := s.tunnelAllowed(host); !ok {
 			refuse(why)
 			return

@@ -3,10 +3,12 @@ package approve
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -199,6 +201,9 @@ func TestControlSocket(t *testing.T) {
 	if _, err := ListenControl(path); err == nil {
 		t.Fatal("second listener on a live socket")
 	}
+	if _, err := ListenControl(filepath.Join(dir, strings.Repeat("x", 120)+".sock")); err == nil || !strings.Contains(err.Error(), "XDG_STATE_HOME") {
+		t.Fatalf("long path: %v", err)
+	}
 	b := NewBroker(5*time.Second, ctl)
 	go ctl.Serve(b)
 
@@ -292,5 +297,57 @@ func TestDesktopDialogs(t *testing.T) {
 	b.channels = []Channel{&Desktop{tool: "kdialog", run: f.run}}
 	if a := b.Approve(context.Background(), pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-9", 3)); a.Approved {
 		t.Fatalf("%+v", a)
+	}
+}
+
+// A request with many harmless operations lists the one that needs approval
+// first, and a dialog lists a bounded number of them.
+func TestDialogListsStrictestFirst(t *testing.T) {
+	b := NewBroker(5*time.Second, passive{})
+	p := pendingFor("railway.volume.delete", classes.Irreversible, classes.Confirm, "vol-1", 1)
+	var evs []engine.Evaluation
+	for i := range 30 {
+		evs = append(evs, engine.Evaluation{Rule: &catalog.Rule{ID: "railway.me"}, Class: classes.Read, Decision: classes.Allow, Card: fmt.Sprintf("Read me %d", i)})
+	}
+	p.Result.Evaluations = append(evs, p.Result.Evaluations...)
+	v, _ := b.describe(p)
+	if v.Cards[0] != "Do railway.volume.delete on vol-1" {
+		t.Fatalf("first card %q", v.Cards[0])
+	}
+	text := dialogText(v, "")
+	if !strings.Contains(text, "Do railway.volume.delete on vol-1") || !strings.Contains(text, "+21 more") || strings.Contains(text, "Read me 9\n") {
+		t.Fatalf("dialog text:\n%s", text)
+	}
+}
+
+// Desktop dialogs open one at a time.
+func TestDesktopDialogsOneAtATime(t *testing.T) {
+	var open, most atomic.Int32
+	release := make(chan struct{})
+	d := &Desktop{tool: "kdialog", run: func(ctx context.Context, _ string, _ ...string) (string, int) {
+		n := open.Add(1)
+		for m := most.Load(); n > m && !most.CompareAndSwap(m, n); m = most.Load() {
+		}
+		select {
+		case <-release:
+		case <-ctx.Done():
+		}
+		open.Add(-1)
+		return "", 1
+	}}
+	b := NewBroker(5*time.Second, d)
+	var done []<-chan proxy.Approval
+	for i := range 3 {
+		c, _ := approveAsync(t, b, pendingFor("railway.service.delete", classes.Delete, classes.Ask, fmt.Sprint("svc-", i), byte(i+1)))
+		done = append(done, c)
+	}
+	for range done {
+		release <- struct{}{}
+	}
+	for _, c := range done {
+		<-c
+	}
+	if most.Load() != 1 {
+		t.Fatalf("%d dialogs were open at once", most.Load())
 	}
 }

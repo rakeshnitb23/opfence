@@ -15,9 +15,12 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httptrace"
+	"net/textproto"
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -59,8 +62,9 @@ type opts struct {
 	defaultDial bool // use the real dialer with its private-address guard
 	secrets     *secrets.Set
 	via         string
-	private     bool // PrivateTunnels
-	upstream    bool // go through a fake corporate proxy
+	private     bool     // PrivateTunnels
+	passthrough []string // added to the built-in list
+	upstream    bool     // go through a fake corporate proxy
 	// respond, when set, answers upstream requests instead of the default.
 	respond func(w http.ResponseWriter, r *http.Request)
 }
@@ -153,6 +157,9 @@ func newEnv(t *testing.T, o opts) *env {
 		Secrets:         o.secrets,
 		UpstreamRootCAs: upCA.Pool(),
 		Logf:            t.Logf,
+	}
+	if o.passthrough != nil {
+		cfg.Passthrough = append(slices.Clone(policy.DefaultPassthrough), o.passthrough...)
 	}
 	route := func(ctx context.Context, network, addr string) (net.Conn, error) {
 		host, port, _ := net.SplitHostPort(addr)
@@ -339,6 +346,25 @@ func TestOversizedBodyIsNotForwarded(t *testing.T) {
 	}
 }
 
+// A header named in Connection would be dropped before forwarding, so the
+// API would see a request other than the one decided: a DELETE carrying an
+// X-HTTP-Method-Override of GET must not reach the API as a bare DELETE.
+func TestConnectionNamedHeaderBlocked(t *testing.T) {
+	e := newEnv(t, opts{})
+	req, _ := http.NewRequest("DELETE", "https://backboard.railway.com/graphql/v2", nil)
+	req.Header.Set("X-HTTP-Method-Override", "GET")
+	req.Header.Set("Connection", "keep-alive, X-HTTP-Method-Override")
+	resp, err := e.client(false).Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest || !strings.Contains(string(b), "x-http-method-override") || e.hits.Load() != 0 {
+		t.Fatalf("%d %s, upstream hits %d", resp.StatusCode, b, e.hits.Load())
+	}
+}
+
 func TestMCPGetsJSONRPCError(t *testing.T) {
 	e := newEnv(t, opts{})
 	resp, body := post(t, e.client(true), "https://mcp.supabase.com/mcp",
@@ -412,6 +438,16 @@ func TestSOCKS5(t *testing.T) {
 	if _, err := socksDial(e.socksAddr, "example.com", 443); err == nil {
 		t.Fatal("strict mode let SOCKS reach example.com")
 	}
+	// A host name carrying terminal escapes never reaches the audit log.
+	before := len(e.entries())
+	if _, err := socksDial(e.socksAddr, "a\x1b[8m.example.com", 443); err == nil {
+		t.Fatal("SOCKS accepted a host name with escapes")
+	}
+	for _, en := range e.entries()[before:] {
+		if strings.Contains(en.Host+en.Reason, "\x1b") {
+			t.Fatalf("escape in audit entry %+v", en)
+		}
+	}
 }
 
 // connect opens a CONNECT tunnel and returns the connection and status.
@@ -447,7 +483,7 @@ func (e *env) tlsEchoes(c net.Conn, name string) bool {
 }
 
 func TestStrictOpenAndPassthrough(t *testing.T) {
-	strict := newEnv(t, opts{})
+	strict := newEnv(t, opts{passthrough: []string{"example.org"}})
 	if c, code := connect(t, strict.httpAddr, "example.com:443"); code != http.StatusForbidden {
 		t.Fatalf("strict: example.com got %d", code)
 	} else {
@@ -458,10 +494,16 @@ func TestStrictOpenAndPassthrough(t *testing.T) {
 		t.Fatalf("passthrough: %d", code)
 	}
 	c.Close()
-	// Other ports are tunnelled by name without inspection.
-	c, code = connect(t, strict.httpAddr, "registry.npmjs.org:8080")
+	// Built-in passthrough hosts get port 443 only, where the TLS server
+	// name is checked; hosts the user lists are tunnelled on any port.
+	if c, code := connect(t, strict.httpAddr, "registry.npmjs.org:8080"); code != http.StatusForbidden {
+		t.Fatalf("built-in passthrough on port 8080 got %d", code)
+	} else {
+		c.Close()
+	}
+	c, code = connect(t, strict.httpAddr, "example.org:8080")
 	if code != 200 || !echoes(c) {
-		t.Fatalf("passthrough on port 8080: %d", code)
+		t.Fatalf("user passthrough on port 8080: %d", code)
 	}
 	c.Close()
 	// git over SSH to github.com cannot be inspected, so it is refused.
@@ -668,7 +710,18 @@ func TestInjectAndScrub(t *testing.T) {
 		w.Header().Set("X-Echo", auth)
 		w.Header().Set("X-AE", r.Header.Get("Accept-Encoding"))
 		body := fmt.Sprintf(`{"auth":%q,"env":{"RAILWAY_TOKEN":%q}}`, auth, railwaySecret.Value)
+		w.Header().Set("X-Range", r.Header.Get("Range"))
 		switch {
+		case r.URL.Path == "/hints":
+			// An informational response and a trailer, which reach the client
+			// outside the usual response headers.
+			w.Header().Set("Link", "<https://x.example/?t="+railwaySecret.Value+">")
+			w.WriteHeader(http.StatusEarlyHints)
+			w.Header().Del("Link")
+			w.Header().Set("Trailer", "X-Checksum")
+			_, _ = w.Write([]byte(body))
+			w.Header().Set("X-Checksum", railwaySecret.Value)
+			return
 		case r.URL.Path == "/br":
 			w.Header().Set("Content-Encoding", "br")
 			_, _ = w.Write([]byte("not really brotli"))
@@ -728,6 +781,33 @@ func TestInjectAndScrub(t *testing.T) {
 	data, _ := os.ReadFile(e.auditPath)
 	if bytes.Contains(data, []byte(vercelSecret.Value)) || bytes.Contains(data, []byte(railwaySecret.Value)) {
 		t.Fatal("secret value in the audit log")
+	}
+
+	// Informational responses and trailers are scrubbed, and Range is
+	// dropped so a key cannot be read in pieces that are each unscrubbed.
+	var hints []string
+	req, _ := http.NewRequest("GET", "https://api.vercel.com/hints", nil)
+	req.Header.Set("Range", "bytes=0-9")
+	req = req.WithContext(httptrace.WithClientTrace(req.Context(), &httptrace.ClientTrace{
+		Got1xxResponse: func(code int, h textproto.MIMEHeader) error {
+			hints = append(hints, h.Get("Link"))
+			return nil
+		},
+	}))
+	hresp, err := c.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hbody, _ := io.ReadAll(hresp.Body)
+	hresp.Body.Close()
+	if len(hints) != 1 || strings.Contains(hints[0], railwaySecret.Value) || !strings.Contains(hints[0], railwaySecret.Placeholder) {
+		t.Errorf("103 headers: %q", hints)
+	}
+	if got := hresp.Trailer.Get("X-Checksum"); got != railwaySecret.Placeholder {
+		t.Errorf("trailer %q", got)
+	}
+	if hresp.Header.Get("X-Range") != "" || strings.Contains(string(hbody), railwaySecret.Value) {
+		t.Errorf("Range reached the API (%q) or body leaked: %s", hresp.Header.Get("X-Range"), hbody)
 	}
 
 	// A response Opfence cannot decode is refused rather than passed on.

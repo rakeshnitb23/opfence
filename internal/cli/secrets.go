@@ -69,18 +69,20 @@ changed. "opfence init --undo" writes the real values back.`,
 			moves, protected := 0, 0
 			tw := tabwriter.NewWriter(out, 0, 0, 2, ' ', 0)
 			for _, f := range findings {
-				loc := rel(root, f.File)
+				// File names and key paths come from the repository.
+				loc := engine.Sanitize(rel(root, f.File), 200)
 				if f.Line > 0 {
 					loc = fmt.Sprintf("%s:%d", loc, f.Line)
 				}
+				where := engine.Sanitize(f.Where, 120)
 				switch {
 				case f.Skip == "":
 					moves++
-					fmt.Fprintf(tw, "  move\t%s\t%s\t%s\n", loc, f.Where, f.Provider)
+					fmt.Fprintf(tw, "  move\t%s\t%s\t%s\n", loc, where, f.Provider)
 				case strings.HasPrefix(f.Skip, "already"):
 					protected++
 				default:
-					fmt.Fprintf(tw, "  skip\t%s\t%s\t%s\n", loc, f.Where, f.Skip)
+					fmt.Fprintf(tw, "  skip\t%s\t%s\t%s\n", loc, where, f.Skip)
 				}
 			}
 			_ = tw.Flush()

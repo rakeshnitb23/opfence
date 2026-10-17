@@ -3,9 +3,11 @@ package inject
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 	"testing/iotest"
@@ -82,7 +84,7 @@ func TestScrubAcrossReads(t *testing.T) {
 		"half reads":         iotest.HalfReader(strings.NewReader(body)),
 		"whole":              strings.NewReader(body),
 	} {
-		out, err := io.ReadAll(s.Reader(io.NopCloser(r)))
+		out, err := io.ReadAll(s.Reader(io.NopCloser(r), nil))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -101,9 +103,51 @@ func TestScrubAcrossReads(t *testing.T) {
 	}
 }
 
+// A key echoed back encoded is scrubbed too: base64 at any alignment (an
+// echoed Basic header, a base64 file body) and URL-encoded.
+func TestScrubEncodedForms(t *testing.T) {
+	s := NewScrubber(set)
+	for _, enc := range []*base64.Encoding{base64.StdEncoding, base64.URLEncoding} {
+		for _, prefix := range []string{"", "x:", "ab:"} {
+			body := `{"auth":"` + enc.EncodeToString([]byte(prefix+vercel.Value+"\n")) + `"}`
+			var eof bool
+			out, err := io.ReadAll(s.Reader(io.NopCloser(strings.NewReader(body)), func() { eof = true }))
+			if err != nil || !eof {
+				t.Fatal(err, eof)
+			}
+			var got struct{ Auth string }
+			if err := json.Unmarshal(out, &got); err != nil {
+				t.Fatal(err)
+			}
+			dec, err := enc.DecodeString(got.Auth)
+			// Up to two bytes at each end share base64 characters with what
+			// surrounds them, so they cannot be matched; the rest is replaced.
+			v := vercel.Value
+			if err != nil || len(dec) != len(prefix+v+"\n") || strings.Contains(string(dec), v[2:len(v)-2]) {
+				t.Errorf("prefix %q: decoded %q (%v)", prefix, dec, err)
+			}
+		}
+	}
+	// A secret with characters URL encoding changes, and a placeholder with
+	// the same characters in the same places.
+	value := "wJalrXUtnFEMI/K7MDENG/" + "bPxRfiCYEXAMPLEKEY"
+	ph := strings.Map(func(r rune) rune {
+		if r >= 'a' && r <= 'z' {
+			return 'a' + ('z'-r+1)%26
+		}
+		return r
+	}, value)
+	aws := NewScrubber(secrets.NewSet([]*secrets.Secret{{Provider: "aws", Name: "AWS_SECRET_ACCESS_KEY", Value: value, Placeholder: ph}}))
+	h := http.Header{"Location": {"https://x.example/?t=" + url.QueryEscape(value)}}
+	aws.Header(h)
+	if h.Get("Location") != "https://x.example/?t="+url.QueryEscape(ph) {
+		t.Errorf("URL-encoded key not scrubbed: %v", h)
+	}
+}
+
 func TestScrubKeepsReadErrors(t *testing.T) {
 	boom := errors.New("boom")
-	r := NewScrubber(set).Reader(io.NopCloser(io.MultiReader(strings.NewReader(railway.Value), iotest.ErrReader(boom))))
+	r := NewScrubber(set).Reader(io.NopCloser(io.MultiReader(strings.NewReader(railway.Value), iotest.ErrReader(boom))), nil)
 	out, err := io.ReadAll(r)
 	if !errors.Is(err, boom) || !bytes.Equal(out, []byte(railway.Placeholder)) {
 		t.Fatalf("%q %v", out, err)

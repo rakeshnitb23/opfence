@@ -209,6 +209,19 @@ func TestSigV4PassesAndRefuses(t *testing.T) {
 		},
 		"placeholder for railway": func(r *AWSRequest) { r.Header.Set("X-Amz-Security-Token", railway.Placeholder) },
 		"malformed":               func(r *AWSRequest) { r.Header.Set("X-Amz-Date", "yesterday") },
+		// Hosts anyone can run under amazonaws.com never get a real signature.
+		"an API Gateway API":            func(r *AWSRequest) { r.Host = "abc123.execute-api.us-east-1.amazonaws.com" },
+		"a load balancer":               func(r *AWSRequest) { r.Host = "my-lb-1234.us-east-1.elb.amazonaws.com" },
+		"an EC2 instance's public name": func(r *AWSRequest) { r.Host = "ec2-203-0-113-5.compute-1.amazonaws.com" },
+		"a VPC endpoint":                func(r *AWSRequest) { r.Host = "vpce-0abc-xyz.s3.us-east-1.vpce.amazonaws.com" },
+	}
+	// AWS's own APIs with similar names are re-signed.
+	for _, host := range []string{"ec2-instance-connect.us-east-1.amazonaws.com", "elasticloadbalancing.us-east-1.amazonaws.com", "compute-optimizer.us-east-1.amazonaws.com"} {
+		r := clientSign(t, get)
+		r.Host = host
+		if _, _, err := SigV4(awsProv, r, set); err != nil {
+			t.Errorf("%s: %v", host, err)
+		}
 	}
 	for want, mutate := range refusals {
 		r := clientSign(t, get)

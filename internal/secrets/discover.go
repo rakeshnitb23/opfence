@@ -332,7 +332,9 @@ func isAuthHeader(p *catalog.Provider, name string) bool {
 
 // ScanEnv reports credentials for catalog providers in environment entries
 // ("NAME=value"), with the same skip reasons as files. File is empty and
-// Where is the variable name.
+// Where is the variable name. A variable a provider names is one finding;
+// any variable is also searched for every token with a known prefix, so a
+// value holding several keys has each of them found.
 func ScanEnv(environ []string, c *catalog.Catalog, known *Set) []Finding {
 	d := newDetector(c, known)
 	var out []Finding
@@ -341,13 +343,16 @@ func ScanEnv(environ []string, c *catalog.Catalog, known *Set) []Finding {
 		if !ok || value == "" {
 			continue
 		}
-		prov, token := d.byEnv[key], value
-		if prov == nil {
-			if prov, token = d.byPrefix(value); prov == nil {
-				continue
+		if prov := d.byEnv[key]; prov != nil {
+			out = append(out, d.finding("", 0, key, key, prov, value))
+		}
+		for _, m := range d.prefixRe {
+			for _, sub := range m.re.FindAllStringSubmatch(value, -1) {
+				if sub[2] != value || d.byEnv[key] == nil {
+					out = append(out, d.finding("", 0, key, key, m.prov, sub[2]))
+				}
 			}
 		}
-		out = append(out, d.finding("", 0, key, key, prov, token))
 	}
 	return out
 }

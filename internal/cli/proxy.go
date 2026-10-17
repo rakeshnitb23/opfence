@@ -20,6 +20,7 @@ import (
 
 	"github.com/rakeshnitb23/opfence/internal/approve"
 	"github.com/rakeshnitb23/opfence/internal/audit"
+	"github.com/rakeshnitb23/opfence/internal/engine"
 )
 
 func newProxyCmd(g *globalOptions) *cobra.Command {
@@ -226,7 +227,10 @@ func printLog(w io.Writer, entries []audit.Entry) error {
 		if e.Approver != "" {
 			outcome += " (" + e.Approver + ")"
 		}
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", e.Time.Local().Format("2006-01-02 15:04:05"), outcome, e.Decision, target, what)
+		// Hosts, paths and reasons come from requests; terminal escapes in
+		// them could hide or forge lines.
+		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", e.Time.Local().Format("2006-01-02 15:04:05"),
+			engine.Sanitize(outcome, 80), engine.Sanitize(e.Decision, 16), engine.Sanitize(target, 600), engine.Sanitize(what, 2000))
 	}
 	return tw.Flush()
 }
