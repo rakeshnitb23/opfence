@@ -93,6 +93,9 @@ func dialogText(v View, note string) string {
 		s.WriteString(c + "\n")
 	}
 	fmt.Fprintf(&s, "\n%s · %s · %s %s%s\nRequest %s", strings.Join(uniq(v.Classes), ", "), v.Environment, v.Method, v.Host, v.Path, v.Hash)
+	if n := ViaNote(v.Via); n != "" {
+		s.WriteString("\n" + n)
+	}
 	if v.ConfirmText != "" {
 		fmt.Fprintf(&s, "\n\n%sType %s to confirm.", note, v.ConfirmText)
 	}

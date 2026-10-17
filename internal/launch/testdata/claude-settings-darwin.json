@@ -1,0 +1,47 @@
+{
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "httpProxyPort": 41001,
+      "socksProxyPort": 41002
+    },
+    "filesystem": {
+      "denyRead": [
+        "/home/dev/.local/state/opfence"
+      ],
+      "denyWrite": [
+        "/home/dev/.config/opfence",
+        "/home/dev/.local/state/opfence",
+        "/home/dev/.cache/opfence",
+        "/home/dev/Program Files/opfence"
+      ]
+    },
+    "enableWeakerNetworkIsolation": true
+  },
+  "permissions": {
+    "deny": [
+      "Read(//home/dev/.local/state/opfence/**)",
+      "Edit(//home/dev/.config/opfence/**)",
+      "Edit(//home/dev/.local/state/opfence/**)",
+      "Edit(//home/dev/.cache/opfence/**)",
+      "Edit(//home/dev/Program Files/opfence)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/home/dev/Program Files/opfence' --user-config '/home/dev/it'\\''s here/config.yaml' hook claude-code",
+            "timeout": 30,
+            "onFailure": "block"
+          }
+        ]
+      }
+    ]
+  }
+}

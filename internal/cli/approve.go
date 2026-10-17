@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"path/filepath"
 	"strings"
+	"sync"
 	"text/tabwriter"
 	"time"
 
@@ -16,16 +18,33 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/audit"
 )
 
-// controlPath is the control socket in the state folder.
-func controlPath(override string) (string, error) {
+// controlSockets returns the control sockets to talk to: the one given, or
+// every session's socket in the state folder that answers.
+func controlSockets(override string) ([]string, error) {
 	if override != "" {
-		return override, nil
+		c, err := approve.Dial(override)
+		if err != nil {
+			return nil, err
+		}
+		c.Close()
+		return []string{override}, nil
 	}
 	dir, err := audit.StateDir()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return filepath.Join(dir, "control.sock"), nil
+	matches, _ := filepath.Glob(filepath.Join(dir, "control*.sock"))
+	var live []string
+	for _, m := range matches {
+		if c, err := net.DialTimeout("unix", m, time.Second); err == nil {
+			c.Close()
+			live = append(live, m)
+		}
+	}
+	if len(live) == 0 {
+		return nil, fmt.Errorf("no Opfence proxy is running (no control socket answers in %s)", dir)
+	}
+	return live, nil
 }
 
 func newApproveCmd() *cobra.Command {
@@ -48,21 +67,28 @@ that need confirmation ask you to type the resource's name.
   opfence approve ID --deny            deny one`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			path, err := controlPath(socket)
-			if err != nil {
-				return err
-			}
-			c, err := approve.Dial(path)
-			if err != nil {
-				return err
-			}
-			defer c.Close()
 			out := cmd.OutOrStdout()
+			if len(args) == 0 && !list {
+				return interactive(cmd, socket, max)
+			}
+			paths, err := controlSockets(socket)
+			if err != nil {
+				return err
+			}
 			switch {
 			case list:
-				views, err := c.List()
-				if err != nil {
-					return err
+				var views []approve.View
+				for _, p := range paths {
+					c, err := approve.Dial(p)
+					if err != nil {
+						continue // the session ended
+					}
+					vs, err := c.List()
+					c.Close()
+					if err != nil {
+						return err
+					}
+					views = append(views, vs...)
 				}
 				if len(views) == 0 {
 					fmt.Fprintln(out, "Nothing is waiting for approval.")
@@ -74,24 +100,36 @@ that need confirmation ask you to type the resource's name.
 					fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", v.ID, v.Decision, strings.Join(v.Cards, "; "), v.Environment+" "+v.Host, time.Until(v.Expires).Round(time.Second))
 				}
 				return tw.Flush()
-			case len(args) == 1:
+			default:
 				if yes == deny {
 					return errors.New("say --yes or --deny")
 				}
-				if err := c.Answer(approve.Answer{ID: args[0], Approve: yes, Typed: typed, Scope: scope}); err != nil {
-					return err
+				a := approve.Answer{ID: args[0], Approve: yes, Typed: typed, Scope: scope}
+				for _, p := range paths {
+					c, err := approve.Dial(p)
+					if err != nil {
+						continue
+					}
+					err = c.Answer(a)
+					c.Close()
+					if errors.Is(err, approve.ErrUnknown) {
+						continue
+					}
+					if err != nil {
+						return err
+					}
+					if yes {
+						fmt.Fprintln(out, "approved")
+					} else {
+						fmt.Fprintln(out, "denied")
+					}
+					return nil
 				}
-				if yes {
-					fmt.Fprintln(out, "approved")
-				} else {
-					fmt.Fprintln(out, "denied")
-				}
-				return nil
+				return approve.ErrUnknown
 			}
-			return interactive(cmd, path, c, max)
 		},
 	}
-	cmd.Flags().StringVar(&socket, "socket", "", "control socket (default in the state folder)")
+	cmd.Flags().StringVar(&socket, "socket", "", "control socket (default: every running session)")
 	cmd.Flags().BoolVar(&list, "list", false, "list waiting requests")
 	cmd.Flags().BoolVar(&yes, "yes", false, "approve the request ID")
 	cmd.Flags().BoolVar(&deny, "deny", false, "deny the request ID")
@@ -102,34 +140,80 @@ that need confirmation ask you to type the resource's name.
 	return cmd
 }
 
-// interactive watches for requests and asks about each in turn.
-func interactive(cmd *cobra.Command, path string, answers *approve.Client, max int) error {
-	watcher, err := approve.Dial(path)
-	if err != nil {
-		return err
-	}
-	defer watcher.Close()
+// interactive watches every running session (and sessions that start
+// later) and asks about each request in turn.
+func interactive(cmd *cobra.Command, socket string, max int) error {
 	out := cmd.OutOrStdout()
 	in := bufio.NewReader(cmd.InOrStdin())
-	queue := make(chan approve.View, 64)
+	type item struct {
+		v    approve.View
+		path string
+	}
+	queue := make(chan item, 64)
+	var mu sync.Mutex
+	watching := map[string]bool{}
+	watch := func() error {
+		paths, err := controlSockets(socket)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		for _, p := range paths {
+			if watching[p] {
+				continue
+			}
+			w, err := approve.Dial(p)
+			if err != nil {
+				continue
+			}
+			watching[p] = true
+			go func(p string) {
+				_ = w.Watch(func(v approve.View) bool { queue <- item{v, p}; return true })
+				w.Close()
+				mu.Lock()
+				delete(watching, p)
+				mu.Unlock()
+			}(p)
+		}
+		return nil
+	}
+	if err := watch(); err != nil {
+		return err
+	}
+	stop := make(chan struct{})
+	defer close(stop)
 	go func() {
-		_ = watcher.Watch(func(v approve.View) bool { queue <- v; return true })
-		close(queue)
+		t := time.NewTicker(2 * time.Second)
+		defer t.Stop()
+		for {
+			select {
+			case <-t.C:
+				_ = watch()
+			case <-stop:
+				return
+			}
+		}
 	}()
 	fmt.Fprintln(out, "Watching for requests that need approval. Ctrl-C to stop.")
 	answered := 0
-	for v := range queue {
-		if time.Now().After(v.Expires) {
+	for it := range queue {
+		if time.Now().After(it.v.Expires) {
 			continue
 		}
-		a, err := askInTerminal(out, in, v)
+		a, err := askInTerminal(out, in, it.v)
 		if errors.Is(err, io.EOF) {
 			return nil
 		}
 		if err != nil {
 			return err
 		}
-		if err := answers.Answer(a); err != nil {
+		c, err := approve.Dial(it.path)
+		if err == nil {
+			err = c.Answer(a)
+			c.Close()
+		}
+		if err != nil {
 			fmt.Fprintf(out, "  not applied: %v\n", err)
 			continue
 		}
@@ -145,6 +229,9 @@ func askInTerminal(out io.Writer, in *bufio.Reader, v approve.View) (approve.Ans
 	fmt.Fprintf(out, "\n%s request %s (%s %s%s, %s)\n", strings.ToUpper(v.Decision), v.Hash, v.Method, v.Host, v.Path, v.Environment)
 	for _, c := range v.Cards {
 		fmt.Fprintf(out, "  %s\n", c)
+	}
+	if n := approve.ViaNote(v.Via); n != "" {
+		fmt.Fprintf(out, "  %s\n", n)
 	}
 	a := approve.Answer{ID: v.ID}
 	if v.ConfirmText != "" {

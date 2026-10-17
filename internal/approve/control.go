@@ -160,10 +160,13 @@ func (c *Client) call(req controlRequest) (controlResponse, error) {
 	if err := c.dec.Decode(&resp); err != nil {
 		return resp, err
 	}
-	if resp.Error != "" {
-		return resp, errors.New(resp.Error)
+	switch resp.Error {
+	case "":
+		return resp, nil
+	case ErrUnknown.Error():
+		return resp, ErrUnknown
 	}
-	return resp, nil
+	return resp, errors.New(resp.Error)
 }
 
 // List returns the pending requests.

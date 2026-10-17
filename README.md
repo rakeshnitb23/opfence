@@ -22,7 +22,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 | `opfence proxy` (enforcing HTTP and SOCKS5 proxy), `opfence log [--verify]` | available (preview) |
 | `opfence init [--undo]`, `opfence secrets list / rm` (keys into your keychain, placeholders in files) | available (preview) |
 | `opfence approve` (answer held requests from another terminal; desktop dialogs) | available (preview) |
-| `opfence run -- <agent>`, `opfence trust`, `opfence doctor` | planned (stage 9) |
+| `opfence run -- claude` (Claude Code in its sandbox behind Opfence), `opfence run --srt / --weak -- <command>`, `opfence trust [--uninstall]`, `opfence doctor` | available (preview) |
 
 ## Catalog
 

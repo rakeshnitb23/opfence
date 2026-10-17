@@ -56,6 +56,8 @@ type opts struct {
 	mode        string
 	defaultDial bool // use the real dialer with its private-address guard
 	secrets     *secrets.Set
+	via         string
+	private     bool // PrivateTunnels
 	// respond, when set, answers upstream requests instead of the default.
 	respond func(w http.ResponseWriter, r *http.Request)
 }
@@ -142,6 +144,8 @@ func newEnv(t *testing.T, o opts) *env {
 		Audit:           log,
 		Session:         "test",
 		Mode:            o.mode,
+		Via:             o.via,
+		PrivateTunnels:  o.private,
 		Secrets:         o.secrets,
 		UpstreamRootCAs: upCA.Pool(),
 		Logf:            t.Logf,
@@ -515,6 +519,38 @@ func TestPrivateAddressesRefused(t *testing.T) {
 		if PublicIP(net.ParseIP(ip)) != public {
 			t.Errorf("PublicIP(%s) != %v", ip, public)
 		}
+	}
+}
+
+// The agent listener tunnels to private addresses (its clients run outside
+// the sandbox and could connect directly) and labels its audit entries.
+func TestAgentListenerPrivateTunnels(t *testing.T) {
+	e := newEnv(t, opts{mode: "open", defaultDial: true, private: true, via: "agent"})
+	c, code := connect(t, e.httpAddr, e.echoAddr)
+	defer c.Close()
+	if code != http.StatusOK || !echoes(c) {
+		t.Fatalf("agent listener refused a private tunnel: %d", code)
+	}
+	if es := e.entries(); es[len(es)-1].Via != "agent" || es[len(es)-1].Outcome != "tunneled" {
+		t.Fatalf("audit %+v", es[len(es)-1])
+	}
+}
+
+func TestProbeEndpoint(t *testing.T) {
+	e := newEnv(t, opts{via: "sandbox"})
+	u, _ := url.Parse("http://" + e.httpAddr)
+	c := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(u)}}
+	resp, err := c.Get("http://" + ProbeHost + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var p Probe
+	if err := json.NewDecoder(resp.Body).Decode(&p); err != nil || !p.Opfence || p.Session != "test" || p.Via != "sandbox" || p.Mode != "strict" {
+		t.Fatalf("%+v %v", p, err)
+	}
+	if e.hits.Load() != 0 {
+		t.Fatal("the probe reached an upstream")
 	}
 }
 

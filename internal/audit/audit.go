@@ -24,6 +24,9 @@ import (
 type Entry struct {
 	Time    time.Time `json:"time"`
 	Session string    `json:"session"`
+	// Via names the listener: sandbox, agent, srt or weak (empty for
+	// opfence proxy).
+	Via string `json:"via,omitempty"`
 	// Event is request, tunnel or refused.
 	Event  string `json:"event"`
 	Host   string `json:"host"`

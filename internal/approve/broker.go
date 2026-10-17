@@ -39,6 +39,7 @@ type View struct {
 	Environment string    `json:"environment"`
 	Resource    string    `json:"resource,omitempty"`
 	Hash        string    `json:"hash"` // first 12 hex digits, to tell requests apart
+	Via         string    `json:"via,omitempty"`
 	ConfirmText string    `json:"confirm_text,omitempty"`
 	Scopable    bool      `json:"scopable"` // a time-limited grant may be offered
 	Expires     time.Time `json:"expires"`
@@ -157,6 +158,7 @@ func (b *Broker) describe(p proxy.Pending) (View, Grant) {
 		Host:     p.Host,
 		Method:   p.Method,
 		Path:     p.Path,
+		Via:      p.Via,
 		Decision: res.Decision.String(),
 		Hash:     hex.EncodeToString(res.Hash[:6]),
 		Expires:  b.now().Add(b.timeout),
@@ -189,6 +191,18 @@ func (b *Broker) describe(p proxy.Pending) (View, Grant) {
 	}
 	v.Scopable = scopable
 	return v, Grant{Rules: v.Rules, Resource: v.Resource, Environment: v.Environment, Host: p.Host}
+}
+
+// ViaNote says where a request came from when that is not the agent's
+// sandbox, or "" when it is (or the proxy runs on its own).
+func ViaNote(via string) string {
+	switch via {
+	case "agent":
+		return "From the agent itself or an MCP server, outside its sandbox."
+	case "weak":
+		return "Weak mode: this program is not sandboxed and could reach the API without Opfence."
+	}
+	return ""
 }
 
 func (b *Broker) granted(g Grant) bool {

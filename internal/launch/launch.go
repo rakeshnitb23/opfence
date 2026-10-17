@@ -1,0 +1,371 @@
+// Package launch prepares programs to run behind the Opfence proxy
+// (docs/ARCHITECTURE.md §8.7): the Claude Code settings passed with
+// --settings, the srt settings file, the CA files and the child's
+// environment. It builds values; internal/cli starts the processes.
+package launch
+
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+// Paths are the files and folders the sandbox must be kept away from, or
+// must be able to read.
+type Paths struct {
+	// StateDir holds the audit log, control sockets and trust manifest. The
+	// sandbox may neither read nor write it: with the control socket an agent
+	// could approve its own requests.
+	StateDir string
+	// ConfigFile is the user's policy. The sandbox and Claude Code's file
+	// tools may not write it, or an agent could loosen its own policy.
+	ConfigFile string
+	// CertDir holds the CA certificate and bundle, which the sandbox reads.
+	CertDir string
+	// Executable is the opfence binary the hook runs; nothing may replace it.
+	Executable string
+}
+
+// CertDir is where the CA files live: the user cache folder, outside the
+// state folder the sandbox cannot read.
+func CertDir() (string, error) {
+	d, err := os.UserCacheDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(d, "opfence"), nil
+}
+
+// protectedPath is a file or folder that is kept from the agent.
+type protectedPath struct {
+	path string
+	dir  bool
+}
+
+// protectedWrites lists what neither sandboxed commands nor file tools may
+// write. The config file's folder is included when it is Opfence's own
+// folder, so an agent cannot create a config where none exists yet.
+func (p Paths) protectedWrites() []protectedPath {
+	var out []protectedPath
+	if p.ConfigFile != "" {
+		if dir := filepath.Dir(p.ConfigFile); filepath.Base(dir) == "opfence" {
+			out = append(out, protectedPath{dir, true})
+		} else {
+			out = append(out, protectedPath{p.ConfigFile, false})
+		}
+	}
+	for _, x := range []protectedPath{{p.StateDir, true}, {p.CertDir, true}, {p.Executable, false}} {
+		if x.path != "" {
+			out = append(out, x)
+		}
+	}
+	return out
+}
+
+func pathsOf(ps []protectedPath) []string {
+	out := []string{}
+	for _, p := range ps {
+		out = append(out, p.path)
+	}
+	return out
+}
+
+// ClaudeOptions configures the settings for opfence run -- claude.
+type ClaudeOptions struct {
+	HTTPPort, SOCKSPort int
+	GOOS                string
+	Paths               Paths
+	// DenyRead adds paths sandboxed commands may not read, such as the
+	// D-Bus session socket that reaches the Linux keychain.
+	DenyRead []string
+	// HookArgs are global flags the hook needs to load the same catalog and
+	// policy as the proxy (--catalog DIR, --user-config FILE).
+	HookArgs []string
+}
+
+type claudeSettings struct {
+	Sandbox     claudeSandbox          `json:"sandbox"`
+	Permissions claudePermissions      `json:"permissions"`
+	Hooks       map[string][]hookGroup `json:"hooks"`
+}
+
+type claudeSandbox struct {
+	Enabled                      bool          `json:"enabled"`
+	FailIfUnavailable            bool          `json:"failIfUnavailable"`
+	AllowUnsandboxedCommands     bool          `json:"allowUnsandboxedCommands"`
+	Network                      claudeNetwork `json:"network"`
+	Filesystem                   filesystem    `json:"filesystem"`
+	EnableWeakerNetworkIsolation bool          `json:"enableWeakerNetworkIsolation,omitempty"`
+}
+
+type claudeNetwork struct {
+	HTTPProxyPort  int `json:"httpProxyPort"`
+	SOCKSProxyPort int `json:"socksProxyPort"`
+}
+
+type filesystem struct {
+	DenyRead   []string `json:"denyRead"`
+	AllowWrite []string `json:"allowWrite,omitempty"`
+	DenyWrite  []string `json:"denyWrite"`
+}
+
+type claudePermissions struct {
+	Deny []string `json:"deny"`
+}
+
+type hookGroup struct {
+	Matcher string        `json:"matcher"`
+	Hooks   []hookHandler `json:"hooks"`
+}
+
+type hookHandler struct {
+	Type      string `json:"type"`
+	Command   string `json:"command"`
+	Timeout   int    `json:"timeout"`
+	OnFailure string `json:"onFailure"`
+}
+
+// ClaudeSettings returns the JSON for claude --settings. Claude Code treats
+// --settings as a trusted scope: it may set the proxy ports, and turning off
+// unsandboxed retries there makes the sandbox admin-required, so a
+// repository's own settings cannot take commands out of it.
+//
+// Claude Code's file tools, MCP servers and hooks run outside the sandbox.
+// Permission deny rules keep the file tools off Opfence's state, config and
+// binary; the PreToolUse hook decides MCP tool calls; and the agent
+// listener (see opfence run) sees MCP servers' traffic to catalog APIs.
+func ClaudeSettings(o ClaudeOptions) ([]byte, error) {
+	deny := append([]string{}, o.DenyRead...)
+	if o.Paths.StateDir != "" {
+		deny = append([]string{o.Paths.StateDir}, deny...)
+	}
+	writes := o.Paths.protectedWrites()
+	s := claudeSettings{
+		Sandbox: claudeSandbox{
+			Enabled:           true,
+			FailIfUnavailable: true,
+			Network:           claudeNetwork{HTTPProxyPort: o.HTTPPort, SOCKSProxyPort: o.SOCKSPort},
+			Filesystem:        filesystem{DenyRead: nonNil(deny), DenyWrite: pathsOf(writes)},
+			// Go programs on macOS verify certificates through trustd, which
+			// Seatbelt blocks unless this is set; without it gh, terraform and
+			// other Go CLIs fail against Opfence's CA.
+			EnableWeakerNetworkIsolation: o.GOOS == "darwin",
+		},
+		Permissions: claudePermissions{Deny: []string{}},
+		Hooks: map[string][]hookGroup{"PreToolUse": {{
+			Matcher: "^mcp__",
+			Hooks: []hookHandler{{
+				Type: "command", Command: HookCommand(o.Paths.Executable, o.HookArgs), Timeout: 30,
+				OnFailure: "block",
+			}},
+		}}},
+	}
+	if o.Paths.StateDir != "" {
+		s.Permissions.Deny = append(s.Permissions.Deny, "Read("+ruleGlob(protectedPath{o.Paths.StateDir, true})+")")
+	}
+	for _, p := range writes {
+		s.Permissions.Deny = append(s.Permissions.Deny, "Edit("+ruleGlob(p)+")")
+	}
+	out, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(out, '\n'), nil
+}
+
+// ruleGlob writes an absolute path in Claude Code's permission rule syntax,
+// where "//" starts an absolute path and a folder covers everything in it.
+func ruleGlob(p protectedPath) string {
+	g := "//" + strings.TrimPrefix(filepath.ToSlash(p.path), "/")
+	if p.dir {
+		g += "/**"
+	}
+	return g
+}
+
+// HookCommand is the shell command Claude Code runs for the hook.
+func HookCommand(exe string, args []string) string {
+	if exe == "" {
+		exe = "opfence"
+	}
+	parts := []string{ShellQuote(exe)}
+	for _, a := range args {
+		parts = append(parts, ShellQuote(a))
+	}
+	return strings.Join(append(parts, "hook", "claude-code"), " ")
+}
+
+// ShellQuote quotes s for a POSIX shell when it needs it.
+func ShellQuote(s string) string {
+	if s != "" && strings.Trim(s, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_./=:@+,") == "" {
+		return s
+	}
+	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
+}
+
+// SrtOptions configures the settings file for opfence run --srt.
+type SrtOptions struct {
+	HTTPPort, SOCKSPort int
+	GOOS                string
+	Paths               Paths
+	DenyRead            []string
+	// AllowWrite lists the folders the agent may write: its working folder
+	// and the temporary folder.
+	AllowWrite []string
+}
+
+type srtSettings struct {
+	Network                      srtNetwork `json:"network"`
+	Filesystem                   filesystem `json:"filesystem"`
+	EnableWeakerNetworkIsolation bool       `json:"enableWeakerNetworkIsolation"`
+}
+
+type srtNetwork struct {
+	AllowedDomains []string `json:"allowedDomains"`
+	DeniedDomains  []string `json:"deniedDomains"`
+	HTTPProxyPort  int      `json:"httpProxyPort"`
+	SOCKSProxyPort int      `json:"socksProxyPort"`
+}
+
+// SrtSettings returns the settings file for Anthropic's sandbox runtime
+// (srt), which uses the same sandbox as Claude Code. With the proxy ports
+// set, Opfence decides every connection; the empty domain list only
+// matters if srt ever ignored the ports, in which case it denies all.
+func SrtSettings(o SrtOptions) ([]byte, error) {
+	deny := append([]string{}, o.DenyRead...)
+	if o.Paths.StateDir != "" {
+		deny = append([]string{o.Paths.StateDir}, deny...)
+	}
+	s := srtSettings{
+		Network: srtNetwork{AllowedDomains: []string{}, DeniedDomains: []string{}, HTTPProxyPort: o.HTTPPort, SOCKSProxyPort: o.SOCKSPort},
+		Filesystem: filesystem{
+			DenyRead:   nonNil(deny),
+			AllowWrite: nonNil(o.AllowWrite),
+			DenyWrite:  pathsOf(o.Paths.protectedWrites()),
+		},
+		EnableWeakerNetworkIsolation: o.GOOS == "darwin",
+	}
+	out, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(out, '\n'), nil
+}
+
+// LinuxSecretSockets returns the existing Unix socket paths through which a
+// process reaches the Linux keychain (the session D-Bus and
+// gnome-keyring's control folder). An abstract D-Bus address needs no entry:
+// the sandbox's network namespace already cuts it off.
+func LinuxSecretSockets(getenv func(string) string) []string {
+	var out []string
+	add := func(p string) {
+		if p == "" || !filepath.IsAbs(p) {
+			return
+		}
+		if _, err := os.Lstat(p); err != nil {
+			return
+		}
+		for _, x := range out {
+			if x == p {
+				return
+			}
+		}
+		out = append(out, p)
+	}
+	for _, addr := range strings.Split(getenv("DBUS_SESSION_BUS_ADDRESS"), ";") {
+		rest, ok := strings.CutPrefix(strings.TrimSpace(addr), "unix:")
+		if !ok {
+			continue
+		}
+		for _, kv := range strings.Split(rest, ",") {
+			if p, ok := strings.CutPrefix(kv, "path="); ok {
+				add(p)
+			}
+		}
+	}
+	if rt := getenv("XDG_RUNTIME_DIR"); rt != "" {
+		add(filepath.Join(rt, "bus"))
+		add(filepath.Join(rt, "keyring"))
+	}
+	return out
+}
+
+// ProxyEnv points HTTP clients at an Opfence listener. Localhost stays
+// direct: the agent's own local servers and IDE connection are not APIs.
+// NODE_USE_ENV_PROXY makes Node's built-in fetch honour the variables.
+func ProxyEnv(httpAddr string) map[string]string {
+	u := "http://" + httpAddr
+	return map[string]string{
+		"HTTP_PROXY": u, "HTTPS_PROXY": u, "http_proxy": u, "https_proxy": u,
+		"NO_PROXY": "localhost,127.0.0.1,::1", "no_proxy": "localhost,127.0.0.1,::1",
+		"NODE_USE_ENV_PROXY": "1",
+	}
+}
+
+// CAEnv points TLS clients at Opfence's CA. Variables that replace a
+// tool's trust store get the bundle (system roots plus Opfence's CA);
+// NODE_EXTRA_CA_CERTS adds to Node's own roots, so it gets the CA alone.
+// Without a bundle (no system roots file, as on Windows) only the additive
+// variable is set, because a replacing one would break every other host.
+func CAEnv(caFile, bundleFile string) map[string]string {
+	env := map[string]string{"NODE_EXTRA_CA_CERTS": caFile}
+	if bundleFile != "" {
+		for _, k := range []string{"SSL_CERT_FILE", "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "GIT_SSL_CAINFO", "AWS_CA_BUNDLE", "DENO_CERT"} {
+			env[k] = bundleFile
+		}
+	}
+	return env
+}
+
+// SetEnv returns environ with vars set, replacing earlier values. Names
+// compare case-insensitively on Windows, as the OS does.
+func SetEnv(environ []string, vars map[string]string, windows bool) []string {
+	norm := func(k string) string {
+		if windows {
+			return strings.ToUpper(k)
+		}
+		return k
+	}
+	set := map[string]bool{}
+	for k := range vars {
+		set[norm(k)] = true
+	}
+	out := make([]string, 0, len(environ)+len(vars))
+	for _, kv := range environ {
+		k, _, _ := strings.Cut(kv, "=")
+		if !set[norm(k)] {
+			out = append(out, kv)
+		}
+	}
+	keys := make([]string, 0, len(vars))
+	for k := range vars {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	seen := map[string]bool{}
+	for _, k := range keys {
+		if seen[norm(k)] {
+			continue // on Windows HTTP_PROXY and http_proxy are one variable
+		}
+		seen[norm(k)] = true
+		out = append(out, k+"="+vars[k])
+	}
+	return out
+}
+
+// Port returns the port of a listener address such as 127.0.0.1:8080.
+func Port(addr string) int {
+	i := strings.LastIndexByte(addr, ':')
+	n, _ := strconv.Atoi(addr[i+1:])
+	return n
+}
+
+func nonNil(s []string) []string {
+	if s == nil {
+		return []string{}
+	}
+	return s
+}

@@ -11,7 +11,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"text/tabwriter"
@@ -21,7 +20,6 @@ import (
 
 	"github.com/rakeshnitb23/opfence/internal/approve"
 	"github.com/rakeshnitb23/opfence/internal/audit"
-	"github.com/rakeshnitb23/opfence/internal/proxy"
 )
 
 func newProxyCmd(g *globalOptions) *cobra.Command {
@@ -46,82 +44,38 @@ state folder; point your client at it, for example
 					return err
 				}
 			}
-			eng, err := g.engine()
+			s, err := openSession(g, sessionOptions{auditPath: auditPath, socket: controlSocket, warn: cmd.ErrOrStderr()})
 			if err != nil {
 				return err
 			}
-			for _, w := range eng.Policy.Warnings {
-				fmt.Fprintln(cmd.ErrOrStderr(), "warning:", w)
-			}
-			if auditPath == "" {
-				if auditPath, err = audit.DefaultPath(); err != nil {
-					return err
-				}
-			}
-			log, err := audit.Open(auditPath)
+			defer s.Close()
+			h, so, err := s.listen(listenSpec{mode: mode, http: httpAddr, socks: socksAddr})
 			if err != nil {
 				return err
 			}
-			set, vault := loadSecrets(cmd.ErrOrStderr())
-			authority, persistent, err := loadCA(cmd.ErrOrStderr(), eng, vault)
-			if err != nil {
-				return err
-			}
-			caFile := filepath.Join(filepath.Dir(auditPath), "ca.pem")
-			if err := os.WriteFile(caFile, authority.CertPEM(), 0o644); err != nil {
-				return err
-			}
-			broker, ctl, how, err := startApprovals(cmd.ErrOrStderr(), eng.Policy.ApprovalChannels, eng.Policy.ApprovalTimeout, controlSocket)
-			if err != nil {
-				return err
-			}
-			if ctl != nil {
-				defer ctl.Close()
-				go func() { _ = ctl.Serve(broker) }()
-			}
-			srv, err := proxy.New(proxy.Config{
-				Engine: eng, CA: authority, Audit: log, Session: sessionID(), Mode: mode, Secrets: set, Approver: broker,
-				Logf: func(f string, a ...any) { fmt.Fprintf(cmd.ErrOrStderr(), f+"\n", a...) },
-			})
-			if err != nil {
-				return err
-			}
-			defer srv.Close()
-			hl, err := net.Listen("tcp", httpAddr)
-			if err != nil {
-				return err
-			}
-			sl, err := net.Listen("tcp", socksAddr)
-			if err != nil {
-				hl.Close()
-				return err
-			}
-			errc := make(chan error, 2)
-			go func() { errc <- srv.ServeHTTPProxy(hl) }()
-			go func() { errc <- srv.ServeSOCKS(sl) }()
 			effMode := mode
 			if effMode == "" {
-				effMode = eng.Policy.Mode
+				effMode = s.eng.Policy.Mode
 			}
 			out := cmd.OutOrStdout()
 			fmt.Fprintf(out, "Opfence proxy running (%s mode). Press Ctrl-C to stop.\n", effMode)
-			fmt.Fprintf(out, "  HTTP proxy:      http://%s\n", hl.Addr())
-			fmt.Fprintf(out, "  SOCKS5 proxy:    %s\n", sl.Addr())
+			fmt.Fprintf(out, "  HTTP proxy:      http://%s\n", h)
+			fmt.Fprintf(out, "  SOCKS5 proxy:    %s\n", so)
 			lifetime := "this run only"
-			if persistent {
+			if s.persistentCA {
 				lifetime = "key kept in your keychain"
 			}
-			fmt.Fprintf(out, "  CA certificate:  %s (%s)\n", caFile, lifetime)
-			fmt.Fprintf(out, "  Credentials:     %d from your keychain\n", set.Len())
-			fmt.Fprintf(out, "  Audit log:       %s\n", auditPath)
-			fmt.Fprintf(out, "  Approvals:       %s\n", how)
+			fmt.Fprintf(out, "  CA certificate:  %s (%s)\n", s.caFiles.CA, lifetime)
+			fmt.Fprintf(out, "  Credentials:     %d from your keychain\n", s.credentials())
+			fmt.Fprintf(out, "  Audit log:       %s\n", s.audit.Path())
+			fmt.Fprintf(out, "  Approvals:       %s\n", s.approvals)
 
 			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()
 			select {
 			case <-ctx.Done():
 				return nil
-			case err := <-errc:
+			case err := <-s.errc:
 				return err
 			}
 		},
@@ -130,7 +84,7 @@ state folder; point your client at it, for example
 	cmd.Flags().StringVar(&socksAddr, "socks", "127.0.0.1:0", "SOCKS5 proxy listen address (loopback only)")
 	cmd.Flags().StringVar(&mode, "mode", "", "strict or open (default from your policy, strict)")
 	cmd.Flags().StringVar(&auditPath, "audit", "", "audit log file (default ~/.local/state/opfence/audit.jsonl)")
-	cmd.Flags().StringVar(&controlSocket, "socket", "", "control socket for opfence approve (default in the state folder)")
+	cmd.Flags().StringVar(&controlSocket, "socket", "", "control socket for opfence approve (default: one per session in the state folder)")
 	return cmd
 }
 
@@ -149,11 +103,8 @@ func startApprovals(w io.Writer, channels []string, timeout time.Duration, socke
 				fmt.Fprintln(w, "warning: no desktop dialog available (needs osascript, or zenity or kdialog with a display)")
 			}
 		case "cli":
-			path, err := controlPath(socket)
-			if err != nil {
-				return nil, nil, "", err
-			}
-			if ctl, err = approve.ListenControl(path); err != nil {
+			var err error
+			if ctl, err = approve.ListenControl(socket); err != nil {
 				return nil, nil, "", err
 			}
 			chans = append(chans, ctl)

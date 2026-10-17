@@ -41,6 +41,10 @@ func Main(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if errors.As(err, &fe) {
 		return exitFail
 	}
+	var ec exitCodeError
+	if errors.As(err, &ec) {
+		return ec.code
+	}
 	fmt.Fprintln(stderr, "opfence:", err)
 	return exitError
 }
@@ -61,7 +65,8 @@ allowed, needs your approval, or is denied.`,
 	root.PersistentFlags().StringVar(&g.policyFile, "policy", "", "repository policy file (default ./opfence.yaml if present)")
 	root.PersistentFlags().StringVar(&g.userConfig, "user-config", "", "user config file (default $OPFENCE_CONFIG or ~/.config/opfence/config.yaml)")
 	root.AddCommand(newVersionCmd(), newCatalogCmd(g), newExplainCmd(g), newTestCmd(g), newPolicyCmd(g),
-		newExportCmd(g), newHookCmd(g), newProxyCmd(g), newLogCmd(), newInitCmd(g), newSecretsCmd(), newApproveCmd())
+		newExportCmd(g), newHookCmd(g), newProxyCmd(g), newLogCmd(), newInitCmd(g), newSecretsCmd(), newApproveCmd(),
+		newRunCmd(g), newTrustCmd(g), newDoctorCmd(g))
 	return root
 }
 

@@ -45,6 +45,7 @@ type Pending struct {
 	Method string
 	Host   string
 	Path   string
+	Via    string // the listener's label, so cards can say a session is unsandboxed
 }
 
 // Approval is a human's answer.
@@ -76,8 +77,15 @@ type Config struct {
 	// Approver answers ask and confirm decisions; nil means NoApprover.
 	Approver Approver
 	Session  string
+	// Via labels this server's listeners in the audit log and approval cards:
+	// sandbox, agent, srt or weak.
+	Via string
 	// Mode is strict or open; empty takes the policy's mode.
 	Mode string
+	// PrivateTunnels lets tunnels (not intercepted requests) reach private
+	// addresses. It is for the agent listener, whose clients run outside the
+	// sandbox and could connect to those addresses directly anyway.
+	PrivateTunnels bool
 	// Passthrough lists hosts tunnelled without inspection (exact names or
 	// *.suffix); nil takes the policy's list.
 	Passthrough []string
@@ -154,7 +162,7 @@ func New(cfg Config) (*Server, error) {
 		Transport: &http.Transport{
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				host, _ := request.SplitHostPort(addr)
-				return s.dial(ctx, network, addr, s.explicitPassthrough(host))
+				return s.dial(ctx, network, addr, s.allowPrivate(host))
 			},
 			IdleConnTimeout: 90 * time.Second,
 		},
@@ -258,7 +266,7 @@ func (s *Server) record(e audit.Entry) {
 	if s.cfg.Audit == nil {
 		return
 	}
-	e.Session = s.cfg.Session
+	e.Session, e.Via = s.cfg.Session, s.cfg.Via
 	if err := s.cfg.Audit.Record(e); err != nil {
 		s.cfg.Logf("opfence: writing the audit log: %v", err)
 	}
@@ -279,10 +287,14 @@ func (s *Server) passthrough(host string) bool {
 	return false
 }
 
-// explicitPassthrough reports whether the user listed host by exact name,
-// which is what lets a tunnel reach a private address (an internal
-// registry). Patterns and the built-in defaults never do.
-func (s *Server) explicitPassthrough(host string) bool {
+// allowPrivate reports whether a tunnel to host may reach a private
+// address: on the agent listener (PrivateTunnels), or when the user listed
+// host by exact name (an internal registry). Patterns and the built-in
+// defaults never do.
+func (s *Server) allowPrivate(host string) bool {
+	if s.cfg.PrivateTunnels {
+		return true
+	}
 	for _, p := range s.cfg.Passthrough {
 		if host == p && !slices.Contains(policy.DefaultPassthrough, p) {
 			return true

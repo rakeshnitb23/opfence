@@ -72,7 +72,7 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		entry.Outcome = "forwarded"
 	case classes.Ask, classes.Confirm:
 		entry.Hash = hex.EncodeToString(res.Hash[:])
-		a := s.cfg.Approver.Approve(r.Context(), Pending{Result: &res, Method: req.Method, Host: host, Path: req.Path})
+		a := s.cfg.Approver.Approve(r.Context(), Pending{Result: &res, Method: req.Method, Host: host, Path: req.Path, Via: s.cfg.Via})
 		if !a.Approved {
 			entry.Approver = a.Channel
 			s.block(w, req, &res, entry, http.StatusForbidden, a.Reason)

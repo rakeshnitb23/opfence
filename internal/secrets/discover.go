@@ -41,12 +41,14 @@ var skipDirs = map[string]bool{
 
 const maxDepth = 6
 
-// mcpSkip explains why keys in MCP server configs stay in place: the agent
-// starts MCP servers outside its sandbox, and both they and remote MCP
-// connections reach their APIs without the Opfence proxy, so a placeholder
-// there would break the server. The PreToolUse hook still decides their
-// tool calls.
-const mcpSkip = "MCP servers reach their APIs without the Opfence proxy, so this key stays in place for now (their tool calls are still checked by the hook)"
+// editorSkip explains why keys in other editors' MCP configs stay in place:
+// opfence run starts Claude Code, whose MCP servers reach their APIs through
+// the proxy, but not Cursor or VS Code, whose servers would get a
+// placeholder they cannot use.
+const editorSkip = "this editor's MCP servers are not started by opfence run, so a placeholder would break them; move it by hand if you only use the server from Claude Code"
+
+// editorConfigs are MCP configs that belong to other editors.
+var editorConfigs = []string{".cursor/mcp.json", ".vscode/mcp.json"}
 
 // isEnvFile reports whether name is a dotenv file that may hold real values
 // (.env, .env.local, .env.production), not a committed template.
@@ -171,10 +173,12 @@ func Discover(root string, c *catalog.Catalog, known *Set) ([]Finding, error) {
 			if err != nil {
 				return nil, err
 			}
-			if strings.HasSuffix(f, "mcp.json") {
-				for i := range fs {
-					if fs[i].Skip == "" {
-						fs[i].Skip = mcpSkip
+			for _, e := range editorConfigs {
+				if strings.HasSuffix(filepath.ToSlash(f), "/"+e) {
+					for i := range fs {
+						if fs[i].Skip == "" {
+							fs[i].Skip = editorSkip
+						}
 					}
 				}
 			}
@@ -326,4 +330,26 @@ func isAuthHeader(p *catalog.Provider, name string) bool {
 		}
 	}
 	return false
+}
+
+// ScanEnv reports credentials for catalog providers in environment entries
+// ("NAME=value"), with the same skip reasons as files. File is empty and
+// Where is the variable name.
+func ScanEnv(environ []string, c *catalog.Catalog, known *Set) []Finding {
+	d := newDetector(c, known)
+	var out []Finding
+	for _, kv := range environ {
+		key, value, ok := strings.Cut(kv, "=")
+		if !ok || value == "" {
+			continue
+		}
+		prov, token := d.byEnv[key], value
+		if prov == nil {
+			if prov, token = d.byPrefix(value); prov == nil {
+				continue
+			}
+		}
+		out = append(out, d.finding("", 0, key, key, prov, token))
+	}
+	return out
 }

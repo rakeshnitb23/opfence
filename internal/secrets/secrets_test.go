@@ -90,6 +90,8 @@ var sampleRepo = map[string]string{
   }
 }
 `,
+	".cursor/mcp.json": `{"mcpServers": {"vercel": {"command": "vercel-mcp", "env": {"VERCEL_TOKEN": "` + vercelTok + `"}}}}
+`,
 }
 
 func writeRepo(t *testing.T) string {
@@ -137,9 +139,10 @@ func TestInitRoundTrip(t *testing.T) {
 		".env NOTE supabase-mcp",
 		".env GH_TOKEN github SKIP the value uses escape sequences",
 		"apps/web/.env.local VERCEL_TOKEN vercel",
-		".mcp.json mcpServers.supabase.args.3 supabase-mcp SKIP MCP servers reach their APIs without the Opfence proxy",
-		".mcp.json mcpServers.supabase.env.SUPABASE_ACCESS_TOKEN supabase-mcp SKIP MCP servers",
-		".mcp.json mcpServers.supabase-remote.headers.Authorization supabase-mcp SKIP MCP servers",
+		".mcp.json mcpServers.supabase.args.3 supabase-mcp\n",
+		".mcp.json mcpServers.supabase.env.SUPABASE_ACCESS_TOKEN supabase-mcp\n",
+		".mcp.json mcpServers.supabase-remote.headers.Authorization supabase-mcp\n",
+		".cursor/mcp.json mcpServers.vercel.env.VERCEL_TOKEN vercel SKIP this editor's MCP servers are not started by opfence run",
 		".mcp.json mcpServers.railway.env.RAILWAY_API_TOKEN railway SKIP a reference",
 	} {
 		if !strings.Contains(got, want) {
@@ -157,21 +160,21 @@ func TestInitRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(changed) != 2 {
+	if len(changed) != 3 {
 		t.Fatalf("changed %v", changed)
 	}
 	secrets, err := v.List()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(secrets) != 4 {
+	if len(secrets) != 5 {
 		for _, s := range secrets {
 			t.Log(s.Account(), s.Sources)
 		}
 		t.Fatalf("%d secrets", len(secrets))
 	}
-	if data, _ := os.ReadFile(filepath.Join(root, ".mcp.json")); string(data) != sampleRepo[".mcp.json"] {
-		t.Error(".mcp.json changed")
+	if data, _ := os.ReadFile(filepath.Join(root, ".cursor", "mcp.json")); string(data) != sampleRepo[".cursor/mcp.json"] {
+		t.Error(".cursor/mcp.json changed")
 	}
 	for name, orig := range sampleRepo {
 		data, _ := os.ReadFile(filepath.Join(root, filepath.FromSlash(name)))
@@ -179,7 +182,7 @@ func TestInitRoundTrip(t *testing.T) {
 			t.Errorf("%s changed length", name)
 		}
 		for _, tok := range []string{railwayTok, vercelTok, githubTok, sbpTok, sbpRemote} {
-			moved := name != ".env.example" && name != "node_modules/x/.env" && name != ".mcp.json"
+			moved := name != ".env.example" && name != "node_modules/x/.env" && name != ".cursor/mcp.json"
 			if moved && strings.Contains(string(data), tok) {
 				t.Errorf("%s still holds %s", name, tok)
 			}

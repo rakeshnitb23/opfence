@@ -1,0 +1,25 @@
+{
+  "network": {
+    "allowedDomains": [],
+    "deniedDomains": [],
+    "httpProxyPort": 41001,
+    "socksProxyPort": 41002
+  },
+  "filesystem": {
+    "denyRead": [
+      "/home/dev/.local/state/opfence",
+      "/run/user/1000/bus"
+    ],
+    "allowWrite": [
+      "/home/dev/project",
+      "/tmp"
+    ],
+    "denyWrite": [
+      "/home/dev/.config/opfence",
+      "/home/dev/.local/state/opfence",
+      "/home/dev/.cache/opfence",
+      "/home/dev/Program Files/opfence"
+    ]
+  },
+  "enableWeakerNetworkIsolation": false
+}

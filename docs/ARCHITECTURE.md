@@ -52,12 +52,13 @@ internal/fixture/       `opfence test`: replay fixtures and compare expectations
 internal/export/        openshell, claudecode, mcpannotations
 internal/hook/          `opfence hook claude-code`: PreToolUse adapter
 internal/proxy/         CONNECT + SOCKS5 listeners, MITM, upstream transport
-internal/ca/            per-machine CA, leaf cache, trust install/uninstall
+internal/ca/            per-machine CA, leaf cache
 internal/secrets/       store interface, OS keychain backend, placeholders, discovery
 internal/inject/        placeholder swap, host binding, SigV4 re-sign, response scrubber
 internal/approve/       grants, channels (desktop dialog, control socket), timeouts
 internal/audit/         hash-chained JSONL log, verifier
-internal/launch/        Claude Code --settings writer, srt wrapper, weak mode, CA env vars
+internal/launch/        Claude Code --settings and srt settings, CA files, child environment, env placeholders
+internal/trust/         CA install/uninstall in the OS trust store, with a manifest
 catalog/                provider folders: rules + fixtures (embedded with go:embed)
 schema/                 JSON Schema for catalog files and opfence.yaml
 docs/
@@ -465,7 +466,7 @@ A request that is not forwarded gets a `403` with a JSON body naming the card, c
 - ECDSA P-256 root, 10-year validity, `CN=Opfence local CA (<hostname>)`.
 - Name constraints (critical): permitted DNS names limited to the hosts of the catalog at generation time (`*.amazonaws.com` becomes `amazonaws.com`), so a leaked key cannot impersonate other sites to clients that enforce constraints (Go, OpenSSL, macOS do). Creating an unconstrained CA is an error. A catalog host the CA does not cover is refused with a message to regenerate it, not served with a certificate that would fail.
 - Leaf certificates: one P-256 key per CA instance, a certificate per host valid 24 h, cached in memory (renewed in the last hour, the cache capped at 1024 hosts).
-- Stage 6: `opfence proxy` generates a CA per run and writes only its certificate (`ca.pem`) to the state folder; the key never leaves memory. Stage 7 stores one long-lived root in the OS keychain (`ca.Load` / `KeyPEM`), and `opfence trust` (stage 9) installs it: macOS login keychain via `security add-trusted-cert`; Linux: the runtime CA variables, plus the distro trust store only with `--system`. `opfence trust --uninstall` reverses every step it took, recorded in a manifest. A per-run CA is not enough on its own because Go programs on macOS verify through the system trust store and ignore `SSL_CERT_FILE`.
+- Stage 6: `opfence proxy` generates a CA per run and writes only its certificate; the key never leaves memory. From stage 9 the certificate (`ca.pem`) and a bundle of the system roots plus the CA (`ca-bundle.pem`, built from the user's own `SSL_CERT_FILE` when set) live in the cache folder (`~/.cache/opfence`), outside the state folder the sandbox may not read. Stage 7 stores one long-lived root in the OS keychain (`ca.Load` / `KeyPEM`), and `opfence trust` (stage 9) installs it: macOS login keychain via `security add-trusted-cert`; Linux: the runtime CA variables, plus the distro trust store only with `--system`. `opfence trust --uninstall` reverses every step it took, recorded in a manifest. A per-run CA is not enough on its own because Go programs on macOS verify through the system trust store and ignore `SSL_CERT_FILE`.
 
 ### 8.4 Secrets and placeholders
 
@@ -487,7 +488,7 @@ The agent owns the terminal during `opfence run`, so approvals never use the age
 | Channel | How | Default |
 | --- | --- | --- |
 | Desktop dialog | macOS `osascript`; Linux `zenity` or `kdialog` when a display is available. Default button Deny. The card reaches the dialog as an argument, never as script source, and is escaped for zenity's Pango markup | on when available |
-| Control socket | `opfence approve` in a second terminal watches and asks about each request, or `opfence approve --list` / `opfence approve ID --yes [--typed X] [--for 10m]` / `--deny`, over a `0600` Unix socket in the state folder (a live socket means another proxy is running; a stale one is replaced) | always on |
+| Control socket | `opfence approve` in a second terminal watches and asks about each request, or `opfence approve --list` / `opfence approve ID --yes [--typed X] [--for 10m]` / `--deny`, over a `0600` Unix socket per session in the state folder (`control-<session>.sock`); `opfence approve` finds every live session, `--list` merges them, an answer goes to the session holding that request, and interactive mode also picks up sessions that start later | always on |
 | Phone (ntfy) | action-button push | v1.0 |
 
 - **Single use, bound to the request.** An answer names one waiting request; approving it releases that request only, and the same answer cannot be replayed (the request is gone once answered, timed out or cancelled). Channels show the first 12 hex digits of the request hash so two similar requests can be told apart.
@@ -506,20 +507,35 @@ A forwarded request is logged when the upstream's response headers arrive, befor
 
 ### 8.7 Launcher
 
-`opfence run -- claude [args]`:
+`opfence run` starts one session (engine, audit log, credentials, CA, approvals, a control socket) and runs a command behind it. Problems during the run go to `opfence.log` in the state folder, because the agent owns the terminal.
 
-1. Starts both listeners and the control socket.
-2. Builds a settings JSON and passes it with `claude --settings <json>`, which Claude Code treats as a trusted scope for proxy ports. Nothing in the user's files is modified.
-   - `sandbox.enabled: true`, `sandbox.allowUnsandboxedCommands: false`, `sandbox.failIfUnavailable: true`
-   - `sandbox.network.httpProxyPort` and `socksProxyPort` → Opfence's listeners
-   - `sandbox.filesystem.denyRead`: Opfence's config and state folders
-   - `sandbox.credentials` `deny` entries for every env var name Opfence moved to the keychain
-   - `sandbox.enableWeakerNetworkIsolation: true` on macOS (Go CLIs and the custom CA)
-   - the PreToolUse hook from §7 for MCP tools
-3. Sets the CA variables (`SSL_CERT_FILE`, `NODE_EXTRA_CA_CERTS`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO`, `DENO_CERT`, `AWS_CA_BUNDLE`) and the placeholder env vars for the child.
-4. Execs the agent as a child, forwards signals, and shuts down when it exits.
+**`opfence run -- claude [args]`** (Claude Code's own sandbox):
 
-Other agents go through Anthropic's `srt` with Opfence as its proxy. With no sandbox, `opfence run --weak` sets `HTTPS_PROXY` only and labels the session weak in every card and log line.
+1. Two listeners for the sandbox (HTTP and SOCKS5, the policy's mode, strict by default) and one **agent listener** (HTTP, open). Claude Code itself, its MCP servers and its hooks run outside the sandbox and could connect directly, so strict mode would only break them; what matters is that their cooperative traffic to catalog APIs is decided and gets keys injected. The agent listener therefore tunnels other hosts (private addresses included) and still intercepts every catalog host. Claude Code's process gets `HTTP(S)_PROXY` pointing at it, with `NO_PROXY` for localhost and `NODE_USE_ENV_PROXY=1` (Node 22.21 and 24 honour the proxy variables only with it).
+2. A settings JSON passed with `claude --settings <json>` (nothing in the user's files changes; a `--settings` of the user's own is refused). Golden files in `internal/launch/testdata`.
+   - `sandbox.enabled`, `failIfUnavailable: true`, `allowUnsandboxedCommands: false`. Turning off unsandboxed retries from `--settings` makes the sandbox admin-required, so a repository's settings cannot add `excludedCommands`, proxy ports or socket access (Claude Code 2.1.285 and later; older versions get a warning).
+   - `network.httpProxyPort` / `socksProxyPort`: the two sandbox listeners only.
+   - `filesystem.denyRead`: the state folder (audit log, control sockets, trust manifest) and, on Linux, the session D-Bus socket and gnome-keyring's folder (the keychain's way in; abstract D-Bus addresses are already cut off by the network namespace).
+   - `filesystem.denyWrite`: the user config folder, the state and cache folders, and the opfence binary the hook runs.
+   - `enableWeakerNetworkIsolation` on macOS, so Go CLIs can verify Opfence's CA through trustd.
+   - `permissions.deny`: `Read` of the state folder and `Edit` of the protected paths, because Claude Code's file tools run outside the sandbox.
+   - The PreToolUse hook for `^mcp__` tools, run by absolute path with the same `--catalog` / `--user-config` as the session, `onFailure: block`. The floor permission rules of `opfence export` are left out: the hook decides every call.
+3. Child environment: the CA variables (`SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO`, `AWS_CA_BUNDLE`, `DENO_CERT` get the bundle; `NODE_EXTRA_CA_CERTS` gets the CA alone because it adds to Node's roots; without a system roots file only the additive variable is set), `OPFENCE_SESSION`, and `OPFENCE_AGENT_PROXY_PORT` for the doctor probe.
+4. **Keys in the environment become placeholders.** A value equal to a stored secret gets its placeholder under any variable name. Any other key for a catalog provider becomes a *session secret*: a placeholder made for this run, held in memory only and added to the proxy's set; every variable holding that key gets it. Nothing is written to the keychain. Kept real, with a warning: AWS keys (re-signing is stage 10) and GitHub tokens (git over HTTPS to `github.com` is tunnelled uninspected until stage 10, so a placeholder would break `git push` through credential helpers).
+5. Warnings for the user's or administrator's Claude Code settings that undo this (`excludedCommands`, managed proxy settings, allowed unsandboxed commands), for an old Claude Code, and for a replaced `HTTPS_PROXY` (Opfence connects directly; forwarding to a corporate proxy is a follow-up).
+6. The child runs in the foreground. Ctrl-C reaches it from the terminal and Opfence ignores it; SIGTERM and SIGHUP are passed on; Opfence exits with the child's code and closes the session.
+
+**`opfence run --srt -- <agent>`** writes a settings file for Anthropic's sandbox runtime (the same sandbox) to the cache folder: the proxy ports, empty allowed and denied domain lists, the same `denyRead` / `denyWrite`, `allowWrite` for the working and temporary folders, and `enableWeakerNetworkIsolation` on macOS. The agent's own traffic is all sandboxed, so there is no agent listener.
+
+**`opfence run --weak -- <command>`** is for the user's own tools (a dev server reading `.env` placeholders) and agents that cannot be sandboxed: proxy and CA variables only, one open listener, and every audit entry and approval card says the program is not sandboxed. Any other non-Claude command without `--srt` or `--weak` is refused with both options explained.
+
+**Labels.** Each listener's `via` (`sandbox`, `agent`, `srt`, `weak`) is written to every audit entry and shown in approval cards when the request did not come from a sandbox.
+
+**`opfence trust [--system] / --uninstall`** (`internal/trust`). Needs the keychain CA, since a per-run CA would need trusting every run. macOS: `security add-trusted-cert -r trustRoot` into the login keychain; undone with `remove-trusted-cert` and `delete-certificate -Z <SHA-1>`. Linux: nothing system-wide by default; `--system` installs into the distribution's anchor folder with sudo and runs its refresh command (Debian/Ubuntu/Alpine, Fedora/RHEL, Arch, openSUSE layouts). Windows: `certutil -user -addstore Root`. Every step and its undo commands go in `trust.json` in the state folder (`0600`) with the certificate; `--uninstall` reverses them last first and keeps only the steps that failed. A newer CA in the keychain makes `trust` remove the old one first.
+
+**`opfence doctor [--probe] [--json]`.** Outside a session: catalog and policy, keychain, CA, CA trust, Claude Code version, sandbox dependencies (bubblewrap and socat on Linux, `sandbox-exec` on macOS), srt, Claude Code settings, state folder permissions, the audit chain and approval channels; then the sandbox checks, run through srt with a temporary session when srt is installed. Inside a session (`OPFENCE_SESSION` set, for example when Claude runs `opfence doctor`), or with `--probe`, only the sandbox checks: the keychain, approval sockets and state folder are unreachable, the config folder and the opfence binary are unwritable, the proxy answers as Opfence (a plain-HTTP request for `probe.opfence.invalid`, which every listener answers without dialling), the CA bundle holds Opfence's CA, direct connections fail, and the agent listener is unreachable. Exit 1 when a check fails.
+
+**MCP servers.** Under `opfence run -- claude`, MCP servers reach catalog APIs through the agent listener, so `opfence init` now moves keys in Claude Code's configs (`.mcp.json`, `.claude/settings*.json`) too; keys in `.cursor/mcp.json` and `.vscode/mcp.json` stay, because those editors' servers are not started by `opfence run`. A server that ignores the proxy variables fails with the placeholder rather than leaking. The hook still decides every MCP tool call, including remote servers the proxy also sees, because Opfence cannot confirm from inside Claude Code that a given server's traffic uses the proxy; a dangerous call may be asked twice.
 
 ## 9. Testing strategy
 
@@ -530,7 +546,7 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | exporters | golden files for every target and environment; OpenShell output decoded into strict schema structs and checked by a model of OpenShell matching (never looser than the engine) |
 | hook | decision tests over the embedded catalog (SQL, aliases, plugin and claude.ai names, unknown servers and tools), bad input → error; CLI test that errors exit 2 |
 | proxy, CA, inject, approve | end-to-end tests with `httptest` TLS upstreams (HTTP/2 and HTTP/1.1, CONNECT and SOCKS5), an in-memory keyring and a scripted approver; a PocketOS replay test asserts the upstream is never contacted; tunnel tricks (server name mismatch, IP tunnels, Host mismatch, private addresses) each have a test |
-| launcher | settings JSON golden test; a smoke test that `claude --settings` accepts it runs only where Claude Code is installed |
+| launcher | settings golden files (Claude Code on Linux and macOS, srt); env placeholder tests; `opfence run --weak` end to end with the test binary as the child, which runs the doctor probe and must find every way out (it is not sandboxed); `opfence run -- claude` with a stand-in `claude` script; trust install and uninstall with a recording runner on real files; doctor reports each check. A manual run of `opfence run --srt -- opfence doctor --probe` under the real sandbox runtime passed every check |
 
 ## 10. Decisions made in this document
 
@@ -554,6 +570,12 @@ Other agents go through Anthropic's `srt` with Opfence as its proxy. With no san
 | Audit write failures are logged, not fatal | Stop all traffic | A full disk should not take the agent down; the chain stays verifiable |
 | Stage 6 CA lives for one run | Persist the key in a file | Keys never touch disk; from stage 7 the root is kept in the keychain |
 | Placeholders keep the token's length, prefix and alphabet | `opf_<provider>_<random>` | Format-checking clients keep working, and scrubbing never changes lengths |
-| `init` leaves keys in MCP configs in place until stage 9 | Move them too | MCP servers do not use the proxy yet, so a placeholder would break them; the hook still gates their calls |
+| `init` left keys in MCP configs in place until stage 9; since then it moves those in Claude Code's configs | Move every MCP config's keys | Before `opfence run` routed MCP traffic a placeholder would have broken the servers; Cursor's and VS Code's servers still are not started by `opfence run` |
 | Responses are refused when Opfence cannot decode them and holds secrets | Pass them through | An undecodable body could carry a real key back to the agent |
 | `gzip`/`deflate` only; other encodings fail closed | Add brotli dependency | Clients send compressed request bodies rarely; fail-closed is safe; revisit with data |
+| A separate, open agent listener for Claude Code itself and its MCP servers | Leave them unproxied; or send them through the strict sandbox listener | Unproxied, MCP keys could never become placeholders; strict would break them while buying nothing, since they run outside the sandbox and can connect directly |
+| Keys in the environment become session placeholders, held in memory | Deny the variables in the sandbox; or store them in the keychain | Denying breaks the tools; writing to the keychain unasked is surprising; a session placeholder keeps tools working and the agent never sees the key |
+| GitHub tokens in the environment stay real until git traffic is decoded | Placeholder them too | `git push` over HTTPS goes to `github.com`, which is tunnelled uninspected, so a placeholder would break it |
+| One control socket per session; `opfence approve` finds them all | One fixed socket | Two agents in two repositories are common; a fixed socket allowed only one session |
+| The hook keeps deciding MCP calls under `opfence run` | Defer to the proxy for remote servers | Opfence cannot confirm a server's traffic uses the proxy; asking twice is better than not asking |
+| Doctor checks the sandbox from inside it | Trust the settings | Settings keys change between Claude Code versions; only a probe from inside shows what an agent can actually reach |

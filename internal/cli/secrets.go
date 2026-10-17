@@ -109,7 +109,11 @@ changed. "opfence init --undo" writes the real values back.`,
 			if err != nil {
 				return err
 			}
-			fmt.Fprintln(out, "Done. Agents now see placeholders, and only requests through the Opfence proxy get the real keys, so run tools that need them through Opfence. opfence init --undo puts the real values back.")
+			fmt.Fprintln(out, "Done. Agents now see placeholders, and only requests through the Opfence proxy get the real keys:")
+			fmt.Fprintln(out, "  opfence run -- claude          Claude Code and its MCP servers")
+			fmt.Fprintln(out, "  opfence run --weak -- COMMAND  your own tools, such as a dev server")
+			fmt.Fprintln(out, "MCP servers must honour HTTPS_PROXY (Node 22.21 or later, most Python and Go clients).")
+			fmt.Fprintln(out, "opfence init --undo puts the real values back.")
 			return nil
 		},
 	}

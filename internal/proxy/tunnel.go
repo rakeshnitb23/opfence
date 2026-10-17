@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -66,6 +67,10 @@ func (s *Server) serveProxy(w http.ResponseWriter, r *http.Request) {
 	if port == "" {
 		port = "80"
 	}
+	if host == ProbeHost {
+		s.serveProbe(w)
+		return
+	}
 	if s.isCatalogHost(host) {
 		s.refused(host, port, "plain HTTP to an API host; Opfence only allows HTTPS")
 		http.Error(w, "Opfence: use https:// for "+host, http.StatusForbidden)
@@ -78,6 +83,24 @@ func (s *Server) serveProxy(w http.ResponseWriter, r *http.Request) {
 	}
 	s.record(audit.Entry{Event: "tunnel", Host: host, Port: port, Method: r.Method, Outcome: "tunneled", Reason: "plain HTTP; " + s.tunnelReason(host)})
 	s.plainRP.ServeHTTP(w, r)
+}
+
+// ProbeHost answers plain-HTTP requests sent through any Opfence listener
+// without dialling anything, so a client (opfence doctor --probe) can prove
+// that its proxy is Opfence. The .invalid name can never resolve.
+const ProbeHost = "probe.opfence.invalid"
+
+// Probe is the probe endpoint's answer.
+type Probe struct {
+	Opfence bool   `json:"opfence"`
+	Session string `json:"session"`
+	Via     string `json:"via"`
+	Mode    string `json:"mode"`
+}
+
+func (s *Server) serveProbe(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(Probe{Opfence: true, Session: s.cfg.Session, Via: s.cfg.Via, Mode: s.cfg.Mode})
 }
 
 // splitTarget splits a CONNECT or URL host, keeping the port ("443" when
@@ -148,7 +171,7 @@ func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 			refuse(why)
 			return
 		}
-		up, err := s.dial(context.Background(), "tcp", net.JoinHostPort(host, port), s.explicitPassthrough(host))
+		up, err := s.dial(context.Background(), "tcp", net.JoinHostPort(host, port), s.allowPrivate(host))
 		if err != nil {
 			refuse(err.Error())
 			return
@@ -195,7 +218,7 @@ func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 		s.refused(name, port, why)
 		return
 	}
-	up, err := s.dial(context.Background(), "tcp", net.JoinHostPort(name, port), s.explicitPassthrough(name))
+	up, err := s.dial(context.Background(), "tcp", net.JoinHostPort(name, port), s.allowPrivate(name))
 	if err != nil {
 		s.refused(name, port, err.Error())
 		return
