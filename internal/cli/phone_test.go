@@ -121,6 +121,20 @@ func TestStartApprovalsPhone(t *testing.T) {
 		t.Fatalf("phone=%v how=%q", phone, how)
 	}
 
+	// A repository timeout is never lengthened by the phone default.
+	repo := &policy.File{Version: 1, Approvals: &policy.Approvals{Timeout: policy.Duration(75 * time.Second)}}
+	_, ctl, _, how, _ = startApprovals(&warn, policy.Resolve(nil, repo), sock, nil)
+	ctl.Close()
+	if !strings.Contains(how, "denied after 1m15s") {
+		t.Fatalf("repo limit: how=%q", how)
+	}
+	repo.Approvals.Timeout = policy.Duration(30 * time.Second)
+	_, ctl, _, how, _ = startApprovals(&warn, policy.Resolve(nil, repo), sock, nil)
+	ctl.Close()
+	if !strings.Contains(how, "denied after 30s") {
+		t.Fatalf("repo limit: how=%q", how)
+	}
+
 	// A timeout the user set is kept.
 	user := &policy.File{Version: 1, Approvals: &policy.Approvals{Timeout: policy.Duration(20 * time.Second)}}
 	_, ctl, _, how, _ = startApprovals(&warn, policy.Resolve(user, nil), sock, nil)

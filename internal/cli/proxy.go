@@ -132,6 +132,9 @@ func startApprovals(w io.Writer, pol *policy.Effective, socket string, logf func
 				how = append(how, "your phone ("+cfg.Server+")")
 				if pol.ApprovalTimeoutDefault {
 					timeout = phoneTimeout
+					if l := pol.ApprovalTimeoutLimit; l > 0 && l < timeout {
+						timeout = l // the repository may only shorten it
+					}
 				}
 			case pol.ApprovalChannelsDefault:
 				// Not set up, or no keychain (already reported): nothing to say.

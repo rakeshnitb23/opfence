@@ -38,7 +38,7 @@ With no subcommand, phone says whether phone approvals are set up.`,
 			if err != nil {
 				return err
 			}
-			fmt.Fprintf(cmd.OutOrStdout(), "Phone approvals are on, through %s.\nSubscribe another device with %s\n", cfg.Server, cfg.SubscribeURL())
+			fmt.Fprintf(cmd.OutOrStdout(), "Phone approvals are set up, through %s.\nSubscribe another phone with %s\n(never on the computer the agent runs on: it could read the topic there)\n", cfg.Server, cfg.SubscribeURL())
 			return nil
 		},
 	}
@@ -62,7 +62,9 @@ Running setup again keeps the same topics (so your phone stays subscribed)
 unless the server changes or --new-topics is given.
 
 A self-hosted ntfy server that needs a login takes an access token
-(ntfy token add), read from standard input with --token-stdin.`,
+(ntfy token add), read from standard input with --token-stdin. The token
+travels in every push (the buttons need it to answer), so give it to a user
+that may only read the push topic and write the reply topic.`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := cmd.OutOrStdout()
@@ -101,7 +103,7 @@ A self-hosted ntfy server that needs a login takes an access token
 			if cfg.Server != "https://ntfy.sh" {
 				fmt.Fprintf(out, "on the server %s (\"use another server\").\n", cfg.Server)
 			}
-			fmt.Fprintln(out, "\nKeep the topic to yourself: anyone who knows it can answer requests.")
+			fmt.Fprintln(out, "\nKeep the topic to yourself: anyone who knows it can answer requests. Subscribe on your phone only,\nnot in a browser or ntfy client on the computer the agent runs on, where it could read the topic.")
 			if noTest {
 				fmt.Fprintln(out, "\nSaved. Check it with opfence phone test.")
 				return nil
@@ -150,7 +152,7 @@ func phoneTest(cmd *cobra.Command, cfg approve.PhoneConfig) error {
 		}
 		return fmt.Errorf("phone test: %w", err)
 	}
-	fmt.Fprintln(out, "Your phone's answer reached Opfence. Phone approvals are on for every opfence run.")
+	fmt.Fprintln(out, "Your phone's answer reached Opfence. Phone approvals are on for every opfence run\n(unless your config's approvals.channels leaves out ntfy).")
 	return nil
 }
 

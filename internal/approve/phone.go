@@ -11,11 +11,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
@@ -63,6 +65,10 @@ func (c PhoneConfig) validate() error {
 	if err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Host == "" || u.RawQuery != "" || u.User != nil {
 		return fmt.Errorf("ntfy server %q: want a URL like https://ntfy.sh", c.Server)
 	}
+	if u.Scheme == "http" && !loopback(u.Hostname()) {
+		// Anyone on the network could read the pushes and tap them.
+		return fmt.Errorf("ntfy server %q: use https (plain http is only accepted on this computer)", c.Server)
+	}
 	for _, t := range []string{c.Topic, c.Reply} {
 		if !validTopic(t) {
 			return fmt.Errorf("ntfy topic %q: want 1 to 64 letters, digits, - or _", t)
@@ -72,6 +78,14 @@ func (c PhoneConfig) validate() error {
 		return errors.New("the push and reply topics must differ")
 	}
 	return nil
+}
+
+func loopback(host string) bool {
+	if host == "localhost" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }
 
 func validTopic(t string) bool {
@@ -86,7 +100,7 @@ func validTopic(t string) bool {
 	return true
 }
 
-// NewTopic returns a random topic name with 130 bits of entropy.
+// NewTopic returns a random topic name with 128 bits of entropy.
 func NewTopic() string {
 	var b [16]byte
 	_, _ = rand.Read(b[:])
@@ -118,9 +132,41 @@ type Phone struct {
 	client *http.Client
 	logf   func(format string, args ...any)
 	idle   time.Duration // reconnect after this long without a line
+	grace  time.Duration // a request must wait this long before it is pushed
+
+	sending chan struct{} // bounds publishes in flight
 
 	mu     sync.Mutex
 	tokens map[string]Answer // token -> the answer it gives
+	bucket float64           // pushes allowed now, refilled over time
+	filled time.Time
+}
+
+// Each request costs two ntfy messages (the push and its removal), and
+// ntfy.sh allows 250 a day per address. phoneBurst pushes may go at once,
+// then one per phoneRefill, so a flood of requests cannot use up the day's
+// quota in minutes.
+const (
+	phoneBurst  = 10
+	phoneRefill = 2 * time.Minute
+)
+
+// allow takes one push from the rate limit.
+func (p *Phone) allow() bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	now := time.Now()
+	if p.filled.IsZero() {
+		p.bucket = phoneBurst
+	} else {
+		p.bucket = min(phoneBurst, p.bucket+float64(now.Sub(p.filled))/float64(phoneRefill))
+	}
+	p.filled = now
+	if p.bucket < 1 {
+		return false
+	}
+	p.bucket--
+	return true
 }
 
 // NewPhone returns the phone channel. logf receives delivery problems.
@@ -131,10 +177,12 @@ func NewPhone(cfg PhoneConfig, logf func(format string, args ...any)) *Phone {
 	return &Phone{
 		cfg: cfg,
 		// No overall timeout: Listen holds one long-lived stream.
-		client: &http.Client{Transport: http.DefaultTransport},
-		logf:   logf,
-		idle:   2 * time.Minute,
-		tokens: map[string]Answer{},
+		client:  &http.Client{Transport: http.DefaultTransport},
+		logf:    logf,
+		idle:    2 * time.Minute,
+		grace:   1500 * time.Millisecond,
+		sending: make(chan struct{}, 4),
+		tokens:  map[string]Answer{},
 	}
 }
 
@@ -201,9 +249,27 @@ func (p *Phone) Show(ctx context.Context, v View, b *Broker) {
 		Tags:     []string{"warning"},
 		Actions:  actions,
 	}
+	// Requests cancelled at once (an agent opening and dropping
+	// connections) never reach the phone, so they cannot spend the ntfy
+	// quota or bury real requests.
+	select {
+	case <-ctx.Done():
+		return
+	case <-time.After(p.grace):
+	}
+	if !p.allow() {
+		p.logf("phone approvals: request %s not sent to your phone: more than %d requests in a short time", v.Hash, phoneBurst)
+		return
+	}
+	select {
+	case p.sending <- struct{}{}:
+	case <-ctx.Done():
+		return
+	}
 	// Not bound to ctx: the phone can answer before ntfy's reply to the
 	// publish arrives, and the push must still be removed then.
 	id, err := p.publish(context.Background(), msg)
+	<-p.sending
 	if err != nil {
 		p.logf("phone approvals: could not send request %s: %v", v.Hash, err)
 		return
@@ -235,29 +301,41 @@ func phoneTitle(v View) string {
 }
 
 func phoneText(v View) string {
+	// The ending says what and where; it is written whole, and the cards
+	// get what room is left.
+	var tail strings.Builder
+	if v.Resource != "" {
+		fmt.Fprintf(&tail, "\nResource: %s", clip(v.Resource, 200))
+	}
+	fmt.Fprintf(&tail, "\n%s %s%s\nRequest %s", v.Method, v.Host, clip(v.Path, 300), v.Hash)
+	if n := ViaNote(v.Via); n != "" {
+		tail.WriteString("\n" + n)
+	}
+	if v.ConfirmText != "" {
+		fmt.Fprintf(&tail, "\n\nThis needs confirming at your computer: type %s in the dialog or in opfence approve. You can deny it here.", clip(v.ConfirmText, 200))
+	}
+	room := maxPhoneText - tail.Len()
 	var s strings.Builder
 	for i, c := range v.Cards {
-		if i == maxDialogCards || s.Len() > maxPhoneText {
+		c = clip(c, 300) + "\n"
+		if i == maxDialogCards || s.Len()+len(c) > room-60 {
 			fmt.Fprintf(&s, "+%d more (opfence approve lists them all)\n", len(v.Cards)-i)
 			break
 		}
-		s.WriteString(c + "\n")
+		s.WriteString(c)
 	}
-	if v.Resource != "" {
-		fmt.Fprintf(&s, "\nResource: %s", v.Resource)
+	return s.String() + tail.String()
+}
+
+// clip shortens s to at most n bytes without splitting a character.
+func clip(s string, n int) string {
+	if len(s) <= n {
+		return s
 	}
-	fmt.Fprintf(&s, "\n%s %s%s\nRequest %s", v.Method, v.Host, v.Path, v.Hash)
-	if n := ViaNote(v.Via); n != "" {
-		s.WriteString("\n" + n)
+	for n > 0 && !utf8.RuneStart(s[n]) {
+		n--
 	}
-	if v.ConfirmText != "" {
-		fmt.Fprintf(&s, "\n\nThis needs confirming at your computer: type %s in the dialog or in opfence approve. You can deny it here.", v.ConfirmText)
-	}
-	out := s.String()
-	if len(out) > maxPhoneText+500 {
-		out = out[:maxPhoneText] + "…"
-	}
-	return out
+	return s[:n] + "…"
 }
 
 // Listen reads answers from the reply topic until ctx ends, reconnecting
@@ -313,7 +391,7 @@ func (p *Phone) stream(ctx context.Context, since string, ready chan struct{}, f
 	p.auth(req)
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return "", err
+		return "", p.netErr(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
@@ -326,21 +404,58 @@ func (p *Phone) stream(ctx context.Context, since string, ready chan struct{}, f
 			close(ready)
 		}
 	}
-	sc := bufio.NewScanner(resp.Body)
-	sc.Buffer(make([]byte, 0, 4096), 64<<10)
-	for sc.Scan() {
+	r := bufio.NewReaderSize(resp.Body, 4096)
+	for {
+		line, err := readLine(r, maxPhoneLine)
+		if err != nil {
+			return last, err
+		}
 		idle.Reset(p.idle)
 		var ev phoneEvent
-		if json.Unmarshal(sc.Bytes(), &ev) != nil || ev.Event != "message" || ev.Topic != p.cfg.Reply {
-			continue
+		if line == nil || json.Unmarshal(line, &ev) != nil || ev.Event != "message" || ev.Topic != p.cfg.Reply {
+			continue // over-long lines are skipped: answers are short
 		}
 		last = ev.ID
 		fn(strings.TrimSpace(ev.Message))
 	}
-	if err := sc.Err(); err != nil {
-		return last, err
+}
+
+// maxPhoneLine is the longest stream line read; anyone who knows the reply
+// topic can post longer ones, which are skipped rather than stopping the
+// stream.
+const maxPhoneLine = 16 << 10
+
+// readLine returns the next line, or nil for a line longer than max (which
+// it discards). io.EOF at the end becomes io.ErrUnexpectedEOF: the stream
+// should never end.
+func readLine(r *bufio.Reader, max int) ([]byte, error) {
+	var line []byte
+	tooLong := false
+	for {
+		frag, isPrefix, err := r.ReadLine()
+		if err != nil {
+			if err == io.EOF {
+				err = io.ErrUnexpectedEOF
+			}
+			return nil, err
+		}
+		if !tooLong {
+			if len(line)+len(frag) > max {
+				tooLong, line = true, nil
+			} else {
+				line = append(line, frag...)
+			}
+		}
+		if !isPrefix {
+			if tooLong {
+				return nil, nil
+			}
+			if line == nil {
+				line = []byte{}
+			}
+			return line, nil
+		}
 	}
-	return last, io.ErrUnexpectedEOF
 }
 
 // answer applies the answer a token stands for. Unknown tokens (forged,
@@ -415,7 +530,15 @@ func (p *Phone) remove(id string) error {
 
 // publish sends a push and returns its message id.
 func (p *Phone) publish(ctx context.Context, m phoneMessage) (string, error) {
-	body, _ := json.Marshal(m)
+	// Without HTML escaping, < > & stay one byte each, so the body stays
+	// under ntfy's JSON limit (twice its 4,096-byte message limit).
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	if err := enc.Encode(m); err != nil {
+		return "", err
+	}
+	body := buf.Bytes()
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, strings.TrimSuffix(p.cfg.Server, "/")+"/", bytes.NewReader(body))
@@ -426,12 +549,16 @@ func (p *Phone) publish(ctx context.Context, m phoneMessage) (string, error) {
 	p.auth(req)
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return "", err
+		return "", p.netErr(err)
 	}
 	defer resp.Body.Close()
 	data, _ := io.ReadAll(io.LimitReader(resp.Body, 64<<10))
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("%s answered %s: %s", p.cfg.Server, resp.Status, strings.TrimSpace(string(data)))
+		msg := fmt.Sprintf("%s answered %s", p.cfg.Server, resp.Status)
+		if resp.StatusCode == http.StatusTooManyRequests {
+			msg += " (the server's message quota is used up; phone approvals resume when it resets. ntfy.sh allows 250 messages a day per address; an ntfy account or your own server allows more)"
+		}
+		return "", errors.New(msg)
 	}
 	var r struct {
 		ID string `json:"id"`
@@ -450,7 +577,7 @@ func (p *Phone) do(ctx context.Context, method, u string, body io.Reader) error 
 	p.auth(req)
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return err
+		return p.netErr(err)
 	}
 	defer resp.Body.Close()
 	_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 64<<10))
@@ -458,6 +585,16 @@ func (p *Phone) do(ctx context.Context, method, u string, body io.Reader) error 
 		return fmt.Errorf("%s answered %s", p.cfg.Server, resp.Status)
 	}
 	return nil
+}
+
+// netErr drops the URL from a network error: it holds a topic, which is a
+// secret, and errors end up in opfence.log.
+func (p *Phone) netErr(err error) error {
+	var ue *url.Error
+	if errors.As(err, &ue) {
+		return fmt.Errorf("%s %s: %w", ue.Op, p.cfg.Server, ue.Err)
+	}
+	return err
 }
 
 func (p *Phone) auth(r *http.Request) {

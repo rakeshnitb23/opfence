@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -195,7 +196,7 @@ func outsideChecks(cmd *cobra.Command, g *globalOptions, env doctorEnv) []check 
 	}
 
 	phone := ""
-	if cfg, err := approve.LoadPhone(openStore()); err == nil {
+	if cfg, err := approve.LoadPhone(openStore()); err == nil && (eng == nil || slices.Contains(eng.Policy.ApprovalChannels, "ntfy")) {
 		phone = ", and your phone through " + cfg.Server
 	}
 	switch {

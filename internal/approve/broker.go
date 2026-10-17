@@ -271,7 +271,7 @@ func (b *Broker) Answer(a Answer) error {
 		return ErrUnknown
 	}
 	if !a.Approve {
-		item.finish(proxy.Approval{Channel: a.Channel, Reason: "A human denied this request (" + a.Channel + ")."})
+		item.finish(proxy.Approval{Channel: a.Channel, Reason: "A human denied this request (" + a.Channel + ")."}, nil)
 		return nil
 	}
 	if item.view.ConfirmText != "" && strings.TrimSpace(a.Typed) != item.view.ConfirmText {
@@ -284,18 +284,30 @@ func (b *Broker) Answer(a Answer) error {
 		if a.Scope > MaxScope {
 			return fmt.Errorf("a grant can last at most %s", MaxScope)
 		}
-		g := item.grant
-		g.Expires = b.now().Add(a.Scope)
-		b.mu.Lock()
-		b.grants = append(b.grants, g)
-		b.mu.Unlock()
 	}
-	item.finish(proxy.Approval{Approved: true, Channel: a.Channel})
+	// The grant is added only by the answer that settles the request: a
+	// scoped approve racing a deny from another channel adds nothing.
+	item.finish(proxy.Approval{Approved: true, Channel: a.Channel}, func() {
+		if a.Scope > 0 {
+			g := item.grant
+			g.Expires = b.now().Add(a.Scope)
+			b.mu.Lock()
+			b.grants = append(b.grants, g)
+			b.mu.Unlock()
+		}
+	})
 	return nil
 }
 
-func (p *pending) finish(a proxy.Approval) {
-	p.once.Do(func() { p.result <- a })
+// finish settles the request with the first answer; first runs only for
+// that answer, before the result is delivered.
+func (p *pending) finish(a proxy.Approval, first func()) {
+	p.once.Do(func() {
+		if first != nil {
+			first()
+		}
+		p.result <- a
+	})
 }
 
 // List returns the requests waiting now, oldest first.

@@ -13,6 +13,7 @@ import (
 	"sync"
 	"testing"
 	"time"
+	"unicode/utf8"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/secrets"
@@ -242,6 +243,7 @@ func testPhone(t *testing.T, srv *httptest.Server, timeout time.Duration) (*Phon
 	var mu sync.Mutex
 	logs := &strings.Builder{}
 	p := NewPhone(cfg, func(f string, a ...any) { mu.Lock(); fmt.Fprintf(logs, f+"\n", a...); mu.Unlock() })
+	p.grace = 0
 	b := NewBroker(timeout, p)
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
@@ -456,6 +458,7 @@ func TestPhoneToken(t *testing.T) {
 	f.token = "tk_" + strings.Repeat("x", 29)
 	cfg := PhoneConfig{Server: srv.URL, Topic: NewTopic(), Reply: NewTopic(), Token: f.token}
 	p := NewPhone(cfg, nil)
+	p.grace = 0
 	b := NewBroker(5*time.Second, p)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -521,6 +524,7 @@ func TestPhoneConfigStore(t *testing.T) {
 		{Server: "https://ntfy.sh", Topic: "a/b", Reply: "b"},
 		{Server: "https://ntfy.sh", Topic: "a", Reply: "a"},
 		{Server: "https://ntfy.sh", Topic: strings.Repeat("a", 65), Reply: "b"},
+		{Server: "http://10.0.0.2:8080", Topic: "a", Reply: "b"},
 	} {
 		if SavePhone(s, bad) == nil {
 			t.Errorf("accepted %+v", bad)
@@ -528,5 +532,133 @@ func TestPhoneConfigStore(t *testing.T) {
 	}
 	if err := DeletePhone(s); err != nil {
 		t.Fatal(err)
+	}
+}
+
+// A request dropped within the grace period never reaches the phone.
+func TestPhoneGrace(t *testing.T) {
+	f, srv := newFakeNtfy(t)
+	p, b, _ := testPhone(t, srv, 100*time.Millisecond)
+	p.grace = 300 * time.Millisecond
+	waitSubscribed(t, f, p.cfg.Reply)
+	for i := 0; i < 5; i++ {
+		if a := b.Approve(context.Background(), pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-1", byte(i))); a.Approved {
+			t.Fatal("approved")
+		}
+	}
+	time.Sleep(400 * time.Millisecond)
+	f.mu.Lock()
+	n := len(f.pushes)
+	f.mu.Unlock()
+	if n != 0 {
+		t.Fatalf("%d pushes for requests dropped at once", n)
+	}
+}
+
+func TestPhoneRateLimit(t *testing.T) {
+	p := NewPhone(PhoneConfig{}, nil)
+	for i := 0; i < phoneBurst; i++ {
+		if !p.allow() {
+			t.Fatalf("push %d refused", i)
+		}
+	}
+	if p.allow() {
+		t.Fatal("burst not limited")
+	}
+	p.mu.Lock()
+	p.filled = p.filled.Add(-phoneRefill)
+	p.mu.Unlock()
+	if !p.allow() || p.allow() {
+		t.Fatal("refill should allow exactly one more")
+	}
+}
+
+// A line longer than the limit on the reply topic is skipped, and answers
+// after it still arrive.
+func TestPhoneOversizedLine(t *testing.T) {
+	f, srv := newFakeNtfy(t)
+	p, b, logs := testPhone(t, srv, 5*time.Second)
+	waitSubscribed(t, f, p.cfg.Reply)
+	post(t, srv, p.cfg.Reply, strings.Repeat("x", 80<<10))
+	res, _ := approveAsync(t, b, pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-1", 1))
+	m, _ := f.push(0)
+	tap(t, m, "Approve")
+	select {
+	case a := <-res:
+		if !a.Approved {
+			t.Fatalf("%+v", a)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatalf("answer lost after an oversized line; log:\n%s", logs.String())
+	}
+}
+
+// The ending (host, hash, warnings) survives long cards and paths, and the
+// encoded push stays under ntfy's 8 KB JSON limit.
+func TestPhoneTextLimits(t *testing.T) {
+	v := View{
+		Method: "POST", Host: "api.example.com", Path: "/" + strings.Repeat("&", 5000),
+		Hash: "abcdef012345", Via: "weak", Resource: strings.Repeat("é", 300),
+		Classes: []string{"delete"}, ConfirmText: "prod-db",
+	}
+	for i := 0; i < 12; i++ {
+		v.Cards = append(v.Cards, strings.Repeat("€", 400))
+	}
+	text := phoneText(v)
+	for _, want := range []string{"Request abcdef012345", "POST api.example.com/&", "Weak mode", "type prod-db", "more (opfence approve"} {
+		if !strings.Contains(text, want) {
+			t.Errorf("text lacks %q", want)
+		}
+	}
+	if !utf8.ValidString(text) || len(text) > maxPhoneText {
+		t.Fatalf("text: %d bytes, valid %v", len(text), utf8.ValidString(text))
+	}
+	f, srv := newFakeNtfy(t)
+	_ = f
+	p := NewPhone(PhoneConfig{Server: srv.URL, Topic: NewTopic(), Reply: NewTopic()}, nil)
+	var size int
+	srv.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		b, _ := io.ReadAll(r.Body)
+		size = len(b)
+		fmt.Fprint(w, `{"id":"x"}`)
+	})
+	if _, err := p.publish(context.Background(), phoneMessage{Topic: p.cfg.Topic, Title: phoneTitle(v), Message: text, Actions: []phoneAction{p.button("Deny", newToken())}}); err != nil {
+		t.Fatal(err)
+	}
+	if size == 0 || size > 8192 {
+		t.Fatalf("push body is %d bytes", size)
+	}
+}
+
+// Network errors name the server, never the topic.
+func TestPhoneErrorsHideTopics(t *testing.T) {
+	cfg := PhoneConfig{Server: "http://127.0.0.1:1", Topic: NewTopic(), Reply: NewTopic()}
+	p := NewPhone(cfg, nil)
+	_, err1 := p.publish(context.Background(), phoneMessage{Topic: cfg.Topic})
+	err2 := p.remove("abc")
+	_, err3 := p.stream(context.Background(), "0", nil, func(string) {})
+	for _, err := range []error{err1, err2, err3} {
+		if err == nil || strings.Contains(err.Error(), cfg.Topic) || strings.Contains(err.Error(), cfg.Reply) || !strings.Contains(err.Error(), cfg.Server) {
+			t.Errorf("error %v", err)
+		}
+	}
+}
+
+// A scoped approve that loses the race to a deny adds no grant.
+func TestScopedAnswerAfterDenyAddsNoGrant(t *testing.T) {
+	b := NewBroker(5*time.Second, passive{})
+	res, v := approveAsync(t, b, pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-1", 1))
+	if err := b.Answer(Answer{ID: v.ID, Approve: false, Channel: "desktop"}); err != nil {
+		t.Fatal(err)
+	}
+	_ = b.Answer(Answer{ID: v.ID, Approve: true, Scope: ScopeOffer, Channel: "phone"})
+	if a := <-res; a.Approved {
+		t.Fatalf("%+v", a)
+	}
+	res, _ = approveAsync(t, b, pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-1", 2))
+	select {
+	case a := <-res:
+		t.Fatalf("a grant approved the next request: %+v", a)
+	case <-time.After(100 * time.Millisecond):
 	}
 }
