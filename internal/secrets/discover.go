@@ -141,8 +141,6 @@ func (d *detector) byPrefix(s string) (*catalog.Provider, string) {
 func (d *detector) finding(file string, line int, where, name string, prov *catalog.Provider, value string) Finding {
 	f := Finding{File: file, Line: line, Where: where, Provider: prov.ID, Name: name, Value: value}
 	switch {
-	case prov.SigV4:
-		f.Skip = "AWS keys stay where they are until Opfence can re-sign requests (stage 10)"
 	case strings.Contains(value, "${") || strings.Contains(value, "$(") || strings.HasPrefix(value, "$"):
 		f.Skip = "a reference to another variable, not a value"
 	case d.known.IsPlaceholder(value):

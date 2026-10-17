@@ -90,6 +90,7 @@ func newEnv(t *testing.T, o opts) *env {
 		e.upstream = append(e.upstream, r)
 		e.bodies = append(e.bodies, string(body))
 		e.mu.Unlock()
+		r.Body = io.NopCloser(bytes.NewReader(body))
 		if o.respond != nil {
 			o.respond(w, r)
 			return

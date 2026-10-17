@@ -45,7 +45,7 @@ func Apply(findings []Finding, c *catalog.Catalog, v *Vault) ([]string, error) {
 			if err != nil {
 				return nil, fmt.Errorf("%s %s: %w", f.File, f.Where, err)
 			}
-			s = &Secret{Provider: f.Provider, Name: f.Name, Value: f.Value, Placeholder: ph}
+			s = &Secret{Provider: f.Provider, Name: f.Name, Value: f.Value, Placeholder: ph, Group: f.File}
 			for i := 2; names[s.Account()]; i++ {
 				s.Name = f.Name + "_" + strconv.Itoa(i)
 			}

@@ -12,12 +12,15 @@ import (
 
 // Secret is one credential Opfence holds.
 type Secret struct {
-	Provider    string    `json:"provider"`
-	Name        string    `json:"name"`
-	Value       string    `json:"value"`
-	Placeholder string    `json:"placeholder"`
-	Sources     []string  `json:"sources,omitempty"` // where opfence init found it
-	Created     time.Time `json:"created"`
+	Provider    string   `json:"provider"`
+	Name        string   `json:"name"`
+	Value       string   `json:"value"`
+	Placeholder string   `json:"placeholder"`
+	Sources     []string `json:"sources,omitempty"` // where opfence init found it
+	// Group ties keys that work together, such as an AWS access key ID and
+	// its secret key: the file they were found in, or "env".
+	Group   string    `json:"group,omitempty"`
+	Created time.Time `json:"created"`
 }
 
 // Account is the secret's key in the store.

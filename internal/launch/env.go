@@ -31,6 +31,7 @@ type EnvChange struct {
 // never sees a real key. A stored secret's value, under any variable name,
 // gets that secret's placeholder. Any other key for a catalog provider
 // becomes a session secret: a placeholder made now and held in memory only,
+// in group "env" (so AWS's key ID and secret key are paired),
 // which the caller adds to the proxy's set; every variable holding that key
 // gets the placeholder. Nothing is written to the keychain.
 func ProtectEnv(environ []string, c *catalog.Catalog, stored []*secrets.Secret) (out []string, session []*secrets.Secret, changes []EnvChange, err error) {
@@ -50,11 +51,7 @@ func ProtectEnv(environ []string, c *catalog.Catalog, stored []*secrets.Secret) 
 	for _, f := range secrets.ScanEnv(environ, c, secrets.NewSet(stored)) {
 		switch {
 		case f.Skip != "":
-			// A real key Opfence cannot handle yet (AWS) is worth a warning;
-			// placeholders, references and short values are not keys.
-			if c.Provider(f.Provider).SigV4 {
-				kept[f.Where] = EnvChange{Var: f.Where, Provider: f.Provider, Action: "kept", Reason: f.Skip}
-			}
+			// A placeholder, a reference or a short value: not a key.
 		case keepReal[f.Provider] != "":
 			kept[f.Where] = EnvChange{Var: f.Where, Provider: f.Provider, Action: "kept", Reason: keepReal[f.Provider]}
 		case !byValue[f.Value]:
@@ -62,7 +59,7 @@ func ProtectEnv(environ []string, c *catalog.Catalog, stored []*secrets.Secret) 
 			if perr != nil {
 				return nil, nil, nil, perr
 			}
-			s := &secrets.Secret{Provider: f.Provider, Name: f.Where, Value: f.Value, Placeholder: ph, Sources: []string{"env " + f.Where}, Created: time.Now().UTC()}
+			s := &secrets.Secret{Provider: f.Provider, Name: f.Where, Value: f.Value, Placeholder: ph, Sources: []string{"env " + f.Where}, Group: "env", Created: time.Now().UTC()}
 			session = append(session, s)
 			swaps = append(swaps, known{s, "session"})
 			byValue[f.Value] = true

@@ -28,7 +28,7 @@ func TestInitAndSecrets(t *testing.T) {
 	// Without a terminal or --yes, init only shows the plan.
 	code, out, _ := run(t, "init", "--dir", dir)
 	flat := strings.Join(strings.Fields(out), " ")
-	if code != exitOK || !strings.Contains(flat, "move .env:1 GITHUB_TOKEN github") || !strings.Contains(flat, "skip .env:2 AWS_ACCESS_KEY_ID") || !strings.Contains(out, "--yes") {
+	if code != exitOK || !strings.Contains(flat, "move .env:1 GITHUB_TOKEN github") || !strings.Contains(flat, "move .env:2 AWS_ACCESS_KEY_ID aws") || !strings.Contains(out, "--yes") {
 		t.Fatalf("plan: exit %d\n%s", code, out)
 	}
 	if data, _ := os.ReadFile(filepath.Join(dir, ".env")); string(data) != orig {
@@ -48,7 +48,7 @@ func TestInitAndSecrets(t *testing.T) {
 	if code != exitOK || !strings.Contains(out, "github/GITHUB_TOKEN") || strings.Contains(out, tok) {
 		t.Fatalf("list: %s", out)
 	}
-	if code, out, _ := run(t, "init", "--dir", dir, "--yes"); code != exitOK || !strings.Contains(out, "1 already protected") || !strings.Contains(out, "Nothing to move") {
+	if code, out, _ := run(t, "init", "--dir", dir, "--yes"); code != exitOK || !strings.Contains(out, "2 already protected") || !strings.Contains(out, "Nothing to move") {
 		t.Fatalf("second init: %s", out)
 	}
 	if code, _, errOut := run(t, "secrets", "rm", "github/GITHUB_TOKEN"); code != exitError || !strings.Contains(errOut, "init --undo") {

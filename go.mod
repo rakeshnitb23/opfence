@@ -3,6 +3,7 @@ module github.com/rakeshnitb23/opfence
 go 1.26.0
 
 require (
+	github.com/aws/aws-sdk-go-v2 v1.47.3
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	github.com/spf13/cobra v1.10.2
 	github.com/vektah/gqlparser/v2 v2.5.63
@@ -11,6 +12,7 @@ require (
 )
 
 require (
+	github.com/aws/smithy-go v1.28.5 // indirect
 	github.com/danieljoos/wincred v1.2.3 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

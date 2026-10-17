@@ -66,11 +66,12 @@ var (
 	githubTok  = "ghp" + "_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"
 	sbpTok     = "sbp" + "_" + strings.Repeat("0123456789abcdef", 3)[:40]
 	sbpRemote  = "sbp" + "_" + strings.Repeat("fedcba9876543210", 3)[:40]
+	awsSecret  = "wJalrXUtnFEMI/K7MDENG/" + "bPxRfiCYEXAMPLEKEY"
 )
 
 var sampleRepo = map[string]string{
 	".env": "# Railway\nRAILWAY_TOKEN=" + railwayTok + "\r\nexport VERCEL_TOKEN=\"" + vercelTok + "\"  # deploys\n" +
-		"GITHUB_TOKEN='" + githubTok + "'\nAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\nRAILWAY_API_TOKEN=x\nOTHER=${RAILWAY_TOKEN}\n" +
+		"GITHUB_TOKEN='" + githubTok + "'\nAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\nAWS_SECRET_ACCESS_KEY=" + awsSecret + "\nRAILWAY_API_TOKEN=x\nOTHER=${RAILWAY_TOKEN}\n" +
 		"NOTE=value with " + sbpTok + " inside\nGH_TOKEN=\"ghp_escaped\\n0123456789abcdef0123\"\n",
 	".env.example":        "RAILWAY_TOKEN=" + railwayTok + "\n",
 	"apps/web/.env.local": "VERCEL_TOKEN=" + vercelTok + "\n",
@@ -134,7 +135,8 @@ func TestInitRoundTrip(t *testing.T) {
 		".env RAILWAY_TOKEN railway",
 		".env VERCEL_TOKEN vercel",
 		".env GITHUB_TOKEN github",
-		".env AWS_ACCESS_KEY_ID aws SKIP AWS keys stay",
+		".env AWS_ACCESS_KEY_ID aws\n",
+		".env AWS_SECRET_ACCESS_KEY aws\n",
 		".env RAILWAY_API_TOKEN railway SKIP too short",
 		".env NOTE supabase-mcp",
 		".env GH_TOKEN github SKIP the value uses escape sequences",
@@ -167,7 +169,7 @@ func TestInitRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(secrets) != 5 {
+	if len(secrets) != 7 {
 		for _, s := range secrets {
 			t.Log(s.Account(), s.Sources)
 		}
@@ -189,7 +191,7 @@ func TestInitRoundTrip(t *testing.T) {
 		}
 	}
 	env, _ := os.ReadFile(filepath.Join(root, ".env"))
-	for _, keep := range []string{"# Railway\n", "\r\n", "  # deploys\n", "AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n", "OTHER=${RAILWAY_TOKEN}\n", "export VERCEL_TOKEN=\"vcp_", "GITHUB_TOKEN='ghp_"} {
+	for _, keep := range []string{"# Railway\n", "\r\n", "  # deploys\n", "AWS_ACCESS_KEY_ID=AKIA", "OTHER=${RAILWAY_TOKEN}\n", "export VERCEL_TOKEN=\"vcp_", "GITHUB_TOKEN='ghp_"} {
 		if !strings.Contains(string(env), keep) {
 			t.Errorf(".env lost %q:\n%s", keep, env)
 		}

@@ -100,12 +100,35 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		// scrubbed.
 		r.Header.Del("Accept-Encoding")
 	}
+	var whole []byte
+	if res.Provider != nil && res.Provider.SigV4 {
+		// After every header change, so the new signature covers what is
+		// sent.
+		signed, body, err := inject.SigV4(res.Provider, inject.AWSRequest{
+			Method: req.Method, Host: host, Path: path, RawPath: req.Path, RawQuery: rawQuery,
+			Header: r.Header, ContentLength: r.ContentLength,
+			Body: raw, BodyComplete: len(raw) <= request.MaxBody, Rest: r.Body,
+		}, s.cfg.Secrets)
+		if err != nil {
+			s.block(w, req, &res, entry, http.StatusForbidden, err.Error())
+			return
+		}
+		entry.Credentials = append(entry.Credentials, signed.Injected...)
+		if len(signed.Foreign) > 0 {
+			entry.Reason = fmt.Sprintf("placeholder for %s sent to %s; not swapped in", strings.Join(signed.Foreign, ", "), host)
+		}
+		whole = body
+	}
 	f := &fwd{host: host, path: path, rawPath: req.Path, rawQuery: rawQuery, entry: entry}
 	if r.Body != nil && r.Body != http.NoBody {
+		var rd io.Reader = io.MultiReader(bytes.NewReader(raw), r.Body)
+		if whole != nil {
+			rd = bytes.NewReader(whole)
+		}
 		r.Body = struct {
 			io.Reader
 			io.Closer
-		}{io.MultiReader(bytes.NewReader(raw), r.Body), r.Body}
+		}{rd, r.Body}
 	}
 	s.rp.ServeHTTP(w, r.WithContext(contextWith(r, f)))
 }
