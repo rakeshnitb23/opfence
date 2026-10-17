@@ -21,6 +21,8 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/approve"
 	"github.com/rakeshnitb23/opfence/internal/audit"
 	"github.com/rakeshnitb23/opfence/internal/engine"
+	"github.com/rakeshnitb23/opfence/internal/policy"
+	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
 
 func newProxyCmd(g *globalOptions) *cobra.Command {
@@ -92,12 +94,20 @@ state folder; point your client at it, for example
 	return cmd
 }
 
+// phoneTimeout replaces the default approval timeout when phone approvals
+// are on: unlocking a phone takes longer than clicking a dialog, and Claude
+// Code's Bash tool gives up on a command after two minutes.
+const phoneTimeout = 90 * time.Second
+
 // startApprovals builds the approval broker from the policy's channels.
-func startApprovals(w io.Writer, channels []string, timeout time.Duration, socket string) (*approve.Broker, *approve.Control, string, error) {
+// The phone channel, when on, must be started with Listen.
+func startApprovals(w io.Writer, pol *policy.Effective, socket string, logf func(string, ...any)) (*approve.Broker, *approve.Control, *approve.Phone, string, error) {
 	var chans []approve.Channel
 	var how []string
 	var ctl *approve.Control
-	for _, name := range channels {
+	var phone *approve.Phone
+	timeout := pol.ApprovalTimeout
+	for _, name := range pol.ApprovalChannels {
 		switch name {
 		case "desktop":
 			if d := approve.NewDesktop(); d != nil {
@@ -109,18 +119,33 @@ func startApprovals(w io.Writer, channels []string, timeout time.Duration, socke
 		case "cli":
 			var err error
 			if ctl, err = approve.ListenControl(socket); err != nil {
-				return nil, nil, "", err
+				return nil, nil, nil, "", err
 			}
 			chans = append(chans, ctl)
 			how = append(how, "opfence approve in another terminal")
 		case "ntfy":
-			fmt.Fprintln(w, "warning: the ntfy approval channel is not available yet")
+			cfg, err := approve.LoadPhone(openStore())
+			switch {
+			case err == nil:
+				phone = approve.NewPhone(cfg, logf)
+				chans = append(chans, phone)
+				how = append(how, "your phone ("+cfg.Server+")")
+				if pol.ApprovalTimeoutDefault {
+					timeout = phoneTimeout
+				}
+			case pol.ApprovalChannelsDefault:
+				// Not set up, or no keychain (already reported): nothing to say.
+			case errors.Is(err, secrets.ErrNotFound):
+				fmt.Fprintln(w, "warning: phone approvals are not set up; run opfence phone setup")
+			default:
+				fmt.Fprintf(w, "warning: phone approvals are off: %v\n", err)
+			}
 		}
 	}
 	if len(how) == 0 {
 		how = []string{"none; requests that need approval are denied"}
 	}
-	return approve.NewBroker(timeout, chans...), ctl, strings.Join(how, ", ") + fmt.Sprintf(" (denied after %s)", timeout), nil
+	return approve.NewBroker(timeout, chans...), ctl, phone, strings.Join(how, ", ") + fmt.Sprintf(" (denied after %s)", timeout), nil
 }
 
 // loopbackOnly refuses listen addresses other machines could reach: the
