@@ -66,7 +66,7 @@ allowed, needs your approval, or is denied.`,
 	root.PersistentFlags().StringVar(&g.userConfig, "user-config", "", "user config file (default $OPFENCE_CONFIG or ~/.config/opfence/config.yaml)")
 	root.AddCommand(newVersionCmd(), newCatalogCmd(g), newExplainCmd(g), newTestCmd(g), newPolicyCmd(g),
 		newExportCmd(g), newHookCmd(g), newProxyCmd(g), newLogCmd(), newInitCmd(g), newSecretsCmd(), newApproveCmd(),
-		newRunCmd(g), newTrustCmd(g), newDoctorCmd(g))
+		newRunCmd(g), newTrustCmd(g), newDoctorCmd(g), newPhoneCmd())
 	return root
 }
 

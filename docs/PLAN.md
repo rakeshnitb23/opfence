@@ -307,7 +307,7 @@ environments:
     vercel:   { projects: [web], target: production }
     supabase: { projects: [abcd1234] }
 mode: strict            # deny hosts not in the catalog or config
-approvals: { timeout: 60s, channels: [terminal, desktop] }
+approvals: { timeout: 60s, channels: [desktop, cli, ntfy] }
 ```
 
 **First providers for v1**

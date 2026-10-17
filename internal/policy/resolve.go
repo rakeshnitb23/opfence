@@ -22,10 +22,22 @@ type Effective struct {
 	Mode               string
 	ApprovalTimeout    time.Duration
 	ApprovalChannels   []string
-	Servers            map[string]string
+	// ApprovalTimeoutDefault and ApprovalChannelsDefault are true when no
+	// config set them, so the runner may adjust them (a longer timeout
+	// when phone approvals are on; channels that are set up).
+	ApprovalTimeoutDefault  bool
+	ApprovalChannelsDefault bool
+	// ApprovalTimeoutLimit is the repository's timeout, which nothing may
+	// lengthen; 0 when it sets none.
+	ApprovalTimeoutLimit time.Duration
+	Servers              map[string]string
 	// Passthrough is every host pattern the runner tunnels uninspected.
 	Passthrough []string
 }
+
+// DefaultApprovalTimeout is how long a request waits for an answer when no
+// config sets it.
+const DefaultApprovalTimeout = 60 * time.Second
 
 // Resolve merges the user's config and the repository file; either may be
 // nil. The repository may only tighten: see docs/ARCHITECTURE.md §5.3.
@@ -86,16 +98,20 @@ func Resolve(user, repo *File) *Effective {
 	}
 	e.Passthrough = append(e.Passthrough, user.Passthrough...)
 
-	e.ApprovalTimeout = 60 * time.Second
+	e.ApprovalTimeout, e.ApprovalTimeoutDefault = DefaultApprovalTimeout, true
 	if user.Approvals != nil && user.Approvals.Timeout != 0 {
-		e.ApprovalTimeout = time.Duration(user.Approvals.Timeout)
+		e.ApprovalTimeout, e.ApprovalTimeoutDefault = time.Duration(user.Approvals.Timeout), false
+	}
+	if repo.Approvals != nil && repo.Approvals.Timeout != 0 {
+		e.ApprovalTimeoutLimit = time.Duration(repo.Approvals.Timeout)
 	}
 	if repo.Approvals != nil && repo.Approvals.Timeout != 0 && time.Duration(repo.Approvals.Timeout) < e.ApprovalTimeout {
 		e.ApprovalTimeout = time.Duration(repo.Approvals.Timeout) // a shorter timeout denies sooner: tighter
+		e.ApprovalTimeoutDefault = false
 	}
-	e.ApprovalChannels = []string{"desktop", "cli"}
+	e.ApprovalChannels, e.ApprovalChannelsDefault = []string{"desktop", "cli", "ntfy"}, true
 	if user.Approvals != nil && len(user.Approvals.Channels) > 0 {
-		e.ApprovalChannels = user.Approvals.Channels
+		e.ApprovalChannels, e.ApprovalChannelsDefault = user.Approvals.Channels, false
 	}
 
 	// Report repository decisions that try to loosen the defaults; they

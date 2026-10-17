@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -30,6 +31,7 @@ type session struct {
 	caFiles      launch.CAFiles
 	broker       *approve.Broker
 	ctl          *approve.Control
+	stopPhone    context.CancelFunc
 	approvals    string // how approvals reach the user, for banners
 	upstream     *proxy.Upstream
 	logf         func(format string, args ...any)
@@ -96,11 +98,17 @@ func openSession(g *globalOptions, o sessionOptions) (*session, error) {
 		}
 		socket = filepath.Join(dir, "control-"+s.id+".sock")
 	}
-	if s.broker, s.ctl, s.approvals, err = startApprovals(o.warn, eng.Policy.ApprovalChannels, eng.Policy.ApprovalTimeout, socket); err != nil {
+	var phone *approve.Phone
+	if s.broker, s.ctl, phone, s.approvals, err = startApprovals(o.warn, eng.Policy, socket, s.logf); err != nil {
 		return nil, err
 	}
 	if s.ctl != nil {
 		go func() { _ = s.ctl.Serve(s.broker) }()
+	}
+	if phone != nil {
+		var ctx context.Context
+		ctx, s.stopPhone = context.WithCancel(context.Background())
+		go phone.Listen(ctx, s.broker)
 	}
 	return s, nil
 }
@@ -150,5 +158,8 @@ func (s *session) Close() {
 	}
 	if s.ctl != nil {
 		_ = s.ctl.Close()
+	}
+	if s.stopPhone != nil {
+		s.stopPhone()
 	}
 }

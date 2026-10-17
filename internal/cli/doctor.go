@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -194,11 +195,18 @@ func outsideChecks(cmd *cobra.Command, g *globalOptions, env doctorEnv) []check 
 		}
 	}
 
-	if approve.NewDesktop() != nil {
-		add(check{Name: "approvals", Status: "ok", Detail: "desktop dialogs and opfence approve"})
-	} else {
+	phone := ""
+	if cfg, err := approve.LoadPhone(openStore()); err == nil && (eng == nil || slices.Contains(eng.Policy.ApprovalChannels, "ntfy")) {
+		phone = ", and your phone through " + cfg.Server
+	}
+	switch {
+	case approve.NewDesktop() != nil:
+		add(check{Name: "approvals", Status: "ok", Detail: "desktop dialogs and opfence approve" + phone})
+	case phone != "":
+		add(check{Name: "approvals", Status: "ok", Detail: "opfence approve" + phone + " (no desktop dialog available)"})
+	default:
 		add(check{Name: "approvals", Status: "warn", Detail: "no desktop dialog available (needs osascript, or zenity or kdialog with a display)",
-			Fix: "answer requests with opfence approve in another terminal"})
+			Fix: "answer requests with opfence approve in another terminal, or set up your phone with opfence phone setup"})
 	}
 	return out
 }
