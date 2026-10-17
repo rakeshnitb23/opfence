@@ -1,0 +1,5 @@
+# description: Delete Turso group prod and every database in it
+DELETE /v1/organizations/acme/groups/prod HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

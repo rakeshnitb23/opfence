@@ -1,0 +1,232 @@
+# Turso Platform API: groups
+operations:
+  - id: turso.group.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups" } }
+    class: write
+    resource: { arg: body.name, kind: group }
+    card: "Create Turso group {body.name} in {body.location}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    tests:
+      - fixture: fixtures/group-create.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.delete
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/groups/{group}" } }
+    class: irreversible
+    resource: { arg: group, kind: group }
+    card: "Delete Turso group {group} and every database in it"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+      - https://github.com/tursodatabase/turso-docs/blob/main/features/recover-deleted-databases.mdx
+    notes: >-
+      Deleting a group deletes all of its databases. Turso keeps a deleted group restorable
+      for five days, but only on a paid plan, for an admin or owner, and only while the
+      organization's recovery setting is on. Opfence cannot see the plan or that setting, so
+      the delete is irreversible.
+    tests:
+      - fixture: fixtures/group-delete.http
+        expect: irreversible
+        resource: prod
+
+  - id: turso.group.configure
+    match: { rest: { method: PATCH, path: "/{version}/organizations/{organization}/groups/{group}/configuration" } }
+    class: write
+    when:
+      - if: { arg: body.delete_protection, equals: "false" }
+        class: irreversible
+    resource: { arg: group, kind: group }
+    card: "Change configuration of Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Turning delete_protection off removes the guard against deleting the group and all its
+      databases (safety-net convention).
+    tests:
+      - fixture: fixtures/group-configure.http
+        expect: write
+        resource: prod
+      - fixture: fixtures/group-configure-protection-off.http
+        expect: irreversible
+        resource: prod
+
+  - id: turso.group.transfer
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/transfer" } }
+    class: access
+    resource: { arg: group, kind: group }
+    card: "Transfer Turso group {group} to organization {body.organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Moves the group and its databases to another organization the caller belongs to: that
+      organization's members get the data and this one loses it. Nothing is deleted and it
+      can be transferred back, so it is access rather than irreversible.
+    tests:
+      - fixture: fixtures/group-transfer.http
+        expect: access
+        resource: prod
+
+  - id: turso.group.unarchive
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/unarchive" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Unarchive Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    tests:
+      - fixture: fixtures/group-unarchive.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.update
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/update" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Update every database in Turso group {group} to the latest libSQL version"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+    tests:
+      - fixture: fixtures/group-update.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.rename
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/rename" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Rename Turso group {group} to {body.Name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/group-rename.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.aws-migration-start
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/aws/migration/start" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Start migrating Turso group {group} to AWS"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document); the migration can be aborted.
+    tests:
+      - fixture: fixtures/group-aws-migration-start.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.aws-migration-abort
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/aws/migration/abort" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Abort the AWS migration of Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/group-aws-migration-abort.http
+        expect: write
+        resource: prod
+
+  - id: turso.group.restore
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/restore" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Restore deleted Turso group {group} and its databases"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-docs/blob/main/features/recover-deleted-databases.mdx
+    tests:
+      - fixture: fixtures/group-restore.http
+        expect: write
+        resource: f1dec998-8f7f-11ee-907d-a2a821fd08b9
+
+  - id: turso.group.delete-unscoped
+    match: { rest: { method: DELETE, path: "/{version}/groups/{group}" } }
+    class: irreversible
+    resource: { arg: group, kind: group }
+    card: "Delete Turso group {group} and every database in it"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/group-delete-unscoped.http
+        expect: irreversible
+        resource: prod
+
+  - id: turso.group.configure-unscoped
+    match: { rest: { method: PATCH, path: "/{version}/groups/{group}/configuration" } }
+    class: write
+    when:
+      - if: { arg: body.delete_protection, equals: "false" }
+        class: irreversible
+    resource: { arg: group, kind: group }
+    card: "Change configuration of Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/group-configure-unscoped.http
+        expect: write
+        resource: prod
+      - fixture: fixtures/group-configure-unscoped-protection-off.http
+        expect: irreversible
+        resource: prod
+
+  - id: turso.group.transfer-unscoped
+    match: { rest: { method: POST, path: "/{version}/groups/{group}/transfer" } }
+    class: access
+    resource: { arg: group, kind: group }
+    card: "Transfer Turso group {group} to organization {body.organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/group-transfer-unscoped.http
+        expect: access
+        resource: prod

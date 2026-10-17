@@ -1,0 +1,34 @@
+# Turso Platform API: group locations
+operations:
+  - id: turso.group-location.add
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/locations/{location}" } }
+    class: write
+    resource: { arg: group, kind: group }
+    card: "Add location {location} to Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    tests:
+      - fixture: fixtures/group-location-add.http
+        expect: write
+        resource: prod
+
+  - id: turso.group-location.remove
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/groups/{group}/locations/{location}" } }
+    class: delete
+    resource: { arg: group, kind: group }
+    card: "Remove location {location} from Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      Removes the replicas in that location; the data stays in the group's primary location
+      and the replicas can be added back.
+    tests:
+      - fixture: fixtures/group-location-remove.http
+        expect: delete
+        resource: prod

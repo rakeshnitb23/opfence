@@ -1,0 +1,5 @@
+# description: Create an auth token for every database in Turso group prod
+POST /v1/groups/prod/auth/tokens HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

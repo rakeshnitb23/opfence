@@ -1,0 +1,71 @@
+# Turso Platform API: group auth tokens
+operations:
+  - id: turso.group-token.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/auth/tokens" } }
+    class: credential
+    resource: { arg: group, kind: group }
+    card: "Create an auth token for every database in Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups_v3.go
+    tests:
+      - fixture: fixtures/group-token-create.http
+        expect: credential
+        resource: prod
+      - fixture: fixtures/group-token-create-v3.http
+        expect: credential
+        resource: f1dec998-8f7f-11ee-907d-a2a821fd08b9
+
+  - id: turso.group-token.invalidate
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/auth/rotate" } }
+    class: access
+    resource: { arg: group, kind: group }
+    card: "Invalidate every auth token of Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    tests:
+      - fixture: fixtures/group-token-invalidate.http
+        expect: access
+        resource: prod
+
+  - id: turso.group-token.create-unscoped
+    match: { rest: { method: POST, path: "/{version}/groups/{group}/auth/tokens" } }
+    class: credential
+    resource: { arg: group, kind: group }
+    card: "Create an auth token for every database in Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/group-token-create-unscoped.http
+        expect: credential
+        resource: prod
+
+  - id: turso.group-token.invalidate-unscoped
+    match: { rest: { method: POST, path: "/{version}/groups/{group}/auth/rotate" } }
+    class: access
+    resource: { arg: group, kind: group }
+    card: "Invalidate every auth token of Turso group {group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/groups.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/group-token-invalidate-unscoped.http
+        expect: access
+        resource: prod

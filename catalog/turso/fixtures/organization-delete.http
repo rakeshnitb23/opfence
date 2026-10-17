@@ -1,0 +1,5 @@
+# description: Delete Turso organization acme
+DELETE /v1/organizations/acme HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

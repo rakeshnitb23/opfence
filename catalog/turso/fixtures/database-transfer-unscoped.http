@@ -1,0 +1,7 @@
+# description: Transfer Turso database app-db to organization acme
+POST /v1/databases/app-db/transfer HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"org":"acme"}

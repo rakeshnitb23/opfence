@@ -1,0 +1,5 @@
+# description: Add location aws-eu-west-1 to Turso group prod
+POST /v1/organizations/acme/groups/prod/locations/aws-eu-west-1 HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Open a Turso billing portal session
+POST /v1/billing/portal HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"stripe_id":"cus_EXAMPLE"}

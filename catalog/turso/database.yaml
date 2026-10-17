@@ -1,0 +1,269 @@
+# Turso Platform API: databases
+operations:
+  - id: turso.database.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases" } }
+    class: write
+    when:
+      - if: { arg: body.remote_encryption, present: true }
+        class: credential
+    resource: { arg: body.name, kind: database }
+    card: "Create Turso database {body.name} in group {body.group}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases_v3.go
+    notes: >-
+      Forking (seed.type database) copies data into a new database, a write.
+      remote_encryption sets the database's encryption key, a secret, so it is credential.
+      The template matches any version segment: the CLI uses /v1 and the newer /v3 routes,
+      which take the organization and database UUIDs instead of their names.
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: write
+        resource: app-db
+      - fixture: fixtures/database-create-fork.http
+        expect: write
+        resource: app-db-copy
+      - fixture: fixtures/database-create-encrypted.http
+        expect: credential
+        resource: app-db
+      - fixture: fixtures/database-create-v3.http
+        expect: write
+        resource: app-db
+
+  - id: turso.database.delete
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete Turso database {database} and all its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases_v3.go
+      - https://github.com/tursodatabase/turso-docs/blob/main/features/recover-deleted-databases.mdx
+    notes: >-
+      Turso keeps a deleted database restorable for five days, but only on a paid plan, for
+      an admin or owner, and only while the organization's recovery setting is on. Opfence
+      cannot see the plan or that setting, so the delete is irreversible. The template
+      matches any version segment: the CLI uses /v1 and the newer /v3 routes, which take the
+      organization and database UUIDs instead of their names.
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: app-db
+      - fixture: fixtures/database-delete-v3.http
+        expect: irreversible
+        resource: 0eb771dd-6906-11ee-8553-eaa7715aeaf2
+
+  - id: turso.database.configure
+    match: { rest: { method: PATCH, path: "/{version}/organizations/{organization}/databases/{database}/configuration" } }
+    class: write
+    when:
+      - if: { arg: body.allowed_ips, present: true }
+        class: access
+      - if: { arg: body.allowed_aws_vpc_ids, present: true }
+        class: access
+      - if: { arg: body.allow_attach, present: true }
+        class: access
+      - if: { arg: body.delete_protection, equals: "false" }
+        class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Change configuration of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      allowed_ips and allowed_aws_vpc_ids decide who can connect (an empty list removes the
+      restriction) and allow_attach lets other databases attach this one, so they are
+      access. Turning delete_protection off removes the guard against an irreversible
+      delete, so it is irreversible (safety-net convention). size_limit, block_reads and
+      block_writes are writes.
+    tests:
+      - fixture: fixtures/database-configure.http
+        expect: write
+        resource: app-db
+      - fixture: fixtures/database-configure-allowed-ips.http
+        expect: access
+        resource: app-db
+      - fixture: fixtures/database-configure-vpc.http
+        expect: access
+        resource: app-db
+      - fixture: fixtures/database-configure-protection-off.http
+        expect: irreversible
+        resource: app-db
+
+  - id: turso.database.seed
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/seed" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Create Turso database {database} from an uploaded file"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document): creates a new database from an
+      uploaded SQLite file and fails with 422 when the name is taken.
+    tests:
+      - fixture: fixtures/database-seed.http
+        expect: write
+        resource: app-db
+
+  - id: turso.database.upload-dump
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/dumps" } }
+    class: write
+    card: "Upload a SQL dump to seed a new Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document): stores a dump file and returns
+      its URL for a later create; it changes no database.
+    tests:
+      - fixture: fixtures/database-upload-dump.http
+        expect: write
+
+  - id: turso.database.transfer
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/transfer" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Transfer Turso database {database} to organization {body.org}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document). Moving a database to another
+      organization hands its data to that organization's members, so it is access, like the
+      group transfer.
+    tests:
+      - fixture: fixtures/database-transfer.http
+        expect: access
+        resource: app-db
+
+  - id: turso.database.wakeup
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/wakeup" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Unarchive Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/database-wakeup.http
+        expect: write
+        resource: app-db
+
+  - id: turso.database.restore
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/restore" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Restore deleted Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-docs/blob/main/features/recover-deleted-databases.mdx
+    tests:
+      - fixture: fixtures/database-restore.http
+        expect: write
+        resource: 0eb771dd-6906-11ee-8553-eaa7715aeaf2
+
+  - id: turso.database.create-unscoped
+    match: { rest: { method: POST, path: "/{version}/databases" } }
+    class: write
+    when:
+      - if: { arg: body.remote_encryption, present: true }
+        class: credential
+    resource: { arg: body.name, kind: database }
+    card: "Create Turso database {body.name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-create-unscoped.http
+        expect: write
+        resource: app-db
+      - fixture: fixtures/database-create-unscoped-encrypted.http
+        expect: credential
+        resource: app-db
+
+  - id: turso.database.delete-unscoped
+    match: { rest: { method: DELETE, path: "/{version}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete Turso database {database} and all its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-delete-unscoped.http
+        expect: irreversible
+        resource: app-db
+
+  - id: turso.database.configure-unscoped
+    match: { rest: { method: PATCH, path: "/{version}/databases/{database}/configuration" } }
+    class: write
+    when:
+      - if: { arg: body.allowed_ips, present: true }
+        class: access
+      - if: { arg: body.allowed_aws_vpc_ids, present: true }
+        class: access
+      - if: { arg: body.allow_attach, present: true }
+        class: access
+      - if: { arg: body.delete_protection, equals: "false" }
+        class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Change configuration of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-configure-unscoped.http
+        expect: write
+        resource: app-db
+      - fixture: fixtures/database-configure-unscoped-protection-off.http
+        expect: irreversible
+        resource: app-db
+
+  - id: turso.database.transfer-unscoped
+    match: { rest: { method: POST, path: "/{version}/databases/{database}/transfer" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Transfer Turso database {database} to organization {body.org}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-transfer-unscoped.http
+        expect: access
+        resource: app-db

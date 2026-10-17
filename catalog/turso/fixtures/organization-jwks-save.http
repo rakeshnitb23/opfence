@@ -1,0 +1,7 @@
+# description: Trust JWKS clerk (https://auth.example.com/.well-known/jwks.json) for Turso organization acme
+PUT /v2/organizations/acme/jwks/clerk HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"jwks_url":"https://auth.example.com/.well-known/jwks.json","region":"aws-us-east-1"}

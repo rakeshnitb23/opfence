@@ -1,0 +1,74 @@
+# Turso database HTTP API: SQL over HTTP on database hosts (*.turso.io)
+operations:
+  - id: turso-mcp.sql.read
+    match: { mcp: { tool: read_database } }
+    class: read
+    card: "Run a read-only SQL query on a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+      - https://github.com/tursodatabase/turso-docs/blob/main/integrations/mcp.mdx
+    notes: >-
+      Turso documents read_database as read-only SQL that cannot write ("Read-only and
+      destructive operations are labeled"); the check happens on Turso's side and its source
+      is not public. Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes
+      the tool names and what each does but not their arguments, so the rule matches the
+      tool alone and names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/sql-read.http
+        expect: read
+
+  - id: turso-mcp.sql.write
+    match: { mcp: { tool: write_database } }
+    class: irreversible
+    card: "Run INSERT or UPDATE SQL on a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      Turso limits the tool to INSERT and UPDATE. An UPDATE without a limiting WHERE
+      overwrites every row, which the SQL convention makes irreversible, and libSQL SQL
+      cannot be handed to the Postgres classifier (see turso.sql.pipeline), so the worst
+      case applies. Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes
+      the tool names and what each does but not their arguments, so the rule matches the
+      tool alone and names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/sql-write.http
+        expect: irreversible
+
+  - id: turso-mcp.sql.delete
+    match: { mcp: { tool: delete_from_database } }
+    class: irreversible
+    card: "Run DELETE SQL on a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      A DELETE without a limiting WHERE empties the table; libSQL SQL cannot be classified
+      safely, so the worst case applies. Turso's hosted server (mcp.turso.ai) is closed
+      source; Turso publishes the tool names and what each does but not their arguments, so
+      the rule matches the tool alone and names no resource. Fixture arguments are
+      illustrative.
+    tests:
+      - fixture: fixtures/sql-delete.http
+        expect: irreversible
+
+  - id: turso-mcp.sql.evolve-schema
+    match: { mcp: { tool: evolve_schema } }
+    class: irreversible
+    card: "Change the schema of a Turso database (CREATE, ALTER, DROP)"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      The tool runs DDL including DROP TABLE, so the worst case is irreversible. Turso's
+      hosted server (mcp.turso.ai) is closed source; Turso publishes the tool names and what
+      each does but not their arguments, so the rule matches the tool alone and names no
+      resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/sql-evolve-schema.http
+        expect: irreversible

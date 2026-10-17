@@ -1,0 +1,50 @@
+# Turso Platform API: Platform API tokens
+operations:
+  - id: turso.api-token.create
+    match: { rest: { method: POST, path: "/{version}/auth/api-tokens/{tokenName}" } }
+    class: credential
+    resource: { arg: tokenName, kind: api-token }
+    card: "Create Turso API token {tokenName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/apiTokens.go
+    notes: >-
+      The CLI creates scoped tokens through /v2; the OpenAPI document lists /v1.
+    tests:
+      - fixture: fixtures/api-token-create.http
+        expect: credential
+        resource: ci
+      - fixture: fixtures/api-token-create-v2.http
+        expect: credential
+        resource: deploy
+
+  - id: turso.api-token.revoke
+    match: { rest: { method: DELETE, path: "/{version}/auth/api-tokens/{tokenName}" } }
+    class: access
+    resource: { arg: tokenName, kind: api-token }
+    card: "Revoke Turso API token {tokenName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/apiTokens.go
+    tests:
+      - fixture: fixtures/api-token-revoke.http
+        expect: access
+        resource: ci
+
+  - id: turso.organization-api-token.revoke
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/api-tokens/{tokenId}" } }
+    class: access
+    resource: { arg: tokenId, kind: api-token }
+    card: "Revoke API token {tokenId} of Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+    tests:
+      - fixture: fixtures/organization-api-token-revoke.http
+        expect: access
+        resource: clGFZ4STEe6fljpFzIum8A

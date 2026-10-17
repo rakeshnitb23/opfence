@@ -1,0 +1,67 @@
+# Turso Platform API: billing
+operations:
+  - id: turso.billing-portal.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/billing/portal" } }
+    class: credential
+    resource: { arg: organization, kind: organization }
+    card: "Open a billing portal session for Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/billing.go
+    notes: >-
+      Used by turso org billing (not in the OpenAPI document). Returns a Stripe portal URL
+      that lets whoever holds it change payment methods and the plan, so the response is a
+      secret.
+    tests:
+      - fixture: fixtures/billing-portal-create.http
+        expect: credential
+        resource: acme
+
+  - id: turso.billing-portal.create-unscoped
+    match: { rest: { method: POST, path: "/{version}/billing/portal" } }
+    class: credential
+    card: "Open a Turso billing portal session"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/billing.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/billing-portal-create-unscoped.http
+        expect: credential
+
+  - id: turso.billing-customer.update
+    match: { rest: { method: PUT, path: "/{version}/organizations/{organization}/billing/customer" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Change billing details of Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/billing.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document): name, email, address and tax id
+      on invoices; it moves no money.
+    tests:
+      - fixture: fixtures/billing-customer-update.http
+        expect: write
+        resource: acme
+
+  - id: turso.stripe-customer.create
+    match: { rest: { method: POST, path: "/{version}/organizations/stripe-customer" } }
+    class: write
+    card: "Create a Stripe customer {body.Name} for a new Turso organization"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/billing.go
+    notes: >-
+      Used by the turso CLI before creating an organization (not in the OpenAPI document);
+      it charges nothing by itself.
+    tests:
+      - fixture: fixtures/stripe-customer-create.http
+        expect: write

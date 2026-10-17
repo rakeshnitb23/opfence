@@ -1,0 +1,13 @@
+provider: turso-mcp
+title: Turso MCP
+docs: https://docs.turso.tech/integrations/mcp
+# Turso's hosted MCP server. Clients sign in with OAuth, so there is no token
+# in the environment to detect. The server itself is not open source: the tool
+# names come from Turso's plugin skill (tursodatabase/turso-mcp).
+hosts: [mcp.turso.ai]
+auth:
+  - header: Authorization
+    scheme: Bearer
+mcp:
+  names: [turso]
+  package: "turso@turso"           # Claude Code plugin from the tursodatabase/turso-mcp marketplace; no npm package

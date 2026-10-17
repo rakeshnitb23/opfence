@@ -1,0 +1,7 @@
+# description: Create a Stripe customer acme-labs for a new Turso organization
+POST /v1/organizations/stripe-customer HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"Name":"acme-labs"}

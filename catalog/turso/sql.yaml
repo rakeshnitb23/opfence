@@ -1,0 +1,61 @@
+# Turso database HTTP API: SQL over HTTP on database hosts (*.turso.io)
+operations:
+  - id: turso.sql.pipeline
+    match: { rest: { method: POST, path: "/{version}/pipeline" } }
+    class: unknown
+    card: "Run SQL on a Turso database over HTTP"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/libsql/blob/main/docs/HTTP_V2_SPEC.md
+      - https://github.com/tursodatabase/libsql/blob/main/docs/HRANA_3_SPEC.md
+    notes: >-
+      Hrana over HTTP (/v2/pipeline, /v3/pipeline, /v3-protobuf/pipeline) on a database
+      host. The body carries libSQL (SQLite) SQL, which Opfence's Postgres classifier cannot
+      read safely: SQLite ends a /* comment at the first */ and has no E'' or $tag$ strings,
+      so '/* /* */ DROP TABLE users; -- */ SELECT 1' is a read to Postgres and a DROP to
+      libSQL. The SQL also hides in arrays (requests, batch steps), in stored sql_id texts
+      and, for the -protobuf routes, in a binary body. So every request is unknown and asks.
+    tests:
+      - fixture: fixtures/sql-pipeline.http
+        expect: unknown
+      - fixture: fixtures/sql-pipeline-v3.http
+        expect: unknown
+
+  - id: turso.sql.cursor
+    match: { rest: { method: POST, path: "/{version}/cursor" } }
+    class: unknown
+    card: "Run a batch of SQL on a Turso database over HTTP"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/libsql/blob/main/docs/HRANA_3_SPEC.md
+    notes: >-
+      Hrana 3 cursor endpoint (/v3/cursor, /v3-protobuf/cursor). The body carries libSQL
+      (SQLite) SQL, which Opfence's Postgres classifier cannot read safely: SQLite ends a /*
+      comment at the first */ and has no E'' or $tag$ strings, so '/* /* */ DROP TABLE
+      users; -- */ SELECT 1' is a read to Postgres and a DROP to libSQL. The SQL also hides
+      in arrays (requests, batch steps), in stored sql_id texts and, for the -protobuf
+      routes, in a binary body. So every request is unknown and asks.
+    tests:
+      - fixture: fixtures/sql-cursor.http
+        expect: unknown
+
+  - id: turso.sql.batch
+    match: { rest: { method: POST, path: "/" } }
+    class: unknown
+    card: "Run a batch of SQL on a Turso database over the legacy HTTP API"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/libsql/blob/main/docs/http_api.md
+    notes: >-
+      The original sqld HTTP API: POST / with a statements array. The body carries libSQL
+      (SQLite) SQL, which Opfence's Postgres classifier cannot read safely: SQLite ends a /*
+      comment at the first */ and has no E'' or $tag$ strings, so '/* /* */ DROP TABLE
+      users; -- */ SELECT 1' is a read to Postgres and a DROP to libSQL. The SQL also hides
+      in arrays (requests, batch steps), in stored sql_id texts and, for the -protobuf
+      routes, in a binary body. So every request is unknown and asks.
+    tests:
+      - fixture: fixtures/sql-batch.http
+        expect: unknown

@@ -1,0 +1,5 @@
+# description: Update every database in Turso group prod to the latest libSQL version
+POST /v1/organizations/acme/groups/prod/update HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Transfer Turso group prod to organization other-org
+POST /v1/organizations/acme/groups/prod/transfer HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"organization":"other-org"}

@@ -1,0 +1,16 @@
+provider: turso
+title: Turso
+docs: https://docs.turso.tech/api-reference/introduction
+# api.turso.tech is the Platform API. Every database also has its own host,
+# [database]-[organization].turso.io (some regions add a region label), which
+# serves SQL over HTTP (Hrana) and file uploads with a database token.
+hosts: [api.turso.tech, "*.turso.io"]
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  env: [TURSO_API_TOKEN, TURSO_AUTH_TOKEN]   # Platform API token (turso CLI), database token (SDK docs)
+defaults:
+  rest_safe_methods: read          # no GET returns a token or other secret
+# Platform rules match any version prefix (/{version}/organizations/...): the
+# CLI mixes /v1, /v2 and /v3 routes, and /v3 takes UUIDs where /v1 takes names.

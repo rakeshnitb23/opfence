@@ -1,0 +1,7 @@
+# description: Stop trusting JWKS clerk for Turso organization acme
+DELETE /v2/organizations/acme/jwks/clerk HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"region":"aws-us-east-1"}

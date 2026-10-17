@@ -1,0 +1,7 @@
+# description: Create Turso API token deploy
+POST /v2/auth/api-tokens/deploy HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"organization":"acme","group":"prod","scopes":["db:create","db:mint-token"]}

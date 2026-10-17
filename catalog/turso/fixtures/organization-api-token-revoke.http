@@ -1,0 +1,5 @@
+# description: Revoke API token clGFZ4STEe6fljpFzIum8A of Turso organization acme
+DELETE /v1/organizations/acme/api-tokens/clGFZ4STEe6fljpFzIum8A HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Change settings of Turso organization acme
+PATCH /v1/organizations/acme HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"restore_enabled":false}
