@@ -1,0 +1,8 @@
+# description: Change Log Explorer dataset 4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/logs/explorer/datasets/4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true}

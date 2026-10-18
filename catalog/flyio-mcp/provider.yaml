@@ -1,0 +1,15 @@
+provider: flyio-mcp
+title: Fly.io MCP
+docs: https://github.com/superfly/flyctl/tree/master/internal/command/mcp
+# flyctl's own MCP server (fly mcp server). It runs locally over stdio (or on
+# 127.0.0.1 with --stream/--sse) and each tool runs a flyctl command, which
+# then calls the APIs in catalog/flyio. Fly hosts no remote server, so there
+# are no hosts; the agent hook sees the tool calls. flyctl names the server
+# "flyctl" when it writes MCP client configs.
+# No detect or auth block: the server uses flyctl's own token, and
+# FLY_API_TOKEN belongs to catalog/flyio (an env var can map to one provider).
+# Fixtures are .json tool calls (tool + arguments), replayed through the
+# hook's evaluation, since a local server has no host to route requests by.
+mcp:
+  names: [flyctl, fly, flyio, fly-io]
+  package: "github.com/superfly/flyctl"   # Go binary (fly mcp server); no npm package

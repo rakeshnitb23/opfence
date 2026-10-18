@@ -1,0 +1,5 @@
+# description: Delete mTLS certificate 023e105f4ecef8ad9ca31a8372d0c358
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/mtls_certificates/023e105f4ecef8ad9ca31a8372d0c358 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

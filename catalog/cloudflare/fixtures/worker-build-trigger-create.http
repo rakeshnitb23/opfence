@@ -1,0 +1,8 @@
+# description: Create a build trigger in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/triggers HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"branch_excludes":[],"branch_includes":["main"],"build_caching_enabled":false,"build_command":"npm run build","build_token_uuid":"example","deploy_command":"npx wrangler deploy","external_script_id":"dd7160bb9cef458093557736f4b9e75b","path_excludes":["*.md"],"path_includes":["*"],"repo_connection_uuid":"example","root_directory":"/","trigger_name":"Production Deploy"}

@@ -1,0 +1,5 @@
+# description: Delete Vectorize index shop-embeddings and its vectors
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/vectorize/v2/indexes/shop-embeddings HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

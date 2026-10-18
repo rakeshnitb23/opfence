@@ -1,0 +1,36 @@
+# Render REST API: postgres-export
+operations:
+  - id: render.postgres-export.list
+    match: { rest: { method: GET, path: "/v1/postgres/{postgresId}/export" } }
+    class: credential
+    resource: { arg: postgresId, kind: postgres }
+    card: "Get download links for the exports of Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Each export carries a download URL for a full logical backup; anyone
+      holding the link can download the database, secrets in it included.
+    tests:
+      - fixture: fixtures/postgres-export-list.http
+        expect: credential
+        resource: dpg-shopdb01
+
+  - id: render.postgres-export.create
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/export" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Export Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-export-create.http
+        expect: write
+        resource: dpg-shopdb01

@@ -1,0 +1,7 @@
+# description: Send workspace events to https://hooks.example.com/render
+POST /v1/webhooks HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"alerts","ownerId":"tea-acme01","url":"https://hooks.example.com/render","enabled":true,"eventFilter":[]}

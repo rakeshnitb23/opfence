@@ -1,0 +1,7 @@
+# description: Restore Postgres dpg-shopdb01 to 2026-10-17T12:00:00Z as a new database
+POST /v1/postgres/dpg-shopdb01/recovery HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"restoreTime":"2026-10-17T12:00:00Z","restoreName":"shop-db-restored"}

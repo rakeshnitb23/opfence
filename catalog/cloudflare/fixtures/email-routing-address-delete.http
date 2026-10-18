@@ -1,0 +1,5 @@
+# description: Delete destination address ea95132c15732412d22c1476fa83f27c
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/email/routing/addresses/ea95132c15732412d22c1476fa83f27c HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

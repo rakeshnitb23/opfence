@@ -1,0 +1,90 @@
+# Render MCP server: postgres
+operations:
+  - id: render-mcp.postgres.query
+    match: { mcp: { tool: query_render_postgres } }
+    class: read
+    when:
+      - if: { arg: sql, matches: "(?i)dblink" }
+        class: irreversible
+      - if: { arg: sql, matches: "(?i)pg_(terminate|cancel)_backend" }
+        class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Run a read-only SQL query on Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/postgres/tools.go
+    notes: >-
+      The server opens a new connection, begins a READ ONLY transaction (pgx
+      TxOptions AccessMode ReadOnly), runs the one statement through pgx's
+      extended protocol (which rejects several statements) and always rolls
+      back, so Postgres itself refuses writes and DDL. dblink is the
+      exception: dblink_exec runs on a second connection outside that
+      transaction, so any mention of dblink is irreversible. Ending other
+      sessions (pg_terminate_backend, pg_cancel_backend) works in a read-only
+      transaction and is a write. A function created earlier that calls
+      dblink is not caught (docs/LIMITS.md). The tool reads
+      the database password internally but does not return it.
+    tests:
+      - fixture: fixtures/postgres-query.http
+        expect: read
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-query-drop.http
+        expect: read
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-query-terminate.http
+        expect: write
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-query-dblink.http
+        expect: irreversible
+        resource: dpg-shopdb01
+
+  - id: render-mcp.postgres.list
+    match: { mcp: { tool: list_postgres_instances } }
+    class: read
+    card: "List Postgres instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/postgres/tools.go
+    tests:
+      - fixture: fixtures/postgres-list.http
+        expect: read
+
+  - id: render-mcp.postgres.get
+    match: { mcp: { tool: get_postgres } }
+    class: read
+    resource: { arg: postgresId, kind: postgres }
+    card: "Show Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/postgres/tools.go
+    notes: >-
+      Returns instance details without connection strings.
+    tests:
+      - fixture: fixtures/postgres-get.http
+        expect: read
+        resource: dpg-shopdb01
+
+  - id: render-mcp.postgres.create
+    match: { mcp: { tool: create_postgres } }
+    class: write
+    when:
+      - if: { arg: plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+    resource: { arg: name, kind: postgres }
+    card: "Create Postgres {name} on plan {plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/postgres/tools.go
+    notes: >-
+      The server defaults plan to free; any other plan is billed.
+    tests:
+      - fixture: fixtures/postgres-create.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/postgres-create-paid.http
+        expect: money
+        resource: shop-db

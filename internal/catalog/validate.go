@@ -32,6 +32,8 @@ var restMethods = map[string]bool{
 	"GET": true, "HEAD": true, "POST": true, "PUT": true, "PATCH": true, "DELETE": true, "OPTIONS": true,
 }
 
+var graphQLNameRe = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
+
 func (l *loader) validate(c *Catalog) {
 	hostOwner := map[string]string{}
 	mcpNameOwner := map[string]string{}
@@ -171,6 +173,14 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 	}
 	if p.Defaults.GraphQLQuery != "" && len(p.GraphQL) == 0 {
 		l.addf(file, 0, "defaults.graphql_query needs graphql paths")
+	}
+	if len(p.Defaults.GraphQLSecretFields) > 0 && len(p.GraphQL) == 0 {
+		l.addf(file, 0, "defaults.graphql_secret_fields needs graphql paths")
+	}
+	for _, f := range p.Defaults.GraphQLSecretFields {
+		if !graphQLNameRe.MatchString(f) {
+			l.addf(file, 0, "defaults.graphql_secret_fields: %q is not a GraphQL field name", f)
+		}
 	}
 	if p.Defaults.AWSReadActions != "" && !p.SigV4 {
 		l.addf(file, 0, "defaults.aws_read_actions needs sigv4: true")
@@ -426,6 +436,10 @@ func (l *loader) validateTest(r *Rule, i int, t Test) {
 			l.addf(f, ln, "%s: tests[%d]: fixture %q must be a clean path under %s/", r.ID, i, t.Fixture, FixturesDir)
 		} else if _, err := fs.Stat(l.fsys, path.Join(r.Provider.Dir, clean)); err != nil {
 			l.addf(f, ln, "%s: tests[%d]: fixture %s not found", r.ID, i, t.Fixture)
+		} else if strings.HasSuffix(clean, ".json") && r.Match.MCP == nil {
+			l.addf(f, ln, "%s: tests[%d]: .json tool-call fixtures are for mcp rules", r.ID, i)
+		} else if !strings.HasSuffix(clean, ".http") && !strings.HasSuffix(clean, ".json") {
+			l.addf(f, ln, "%s: tests[%d]: fixture %s must be a .http request or a .json tool call", r.ID, i, t.Fixture)
 		}
 	}
 	if !t.Expect.Valid() {

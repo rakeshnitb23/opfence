@@ -1,0 +1,303 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): secondary-dns
+operations:
+  - id: cloudflare.secondary-dns.incoming-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/incoming" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Make zone {zone_id} a secondary zone"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-incoming-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.incoming-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/secondary_dns/incoming" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the secondary configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-incoming-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.incoming-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/secondary_dns/incoming" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the secondary configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-incoming-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.outgoing-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Configure outgoing zone transfers for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Outgoing transfers hand the whole zone file to the configured peers.
+    tests:
+      - fixture: fixtures/secondary-dns-outgoing-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.outgoing-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change outgoing zone transfers of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-outgoing-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.outgoing-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the primary configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-outgoing-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.outgoing-enable
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing/enable" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Enable outgoing zone transfers for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-outgoing-enable.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.outgoing-disable
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing/disable" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Disable outgoing zone transfers for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-outgoing-disable.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.force-axfr
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/force_axfr" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Force a zone transfer into zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-force-axfr.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.force-notify
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/secondary_dns/outgoing/force_notify" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Send DNS NOTIFY for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-force-notify.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.secondary-dns.acl-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/secondary_dns/acls" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Allow {body.ip_range} to transfer zones from account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-acl-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.acl-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/secondary_dns/acls/{acl_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change zone transfer ACL {acl_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-acl-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.acl-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/secondary_dns/acls/{acl_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete zone transfer ACL {acl_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-acl-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.peer-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/secondary_dns/peers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add zone transfer peer {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-peer-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.peer-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/secondary_dns/peers/{peer_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change zone transfer peer {peer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-peer-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.peer-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/secondary_dns/peers/{peer_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete zone transfer peer {peer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-peer-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.tsig-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/secondary_dns/tsigs" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create TSIG key {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A TSIG holds the shared secret that authenticates zone transfers.
+    tests:
+      - fixture: fixtures/secondary-dns-tsig-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.tsig-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/secondary_dns/tsigs/{tsig_id}" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change TSIG key {tsig_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-tsig-update.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.tsig-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/secondary_dns/tsigs/{tsig_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete TSIG key {tsig_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a secret is irreversible: the shared secret cannot be read back.
+    tests:
+      - fixture: fixtures/secondary-dns-tsig-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.tsig-list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/secondary_dns/tsigs" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "List TSIG keys of account {account_id} with their secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes each TSIG's secret.
+    tests:
+      - fixture: fixtures/secondary-dns-tsig-list.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.secondary-dns.tsig-read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/secondary_dns/tsigs/{tsig_id}" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read TSIG key {tsig_id} and its secret"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/secondary-dns-tsig-read.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

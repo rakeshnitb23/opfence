@@ -1,0 +1,46 @@
+# Netlify REST API: Netlify Database snapshots
+operations:
+  - id: netlify.database-snapshot.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database/snapshot" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Snapshot database branch {body.branch_id} of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/database-snapshot-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-snapshot.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/database/snapshot/{snapshot_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete database snapshot {snapshot_id} of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/database-snapshot-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-snapshot.restore
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database/snapshot/{snapshot_id}/restore" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Restore snapshot {snapshot_id} over database branch {body.branch_id} of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Overwrites the branch (production unless branch_id says otherwise)
+      with the snapshot; writes made since the snapshot are lost.
+    tests:
+      - fixture: fixtures/database-snapshot-restore.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

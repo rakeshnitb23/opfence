@@ -1,0 +1,498 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-app
+operations:
+  - id: cloudflare.access-app.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/apps" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add Access application {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-app.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting the application removes the login wall: the hostname it protected
+      becomes reachable without Access.
+    tests:
+      - fixture: fixtures/access-app-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.ca-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/ca" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Create a short-lived certificate CA for Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-ca-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.ca-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/ca" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete the short-lived certificate CA of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-ca-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.policy-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/policies" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Add an Access policy to application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-policy-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.policy-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/policies/{policy_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change Access policy {policy_id} of application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-policy-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.policy-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/policies/{policy_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete Access policy {policy_id} of application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-policy-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.revoke-tokens
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/revoke_tokens" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Revoke all sessions of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-revoke-tokens.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.settings-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/settings" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change settings of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-settings-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.settings-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/settings" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change settings of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-settings-patch.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/access/apps" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "List Access applications with their provisioning credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns scim_config.authentication with password, token and
+      client_secret fields for SCIM provisioning, not marked write-only; Opfence
+      assumes they are returned.
+    tests:
+      - fixture: fixtures/access-app-list.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-app.read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}" } }
+    class: credential
+    resource: { arg: app_id, kind: access-application }
+    card: "Read Access application {app_id} with its provisioning credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns scim_config.authentication with password, token and
+      client_secret fields for SCIM provisioning, not marked write-only; Opfence
+      assumes they are returned.
+    tests:
+      - fixture: fixtures/access-app-read.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/apps" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Add Access application {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-app.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting the application removes the login wall: the hostname it protected
+      becomes reachable without Access.
+    tests:
+      - fixture: fixtures/access-app-zone-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-ca-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/ca" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Create a short-lived certificate CA for Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-ca-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-ca-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/ca" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete the short-lived certificate CA of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-ca-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-policy-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/policies" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Add an Access policy to application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-policy-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-policy-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/policies/{policy_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change Access policy {policy_id} of application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-policy-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-policy-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/policies/{policy_id}" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Delete Access policy {policy_id} of application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-policy-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-revoke-tokens
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/revoke_tokens" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Revoke all sessions of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-revoke-tokens.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-settings-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/settings" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change settings of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-settings-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-settings-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}/settings" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Change settings of Access application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-zone-settings-patch.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.zone-list
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/access/apps" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "List Access applications with their provisioning credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns scim_config.authentication with password, token and
+      client_secret fields for SCIM provisioning, not marked write-only; Opfence
+      assumes they are returned.
+    tests:
+      - fixture: fixtures/access-app-zone-list.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-app.zone-read
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/access/apps/{app_id}" } }
+    class: credential
+    resource: { arg: app_id, kind: access-application }
+    card: "Read Access application {app_id} with its provisioning credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns scim_config.authentication with password, token and
+      client_secret fields for SCIM provisioning, not marked write-only; Opfence
+      assumes they are returned.
+    tests:
+      - fixture: fixtures/access-app-zone-read.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.policy-make-reusable
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/apps/{app_id}/policies/{policy_id}/make_reusable" } }
+    class: access
+    resource: { arg: app_id, kind: access-application }
+    card: "Make Access policy {policy_id} reusable"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-app-policy-make-reusable.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.access-app.ca-list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/access/apps/ca" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List the short-lived SSH certificate authorities of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns only CA public keys. Listed so the credential rule for GET
+      /access/apps/{app_id} does not catch it.
+    tests:
+      - fixture: fixtures/access-app-ca-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-app.zone-ca-list
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/access/apps/ca" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "List the short-lived SSH certificate authorities of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns only CA public keys. Listed so the credential rule for GET
+      /access/apps/{app_id} does not catch it.
+    tests:
+      - fixture: fixtures/access-app-zone-ca-list.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

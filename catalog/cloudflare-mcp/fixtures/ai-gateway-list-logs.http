@@ -1,0 +1,8 @@
+# description: List logs of AI Gateway shop-gateway
+POST /mcp HTTP/1.1
+Host: ai-gateway.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":73,"method":"tools/call","params":{"name":"list_logs","arguments":{"gateway_id":"shop-gateway","per_page":20}}}

@@ -1,0 +1,82 @@
+# Fly.io Machines API: machine-metadata
+operations:
+  - id: flyio.machine-metadata.update
+    match: { rest: { method: PATCH, path: "/v1/apps/{app_name}/machines/{machine_id}/metadata" } }
+    class: write
+    when:
+      - if: { arg: body.metadata, present: true }
+        class: write
+      - if: { arg: body.metadata, present: true }
+        class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Set or remove metadata keys on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Null or empty values remove keys and the keys are arbitrary, so
+      any metadata map may remove some. Metadata are plain labels that
+      can be read back and set again, so removal is delete.
+    tests:
+      - fixture: fixtures/machine-metadata-update.http
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/machine-metadata-update.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.machine-metadata.update-deprecated
+    match: { rest: { method: PUT, path: "/v1/apps/{app_name}/machines/{machine_id}/metadata" } }
+    class: write
+    when:
+      - if: { arg: body.metadata, present: true }
+        class: write
+      - if: { arg: body.metadata, present: true }
+        class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Set or remove metadata keys on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Deprecated alias of the PATCH; same behaviour.
+    tests:
+      - fixture: fixtures/machine-metadata-update-deprecated.http
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/machine-metadata-update-deprecated.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.machine-metadata.upsert
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/metadata/{key}" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Set metadata {key} on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-metadata-upsert.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine-metadata.delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/machines/{machine_id}/metadata/{key}" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Remove metadata {key} from Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Metadata are plain, readable labels, so a removed key can be set
+      again; not a secret store.
+    tests:
+      - fixture: fixtures/machine-metadata-delete.http
+        expect: delete
+        resource: shop-api

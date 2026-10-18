@@ -1,0 +1,5 @@
+# description: Delete audio track ea95132c15732412d22c1476fa83f27b of video ea95132c15732412d22c1476fa83f27a
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/ea95132c15732412d22c1476fa83f27a/audio/ea95132c15732412d22c1476fa83f27b HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

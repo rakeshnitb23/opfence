@@ -1,0 +1,7 @@
+# description: Check whether a Logpush destination exists for zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/logpush/validate/destination/exists HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"destination_conf":"s3://shop-logs/http?region=us-east-1"}

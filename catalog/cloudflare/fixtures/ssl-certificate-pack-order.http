@@ -1,0 +1,7 @@
+# description: Order an Advanced Certificate Manager certificate pack for zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/ssl/certificate_packs/order HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"certificate_authority":"lets_encrypt","hosts":["shop-example.com","*.shop-example.com"],"type":"advanced","validation_method":"txt","validity_days":90}

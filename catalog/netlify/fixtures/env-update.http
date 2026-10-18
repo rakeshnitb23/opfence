@@ -1,0 +1,7 @@
+# description: Replace environment variable STRIPE_SECRET_KEY and all its values in team 5e8f9a0b1c2d3e4f5a6b7c8d
+PUT /api/v1/accounts/5e8f9a0b1c2d3e4f5a6b7c8d/env/STRIPE_SECRET_KEY?site_id=3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"key":"STRIPE_SECRET_KEY","scopes":["functions"],"values":[{"context":"all","value":"EXAMPLE"}]}

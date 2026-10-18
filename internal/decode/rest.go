@@ -2,6 +2,11 @@ package decode
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
+	"io"
+	"mime"
+	"mime/multipart"
 	"net/url"
 	"slices"
 	"strings"
@@ -65,6 +70,13 @@ func decodeRESTBody(r *request.Request, op *Operation) {
 			return
 		}
 		op.Args["body"] = valuesToMap(vals)
+	case ct == "multipart/form-data":
+		v, err := parseMultipart(r.Header.Get("Content-Type"), r.Body)
+		if err != nil {
+			op.BodyErr = "invalid multipart body: " + err.Error()
+			return
+		}
+		op.Args["body"] = v
 	default:
 		op.BodyErr = "the body is neither JSON nor a form"
 	}
@@ -86,4 +98,68 @@ func valuesToMap(v url.Values) map[string]any {
 		m[k] = list
 	}
 	return m
+}
+
+// maxParts caps the parts of a multipart body.
+const maxParts = 1000
+
+// parseMultipart reads a multipart/form-data body into args by part name:
+// a JSON part (Cloudflare's Worker upload metadata) is parsed, another part
+// without a filename is its text, and a file part is "" (present, not
+// read). A repeated name becomes a list.
+func parseMultipart(contentType string, body []byte) (map[string]any, error) {
+	_, params, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		return nil, err
+	}
+	if params["boundary"] == "" {
+		return nil, errors.New("no boundary")
+	}
+	mr := multipart.NewReader(bytes.NewReader(body), params["boundary"])
+	out, seen := map[string]any{}, map[string]int{}
+	for n := 0; ; n++ {
+		p, err := mr.NextRawPart()
+		if err == io.EOF {
+			return out, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		if n >= maxParts {
+			return nil, fmt.Errorf("more than %d parts", maxParts)
+		}
+		switch cte := strings.ToLower(strings.TrimSpace(p.Header.Get("Content-Transfer-Encoding"))); cte {
+		case "", "7bit", "8bit", "binary":
+		default:
+			// Servers differ on whether they decode it.
+			return nil, fmt.Errorf("part encoded with %s", cte)
+		}
+		data, err := io.ReadAll(p)
+		if err != nil {
+			return nil, err
+		}
+		name := p.FormName()
+		if name == "" {
+			continue
+		}
+		var v any = string(data)
+		pct, _, _ := mime.ParseMediaType(p.Header.Get("Content-Type"))
+		trimmed := bytes.TrimLeft(data, " \t\r\n")
+		switch {
+		case pct == "application/json" || strings.HasSuffix(pct, "+json") || (p.FileName() == "" && len(trimmed) > 0 && trimmed[0] == '{'):
+			if v, err = parseJSON(data); err != nil {
+				return nil, fmt.Errorf("part %q: %w", name, err)
+			}
+		case p.FileName() != "":
+			v = ""
+		}
+		switch seen[name]++; seen[name] {
+		case 1:
+			out[name] = v
+		case 2:
+			out[name] = []any{out[name], v}
+		default:
+			out[name] = append(out[name].([]any), v)
+		}
+	}
 }

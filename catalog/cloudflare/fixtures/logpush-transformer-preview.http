@@ -1,0 +1,7 @@
+# description: Preview a Logpush transformer in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/logpush/transformers/preview HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"input":{"ClientIP":"198.51.100.1","ClientRequestHost":"example.com","EdgeStartTimestamp":1722513600000000000,"RayID":"abcdef1234567890"},"sql":"SELECT ClientIP, RayID FROM http_requests"}

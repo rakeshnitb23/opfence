@@ -1,0 +1,237 @@
+# Render REST API: postgres
+operations:
+  - id: render.postgres.connection-info
+    match: { rest: { method: GET, path: "/v1/postgres/{postgresId}/connection-info" } }
+    class: credential
+    resource: { arg: postgresId, kind: postgres }
+    card: "Read the password and connection strings of Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns the password, connection strings and a psql command.
+    tests:
+      - fixture: fixtures/postgres-connection-info.http
+        expect: credential
+        resource: dpg-shopdb01
+
+  - id: render.postgres.create
+    match: { rest: { method: POST, path: /v1/postgres } }
+    class: write
+    when:
+      - if: { arg: body.plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.datadogAPIKey, present: true }
+        class: credential
+    resource: { arg: body.name, kind: postgres }
+    card: "Create Postgres {body.name} on plan {body.plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Any plan but free is billed (high availability, replicas and custom disk
+      sizes need a paid plan). ipAllowList decides who can connect from
+      outside Render.
+    tests:
+      - fixture: fixtures/postgres-create.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/postgres-create-paid.http
+        expect: money
+        resource: shop-db
+
+  - id: render.postgres.delete
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgresId}" } }
+    class: irreversible
+    resource: { arg: postgresId, kind: postgres }
+    card: "Delete Postgres {postgresId} and all its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The schema says this is irreversible and all data is lost.
+    tests:
+      - fixture: fixtures/postgres-delete.http
+        expect: irreversible
+        resource: dpg-shopdb01
+
+  - id: render.postgres.update
+    match: { rest: { method: PATCH, path: "/v1/postgres/{postgresId}" } }
+    class: write
+    when:
+      - if: { arg: body.plan, present: true }
+        class: money
+      - if: { arg: body.diskSizeGB, present: true }
+        class: money
+      - if: { arg: body.enableHighAvailability, equals: "true" }
+        class: money
+      - if: { arg: body.readReplicas, present: true }
+        class: money
+      - if: { arg: body.enableDiskAutoscaling, equals: "true" }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.datadogAPIKey, present: true }
+        class: credential
+    resource: { arg: postgresId, kind: postgres }
+    card: "Change Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Plan, disk size, high availability, read replicas and disk autoscaling
+      change the bill; ipAllowList decides who can connect from outside
+      Render; datadogAPIKey stores a secret.
+    tests:
+      - fixture: fixtures/postgres-update.http
+        expect: write
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-update-plan.http
+        expect: money
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-update-allowlist.http
+        expect: access
+        resource: dpg-shopdb01
+
+  - id: render.postgres.recover
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/recovery" } }
+    class: money
+    resource: { arg: postgresId, kind: postgres }
+    card: "Restore Postgres {postgresId} to {body.restoreTime} as a new database"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Point-in-time recovery creates a new billed database on the same or a
+      higher plan; the original is left as it is.
+    tests:
+      - fixture: fixtures/postgres-recover.http
+        expect: money
+        resource: dpg-shopdb01
+
+  - id: render.postgres.suspend
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/suspend" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Suspend Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-suspend.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.resume
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/resume" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Resume Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-resume.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.restart
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/restart" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Restart Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-restart.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.failover
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/failover" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Fail Postgres {postgresId} over to its standby"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-failover.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.promote
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/promote" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Promote read replica {postgresId} to a standalone primary"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-promote.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.setup-replication
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/replication" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Set up logical replication for {body.schemaName} on Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Creates a publication and optionally a replication slot.
+    tests:
+      - fixture: fixtures/postgres-setup-replication.http
+        expect: write
+        resource: dpg-shopdb01
+
+  - id: render.postgres.parameter-overrides
+    match: { rest: { method: PUT, path: "/v1/postgres/{postgresId}/parameter-overrides" } }
+    class: write
+    resource: { arg: postgresId, kind: postgres }
+    card: "Change the configuration parameters of Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/postgres-parameter-overrides.http
+        expect: write
+        resource: dpg-shopdb01

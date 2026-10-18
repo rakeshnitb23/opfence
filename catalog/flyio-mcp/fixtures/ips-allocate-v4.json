@@ -1,0 +1,8 @@
+{
+  "description": "Allocate an IPv4 address for app shop-api",
+  "tool": "fly-ips-allocate-v4",
+  "arguments": {
+    "app": "shop-api",
+    "region": "ams"
+  }
+}

@@ -1,0 +1,47 @@
+# Netlify REST API: builds
+operations:
+  - id: netlify.build.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/builds" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Start a build of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/deploy-site.ts
+    notes: >-
+      The official MCP server deploys by posting a zip of the project
+      here.
+    tests:
+      - fixture: fixtures/build-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.build.log
+    match: { rest: { method: POST, path: "/api/v1/builds/{build_id}/log" } }
+    class: write
+    resource: { arg: build_id, kind: build }
+    card: "Append to the log of Netlify build {build_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/build-log.http
+        expect: write
+        resource: 64f0c5d6e7a8b9c0d1e2f345
+
+  - id: netlify.build.start
+    match: { rest: { method: POST, path: "/api/v1/builds/{build_id}/start" } }
+    class: write
+    resource: { arg: build_id, kind: build }
+    card: "Mark Netlify build {build_id} as started"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/build-start.http
+        expect: write
+        resource: 64f0c5d6e7a8b9c0d1e2f345

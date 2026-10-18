@@ -1,0 +1,7 @@
+# description: Acknowledge or retry messages in queue 3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/queues/3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e/messages/ack HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"acks":[{"lease_id":"eyJhbGciOiJub25lIn0.example-lease"}],"retries":[]}

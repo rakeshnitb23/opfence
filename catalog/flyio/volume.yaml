@@ -1,0 +1,263 @@
+# Fly.io Machines and GraphQL APIs: volume
+operations:
+  - id: flyio.volume.create
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/volumes" } }
+    class: money
+    resource: { arg: app_name, kind: app }
+    card: "Create a {body.size_gb} GB volume {body.name} for app {app_name} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Volumes are billed per provisioned GB, from a snapshot or fork
+      too.
+    tests:
+      - fixture: fixtures/volume-create.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.volume.update
+    match: { rest: { method: PUT, path: "/v1/apps/{app_name}/volumes/{volume_id}" } }
+    class: write
+    when:
+      - if: { arg: body.auto_backup_enabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.snapshot_retention, present: true }
+        class: irreversible
+    resource: { arg: volume_id, kind: volume }
+    card: "Change the snapshot settings of volume {volume_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Turning off a safety net is as dangerous as what it protects:
+      without scheduled snapshots a later volume loss cannot be
+      restored, and a shorter retention can drop existing snapshots.
+      Opfence cannot compare the new retention with the current one, so
+      any retention change counts.
+    tests:
+      - fixture: fixtures/volume-update.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volume-update-disable-backups.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volume-update-retention.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.destroy
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/volumes/{volume_id}" } }
+    class: irreversible
+    resource: { arg: volume_id, kind: volume }
+    card: "Destroy volume {volume_id} of app {app_name} and all data on it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+      - https://github.com/superfly/flyctl/blob/master/internal/command/volumes/destroy.go
+    notes: >-
+      flyctl says destroying a volume permanently deletes all its data.
+      Scheduled snapshots (when enabled, kept 5 days by default) may let
+      Fly restore it, but they can be turned off and the request does
+      not show whether any exist, so the catalog assumes the worse case.
+    tests:
+      - fixture: fixtures/volume-destroy.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.extend
+    match: { rest: { method: PUT, path: "/v1/apps/{app_name}/volumes/{volume_id}/extend" } }
+    class: money
+    resource: { arg: volume_id, kind: volume }
+    card: "Grow volume {volume_id} of app {app_name} to {body.size_gb} GB"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Raises what the volume bills; volumes cannot shrink.
+    tests:
+      - fixture: fixtures/volume-extend.http
+        expect: money
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.snapshot-create
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/volumes/{volume_id}/snapshots" } }
+    class: write
+    resource: { arg: volume_id, kind: volume }
+    card: "Snapshot volume {volume_id} of app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Snapshot storage may be billed, but a snapshot is a safety copy,
+      like a Railway volume backup.
+    tests:
+      - fixture: fixtures/volume-snapshot-create.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.create-volume
+    match: { graphql: { type: mutation, field: createVolume } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Create a {input.sizeGb} GB volume {input.name} for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Volumes are billed per provisioned GB.
+    tests:
+      - fixture: fixtures/volume-create-volume.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.volume.delete-volume
+    match: { graphql: { type: mutation, field: deleteVolume } }
+    class: irreversible
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Delete volume {input.volumeId} and all data on it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+      - https://github.com/superfly/flyctl/blob/master/internal/command/volumes/destroy.go
+    notes: >-
+      flyctl says destroying a volume permanently deletes all its data;
+      snapshots may not exist, so the catalog assumes the worse case.
+    tests:
+      - fixture: fixtures/volume-delete-volume.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.extend-volume
+    match: { graphql: { type: mutation, field: extendVolume } }
+    class: money
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Grow volume {input.volumeId} to {input.sizeGb} GB"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Raises what the volume bills.
+    tests:
+      - fixture: fixtures/volume-extend-volume.http
+        expect: money
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.fork-volume
+    match: { graphql: { type: mutation, field: forkVolume } }
+    class: money
+    resource: { arg: input.sourceVolId, kind: volume }
+    card: "Fork volume {input.sourceVolId} into a new volume for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Creates a new billed volume; the source is unchanged.
+    tests:
+      - fixture: fixtures/volume-fork-volume.http
+        expect: money
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.update-volume
+    match: { graphql: { type: mutation, field: updateVolume } }
+    class: write
+    when:
+      - if: { arg: input.snapshotRetentionDays, present: true }
+        class: irreversible
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Change the snapshot retention of volume {input.volumeId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A shorter retention can drop existing snapshots; Opfence cannot
+      compare it with the current value, so any change counts.
+    tests:
+      - fixture: fixtures/volume-update-volume.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volume-update-volume-retention.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.migrate-volume
+    match: { graphql: { type: mutation, field: migrateVolume } }
+    class: write
+    when:
+      - if: { arg: input.useLatestSnapshot, equals: "true" }
+        class: irreversible
+    resource: { arg: input.targetVolumeId, kind: volume }
+    card: "Migrate volume {input.targetVolumeId} to another host"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      With useLatestSnapshot the new volume starts from the last
+      snapshot instead of a fresh one, so writes made since that
+      snapshot can be lost.
+    tests:
+      - fixture: fixtures/volume-migrate-volume.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volume-migrate-volume-latest-snapshot.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.register-volume
+    match: { graphql: { type: mutation, field: registerVolume } }
+    class: write
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Register volume {input.volumeId} with the platform"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Platform bookkeeping for an existing volume.
+    tests:
+      - fixture: fixtures/volume-register-volume.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.create-volume-snapshot
+    match: { graphql: { type: mutation, field: createVolumeSnapshot } }
+    class: write
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Snapshot volume {input.volumeId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/volume-create-volume-snapshot.http
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+
+  - id: flyio.volume.restore-volume-snapshot
+    match: { graphql: { type: mutation, field: restoreVolumeSnapshot } }
+    class: irreversible
+    resource: { arg: input.volumeId, kind: volume }
+    card: "Restore snapshot {input.snapshotId} onto volume {input.volumeId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Restores into an existing volume, so data written since the
+      snapshot is overwritten (the same class as a Railway backup
+      restore).
+    tests:
+      - fixture: fixtures/volume-restore-volume-snapshot.http
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v

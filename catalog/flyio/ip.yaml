@@ -1,0 +1,170 @@
+# Fly.io Machines and GraphQL APIs: ip
+operations:
+  - id: flyio.ip.assign
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/ip_assignments" } }
+    class: access
+    when:
+      - if: { arg: body.type, in: [v4, egress_v4, egress_v6, egress_pair] }
+        class: money
+      - if: { arg: body.type, in: [v4, v6, shared_v4, private_v6] }
+        class: access
+    resource: { arg: app_name, kind: app }
+    card: "Assign a {body.type} IP address to app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Dedicated IPv4 addresses and static egress addresses are billed
+      monthly, so they are money; every inbound address (v4, v6,
+      shared_v4) exposes the app's services to the internet, so it is
+      access, and a dedicated IPv4 is both. A private Flycast address
+      (private_v6) opens the app to the whole organization network, so
+      it stays access. A missing or unrecognised type falls back to
+      access.
+    tests:
+      - fixture: fixtures/ip-assign-shared-v4.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ip-assign-v4.http
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ip-assign-v4.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ip-assign-egress-pair.http
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ip-assign-private-v6.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ip-assign-no-type.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.ip.release
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/ip_assignments/{ip}" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Release IP address {ip} from app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      The app can get a new address, but not the same one back, so DNS
+      records pointing at it must be updated.
+    tests:
+      - fixture: fixtures/ip-release.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.ip.allocate-ip-address
+    match: { graphql: { type: mutation, field: allocateIpAddress } }
+    class: access
+    when:
+      - if: { arg: input.type, in: [v4] }
+        class: money
+      - if: { arg: input.type, in: [v4, v6, shared_v4, private_v6] }
+        class: access
+    resource: { arg: input.appId, kind: app }
+    card: "Allocate a {input.type} IP address for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A dedicated IPv4 is billed monthly (money) and every public
+      address exposes the app (access); a dedicated IPv4 is both.
+      private_v6 (Flycast) opens the app to the organization network and
+      stays access.
+    tests:
+      - fixture: fixtures/ip-allocate-ip-address.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ip-allocate-ip-address-v4.http
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ip-allocate-ip-address-v4.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ip-allocate-ip-address-v6.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.ip.release-ip-address
+    match: { graphql: { type: mutation, field: releaseIpAddress } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Release IP address {input.ip} from app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A new address can be allocated, not the same one; DNS must follow.
+    tests:
+      - fixture: fixtures/ip-release-ip-address.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.ip.allocate-egress-ip-address
+    match: { graphql: { type: mutation, field: allocateEgressIpAddress } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Allocate static egress IPs for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Static egress addresses are billed.
+    tests:
+      - fixture: fixtures/ip-allocate-egress-ip-address.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.ip.release-egress-ip-address
+    match: { graphql: { type: mutation, field: releaseEgressIpAddress } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Release static egress IP {input.ip} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/ip-release-egress-ip-address.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.ip.allocate-managed-service-ip-address
+    match: { graphql: { type: mutation, field: allocateManagedServiceIpAddress } }
+    class: access
+    resource: { arg: input.appId, kind: app }
+    card: "Allocate an IP for service {input.serviceName} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      The schema does not say whether the address is public, so it is
+      treated as exposing the service.
+    tests:
+      - fixture: fixtures/ip-allocate-managed-service-ip-address.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.ip.release-managed-service-ip-address
+    match: { graphql: { type: mutation, field: releaseManagedServiceIpAddress } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Release IP {input.ipAddressId} of service {input.serviceName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/ip-release-managed-service-ip-address.http
+        expect: delete
+        resource: shop-api

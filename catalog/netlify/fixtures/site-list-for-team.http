@@ -1,0 +1,5 @@
+# description: List sites of team acme-web with their settings and secrets
+GET /api/v1/acme-web/sites HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

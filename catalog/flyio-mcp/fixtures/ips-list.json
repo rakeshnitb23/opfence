@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-ips-list",
+  "tool": "fly-ips-list",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

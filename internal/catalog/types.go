@@ -61,6 +61,9 @@ type Defaults struct {
 	GraphQLQuery    classes.Class `yaml:"graphql_query"`     // class for any GraphQL query
 	RESTSafeMethods classes.Class `yaml:"rest_safe_methods"` // class for GET, HEAD and OPTIONS
 	AWSReadActions  classes.Class `yaml:"aws_read_actions"`  // class for Describe*, Get*, List*, Head*, BatchGet*, Scan, Query
+	// GraphQLSecretFields names fields that hold secrets wherever they
+	// appear; an operation that selects one at any depth is also credential.
+	GraphQLSecretFields []string `yaml:"graphql_secret_fields"`
 }
 
 // MCPInfo identifies an MCP server.
@@ -267,6 +270,9 @@ func (r *Rule) PossibleClasses() []classes.Class {
 		for _, c := range []classes.Class{classes.Read, classes.Write, classes.Delete, classes.Irreversible, classes.Access, classes.Unknown} {
 			add(c)
 		}
+	}
+	if r.Match.GraphQL != nil && r.Provider != nil && len(r.Provider.Defaults.GraphQLSecretFields) > 0 {
+		add(classes.Credential) // the selection set can reach a secret field
 	}
 	return out
 }

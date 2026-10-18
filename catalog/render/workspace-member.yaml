@@ -1,0 +1,31 @@
+# Render REST API: workspace-member
+operations:
+  - id: render.workspace-member.remove
+    match: { rest: { method: DELETE, path: "/v1/owners/{ownerId}/members/{userId}" } }
+    class: access
+    resource: { arg: ownerId, kind: workspace }
+    card: "Remove {userId} from workspace {ownerId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/workspace-member-remove.http
+        expect: access
+        resource: tea-acme01
+
+  - id: render.workspace-member.update
+    match: { rest: { method: PATCH, path: "/v1/owners/{ownerId}/members/{userId}" } }
+    class: access
+    resource: { arg: ownerId, kind: workspace }
+    card: "Change the role of {userId} in workspace {ownerId} to {body.role}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/workspace-member-update.http
+        expect: access
+        resource: tea-acme01

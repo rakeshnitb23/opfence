@@ -1,0 +1,8 @@
+# description: Show the network path of DEX test result 9a8b7c6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":149,"method":"tools/call","params":{"name":"dex_traceroute_test_result_network_path","arguments":{"testResultId":"9a8b7c6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d"}}}

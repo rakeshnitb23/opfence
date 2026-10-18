@@ -1,0 +1,7 @@
+# description: Transfer domain shop-example.com to Cloudflare Registrar
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/registrar/registrations/shop-example.com/transfer-in HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"auth_code":"bml4b3M+Pj5hcmNoLWxpbnV4","auto_renew":false,"contact_extensions":{"application_purpose":"P3","nexus_category":"C11"},"privacy_mode":"redaction"}

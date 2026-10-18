@@ -1,0 +1,7 @@
+# description: Change settings of team 5e8f9a0b1c2d3e4f5a6b7c8d
+PUT /api/v1/accounts/5e8f9a0b1c2d3e4f5a6b7c8d HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"type_id":"business"}

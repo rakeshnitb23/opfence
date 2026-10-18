@@ -1,0 +1,8 @@
+{
+  "description": "Call fly-logs",
+  "tool": "fly-logs",
+  "arguments": {
+    "app": "shop-api",
+    "region": "ams"
+  }
+}

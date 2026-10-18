@@ -1,0 +1,16 @@
+# description: Upload en captions for video ea95132c15732412d22c1476fa83f27a
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/ea95132c15732412d22c1476fa83f27a/captions/en HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="captions.vtt"
+Content-Type: text/vtt
+
+WEBVTT
+
+00:00.000 --> 00:02.000
+Hello
+------opfence7MA4YWxkTrZu0gW--

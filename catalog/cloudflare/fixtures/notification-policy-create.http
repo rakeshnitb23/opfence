@@ -1,0 +1,7 @@
+# description: Create notification policy Origin errors
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/alerting/v3/policies HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Origin errors","alert_type":"universal_ssl_event_type","enabled":true,"mechanisms":{"email":[{"id":"ops@shop-example.com"}]}}

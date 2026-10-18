@@ -1,0 +1,99 @@
+# Cloudflare MCP servers: container
+operations:
+  - id: cloudflare-mcp.container.container-initialize
+    match: { mcp: { tool: container_initialize } }
+    class: delete
+    card: "Start (or restart) the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    notes: >-
+      Restarting kills the current sandbox and loses every file in it. The
+      container is a short-lived sandbox the server starts for this session, not
+      a resource in the user's account.
+    tests:
+      - fixture: fixtures/container-container-initialize.http
+        expect: delete
+
+  - id: cloudflare-mcp.container.container-ping
+    match: { mcp: { tool: container_ping } }
+    class: read
+    card: "Ping the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    tests:
+      - fixture: fixtures/container-container-ping.http
+        expect: read
+
+  - id: cloudflare-mcp.container.container-exec
+    match: { mcp: { tool: container_exec } }
+    class: irreversible
+    card: "Run a shell command in the sandbox container: {args.args}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    notes: >-
+      Runs any shell command, with network access; arbitrary commands are
+      irreversible (ARCHITECTURE 4.5). The container is a short-lived sandbox
+      the server starts for this session, not a resource in the user's account.
+    tests:
+      - fixture: fixtures/container-container-exec.http
+        expect: irreversible
+
+  - id: cloudflare-mcp.container.container-file-delete
+    match: { mcp: { tool: container_file_delete } }
+    class: delete
+    card: "Delete {args.path} in the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    notes: >-
+      The container is a short-lived sandbox the server starts for this session,
+      not a resource in the user's account.
+    tests:
+      - fixture: fixtures/container-container-file-delete.http
+        expect: delete
+
+  - id: cloudflare-mcp.container.container-file-write
+    match: { mcp: { tool: container_file_write } }
+    class: write
+    card: "Write {args.path} in the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    notes: >-
+      The container is a short-lived sandbox the server starts for this session,
+      not a resource in the user's account.
+    tests:
+      - fixture: fixtures/container-container-file-write.http
+        expect: write
+
+  - id: cloudflare-mcp.container.container-files-list
+    match: { mcp: { tool: container_files_list } }
+    class: read
+    card: "List files in the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    tests:
+      - fixture: fixtures/container-container-files-list.http
+        expect: read
+
+  - id: cloudflare-mcp.container.container-file-read
+    match: { mcp: { tool: container_file_read } }
+    class: read
+    card: "Read {args.path} in the sandbox container"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/sandbox-container/server/container-tools.ts
+    tests:
+      - fixture: fixtures/container-container-file-read.http
+        expect: read

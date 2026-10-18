@@ -1,0 +1,8 @@
+# description: Enable Sippy migration into R2 bucket shop-assets
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2/buckets/shop-assets/sippy HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"source":{"provider":"aws","bucket":"legacy-assets","region":"us-east-1","accessKeyId":"opf_cloudflare_EXAMPLE","secretAccessKey":"opf_cloudflare_EXAMPLE"},"destination":{"provider":"r2","accessKeyId":"opf_cloudflare_EXAMPLE","secretAccessKey":"opf_cloudflare_EXAMPLE"}}

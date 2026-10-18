@@ -1,0 +1,125 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): load-balancer
+operations:
+  - id: cloudflare.load-balancer.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/load_balancers" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Create load balancer {body.name} (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Load balancing is billed by load balancer and origin count, so creating
+      one adds to the bill.
+    tests:
+      - fixture: fixtures/load-balancer-zone-create.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.load-balancer.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/load_balancers/{load_balancer_id}" } }
+    class: write
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Replace load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/load-balancer-zone-update.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7252"
+
+  - id: cloudflare.load-balancer.zone-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/load_balancers/{load_balancer_id}" } }
+    class: write
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Change load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/load-balancer-zone-patch.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7252"
+
+  - id: cloudflare.load-balancer.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/load_balancers/{load_balancer_id}" } }
+    class: delete
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Delete load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Configuration only; the pools and origins remain and the load balancer can
+      be recreated.
+    tests:
+      - fixture: fixtures/load-balancer-zone-delete.http
+        expect: delete
+        resource: "699d98642c564d2e855e9661899b7252"
+
+  - id: cloudflare.load-balancer.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Create load balancer {body.name} (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Load balancing is billed by load balancer and origin count, so creating
+      one adds to the bill.
+    tests:
+      - fixture: fixtures/load-balancer-account-create.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.load-balancer.account-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/load_balancers/{load_balancer_id}" } }
+    class: write
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Replace load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/load-balancer-account-update.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7252"
+
+  - id: cloudflare.load-balancer.account-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/load_balancers/{load_balancer_id}" } }
+    class: write
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Change load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/load-balancer-account-patch.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7252"
+
+  - id: cloudflare.load-balancer.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/load_balancers/{load_balancer_id}" } }
+    class: delete
+    resource: { arg: load_balancer_id, kind: load-balancer }
+    card: "Delete load balancer {load_balancer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Configuration only; the pools and origins remain and the load balancer can
+      be recreated.
+    tests:
+      - fixture: fixtures/load-balancer-account-delete.http
+        expect: delete
+        resource: "699d98642c564d2e855e9661899b7252"

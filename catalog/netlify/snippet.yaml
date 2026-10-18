@@ -1,0 +1,48 @@
+# Netlify REST API: snippet injection
+operations:
+  - id: netlify.snippet.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/snippets" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Inject snippet {body.title} into every page of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Snippets are HTML or scripts inserted into every page the site
+      serves.
+    tests:
+      - fixture: fixtures/snippet-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.snippet.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/snippets/{snippet_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change snippet {snippet_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/snippet-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.snippet.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/snippets/{snippet_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete snippet {snippet_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The snippet's code is stored only by Netlify.
+    tests:
+      - fixture: fixtures/snippet-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

@@ -1,0 +1,5 @@
+# description: Remove PagerDuty destinations of account 023e105f4ecef8ad9ca31a8372d0c353
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/alerting/v3/destinations/pagerduty HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

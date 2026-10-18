@@ -1,0 +1,17 @@
+# Netlify REST API: form submissions
+operations:
+  - id: netlify.submission.delete
+    match: { rest: { method: DELETE, path: "/api/v1/submissions/{submission_id}" } }
+    class: irreversible
+    resource: { arg: submission_id, kind: submission }
+    card: "Permanently delete form submission {submission_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Netlify keeps no copy of a deleted submission.
+    tests:
+      - fixture: fixtures/submission-delete.http
+        expect: irreversible
+        resource: 64f0c2d3e4a5b6c7d8e9f012

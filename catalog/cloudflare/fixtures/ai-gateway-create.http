@@ -1,0 +1,7 @@
+# description: Create AI gateway shop-gateway
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/gateways HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"id":"shop-gateway","cache_ttl":0,"collect_logs":true,"rate_limiting_interval":0,"rate_limiting_limit":0}

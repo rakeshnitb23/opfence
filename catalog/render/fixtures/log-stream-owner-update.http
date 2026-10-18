@@ -1,0 +1,7 @@
+# description: Send every log of workspace tea-acme01 to logs.example.com:6514
+PUT /v1/logs/streams/owner/tea-acme01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"endpoint":"logs.example.com:6514","preview":"send"}

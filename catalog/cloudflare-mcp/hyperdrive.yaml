@@ -1,0 +1,69 @@
+# Cloudflare MCP servers: hyperdrive
+operations:
+  - id: cloudflare-mcp.hyperdrive.hyperdrive-configs-list
+    match: { mcp: { tool: hyperdrive_configs_list } }
+    class: read
+    card: "List Hyperdrive configurations"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/hyperdrive.tools.ts
+    tests:
+      - fixture: fixtures/hyperdrive-hyperdrive-configs-list.http
+        expect: read
+
+  - id: cloudflare-mcp.hyperdrive.hyperdrive-config-get
+    match: { mcp: { tool: hyperdrive_config_get } }
+    class: read
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Show Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/hyperdrive.tools.ts
+    notes: >-
+      The API never returns the stored origin password.
+    tests:
+      - fixture: fixtures/hyperdrive-hyperdrive-config-get.http
+        expect: read
+        resource: "7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b"
+
+  - id: cloudflare-mcp.hyperdrive.hyperdrive-config-edit
+    match: { mcp: { tool: hyperdrive_config_edit } }
+    class: write
+    when:
+      - if: { arg: host, present: true }
+        class: credential
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Change Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/hyperdrive.tools.ts
+    notes: >-
+      Changing the host sends the stored database password to a new server, so
+      it is credential. Caching changes are a write.
+    tests:
+      - fixture: fixtures/hyperdrive-hyperdrive-config-edit.http
+        expect: write
+        resource: "7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b"
+      - fixture: fixtures/hyperdrive-hyperdrive-config-edit-host.http
+        expect: credential
+        resource: "7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b"
+
+  - id: cloudflare-mcp.hyperdrive.hyperdrive-config-delete
+    match: { mcp: { tool: hyperdrive_config_delete } }
+    class: irreversible
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Delete Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/hyperdrive.tools.ts
+    notes: >-
+      The stored database password goes with it and cannot be read back (same as
+      cloudflare.hyperdrive.delete).
+    tests:
+      - fixture: fixtures/hyperdrive-hyperdrive-config-delete.http
+        expect: irreversible
+        resource: "7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b"

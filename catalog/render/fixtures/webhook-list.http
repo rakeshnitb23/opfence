@@ -1,0 +1,5 @@
+# description: List webhooks with their signing secrets
+GET /v1/webhooks HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

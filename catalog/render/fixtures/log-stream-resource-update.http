@@ -1,0 +1,7 @@
+# description: Change where resource srv-shopweb01 sends its logs
+PUT /v1/logs/streams/resource/srv-shopweb01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"setting":"send","endpoint":"logs.example.com:6514"}

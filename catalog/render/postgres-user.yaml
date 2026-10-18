@@ -1,0 +1,38 @@
+# Render REST API: postgres-user
+operations:
+  - id: render.postgres-user.create
+    match: { rest: { method: POST, path: "/v1/postgres/{postgresId}/credentials" } }
+    class: credential
+    resource: { arg: postgresId, kind: postgres }
+    card: "Create database user {body.username} on Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/postgres/postgres_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Creates a user with a new password, which becomes the database's default
+      credential.
+    tests:
+      - fixture: fixtures/postgres-user-create.http
+        expect: credential
+        resource: dpg-shopdb01
+
+  - id: render.postgres-user.delete
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgresId}/credentials/{username}" } }
+    class: access
+    resource: { arg: postgresId, kind: postgres }
+    card: "Delete database user {username} from Postgres {postgresId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Anything connecting as that user loses access.
+    tests:
+      - fixture: fixtures/postgres-user-delete.http
+        expect: access
+        resource: dpg-shopdb01

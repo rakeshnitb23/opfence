@@ -1,0 +1,40 @@
+# Netlify MCP server: user
+operations:
+  - id: netlify-mcp.user.reader
+    match: { mcp: { tool: netlify-user-services-reader } }
+    class: read
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-user" }
+        class: read
+    card: "Run Netlify user operation {selectSchema.operation}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/user-tools/get-user.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have.
+    tests:
+      - fixture: fixtures/user-reader.http
+        expect: read
+
+  - id: netlify-mcp.user.get
+    match: { mcp: { tool: netlify-user-get-user } }
+    class: read
+    card: "Read the signed-in Netlify user"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/user-tools/get-user.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/user-get.http
+        expect: read

@@ -1,0 +1,39 @@
+# Render REST API: object
+operations:
+  - id: render.object.put
+    match: { rest: { method: PUT, path: "/v1/objects/{ownerId}/{region}/{key*}" } }
+    class: write
+    resource: { arg: ownerId, kind: workspace }
+    card: "Get an upload URL for object {key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/storage/storage_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns a presigned upload URL; uploading replaces any object at the
+      key, as S3 PutObject does. The key may contain slashes, so the rule
+      takes the rest of the path.
+    tests:
+      - fixture: fixtures/object-put.http
+        expect: write
+        resource: tea-acme01
+
+  - id: render.object.delete
+    match: { rest: { method: DELETE, path: "/v1/objects/{ownerId}/{region}/{key*}" } }
+    class: irreversible
+    resource: { arg: ownerId, kind: workspace }
+    card: "Delete object {key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/storage/storage_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The schema calls deletion irreversible.
+    tests:
+      - fixture: fixtures/object-delete.http
+        expect: irreversible
+        resource: tea-acme01

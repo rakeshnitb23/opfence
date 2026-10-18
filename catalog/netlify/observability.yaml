@@ -1,0 +1,19 @@
+# Netlify REST API: observability
+operations:
+  - id: netlify.observability.query
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/observability/query/{query}" } }
+    class: read
+    resource: { arg: site_id, kind: site }
+    card: "Query {query} of the edge traffic of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/api-client.ts
+    notes: >-
+      Not in the OpenAPI file. The official MCP server sends read-only
+      traffic queries (counts, topk, timeseries, lists) as POST bodies
+      here.
+    tests:
+      - fixture: fixtures/observability-query.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

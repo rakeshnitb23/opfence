@@ -1,0 +1,8 @@
+{
+  "description": "Destroy volume vol_4r8kz2q7m1xd9p6v of app shop-api and all data on it",
+  "tool": "fly-volumes-destroy",
+  "arguments": {
+    "app": "shop-api",
+    "id": "vol_4r8kz2q7m1xd9p6v"
+  }
+}

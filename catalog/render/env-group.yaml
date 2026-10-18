@@ -1,0 +1,114 @@
+# Render REST API: env-group
+operations:
+  - id: render.env-group.read
+    match: { rest: { method: GET, path: "/v1/env-groups/{envGroupId}" } }
+    class: credential
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Read env group {envGroupId} with its variable values and secret files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The response includes every variable's value and every secret file's
+      content; listing groups (GET /env-groups) returns only metadata and
+      stays a read.
+    tests:
+      - fixture: fixtures/env-group-read.http
+        expect: credential
+        resource: evg-shared01
+
+  - id: render.env-group.create
+    match: { rest: { method: POST, path: /v1/env-groups } }
+    class: write
+    when:
+      - if: { arg: body.secretFiles, present: true }
+        class: credential
+      - if: { arg: body.serviceIds, present: true }
+        class: access
+    resource: { arg: body.name, kind: env-group }
+    card: "Create env group {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Secret files are secrets (credential); serviceIds links services, which
+      then read the group's values (access).
+    tests:
+      - fixture: fixtures/env-group-create.http
+        expect: write
+        resource: shared
+      - fixture: fixtures/env-group-create-secret-files.http
+        expect: credential
+        resource: shared
+      - fixture: fixtures/env-group-create-link.http
+        expect: access
+        resource: shared
+
+  - id: render.env-group.delete
+    match: { rest: { method: DELETE, path: "/v1/env-groups/{envGroupId}" } }
+    class: irreversible
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Delete env group {envGroupId} with all its variables and secret files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      No API returns the deleted values.
+    tests:
+      - fixture: fixtures/env-group-delete.http
+        expect: irreversible
+        resource: evg-shared01
+
+  - id: render.env-group.update
+    match: { rest: { method: PATCH, path: "/v1/env-groups/{envGroupId}" } }
+    class: write
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Rename env group {envGroupId} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/env-group-update.http
+        expect: write
+        resource: evg-shared01
+
+  - id: render.env-group.link-service
+    match: { rest: { method: POST, path: "/v1/env-groups/{envGroupId}/services/{serviceId}" } }
+    class: access
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Give service {serviceId} the variables and secret files of env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/env-group-link-service.http
+        expect: access
+        resource: evg-shared01
+
+  - id: render.env-group.unlink-service
+    match: { rest: { method: DELETE, path: "/v1/env-groups/{envGroupId}/services/{serviceId}" } }
+    class: write
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Unlink service {serviceId} from env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The service loses the group's values on its next deploy; linking again
+      restores them.
+    tests:
+      - fixture: fixtures/env-group-unlink-service.http
+        expect: write
+        resource: evg-shared01

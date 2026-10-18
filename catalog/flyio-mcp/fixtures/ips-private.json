@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-ips-private",
+  "tool": "fly-ips-private",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

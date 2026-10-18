@@ -1,0 +1,123 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): pages-deployment
+operations:
+  - id: cloudflare.pages-deployment.list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments" } }
+    class: credential
+    resource: { arg: project_name, kind: pages-project }
+    card: "List deployments of Pages project {project_name} with their environment variables"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists a value for secret_text environment variables in
+      deployment configs. Opfence cannot see whether Cloudflare redacts them, so
+      reading a project or deployment is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/pages-deployment-list.http
+        expect: credential
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}" } }
+    class: credential
+    resource: { arg: project_name, kind: pages-project }
+    card: "Read deployment {deployment_id} of Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists a value for secret_text environment variables in
+      deployment configs. Opfence cannot see whether Cloudflare redacts them, so
+      reading a project or deployment is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/pages-deployment-read.http
+        expect: credential
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Create a deployment of Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-deployment-create.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}" } }
+    class: delete
+    resource: { arg: project_name, kind: pages-project }
+    card: "Delete deployment {deployment_id} of Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A deployment can be rebuilt from its commit.
+    tests:
+      - fixture: fixtures/pages-deployment-delete.http
+        expect: delete
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.retry
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}/retry" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Retry deployment {deployment_id} of {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-deployment-retry.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.rollback
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}/rollback" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Roll Pages project {project_name} back to deployment {deployment_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-deployment-rollback.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.tail-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}/tails" } }
+    class: read
+    resource: { arg: project_name, kind: pages-project }
+    card: "Start a log tail of deployment {deployment_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-deployment-tail-create.http
+        expect: read
+        resource: "shop-web"
+
+  - id: cloudflare.pages-deployment.tail-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/deployments/{deployment_id}/tails/{tail_id}" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Stop log tail {tail_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-deployment-tail-delete.http
+        expect: write
+        resource: "shop-web"

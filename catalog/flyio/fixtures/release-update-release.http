@@ -1,0 +1,7 @@
+# description: Update a release status
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateRelease($input: UpdateReleaseInput!) { updateRelease(input: $input) { __typename } }","variables":{"input":{"releaseId":"rel_2k9x","status":"complete"}}}

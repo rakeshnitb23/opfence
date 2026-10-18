@@ -1,0 +1,7 @@
+{
+  "description": "Create organization acme-staging",
+  "tool": "fly-orgs-create",
+  "arguments": {
+    "name": "acme-staging"
+  }
+}

@@ -1,0 +1,7 @@
+# description: Create a load balancer monitor (user)
+POST /client/v4/user/load_balancers/monitors HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"type":"https","path":"/healthz","expected_codes":"200"}

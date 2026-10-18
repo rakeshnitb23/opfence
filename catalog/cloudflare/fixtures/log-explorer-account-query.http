@@ -1,0 +1,7 @@
+# description: Run a Log Explorer query (account)
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/logs/explorer/query/sql HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: text/plain
+
+{"query":"SELECT ClientIP, count(*) FROM http_requests GROUP BY ClientIP LIMIT 10"}

@@ -1,0 +1,7 @@
+# description: Send event payment-received to workflow instance 3c4b2a1d-7e6f-4a5b-9c8d-1e2f3a4b5c6d
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workflows/order-fulfilment/instances/3c4b2a1d-7e6f-4a5b-9c8d-1e2f3a4b5c6d/events/payment-received HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"amount":42}

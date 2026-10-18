@@ -1,0 +1,8 @@
+# description: Create D1 database shop-orders
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":24,"method":"tools/call","params":{"name":"d1_database_create","arguments":{"name":"shop-orders","primary_location_hint":"weur"}}}

@@ -1,0 +1,85 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): zone-subscription
+operations:
+  - id: cloudflare.zone-subscription.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/subscription" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a paid plan subscription for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-create.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-subscription.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/subscription" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the plan subscription of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-update.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-subscription.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/subscription" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Cancel the plan subscription of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-delete.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-subscription.create-v2
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/subscriptions" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a paid plan subscription for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-create-v2.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-subscription.update-v2
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/subscriptions" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the plan subscription of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-update-v2.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-subscription.delete-v2
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/subscriptions" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Cancel the plan subscription of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-subscription-delete-v2.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"

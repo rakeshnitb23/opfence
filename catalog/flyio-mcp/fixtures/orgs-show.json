@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-orgs-show",
+  "tool": "fly-orgs-show",
+  "arguments": {
+    "slug": "acme"
+  }
+}

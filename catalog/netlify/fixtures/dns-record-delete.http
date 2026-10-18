@@ -1,0 +1,5 @@
+# description: Delete record 64f0c7d8e9a0b1c2d3e4f567 from DNS zone 64f0c6d7e8a9b0c1d2e3f456
+DELETE /api/v1/dns_zones/64f0c6d7e8a9b0c1d2e3f456/dns_records/64f0c7d8e9a0b1c2d3e4f567 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

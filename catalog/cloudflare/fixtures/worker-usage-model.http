@@ -1,0 +1,7 @@
+# description: Change the usage (billing) model of Worker shop-api
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/scripts/shop-api/usage-model HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"usage_model":"standard"}

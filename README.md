@@ -8,7 +8,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 
 ## What it is
 
-- **Catalog:** versioned YAML rules per provider (Railway, Vercel, GitHub, AWS, Neon, PlanetScale, MongoDB Atlas, Turso and more) and per MCP server. Each operation gets a risk class: `read`, `write`, `delete`, `irreversible`, `money`, `credential` or `access`. Every verified rule has a recorded request that proves it matches.
+- **Catalog:** versioned YAML rules per provider (Railway, Vercel, GitHub, AWS, Cloudflare, Fly.io, Render, Netlify, Neon, PlanetScale, MongoDB Atlas, Turso and more) and per MCP server. Each operation gets a risk class: `read`, `write`, `delete`, `irreversible`, `money`, `credential` or `access`. Every verified rule has a recorded request that proves it matches.
 - **Compiler:** `opfence export` turns the catalog into policy for NVIDIA OpenShell, Claude Code (permission rules and a PreToolUse hook) and MCP annotation overlays.
 - **Runner:** `opfence run -- claude` starts a local proxy that holds your keys, enforces the catalog and asks before anything destructive. The approval card is written from the decoded request, never by the agent.
 
@@ -27,7 +27,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 
 ## Catalog
 
-1,360 tested rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Neon, PlanetScale, MongoDB Atlas and Turso, and the MCP servers of Supabase, Neon, PlanetScale, MongoDB and Turso, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
+3,145 tested rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Cloudflare, Fly.io, Render, Netlify, Neon, PlanetScale, MongoDB Atlas and Turso, and the MCP servers of Supabase, Cloudflare, Fly.io, Render, Netlify, Neon, PlanetScale, MongoDB and Turso, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
 
 ## Use with Claude Code
 

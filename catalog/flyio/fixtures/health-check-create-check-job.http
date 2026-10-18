@@ -1,0 +1,7 @@
+# description: Create a check job
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateCheckJob($input: CreateCheckJobInput!) { createCheckJob(input: $input) { __typename } }","variables":{"input":{"organizationId":"NOx4Zp9QkV2","url":"https://shop.example.com/health","locations":["ams"],"httpOptions":{"verb":"get"}}}}

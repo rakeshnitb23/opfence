@@ -1,0 +1,43 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): account-member
+operations:
+  - id: cloudflare.account-member.add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/members" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Invite {body.email} to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-member-add.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account-member.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/members/{member_id}" } }
+    class: access
+    resource: { arg: member_id, kind: member }
+    card: "Change the roles of member {member_id} in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-member-update.http
+        expect: access
+        resource: "4536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.account-member.remove
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/members/{member_id}" } }
+    class: access
+    resource: { arg: member_id, kind: member }
+    card: "Remove member {member_id} from account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-member-remove.http
+        expect: access
+        resource: "4536bcfad5faccb111b47003c79917fa"

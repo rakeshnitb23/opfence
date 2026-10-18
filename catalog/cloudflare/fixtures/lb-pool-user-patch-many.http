@@ -1,0 +1,7 @@
+# description: Change notification email of all pools (user)
+PATCH /client/v4/user/load_balancers/pools HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"notification_email":"ops@shop-example.com"}

@@ -1,0 +1,5 @@
+# description: Delete Netlify deploy key 64f0cad1e2a3b4c5d6e7f890
+DELETE /api/v1/deploy_keys/64f0cad1e2a3b4c5d6e7f890 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

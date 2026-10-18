@@ -1,0 +1,117 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-mcp
+operations:
+  - id: cloudflare.access-mcp.portal-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/portals" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create MCP portal {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-portal-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.portal-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/portals/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change MCP portal {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-portal-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.portal-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/portals/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete MCP portal {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-portal-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.server-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/servers" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add MCP server {body.name} to Access"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-server-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.server-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/servers/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Access MCP server {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-server-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.server-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/servers/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Access MCP server {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-mcp-server-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-mcp.server-sync
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/ai-controls/mcp/servers/{id}/sync" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Sync the capabilities of Access MCP server {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-mcp-server-sync.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

@@ -1,0 +1,137 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-certificate
+operations:
+  - id: cloudflare.access-certificate.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/certificates" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add an mTLS root certificate to Access"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-certificate.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Access mTLS certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-certificate.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Access mTLS certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-certificate.settings
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/certificates/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Access mTLS hostname settings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-certificate.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/certificates" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Add an mTLS root certificate to Access"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-zone-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-certificate.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Access mTLS certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-zone-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-certificate.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete Access mTLS certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-zone-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-certificate.zone-settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/certificates/settings" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Access mTLS hostname settings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-certificate-zone-settings.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"

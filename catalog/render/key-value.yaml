@@ -1,0 +1,126 @@
+# Render REST API: key-value
+operations:
+  - id: render.key-value.connection-info
+    match: { rest: { method: GET, path: "/v1/key-value/{redisId}/connection-info" } }
+    class: credential
+    resource: { arg: redisId, kind: key-value }
+    card: "Read the connection strings of key-value {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The connection strings carry the instance's password.
+    tests:
+      - fixture: fixtures/key-value-connection-info.http
+        expect: credential
+        resource: red-cache01
+
+  - id: render.key-value.create
+    match: { rest: { method: POST, path: /v1/key-value } }
+    class: write
+    when:
+      - if: { arg: body.plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+    resource: { arg: body.name, kind: key-value }
+    card: "Create key-value {body.name} on plan {body.plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Any plan but free is billed. ipAllowList decides who can connect from
+      outside Render.
+    tests:
+      - fixture: fixtures/key-value-create.http
+        expect: write
+        resource: cache
+      - fixture: fixtures/key-value-create-paid.http
+        expect: money
+        resource: cache
+      - fixture: fixtures/key-value-create-open.http
+        expect: access
+        resource: cache
+
+  - id: render.key-value.delete
+    match: { rest: { method: DELETE, path: "/v1/key-value/{redisId}" } }
+    class: irreversible
+    resource: { arg: redisId, kind: key-value }
+    card: "Delete key-value {redisId} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render documents no way to recover a deleted instance.
+    tests:
+      - fixture: fixtures/key-value-delete.http
+        expect: irreversible
+        resource: red-cache01
+
+  - id: render.key-value.update
+    match: { rest: { method: PATCH, path: "/v1/key-value/{redisId}" } }
+    class: write
+    when:
+      - if: { arg: body.plan, present: true }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.persistenceMode, equals: "off" }
+        class: irreversible
+    resource: { arg: redisId, kind: key-value }
+    card: "Change key-value {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Changing the plan, eviction policy or persistence mode restarts the
+      instance; with persistence off there is nothing to reload, so the data
+      can be lost (a safety net turned off).
+    tests:
+      - fixture: fixtures/key-value-update.http
+        expect: write
+        resource: red-cache01
+      - fixture: fixtures/key-value-update-plan.http
+        expect: money
+        resource: red-cache01
+      - fixture: fixtures/key-value-update-no-persistence.http
+        expect: irreversible
+        resource: red-cache01
+
+  - id: render.key-value.suspend
+    match: { rest: { method: POST, path: "/v1/key-value/{redisId}/suspend" } }
+    class: write
+    resource: { arg: redisId, kind: key-value }
+    card: "Suspend key-value {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/key-value-suspend.http
+        expect: write
+        resource: red-cache01
+
+  - id: render.key-value.resume
+    match: { rest: { method: POST, path: "/v1/key-value/{redisId}/resume" } }
+    class: write
+    resource: { arg: redisId, kind: key-value }
+    card: "Resume key-value {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/key-value-resume.http
+        expect: write
+        resource: red-cache01

@@ -1,0 +1,141 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): custom-page
+operations:
+  - id: cloudflare.custom-page.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_pages/{identifier}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change custom error page {identifier} of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-zone-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-page.account-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/custom_pages/{identifier}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change custom error page {identifier} of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-account-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-page.zone-asset-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/custom_pages/assets" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a custom page asset (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-zone-asset-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-page.zone-asset-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_pages/assets/{asset_name}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change custom page asset {asset_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-zone-asset-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-page.zone-asset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_pages/assets/{asset_name}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete custom page asset {asset_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-zone-asset-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-page.zone-preview-token
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/custom_pages/preview_tokens" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a custom page preview token (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-zone-preview-token.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-page.account-asset-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/custom_pages/assets" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a custom page asset (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-account-asset-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-page.account-asset-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/custom_pages/assets/{asset_name}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change custom page asset {asset_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-account-asset-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-page.account-asset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/custom_pages/assets/{asset_name}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete custom page asset {asset_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-account-asset-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-page.account-preview-token
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/custom_pages/preview_tokens" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a custom page preview token (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-page-account-preview-token.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

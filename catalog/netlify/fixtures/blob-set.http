@@ -1,0 +1,7 @@
+# description: Write blob avatars/u42.png in store site:uploads of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+PUT /api/v1/blobs/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/site:uploads/avatars/u42.png HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/octet-stream
+
+EXAMPLE-BYTES

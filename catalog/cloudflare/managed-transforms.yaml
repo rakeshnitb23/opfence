@@ -1,0 +1,29 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): managed-transforms
+operations:
+  - id: cloudflare.managed-transforms.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/managed_headers" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change managed transforms of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/managed-transforms-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.managed-transforms.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/managed_headers" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Turn off all managed transforms of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/managed-transforms-delete.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

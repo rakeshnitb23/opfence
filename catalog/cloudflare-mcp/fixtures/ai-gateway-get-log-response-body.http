@@ -1,0 +1,8 @@
+# description: Read the response body of log 01JA2B3C4D5E6F7G8H9J0K1M2N in AI Gateway shop-gateway
+POST /mcp HTTP/1.1
+Host: ai-gateway.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":76,"method":"tools/call","params":{"name":"get_log_response_body","arguments":{"gateway_id":"shop-gateway","log_id":"01JA2B3C4D5E6F7G8H9J0K1M2N"}}}

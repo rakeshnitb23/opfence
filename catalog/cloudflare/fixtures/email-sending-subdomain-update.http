@@ -1,0 +1,7 @@
+# description: Change sending subdomain ea95132c15732412d22c1476fa83f27d
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/email/sending/subdomains/ea95132c15732412d22c1476fa83f27d HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"drop_suppressed_recipients":true,"preview_enabled":true}

@@ -1,0 +1,8 @@
+# description: List builds of Worker a1b2c3d4e5f60718293a4b5c6d7e8f90
+POST /mcp HTTP/1.1
+Host: builds.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":33,"method":"tools/call","params":{"name":"workers_builds_list_builds","arguments":{"workerId":"a1b2c3d4e5f60718293a4b5c6d7e8f90","perPage":10}}}

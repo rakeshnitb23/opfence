@@ -1,0 +1,7 @@
+# description: Create a Logpush transformer in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/logpush/transformers HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"code":"SELECT ClientIP, RayID FROM http_requests","description":"Redacts PII fields from HTTP request logs.","name":"redact-pii"}

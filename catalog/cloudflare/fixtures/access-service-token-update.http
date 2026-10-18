@@ -1,0 +1,7 @@
+# description: Change Access service token 3537a672-e4d8-4d89-aab9-26cb622918a1
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/service_tokens/3537a672-e4d8-4d89-aab9-26cb622918a1 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ci-runner","duration":"8760h"}

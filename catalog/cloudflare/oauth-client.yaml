@@ -1,0 +1,75 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): oauth-client
+operations:
+  - id: cloudflare.oauth-client.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/oauth_clients" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create OAuth client {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the client secret.
+    tests:
+      - fixture: fixtures/oauth-client-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.oauth-client.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/oauth_clients/{oauth_client_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change OAuth client {oauth_client_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Redirect URIs decide where authorization codes are sent.
+    tests:
+      - fixture: fixtures/oauth-client-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.oauth-client.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/oauth_clients/{oauth_client_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete OAuth client {oauth_client_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/oauth-client-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.oauth-client.secret-rotate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/oauth_clients/{oauth_client_id}/rotate_secret" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Rotate the secret of OAuth client {oauth_client_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/oauth-client-secret-rotate.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.oauth-client.rotated-secret-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/oauth_clients/{oauth_client_id}/rotate_secret" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Revoke the previous secret of OAuth client {oauth_client_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/oauth-client-rotated-secret-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

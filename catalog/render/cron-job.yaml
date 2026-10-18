@@ -1,0 +1,33 @@
+# Render REST API: cron-job
+operations:
+  - id: render.cron-job.run
+    match: { rest: { method: POST, path: "/v1/cron-jobs/{cronJobId}/runs" } }
+    class: write
+    resource: { arg: cronJobId, kind: service }
+    card: "Run cron job {cronJobId} now"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Runs the job's own command and cancels any active run.
+    tests:
+      - fixture: fixtures/cron-job-run.http
+        expect: write
+        resource: crn-nightly01
+
+  - id: render.cron-job.cancel
+    match: { rest: { method: DELETE, path: "/v1/cron-jobs/{cronJobId}/runs" } }
+    class: write
+    resource: { arg: cronJobId, kind: service }
+    card: "Cancel the running cron job {cronJobId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/cron-job-cancel.http
+        expect: write
+        resource: crn-nightly01

@@ -1,0 +1,5 @@
+# description: Delete rule 2536bcfad5faccb111b47003c79917fa from ruleset 2f2feab2026849078ba485f918791bdc
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/rulesets/2f2feab2026849078ba485f918791bdc/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

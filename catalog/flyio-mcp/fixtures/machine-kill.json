@@ -1,0 +1,8 @@
+{
+  "description": "Kill Machine 3d8d9d2b1c4e87",
+  "tool": "fly-machine-kill",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87"
+  }
+}

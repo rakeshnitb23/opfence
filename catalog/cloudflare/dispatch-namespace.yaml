@@ -1,0 +1,265 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): dispatch-namespace
+operations:
+  - id: cloudflare.dispatch-namespace.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create dispatch namespace {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dispatch-namespace.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}" } }
+    class: write
+    resource: { arg: dispatch_namespace, kind: dispatch-namespace }
+    card: "Change dispatch namespace {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-update.http
+        expect: write
+        resource: "customer-workers"
+
+  - id: cloudflare.dispatch-namespace.patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}" } }
+    class: write
+    resource: { arg: dispatch_namespace, kind: dispatch-namespace }
+    card: "Change dispatch namespace {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-patch.http
+        expect: write
+        resource: "customer-workers"
+
+  - id: cloudflare.dispatch-namespace.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}" } }
+    class: irreversible
+    resource: { arg: dispatch_namespace, kind: dispatch-namespace }
+    card: "Delete dispatch namespace {dispatch_namespace} and its Workers"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the customer Workers in the namespace with their secrets.
+    tests:
+      - fixture: fixtures/dispatch-namespace-delete.http
+        expect: irreversible
+        resource: "customer-workers"
+
+  - id: cloudflare.dispatch-namespace.scripts-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts" } }
+    class: irreversible
+    resource: { arg: dispatch_namespace, kind: dispatch-namespace }
+    card: "Delete Workers in dispatch namespace {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Bulk delete of customer Workers and their secrets.
+    tests:
+      - fixture: fixtures/dispatch-namespace-scripts-delete.http
+        expect: irreversible
+        resource: "customer-workers"
+
+  - id: cloudflare.dispatch-namespace.script-upload
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}" } }
+    class: write
+    when:
+      - if: { arg: body.metadata.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+      - if: { arg: body.metadata.keep_bindings, absent: true }
+        class: irreversible
+    resource: { arg: script_name, kind: worker }
+    card: "Deploy Worker {script_name} in dispatch namespace {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deploys code. The multipart body's metadata part is read: a secret_text or
+      secret_key binding sets a secret (credential), and an upload without
+      keep_bindings drops the secrets and other bindings the previous version
+      had (irreversible; wrangler deploy keeps them). A body over 64 KiB cannot
+      be read and is unknown.
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-upload.http
+        expect: write
+        resource: "shop-api"
+      - fixture: fixtures/dispatch-namespace-script-upload-secret.http
+        expect: credential
+        resource: "shop-api"
+      - fixture: fixtures/dispatch-namespace-script-upload-drop-bindings.http
+        expect: irreversible
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}" } }
+    class: irreversible
+    resource: { arg: script_name, kind: worker }
+    card: "Delete Worker {script_name} from dispatch namespace {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the Worker with its secrets.
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-delete.http
+        expect: irreversible
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-content
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/content" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Replace the code of Worker {script_name} in {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-content.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-assets-upload-session
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/assets-upload-session" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Start an assets upload for Worker {script_name} in {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-assets-upload-session.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-secret-put
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/secrets" } }
+    class: credential
+    resource: { arg: script_name, kind: worker }
+    card: "Set a secret on Worker {script_name} in {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-secret-put.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-secrets-bulk
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/secrets-bulk" } }
+    class: credential
+    resource: { arg: script_name, kind: worker }
+    card: "Set or delete secrets of Worker {script_name} in {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-secrets-bulk.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-secret-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/secrets/{secret_name}" } }
+    class: irreversible
+    resource: { arg: script_name, kind: worker }
+    card: "Delete secret {secret_name} from Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-secret-delete.http
+        expect: irreversible
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-settings
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/settings" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Change bindings or settings of Worker {script_name} in {dispatch_namespace}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Multipart; the settings part can add secret_text bindings or remove
+      bindings and is not read.
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-settings.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-tags-replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/tags" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Replace the tags of Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-tags-replace.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-tag-create
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/tags/{tag}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Tag Worker {script_name} with {tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-tag-create.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-tag-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/tags/{tag}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Change tag {tag} of Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-tag-update.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.dispatch-namespace.script-tag-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}/tags/{tag}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Remove tag {tag} from Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dispatch-namespace-script-tag-delete.http
+        expect: write
+        resource: "shop-api"

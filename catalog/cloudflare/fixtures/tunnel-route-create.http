@@ -1,0 +1,7 @@
+# description: Route network 172.16.0.0/16 through tunnel f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/teamnet/routes HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"network":"172.16.0.0/16","tunnel_id":"f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"}

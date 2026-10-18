@@ -1,0 +1,8 @@
+{
+  "description": "Remove old@example.com from organization acme",
+  "tool": "fly-orgs-remove",
+  "arguments": {
+    "slug": "acme",
+    "email": "old@example.com"
+  }
+}

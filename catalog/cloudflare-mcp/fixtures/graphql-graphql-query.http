@@ -1,0 +1,8 @@
+# description: Run a GraphQL Analytics query
+POST /mcp HTTP/1.1
+Host: graphql.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":45,"method":"tools/call","params":{"name":"graphql_query","arguments":{"query":"query { viewer { zones(filter: {zoneTag: \"9f1839b6152d298aca64c4e906b6d074\"}) { httpRequests1dGroups(limit: 7, filter: {date_gt: \"2026-10-10\"}) { sum { requests } } } } }","variables":{}}}}

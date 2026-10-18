@@ -1,0 +1,7 @@
+# description: Delete objects from R2 bucket shop-assets
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2/buckets/shop-assets/objects HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+["uploads/invoice-1042.pdf","uploads/invoice-1043.pdf"]

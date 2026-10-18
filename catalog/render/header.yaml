@@ -1,0 +1,49 @@
+# Render REST API: header
+operations:
+  - id: render.header.add
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/headers" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Add header {body.name} to service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/header-add.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.header.replace
+    match: { rest: { method: PUT, path: "/v1/services/{serviceId}/headers" } }
+    class: delete
+    resource: { arg: serviceId, kind: service }
+    card: "Replace every header rule of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Rules left out of the list are deleted; they are configuration that can
+      be written again.
+    tests:
+      - fixture: fixtures/header-replace.http
+        expect: delete
+        resource: srv-shopweb01
+
+  - id: render.header.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}/headers/{headerId}" } }
+    class: delete
+    resource: { arg: serviceId, kind: service }
+    card: "Delete header rule {headerId} of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/header-delete.http
+        expect: delete
+        resource: srv-shopweb01

@@ -1,0 +1,7 @@
+# description: Refresh a Render API token
+POST /v1/token/refresh HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"refresh_token":"opf_render_EXAMPLE_REFRESH"}

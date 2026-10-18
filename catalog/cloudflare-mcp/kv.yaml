@@ -1,0 +1,70 @@
+# Cloudflare MCP servers: kv
+operations:
+  - id: cloudflare-mcp.kv.kv-namespaces-list
+    match: { mcp: { tool: kv_namespaces_list } }
+    class: read
+    card: "List KV namespaces"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/kv_namespace.tools.ts
+    tests:
+      - fixture: fixtures/kv-kv-namespaces-list.http
+        expect: read
+
+  - id: cloudflare-mcp.kv.kv-namespace-create
+    match: { mcp: { tool: kv_namespace_create } }
+    class: write
+    card: "Create KV namespace {title}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/kv_namespace.tools.ts
+    tests:
+      - fixture: fixtures/kv-kv-namespace-create.http
+        expect: write
+
+  - id: cloudflare-mcp.kv.kv-namespace-get
+    match: { mcp: { tool: kv_namespace_get } }
+    class: read
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Show KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/kv_namespace.tools.ts
+    tests:
+      - fixture: fixtures/kv-kv-namespace-get.http
+        expect: read
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare-mcp.kv.kv-namespace-update
+    match: { mcp: { tool: kv_namespace_update } }
+    class: write
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Rename KV namespace {namespace_id} to {title}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/kv_namespace.tools.ts
+    tests:
+      - fixture: fixtures/kv-kv-namespace-update.http
+        expect: write
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare-mcp.kv.kv-namespace-delete
+    match: { mcp: { tool: kv_namespace_delete } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Delete KV namespace {namespace_id} and every key in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/kv_namespace.tools.ts
+    notes: >-
+      Deletes every key in the namespace; Cloudflare keeps no copy (same as
+      cloudflare.kv.namespace-delete).
+    tests:
+      - fixture: fixtures/kv-kv-namespace-delete.http
+        expect: irreversible
+        resource: "0f2ac74b498b48028cb68387c421e279"

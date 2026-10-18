@@ -1,0 +1,7 @@
+# description: Resolve a Machine config
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation BuildMachine($input: BuildMachineInput!) { buildMachine(input: $input) { __typename } }","variables":{"input":{"appId":"shop-api","config":{"image":"nginx"}}}}

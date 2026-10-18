@@ -1,0 +1,37 @@
+# Cloudflare MCP servers: observability
+operations:
+  - id: cloudflare-mcp.observability.query-worker-observability
+    match: { mcp: { tool: query_worker_observability } }
+    class: read
+    card: "Query Workers logs and metrics"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-observability/src/tools/workers-observability.tools.ts
+    tests:
+      - fixture: fixtures/observability-query-worker-observability.http
+        expect: read
+
+  - id: cloudflare-mcp.observability.observability-keys
+    match: { mcp: { tool: observability_keys } }
+    class: read
+    card: "List Workers observability keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-observability/src/tools/workers-observability.tools.ts
+    tests:
+      - fixture: fixtures/observability-observability-keys.http
+        expect: read
+
+  - id: cloudflare-mcp.observability.observability-values
+    match: { mcp: { tool: observability_values } }
+    class: read
+    card: "List values of a Workers observability key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-observability/src/tools/workers-observability.tools.ts
+    tests:
+      - fixture: fixtures/observability-observability-values.http
+        expect: read

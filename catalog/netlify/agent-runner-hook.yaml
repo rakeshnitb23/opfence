@@ -1,0 +1,84 @@
+# Netlify REST API: agent runner hooks
+operations:
+  - id: netlify.agent-runner-hook.list
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/agent_runner_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the agent runner hook URLs of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each agent runner hook's url is a secret: anyone holding it can
+      trigger it. Calling it starts a paid agent run; creating one also
+      returns a signing secret.
+    tests:
+      - fixture: fixtures/agent-runner-hook-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.agent-runner-hook.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/agent_runner_hooks/{id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the URL of agent runner hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each agent runner hook's url is a secret: anyone holding it can
+      trigger it. Calling it starts a paid agent run; creating one also
+      returns a signing secret.
+    tests:
+      - fixture: fixtures/agent-runner-hook-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.agent-runner-hook.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/agent_runner_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Create agent runner hook {body.title} for Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Creates a secret URL and returns it. Calling it starts a paid agent
+      run; creating one also returns a signing secret.
+    tests:
+      - fixture: fixtures/agent-runner-hook-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.agent-runner-hook.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/agent_runner_hooks/{id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change agent runner hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-hook-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.agent-runner-hook.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/agent_runner_hooks/{id}" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Delete agent runner hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Revokes the hook URL, like revoking a token.
+    tests:
+      - fixture: fixtures/agent-runner-hook-delete.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

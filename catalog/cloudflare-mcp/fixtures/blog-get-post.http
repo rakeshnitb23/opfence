@@ -1,0 +1,8 @@
+# description: Read Cloudflare blog post sqlite-in-durable-objects
+POST /mcp HTTP/1.1
+Host: blog.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":177,"method":"tools/call","params":{"name":"get_post","arguments":{"slug":"sqlite-in-durable-objects"}}}

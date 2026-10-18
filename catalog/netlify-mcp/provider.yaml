@@ -1,0 +1,24 @@
+provider: netlify-mcp
+title: Netlify MCP
+docs: https://docs.netlify.com/build/build-with-ai/netlify-mcp-server/
+# Netlify's official MCP server (@netlify/mcp, source github.com/netlify/netlify-mcp).
+# It runs locally over stdio (npx -y @netlify/mcp), where only the agent hook
+# sees its tool calls and its API traffic goes to api.netlify.com
+# (catalog/netlify), or hosted at netlify-mcp.netlify.app/mcp, which Netlify's
+# setup guides recommend. Clients sign in to the hosted server with OAuth, so
+# there is no token to detect here; the local server's
+# NETLIFY_PERSONAL_ACCESS_TOKEN is detected by catalog/netlify.
+#
+# By default each domain is one or two selector tools
+# (netlify-<domain>-services-reader / -updater) whose argument
+# selectSchema.operation picks the operation; with --verbose locally or
+# ?verbose=true hosted, every operation is its own tool instead. Both
+# surfaces are listed. The hosted server's events/* JSON-RPC methods
+# (webhook subscriptions) are not tools, so they stay unknown.
+hosts: [netlify-mcp.netlify.app]
+auth:
+  - header: Authorization
+    scheme: Bearer
+mcp:
+  names: [netlify, netlify-mcp]
+  package: "@netlify/mcp"

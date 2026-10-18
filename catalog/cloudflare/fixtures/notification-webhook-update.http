@@ -1,0 +1,8 @@
+# description: Change notification webhook b115d5ec-15c6-41ee-8b76-92c449b5227b
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/alerting/v3/destinations/webhooks/b115d5ec-15c6-41ee-8b76-92c449b5227b HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ops-slack","url":"https://hooks.shop-example.com/cloudflare"}

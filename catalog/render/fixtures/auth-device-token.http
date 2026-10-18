@@ -1,0 +1,7 @@
+# description: Exchange a device code for a Render API token
+POST /v1/device-token HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"grant_type":"urn:ietf:params:oauth:grant-type:device_code","device_code":"dc_EXAMPLE","client_id":"render-cli"}

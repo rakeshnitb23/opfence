@@ -1,0 +1,19 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): durable-object
+operations:
+  - id: cloudflare.durable-object.query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/durable_objects/namespaces/{id}/query/v2" } }
+    class: irreversible
+    resource: { arg: id, kind: durable-object-namespace }
+    card: "Run SQL against a Durable Object in namespace {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Runs SQL against the Durable Object's SQLite storage. SQLite is not
+      Postgres, so the SQL is not classified: any statement may be a DROP or
+      DELETE, and the rule takes the fixed class irreversible.
+    tests:
+      - fixture: fixtures/durable-object-query.http
+        expect: irreversible
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"

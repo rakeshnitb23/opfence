@@ -1,0 +1,15 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): user-invite
+operations:
+  - id: cloudflare.user-invite.respond
+    match: { rest: { method: PATCH, path: "/client/v4/user/invites/{invite_id}" } }
+    class: access
+    resource: { arg: invite_id, kind: user-invite }
+    card: "Respond to account invitation {invite_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-invite-respond.http
+        expect: access
+        resource: "4f5f0c14a2a41d5063dd301b2f829f04"

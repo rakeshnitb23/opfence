@@ -1,0 +1,29 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): url-normalization
+operations:
+  - id: cloudflare.url-normalization.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/url_normalization" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change URL normalization of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/url-normalization-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.url-normalization.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/url_normalization" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Reset URL normalization of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/url-normalization-delete.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

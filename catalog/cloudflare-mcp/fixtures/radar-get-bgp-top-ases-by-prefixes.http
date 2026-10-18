@@ -1,0 +1,8 @@
+# description: Radar: Get BGP top ases by prefixes
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":134,"method":"tools/call","params":{"name":"get_bgp_top_ases_by_prefixes","arguments":{"limit":10}}}

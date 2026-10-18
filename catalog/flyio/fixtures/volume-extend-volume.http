@@ -1,0 +1,7 @@
+# description: Extend a volume
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ExtendVolume($input: ExtendVolumeInput!) { extendVolume(input: $input) { __typename } }","variables":{"input":{"volumeId":"vol_4r8kz2q7m1xd9p6v","sizeGb":20}}}

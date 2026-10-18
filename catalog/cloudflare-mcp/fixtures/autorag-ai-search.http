@@ -1,0 +1,8 @@
+# description: Ask AI Search instance shop-docs: How do refunds work?
+POST /mcp HTTP/1.1
+Host: autorag.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":71,"method":"tools/call","params":{"name":"ai_search","arguments":{"rag_id":"shop-docs","query":"How do refunds work?"}}}

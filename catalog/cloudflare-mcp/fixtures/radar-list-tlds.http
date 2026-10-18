@@ -1,0 +1,8 @@
+# description: Radar: List TLDS for dev
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":126,"method":"tools/call","params":{"name":"list_tlds","arguments":{"tld":"dev","limit":10}}}

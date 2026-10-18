@@ -1,0 +1,5 @@
+# description: List Pages projects of account 023e105f4ecef8ad9ca31a8372d0c353 with their environment variables
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Add header Cache-Control to service srv-shopweb01
+POST /v1/services/srv-shopweb01/headers HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"path":"/*","name":"Cache-Control","value":"public, max-age=604800"}

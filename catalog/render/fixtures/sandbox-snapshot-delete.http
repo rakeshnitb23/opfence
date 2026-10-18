@@ -1,0 +1,5 @@
+# description: Delete sandbox snapshot snp-base01
+DELETE /v1/sandbox-groups/sbg-agents01/snapshots/snp-base01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

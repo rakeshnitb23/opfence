@@ -1,0 +1,7 @@
+# description: Issue an Origin CA certificate for ["shop-example.com","*.shop-example.com"]
+POST /client/v4/certificates HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"csr":"<PEM data>","hostnames":["shop-example.com","*.shop-example.com"],"request_type":"origin-rsa","requested_validity":5475}

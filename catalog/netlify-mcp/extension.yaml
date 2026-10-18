@@ -1,0 +1,160 @@
+# Netlify MCP server: extension
+operations:
+  - id: netlify-mcp.extension.reader
+    match: { mcp: { tool: netlify-extension-services-reader } }
+    class: read
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-extensions" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-full-extension-details" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "initialize-database" }
+        class: read
+    resource: { arg: selectSchema.params.teamId, kind: team }
+    card: "Run Netlify extension operation {selectSchema.operation} for {selectSchema.params.extensionSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/get-extensions.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/get-full-extension-details.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/initialize-database.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. initialize-database
+      only returns setup instructions; it provisions nothing.
+    tests:
+      - fixture: fixtures/extension-reader.http
+        expect: read
+      - fixture: fixtures/extension-reader-details.http
+        expect: read
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/extension-reader-database.http
+        expect: read
+
+  - id: netlify-mcp.extension.updater
+    match: { mcp: { tool: netlify-extension-services-updater } }
+    class: irreversible
+    when:
+      - if: { arg: selectSchema.params.shouldBeInstalled, equals: "true" }
+        class: access
+      - if: { arg: selectSchema.params.shouldBeInstalled, equals: "false" }
+        class: irreversible
+    resource: { arg: selectSchema.params.teamId, kind: team }
+    card: "Install ({selectSchema.params.shouldBeInstalled}) extension {selectSchema.params.extensionSlug} in team {selectSchema.params.teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/change-extension-installation.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. change-extension-
+      installation is its only operation, so the conditions read its
+      argument directly. change-extension-installation installs
+      (shouldBeInstalled true) or uninstalls an extension team-wide.
+      Installing gives a third-party extension access to the team's sites,
+      so it is access; uninstalling removes the extension and whatever it
+      set up, which Opfence cannot see, so it is irreversible. Without
+      shouldBeInstalled the rule's class applies.
+    tests:
+      - fixture: fixtures/extension-updater-install.http
+        expect: access
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/extension-updater-uninstall.http
+        expect: irreversible
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify-mcp.extension.change-installation
+    match: { mcp: { tool: netlify-extension-change-extension-installation } }
+    class: irreversible
+    when:
+      - if: { arg: shouldBeInstalled, equals: "true" }
+        class: access
+      - if: { arg: shouldBeInstalled, equals: "false" }
+        class: irreversible
+    resource: { arg: teamId, kind: team }
+    card: "Install ({shouldBeInstalled}) extension {extensionSlug} in team {teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/change-extension-installation.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      change-extension-installation installs (shouldBeInstalled true) or
+      uninstalls an extension team-wide. Installing gives a third-party
+      extension access to the team's sites, so it is access; uninstalling
+      removes the extension and whatever it set up, which Opfence cannot
+      see, so it is irreversible. Without shouldBeInstalled the rule's
+      class applies.
+    tests:
+      - fixture: fixtures/extension-change-installation.http
+        expect: access
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/extension-change-installation-uninstall.http
+        expect: irreversible
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify-mcp.extension.list
+    match: { mcp: { tool: netlify-extension-get-extensions } }
+    class: read
+    card: "List Netlify extensions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/get-extensions.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/extension-list.http
+        expect: read
+
+  - id: netlify-mcp.extension.get
+    match: { mcp: { tool: netlify-extension-get-full-extension-details } }
+    class: read
+    resource: { arg: teamId, kind: team }
+    card: "Read extension {extensionSlug} for team {teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/get-full-extension-details.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/extension-get.http
+        expect: read
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify-mcp.extension.database-setup-steps
+    match: { mcp: { tool: netlify-get-database-setup-steps } }
+    class: read
+    card: "Read Netlify Database setup steps"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/extension-tools/initialize-database.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      initialize-database's granularToolName; it only returns setup
+      instructions.
+    tests:
+      - fixture: fixtures/extension-database-setup-steps.http
+        expect: read

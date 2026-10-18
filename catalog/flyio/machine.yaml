@@ -1,0 +1,330 @@
+# Fly.io Machines and GraphQL APIs: machine
+operations:
+  - id: flyio.machine.create
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines" } }
+    class: money
+    resource: { arg: app_name, kind: app }
+    card: "Create a Machine in app {app_name} from image {body.config.image} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      A new Machine is billed while it runs and for its root file
+      system.
+    tests:
+      - fixture: fixtures/machine-create.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.machine.update
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}" } }
+    class: write
+    when:
+      - if: { arg: body.config.guest, present: true }
+        class: money
+      - if: { arg: body.config.guest, present: true }
+        class: write
+    resource: { arg: app_name, kind: app }
+    card: "Update the configuration of Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Changing the guest (CPU, memory, GPU) changes what the Machine
+      bills, so a request that sets it is also money.
+    tests:
+      - fixture: fixtures/machine-update.http
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/machine-update-guest.http
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/machine-update-guest.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.destroy
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/machines/{machine_id}" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Destroy Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      A Machine's root file system is ephemeral by design and volumes
+      survive the Machine, so the Machine can be recreated from the
+      app's image and config (fly deploy). Data kept on the root file
+      system against Fly's advice is lost.
+    tests:
+      - fixture: fixtures/machine-destroy.http
+        expect: delete
+        resource: shop-api
+      - fixture: fixtures/machine-destroy-force.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.machine.cordon
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/cordon" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Stop routing traffic to Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-cordon.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.uncordon
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/uncordon" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Route traffic to Machine {machine_id} in app {app_name} again"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-uncordon.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.exec
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/exec" } }
+    class: irreversible
+    resource: { arg: app_name, kind: app }
+    card: "Run a command on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Runs any command inside the Machine, with access to its volumes
+      and secrets.
+    tests:
+      - fixture: fixtures/machine-exec.http
+        expect: irreversible
+        resource: shop-api
+
+  - id: flyio.machine.restart
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/restart" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Restart Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-restart.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.signal
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/signal" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Send signal {body.signal} to Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-signal.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.start
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/start" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Start Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-start.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.stop
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/stop" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Stop Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-stop.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.suspend
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/suspend" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Suspend Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-suspend.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.reclaim-memory
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/memory/reclaim" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Reclaim memory from Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-reclaim-memory.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.set-memory-limit
+    match: { rest: { method: PUT, path: "/v1/apps/{app_name}/machines/{machine_id}/memory" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Set the memory limit of Machine {machine_id} in app {app_name} to {body.limit_mb} MB"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-set-memory-limit.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.launch-machine
+    match: { graphql: { type: mutation, field: launchMachine } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Launch a Machine in app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A new Machine is billed while it runs.
+    tests:
+      - fixture: fixtures/machine-launch-machine.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.machine.remove-machine
+    match: { graphql: { type: mutation, field: removeMachine } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Remove Machine {input.id} from app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Same as destroying a Machine through the Machines API: rebuildable
+      from the app config.
+    tests:
+      - fixture: fixtures/machine-remove-machine.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.machine.kill-machine
+    match: { graphql: { type: mutation, field: killMachine } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Kill Machine {input.id} in app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/machine-kill-machine.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.start-machine
+    match: { graphql: { type: mutation, field: startMachine } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Start Machine {input.id} in app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/machine-start-machine.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.stop-machine
+    match: { graphql: { type: mutation, field: stopMachine } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Stop Machine {input.id} in app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/machine-stop-machine.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.register-machine
+    match: { graphql: { type: mutation, field: registerMachine } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Register Machine {input.id} with app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Platform bookkeeping for an existing Machine.
+    tests:
+      - fixture: fixtures/machine-register-machine.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.restart-allocation
+    match: { graphql: { type: mutation, field: restartAllocation } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Restart allocation {input.allocId} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/machine-restart-allocation.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine.stop-allocation
+    match: { graphql: { type: mutation, field: stopAllocation } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Stop allocation {input.allocId} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/machine-stop-allocation.http
+        expect: write
+        resource: shop-api

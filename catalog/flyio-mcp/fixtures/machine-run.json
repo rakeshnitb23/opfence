@@ -1,0 +1,10 @@
+{
+  "description": "Run a new Machine from image nginx:1.27 in app shop-api",
+  "tool": "fly-machine-run",
+  "arguments": {
+    "app": "shop-api",
+    "image": "nginx:1.27",
+    "region": "ams",
+    "command": "nginx -g \"daemon off;\""
+  }
+}

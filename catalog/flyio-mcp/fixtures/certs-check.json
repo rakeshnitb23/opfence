@@ -1,0 +1,8 @@
+{
+  "description": "Check the certificate of shop.example.com on app shop-api",
+  "tool": "fly-certs-check",
+  "arguments": {
+    "app": "shop-api",
+    "hostname": "shop.example.com"
+  }
+}

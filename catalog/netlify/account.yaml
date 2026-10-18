@@ -1,0 +1,57 @@
+# Netlify REST API: teams (accounts)
+operations:
+  - id: netlify.account.create
+    match: { rest: { method: POST, path: "/api/v1/accounts" } }
+    class: money
+    card: "Create team {body.name} on plan {body.type_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A team is created on a plan (type_id), paid with payment_method_id.
+    tests:
+      - fixture: fixtures/account-create.http
+        expect: money
+
+  - id: netlify.account.update
+    match: { rest: { method: PUT, path: "/api/v1/accounts/{account_id}" } }
+    class: write
+    when:
+      - if: { arg: body.type_id, present: true }
+        class: money
+      - if: { arg: body.extra_seats_block, present: true }
+        class: money
+    resource: { arg: account_id, kind: account }
+    card: "Change settings of team {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      type_id changes the plan and extra_seats_block buys seats, both
+      billed. Name, slug and billing contact details are writes.
+    tests:
+      - fixture: fixtures/account-update.http
+        expect: write
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/account-update-plan.http
+        expect: money
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/account-update-seats.http
+        expect: money
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify.account.cancel
+    match: { rest: { method: DELETE, path: "/api/v1/accounts/{account_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete team {account_id} with its sites and data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/account-cancel.http
+        expect: irreversible
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d

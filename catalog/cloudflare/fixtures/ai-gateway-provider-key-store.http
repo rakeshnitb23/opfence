@@ -1,0 +1,7 @@
+# description: Store a provider API key in AI gateway shop-gateway
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/gateways/shop-gateway/provider_configs HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"alias":"openai-prod","provider_slug":"openai","secret":"opf_cloudflare_EXAMPLE","default_config":true}

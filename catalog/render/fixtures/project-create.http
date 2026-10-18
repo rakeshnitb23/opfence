@@ -1,0 +1,7 @@
+# description: Create project shop
+POST /v1/projects HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop","ownerId":"tea-acme01","environments":[{"name":"production"}]}

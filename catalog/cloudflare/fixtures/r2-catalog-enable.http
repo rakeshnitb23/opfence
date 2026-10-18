@@ -1,0 +1,6 @@
+# description: Enable R2 Data Catalog on bucket shop-assets
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/basin-catalog/shop-assets/enable HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Record a plugin run for Netlify deploy 6528a1b2c3d4e5f6a7b8c9d0
+POST /api/v1/deploys/6528a1b2c3d4e5f6a7b8c9d0/plugin_runs HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"package":"netlify-plugin-cache","version":"1.0.3","state":"success"}

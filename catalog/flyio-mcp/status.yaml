@@ -1,0 +1,15 @@
+# flyctl MCP server (fly mcp server): status
+operations:
+  - id: flyio-mcp.status.status
+    match: { mcp: { tool: fly-status } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/status.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/status-status.json
+        expect: read
+        resource: shop-api

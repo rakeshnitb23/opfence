@@ -1,0 +1,8 @@
+# description: List CASB asset categories of vendor google-workspace
+POST /mcp HTTP/1.1
+Host: casb.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":170,"method":"tools/call","params":{"name":"asset_categories_by_vendor","arguments":{"assetCategoryVendorParam":"google-workspace"}}}

@@ -1,0 +1,7 @@
+# description: Create a shared-cpu-1x Machine in shop-api
+POST /v1/apps/shop-api/machines HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"name":"worker-1","region":"ams","config":{"image":"registry.fly.io/shop-api:deployment-01J9","guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256}}}

@@ -1,0 +1,5 @@
+# description: Delete build token 4c3b2a1d-0e9f-4a8b-7c6d-5e4f3a2b1c0d
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/tokens/4c3b2a1d-0e9f-4a8b-7c6d-5e4f3a2b1c0d HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

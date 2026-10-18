@@ -1,0 +1,7 @@
+# description: Change D1 database f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/d1/database/f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"read_replication":{"mode":"auto"}}

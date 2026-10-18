@@ -1,0 +1,46 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): worker-trigger
+operations:
+  - id: cloudflare.worker-trigger.replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/triggers/{script_name}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Replace the triggers of Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-trigger-replace.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.worker-trigger.add
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/triggers/{script_name}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Add triggers to Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-trigger-add.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.worker-trigger.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/triggers/{script_name}" } }
+    class: delete
+    resource: { arg: script_name, kind: worker }
+    card: "Delete the triggers of Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Trigger definitions (cron schedules, queue consumers) can be recreated; no
+      data is lost.
+    tests:
+      - fixture: fixtures/worker-trigger-delete.http
+        expect: delete
+        resource: "shop-api"

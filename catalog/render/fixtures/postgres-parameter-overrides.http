@@ -1,0 +1,7 @@
+# description: Change the configuration parameters of Postgres dpg-shopdb01
+PUT /v1/postgres/dpg-shopdb01/parameter-overrides HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"parameterOverrides":{"work_mem":"64MB"}}

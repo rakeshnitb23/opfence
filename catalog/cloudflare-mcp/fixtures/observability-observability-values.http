@@ -1,0 +1,8 @@
+# description: List values of a Workers observability key
+POST /mcp HTTP/1.1
+Host: observability.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":38,"method":"tools/call","params":{"name":"observability_values","arguments":{"valuesQuery":{"key":"$metadata.service","type":"string","timeframe":{"from":1792000000000,"to":1792003600000}}}}}

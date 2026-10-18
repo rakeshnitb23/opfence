@@ -1,0 +1,5 @@
+# description: Delete custom origin trust store 023e105f4ecef8ad9ca31a8372d0c357
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/acm/custom_trust_store/023e105f4ecef8ad9ca31a8372d0c357 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

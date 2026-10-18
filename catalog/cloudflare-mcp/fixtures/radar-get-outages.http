@@ -1,0 +1,8 @@
+# description: Radar: Get outages for 13335
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":112,"method":"tools/call","params":{"name":"get_outages","arguments":{"asn":13335,"limit":10}}}

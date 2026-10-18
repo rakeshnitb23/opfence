@@ -1,0 +1,9 @@
+{
+  "description": "Create a Machine from 3d8d9d2b1c4e87 with image nginx:1.27 in app shop-api",
+  "tool": "fly-machine-update",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87",
+    "image": "nginx:1.27"
+  }
+}

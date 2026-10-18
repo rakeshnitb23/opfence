@@ -1,0 +1,7 @@
+# description: Add tenant custom nameserver ns1.shop-example.com
+POST /client/v4/tenants/shop-tenant/custom_ns HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"ns_name":"ns1.shop-example.com","ns_set":1}

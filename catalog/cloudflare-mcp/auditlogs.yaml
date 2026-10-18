@@ -1,0 +1,15 @@
+# Cloudflare MCP servers: auditlogs
+operations:
+  - id: cloudflare-mcp.auditlogs.auditlogs-by-account-id
+    match: { mcp: { tool: auditlogs_by_account_id } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Read audit logs of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/auditlogs/src/tools/auditlogs.tools.ts
+    tests:
+      - fixture: fixtures/auditlogs-auditlogs-by-account-id.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

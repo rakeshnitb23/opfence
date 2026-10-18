@@ -1,0 +1,121 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-service-token
+operations:
+  - id: cloudflare.access-service-token.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/service_tokens" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Access service token {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A service token's client secret is returned once, on creation or rotation.
+    tests:
+      - fixture: fixtures/access-service-token-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-service-token.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/service_tokens/{service_token_id}" } }
+    class: access
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Change Access service token {service_token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-service-token-update.http
+        expect: access
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"
+
+  - id: cloudflare.access-service-token.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/service_tokens/{service_token_id}" } }
+    class: access
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Delete Access service token {service_token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Revokes the token.
+    tests:
+      - fixture: fixtures/access-service-token-delete.http
+        expect: access
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"
+
+  - id: cloudflare.access-service-token.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/service_tokens" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Create Access service token {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A service token's client secret is returned once, on creation or rotation.
+    tests:
+      - fixture: fixtures/access-service-token-zone-create.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-service-token.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/service_tokens/{service_token_id}" } }
+    class: access
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Change Access service token {service_token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-service-token-zone-update.http
+        expect: access
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"
+
+  - id: cloudflare.access-service-token.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/service_tokens/{service_token_id}" } }
+    class: access
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Delete Access service token {service_token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Revokes the token.
+    tests:
+      - fixture: fixtures/access-service-token-zone-delete.http
+        expect: access
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"
+
+  - id: cloudflare.access-service-token.refresh
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/service_tokens/{service_token_id}/refresh" } }
+    class: access
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Extend the expiry of Access service token {service_token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-service-token-refresh.http
+        expect: access
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"
+
+  - id: cloudflare.access-service-token.rotate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/service_tokens/{service_token_id}/rotate" } }
+    class: credential
+    resource: { arg: service_token_id, kind: service-token }
+    card: "Rotate Access service token {service_token_id} and return a new secret"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-service-token-rotate.http
+        expect: credential
+        resource: "3537a672-e4d8-4d89-aab9-26cb622918a1"

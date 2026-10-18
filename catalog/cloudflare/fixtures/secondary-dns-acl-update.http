@@ -1,0 +1,7 @@
+# description: Change zone transfer ACL 23ff594956f20c2a721606e94745a8aa
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/secondary_dns/acls/23ff594956f20c2a721606e94745a8aa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"secondary-ns","ip_range":"192.0.2.53/28"}

@@ -1,0 +1,7 @@
+# description: Change IP access rule 2536bcfad5faccb111b47003c79917fa
+PATCH /client/v4/user/firewall/access_rules/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"mode":"challenge"}

@@ -1,0 +1,8 @@
+{
+  "description": "Snapshot volume vol_4r8kz2q7m1xd9p6v of app shop-api",
+  "tool": "fly-volumes-snapshots-create",
+  "arguments": {
+    "app": "shop-api",
+    "id": "vol_4r8kz2q7m1xd9p6v"
+  }
+}

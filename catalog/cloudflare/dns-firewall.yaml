@@ -1,0 +1,60 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): dns-firewall
+operations:
+  - id: cloudflare.dns-firewall.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dns_firewall" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create DNS Firewall cluster {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-firewall-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dns-firewall.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/dns_firewall/{dns_firewall_id}" } }
+    class: write
+    resource: { arg: dns_firewall_id, kind: dns-firewall }
+    card: "Change DNS Firewall cluster {dns_firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-firewall-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c35a"
+
+  - id: cloudflare.dns-firewall.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dns_firewall/{dns_firewall_id}" } }
+    class: delete
+    resource: { arg: dns_firewall_id, kind: dns-firewall }
+    card: "Delete DNS Firewall cluster {dns_firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A cluster is configuration (upstream IPs and options) that can be
+      recreated; it holds no data.
+    tests:
+      - fixture: fixtures/dns-firewall-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c35a"
+
+  - id: cloudflare.dns-firewall.reverse-dns
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/dns_firewall/{dns_firewall_id}/reverse_dns" } }
+    class: write
+    resource: { arg: dns_firewall_id, kind: dns-firewall }
+    card: "Change reverse DNS of DNS Firewall cluster {dns_firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-firewall-reverse-dns.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c35a"

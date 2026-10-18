@@ -1,0 +1,9 @@
+{
+  "description": "Run rm -rf /data/cache on Machine 3d8d9d2b1c4e87",
+  "tool": "fly-machine-exec",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87",
+    "command": "rm -rf /data/cache"
+  }
+}

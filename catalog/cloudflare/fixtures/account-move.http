@@ -1,0 +1,7 @@
+# description: Move account 023e105f4ecef8ad9ca31a8372d0c353 into another organization
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/move HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"destination_organization_id":"b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4"}

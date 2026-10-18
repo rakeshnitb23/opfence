@@ -1,0 +1,7 @@
+# description: Replace ruleset 2f2feab2026849078ba485f918791bdc
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/rulesets/2f2feab2026849078ba485f918791bdc HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"rules":[{"action":"block","expression":"ip.src in {192.0.2.0/24}"}]}

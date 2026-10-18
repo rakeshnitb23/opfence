@@ -1,0 +1,107 @@
+# Netlify REST API: agent runners
+operations:
+  - id: netlify.agent-runner.create
+    match: { rest: { method: POST, path: "/api/v1/agent_runners" } }
+    class: money
+    resource: { arg: query.site_id, kind: site }
+    card: "Start an AI agent run on Netlify site {query.site_id}: {query.prompt}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Starts an AI coding agent on Netlify's infrastructure; agent runs
+      use the team's paid credits.
+    tests:
+      - fixture: fixtures/agent-runner-create.http
+        expect: money
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.agent-runner.upload-url
+    match: { rest: { method: POST, path: "/api/v1/agent_runners/upload_url" } }
+    class: write
+    resource: { arg: query.account_id, kind: account }
+    card: "Get an upload URL for agent file {query.filename}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-upload-url.http
+        expect: write
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify.agent-runner.update
+    match: { rest: { method: PATCH, path: "/api/v1/agent_runners/{agent_runner_id}" } }
+    class: write
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Update agent run {agent_runner_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-update.http
+        expect: write
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner.delete
+    match: { rest: { method: DELETE, path: "/api/v1/agent_runners/{agent_runner_id}" } }
+    class: irreversible
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Delete agent run {agent_runner_id} and its unmerged changes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The run's sessions and result diff exist only on Netlify until
+      merged.
+    tests:
+      - fixture: fixtures/agent-runner-delete.http
+        expect: irreversible
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner.archive
+    match: { rest: { method: POST, path: "/api/v1/agent_runners/{agent_runner_id}/archive" } }
+    class: delete
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Archive agent run {agent_runner_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-archive.http
+        expect: delete
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner.pull-request
+    match: { rest: { method: POST, path: "/api/v1/agent_runners/{agent_runner_id}/pull_request" } }
+    class: write
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Open a pull request with the changes of agent run {agent_runner_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-pull-request.http
+        expect: write
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner.commit
+    match: { rest: { method: POST, path: "/api/v1/agent_runners/{agent_runner_id}/commit" } }
+    class: write
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Commit the changes of agent run {agent_runner_id} to branch {query.target_branch}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Committing to the production branch triggers a production deploy.
+    tests:
+      - fixture: fixtures/agent-runner-commit.http
+        expect: write
+        resource: 64f0cdd4e5a6b7c8d9e0f123

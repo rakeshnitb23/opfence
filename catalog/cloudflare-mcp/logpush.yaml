@@ -1,0 +1,18 @@
+# Cloudflare MCP servers: logpush
+operations:
+  - id: cloudflare-mcp.logpush.logpush-jobs-by-account-id
+    match: { mcp: { tool: logpush_jobs_by_account_id } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List Logpush jobs of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/logpush/src/tools/logpush.tools.ts
+    notes: >-
+      Returns job health only (name, dataset, status, errors); the tool does not
+      return destination_conf.
+    tests:
+      - fixture: fixtures/logpush-logpush-jobs-by-account-id.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

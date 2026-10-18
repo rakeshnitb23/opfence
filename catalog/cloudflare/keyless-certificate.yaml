@@ -1,0 +1,46 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): keyless-certificate
+operations:
+  - id: cloudflare.keyless-certificate.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/keyless_certificates" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a Keyless SSL configuration in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Keyless SSL keeps the private key on the customer's key server; only the
+      public certificate is sent.
+    tests:
+      - fixture: fixtures/keyless-certificate-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.keyless-certificate.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/keyless_certificates/{keyless_certificate_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Keyless SSL configuration {keyless_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/keyless-certificate-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.keyless-certificate.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/keyless_certificates/{keyless_certificate_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete Keyless SSL configuration {keyless_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/keyless-certificate-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

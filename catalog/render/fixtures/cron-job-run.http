@@ -1,0 +1,5 @@
+# description: Run cron job crn-nightly01 now
+POST /v1/cron-jobs/crn-nightly01/runs HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

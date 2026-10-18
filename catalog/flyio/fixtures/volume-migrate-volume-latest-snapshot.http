@@ -1,0 +1,7 @@
+# description: Migrate a volume from its latest snapshot
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation MigrateVolume($input: MigrateVolumeInput!) { migrateVolume(input: $input) { __typename } }","variables":{"input":{"appId":1234,"targetVolumeId":"vol_4r8kz2q7m1xd9p6v","useLatestSnapshot":true}}}

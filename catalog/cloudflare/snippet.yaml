@@ -1,0 +1,61 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): snippet
+operations:
+  - id: cloudflare.snippet.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/snippets/{snippet_name}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Deploy snippet {snippet_name} in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Snippets are code that runs on every matching request.
+    tests:
+      - fixture: fixtures/snippet-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.snippet.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/snippets/{snippet_name}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete snippet {snippet_name} from zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Snippet code can be redeployed from source.
+    tests:
+      - fixture: fixtures/snippet-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.snippet.rules-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/snippets/snippet_rules" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace the snippet rules of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/snippet-rules-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.snippet.rules-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/snippets/snippet_rules" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete the snippet rules of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/snippet-rules-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

@@ -1,0 +1,8 @@
+# description: Change Workers settings of account 023e105f4ecef8ad9ca31a8372d0c353
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/account-settings HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"default_usage_model":"standard"}

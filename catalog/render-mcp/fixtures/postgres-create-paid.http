@@ -1,0 +1,8 @@
+# description: Create Postgres shop-db on plan basic_1gb
+POST /mcp HTTP/1.1
+Host: mcp.render.com
+Authorization: Bearer opf_render-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"create_postgres","arguments":{"name":"shop-db","plan":"basic_1gb","diskSizeGb":15,"workspaceId":"tea-acme01"}}}

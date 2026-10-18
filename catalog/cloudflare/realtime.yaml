@@ -1,0 +1,91 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): realtime
+operations:
+  - id: cloudflare.realtime.sfu-app-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/calls/apps" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Realtime SFU app {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the app secret.
+    tests:
+      - fixture: fixtures/realtime-sfu-app-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.realtime.sfu-app-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/calls/apps/{app_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change Realtime SFU app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/realtime-sfu-app-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.realtime.sfu-app-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/calls/apps/{app_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete Realtime SFU app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The app secret goes with it.
+    tests:
+      - fixture: fixtures/realtime-sfu-app-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.realtime.turn-key-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/calls/turn_keys" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create TURN key {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the TURN key's secret.
+    tests:
+      - fixture: fixtures/realtime-turn-key-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.realtime.turn-key-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/calls/turn_keys/{key_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change TURN key {key_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/realtime-turn-key-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.realtime.turn-key-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/calls/turn_keys/{key_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete TURN key {key_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/realtime-turn-key-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

@@ -54,7 +54,8 @@
       "properties": {
         "graphql_query": { "$ref": "rules.schema.json#/$defs/class" },
         "rest_safe_methods": { "$ref": "rules.schema.json#/$defs/class" },
-        "aws_read_actions": { "$ref": "rules.schema.json#/$defs/class" }
+        "aws_read_actions": { "$ref": "rules.schema.json#/$defs/class" },
+        "graphql_secret_fields": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[_A-Za-z][_0-9A-Za-z]*$" } }
       }
     },
     "mcp": {

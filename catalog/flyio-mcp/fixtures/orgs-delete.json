@@ -1,0 +1,7 @@
+{
+  "description": "Delete organization acme-staging with all its apps",
+  "tool": "fly-orgs-delete",
+  "arguments": {
+    "slug": "acme-staging"
+  }
+}

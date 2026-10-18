@@ -1,0 +1,5 @@
+# description: Delete the R2 Data Catalog metadata of bucket shop-assets
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2-catalog/shop-assets/delete HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Create an IdP federation grant in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/idp_federation_grants HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"idp_id":"a79de439-0e7f-4ebb-8a02-222222222222"}

@@ -1,0 +1,7 @@
+# description: Set up logical replication for public on Postgres dpg-shopdb01
+POST /v1/postgres/dpg-shopdb01/replication HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"databaseName":"shop","schemaName":"public","replicationSlotName":"analytics"}

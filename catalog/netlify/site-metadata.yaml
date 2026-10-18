@@ -1,0 +1,15 @@
+# Netlify REST API: site metadata
+operations:
+  - id: netlify.site-metadata.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/metadata" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Replace the metadata of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/site-metadata-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

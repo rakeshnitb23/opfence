@@ -1,0 +1,7 @@
+# description: Replace every redirect/rewrite rule of service srv-shopweb01
+PUT /v1/services/srv-shopweb01/routes HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+[{"type":"rewrite","source":"/*","destination":"/index.html"}]

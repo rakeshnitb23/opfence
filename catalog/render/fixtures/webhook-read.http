@@ -1,0 +1,5 @@
+# description: Read webhook whk-alerts01 with its signing secret
+GET /v1/webhooks/whk-alerts01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

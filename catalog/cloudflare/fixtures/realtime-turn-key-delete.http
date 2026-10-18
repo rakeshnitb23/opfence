@@ -1,0 +1,5 @@
+# description: Delete TURN key 023e105f4ecef8ad9ca31a8372d0c35b
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/calls/turn_keys/023e105f4ecef8ad9ca31a8372d0c35b HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

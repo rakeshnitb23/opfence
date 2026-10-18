@@ -1,0 +1,33 @@
+# Render REST API: notification-settings
+operations:
+  - id: render.notification-settings.owner-update
+    match: { rest: { method: PATCH, path: "/v1/notification-settings/owners/{ownerId}" } }
+    class: write
+    resource: { arg: ownerId, kind: workspace }
+    card: "Change notification settings of workspace {ownerId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/notifications/notifications_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/notification-settings-owner-update.http
+        expect: write
+        resource: tea-acme01
+
+  - id: render.notification-settings.service-override-update
+    match: { rest: { method: PATCH, path: "/v1/notification-settings/overrides/services/{serviceId}" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Change notification settings of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/notifications/notifications_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/notification-settings-service-override-update.http
+        expect: write
+        resource: srv-shopweb01

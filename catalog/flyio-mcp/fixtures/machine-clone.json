@@ -1,0 +1,9 @@
+{
+  "description": "Clone Machine 3d8d9d2b1c4e87 in app shop-api",
+  "tool": "fly-machine-clone",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87",
+    "region": "fra"
+  }
+}

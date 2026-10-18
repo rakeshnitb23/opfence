@@ -1,0 +1,78 @@
+# Fly.io GraphQL API: health-check
+operations:
+  - id: flyio.health-check.create-check-job
+    match: { graphql: { type: mutation, field: createCheckJob } }
+    class: write
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Create an HTTP check of {input.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/health-check-create-check-job.http
+        expect: write
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.health-check.create-check-job-run
+    match: { graphql: { type: mutation, field: createCheckJobRun } }
+    class: write
+    resource: { arg: input.checkJobId, kind: check-job }
+    card: "Run check job {input.checkJobId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/health-check-create-check-job-run.http
+        expect: write
+        resource: chk_1
+
+  - id: flyio.health-check.set-pagerduty-handler
+    match: { graphql: { type: mutation, field: setPagerdutyHandler } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Set PagerDuty handler {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Stores a PagerDuty token.
+    tests:
+      - fixture: fixtures/health-check-set-pagerduty-handler.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.health-check.set-slack-handler
+    match: { graphql: { type: mutation, field: setSlackHandler } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Set Slack handler {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Stores a Slack webhook URL, which is a secret.
+    tests:
+      - fixture: fixtures/health-check-set-slack-handler.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.health-check.delete-health-check-handler
+    match: { graphql: { type: mutation, field: deleteHealthCheckHandler } }
+    class: irreversible
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Delete health check handler {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      The handler holds a PagerDuty token or Slack webhook that Fly
+      never returns; deleting a secret is irreversible.
+    tests:
+      - fixture: fixtures/health-check-delete-health-check-handler.http
+        expect: irreversible
+        resource: NOx4Zp9QkV2

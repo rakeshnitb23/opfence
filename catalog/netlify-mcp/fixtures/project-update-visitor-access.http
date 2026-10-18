@@ -1,0 +1,8 @@
+# description: Change who can view Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+POST /mcp HTTP/1.1
+Host: netlify-mcp.netlify.app
+Authorization: Bearer opf_netlify-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"netlify-project-update-visitor-access-controls","arguments":{"siteId":"3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f","appliesTo":"non-production-projects","requireSSOTeamLogin":true}}}

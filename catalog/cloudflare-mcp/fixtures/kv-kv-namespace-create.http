@@ -1,0 +1,8 @@
+# description: Create KV namespace shop-sessions
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":15,"method":"tools/call","params":{"name":"kv_namespace_create","arguments":{"title":"shop-sessions"}}}

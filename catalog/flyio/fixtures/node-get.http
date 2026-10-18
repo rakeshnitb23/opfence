@@ -1,0 +1,7 @@
+# description: Read an object by ID
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"query Node($id: ID!) { node(id: $id) { ... on AddOn { password } } }","variables":{"id":"QWRkT246MTIz"}}

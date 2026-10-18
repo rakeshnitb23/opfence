@@ -1,0 +1,25 @@
+# Cloudflare MCP servers: docs
+operations:
+  - id: cloudflare-mcp.docs.search-cloudflare-documentation
+    match: { mcp: { tool: search_cloudflare_documentation } }
+    class: read
+    card: "Search Cloudflare documentation for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/docs-ai-search.tools.ts
+    tests:
+      - fixture: fixtures/docs-search-cloudflare-documentation.http
+        expect: read
+
+  - id: cloudflare-mcp.docs.migrate-pages-to-workers-guide
+    match: { mcp: { tool: migrate_pages_to_workers_guide } }
+    class: read
+    card: "Read the Pages to Workers migration guide"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/docs-ai-search.tools.ts
+    tests:
+      - fixture: fixtures/docs-migrate-pages-to-workers-guide.http
+        expect: read

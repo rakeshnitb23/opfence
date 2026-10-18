@@ -1,0 +1,187 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): workflow
+operations:
+  - id: cloudflare.workflow.upsert
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Create or change workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-upsert.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}" } }
+    class: irreversible
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Delete workflow {workflow_name} and its instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Assumed to delete the workflow's instance history and state with it.
+    tests:
+      - fixture: fixtures/workflow-delete.http
+        expect: irreversible
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instance-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Start an instance of workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instance-create.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instances-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/batch" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Start instances of workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instances-create.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instances-delete
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/batch/delete" } }
+    class: irreversible
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Delete instances of workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instances-delete.http
+        expect: irreversible
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instances-terminate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/batch/terminate" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Terminate instances of workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stops running instances, like cancelling a job; their history remains.
+    tests:
+      - fixture: fixtures/workflow-instances-terminate.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instance-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/{instance_id}" } }
+    class: irreversible
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Delete instance {instance_id} of workflow {workflow_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instance-delete.http
+        expect: irreversible
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instance-event
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/{instance_id}/events/{event_type}" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Send event {event_type} to workflow instance {instance_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instance-event.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.instance-status
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workflows/{workflow_name}/instances/{instance_id}/status" } }
+    class: write
+    resource: { arg: workflow_name, kind: workflow }
+    card: "Pause, resume, restart or terminate workflow instance {instance_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-instance-status.http
+        expect: write
+        resource: "order-fulfilment"
+
+  - id: cloudflare.workflow.concurrency-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workflows/concurrency" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a workflow concurrency key in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-concurrency-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.workflow.concurrency-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workflows/concurrency/{key_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change workflow concurrency key {key_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-concurrency-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.workflow.concurrency-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workflows/concurrency/{key_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete workflow concurrency key {key_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-concurrency-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.workflow.settings-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workflows/settings" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change Workflows settings of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/workflow-settings-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

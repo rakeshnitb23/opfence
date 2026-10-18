@@ -1,0 +1,7 @@
+# description: Validate a Logpush ownership challenge for account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/logpush/ownership/validate HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"destination_conf":"s3://shop-logs/http?region=us-east-1","ownership_challenge":"00000000000000000000"}

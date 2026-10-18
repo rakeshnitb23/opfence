@@ -1,0 +1,81 @@
+# Netlify REST API: dev server hooks
+operations:
+  - id: netlify.dev-server-hook.list
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/dev_server_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the dev server hook URLs of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each dev server hook's url is a secret: anyone holding it can
+      trigger it.
+    tests:
+      - fixture: fixtures/dev-server-hook-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server-hook.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/dev_server_hooks/{id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the URL of dev server hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each dev server hook's url is a secret: anyone holding it can
+      trigger it.
+    tests:
+      - fixture: fixtures/dev-server-hook-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server-hook.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/dev_server_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Create dev server hook {body.title} for Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Creates a secret URL and returns it.
+    tests:
+      - fixture: fixtures/dev-server-hook-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server-hook.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/dev_server_hooks/{id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change dev server hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dev-server-hook-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server-hook.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/dev_server_hooks/{id}" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Delete dev server hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Revokes the hook URL, like revoking a token.
+    tests:
+      - fixture: fixtures/dev-server-hook-delete.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

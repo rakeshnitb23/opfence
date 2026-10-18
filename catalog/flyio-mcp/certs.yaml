@@ -1,0 +1,76 @@
+# flyctl MCP server (fly mcp server): certs
+operations:
+  - id: flyio-mcp.certs.add
+    match: { mcp: { tool: fly-certs-add } }
+    class: access
+    resource: { arg: app, kind: app }
+    card: "Serve app {app} on hostname {hostname}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/certs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Puts the app on a public custom hostname.
+    tests:
+      - fixture: fixtures/certs-add.json
+        expect: access
+        resource: shop-api
+
+  - id: flyio-mcp.certs.check
+    match: { mcp: { tool: fly-certs-check } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Check the certificate of {hostname} on app {app}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/certs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/certs-check.json
+        expect: write
+        resource: shop-api
+
+  - id: flyio-mcp.certs.list
+    match: { mcp: { tool: fly-certs-list } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/certs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/certs-list.json
+        expect: read
+        resource: shop-api
+
+  - id: flyio-mcp.certs.remove
+    match: { mcp: { tool: fly-certs-remove } }
+    class: delete
+    resource: { arg: app, kind: app }
+    card: "Remove hostname {hostname} from app {app}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/certs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/certs-remove.json
+        expect: delete
+        resource: shop-api
+
+  - id: flyio-mcp.certs.show
+    match: { mcp: { tool: fly-certs-show } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/certs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/certs-show.json
+        expect: read
+        resource: shop-api

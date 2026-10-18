@@ -1,0 +1,52 @@
+# Render MCP server: key-value
+operations:
+  - id: render-mcp.key-value.list
+    match: { mcp: { tool: list_key_value } }
+    class: read
+    card: "List Key Value instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/keyvalue/tools.go
+    tests:
+      - fixture: fixtures/key-value-list.http
+        expect: read
+
+  - id: render-mcp.key-value.get
+    match: { mcp: { tool: get_key_value } }
+    class: read
+    resource: { arg: keyValueId, kind: key-value }
+    card: "Show Key Value {keyValueId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/keyvalue/tools.go
+    notes: >-
+      Returns instance details without connection strings.
+    tests:
+      - fixture: fixtures/key-value-get.http
+        expect: read
+        resource: red-cache01
+
+  - id: render-mcp.key-value.create
+    match: { mcp: { tool: create_key_value } }
+    class: write
+    when:
+      - if: { arg: plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+    resource: { arg: name, kind: key-value }
+    card: "Create Key Value {name} on plan {plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/keyvalue/tools.go
+    notes: >-
+      The server defaults plan to free; any other plan is billed. The server
+      has no tool that runs Key Value commands.
+    tests:
+      - fixture: fixtures/key-value-create.http
+        expect: write
+        resource: cache
+      - fixture: fixtures/key-value-create-paid.http
+        expect: money
+        resource: cache

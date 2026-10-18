@@ -1,0 +1,7 @@
+# description: Check a token against an access scope
+POST /v1/tokens/authorize HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"header":"FlyV1 opf_flyio_EXAMPLE","access":{"app_name":"shop-api","action":1}}

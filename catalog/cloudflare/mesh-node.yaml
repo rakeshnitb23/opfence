@@ -1,0 +1,93 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): mesh-node
+operations:
+  - id: cloudflare.mesh-node.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/warp_connector" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Mesh node {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Creating a node issues the token its connector authenticates with.
+    tests:
+      - fixture: fixtures/mesh-node-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.mesh-node.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/warp_connector/{tunnel_id}" } }
+    class: write
+    when:
+      - if: { arg: body.tunnel_secret, present: true }
+        class: credential
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Change Mesh node {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mesh-node-update.http
+        expect: write
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+      - fixture: fixtures/mesh-node-update-secret.http
+        expect: credential
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.mesh-node.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/warp_connector/{tunnel_id}" } }
+    class: delete
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Delete Mesh node {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mesh-node-delete.http
+        expect: delete
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.mesh-node.configuration-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/warp_connector/{tunnel_id}/configurations" } }
+    class: access
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Change the HA configuration of Mesh node {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mesh-node-configuration-update.http
+        expect: access
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.mesh-node.failover
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/warp_connector/{tunnel_id}/failover" } }
+    class: write
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Fail over Mesh node {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mesh-node-failover.http
+        expect: write
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.mesh-node.token
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/warp_connector/{tunnel_id}/token" } }
+    class: credential
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Read the token of Mesh node {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mesh-node-token.http
+        expect: credential
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"

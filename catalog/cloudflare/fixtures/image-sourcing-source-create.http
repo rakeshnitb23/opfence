@@ -1,0 +1,7 @@
+# description: Add an S3 import source legacy-s3
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/images/v2/sourcingkit/sources HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"legacy-s3","vendor":"s3","bucket":"legacy-images","secret":{"accessKeyId":"opf_cloudflare_EXAMPLE","secretAccessKey":"opf_cloudflare_EXAMPLE"}}

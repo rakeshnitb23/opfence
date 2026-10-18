@@ -1,0 +1,8 @@
+# description: delete-submission form submissions of Netlify site (none) (submission 64f0c2d3e4a5b6c7d8e9f012)
+POST /mcp HTTP/1.1
+Host: netlify-mcp.netlify.app
+Authorization: Bearer opf_netlify-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"netlify-project-manage-form-submissions","arguments":{"action":"delete-submission","submissionId":"64f0c2d3e4a5b6c7d8e9f012"}}}

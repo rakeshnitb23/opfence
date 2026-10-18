@@ -1,0 +1,90 @@
+# flyctl MCP server (fly mcp server): orgs
+operations:
+  - id: flyio-mcp.orgs.create
+    match: { mcp: { tool: fly-orgs-create } }
+    class: write
+    resource: { arg: name, kind: organization }
+    card: "Create organization {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/orgs-create.json
+        expect: write
+        resource: acme-staging
+
+  - id: flyio-mcp.orgs.delete
+    match: { mcp: { tool: fly-orgs-delete } }
+    class: irreversible
+    resource: { arg: slug, kind: organization }
+    card: "Delete organization {slug} with all its apps"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Runs fly orgs delete --yes; every app and Machine in the
+      organization is deleted.
+    tests:
+      - fixture: fixtures/orgs-delete.json
+        expect: irreversible
+        resource: acme-staging
+
+  - id: flyio-mcp.orgs.invite
+    match: { mcp: { tool: fly-orgs-invite } }
+    class: access
+    resource: { arg: slug, kind: organization }
+    card: "Invite {email} to organization {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/orgs-invite.json
+        expect: access
+        resource: acme
+
+  - id: flyio-mcp.orgs.list
+    match: { mcp: { tool: fly-orgs-list } }
+    class: read
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/orgs-list.json
+        expect: read
+
+  - id: flyio-mcp.orgs.remove
+    match: { mcp: { tool: fly-orgs-remove } }
+    class: access
+    resource: { arg: slug, kind: organization }
+    card: "Remove {email} from organization {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/orgs-remove.json
+        expect: access
+        resource: acme
+
+  - id: flyio-mcp.orgs.show
+    match: { mcp: { tool: fly-orgs-show } }
+    class: read
+    resource: { arg: slug, kind: organization }
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/orgs-show.json
+        expect: read
+        resource: acme

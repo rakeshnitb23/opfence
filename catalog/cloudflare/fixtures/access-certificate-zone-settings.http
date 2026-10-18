@@ -1,0 +1,7 @@
+# description: Change Access mTLS hostname settings
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/access/certificates/settings HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"settings":[{"hostname":"admin.shop-example.com","china_network":false,"client_certificate_forwarding":true}]}

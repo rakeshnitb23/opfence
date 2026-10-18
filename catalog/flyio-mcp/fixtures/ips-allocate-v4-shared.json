@@ -1,0 +1,8 @@
+{
+  "description": "Allocate a free shared IPv4",
+  "tool": "fly-ips-allocate-v4",
+  "arguments": {
+    "app": "shop-api",
+    "shared": true
+  }
+}

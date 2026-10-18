@@ -1,0 +1,155 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): security-feature
+operations:
+  - id: cloudflare.security-feature.leaked-credential-checks
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/leaked-credential-checks" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Turn leaked credential checks on or off for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-leaked-credential-checks.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.leaked-credential-detection-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/leaked-credential-checks/detections" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Add a leaked credential detection in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-leaked-credential-detection-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.leaked-credential-detection-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/leaked-credential-checks/detections/{detection_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change leaked credential detection {detection_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-leaked-credential-detection-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.leaked-credential-detection-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/leaked-credential-checks/detections/{detection_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete leaked credential detection {detection_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-leaked-credential-detection-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.content-scan-enable
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/content-upload-scan/enable" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Enable content scanning for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-content-scan-enable.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.content-scan-disable
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/content-upload-scan/disable" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Disable content scanning for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-content-scan-disable.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.content-scan-settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/content-upload-scan/settings" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change content scanning for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-content-scan-settings.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.page-shield-settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/page_shield" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change client-side security settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-page-shield-settings.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.page-shield-policy-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/page_shield/policies" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a content security rule in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-page-shield-policy-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.page-shield-policy-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/page_shield/policies/{policy_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change content security rule {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-page-shield-policy-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.security-feature.page-shield-policy-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/page_shield/policies/{policy_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete content security rule {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/security-feature-page-shield-policy-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"

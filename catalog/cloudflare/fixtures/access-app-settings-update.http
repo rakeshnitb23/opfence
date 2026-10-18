@@ -1,0 +1,7 @@
+# description: Change settings of Access application f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/apps/f174e90a-fafe-4643-bbbc-4a0ed4fc8415/settings HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"allow_iframe":true}

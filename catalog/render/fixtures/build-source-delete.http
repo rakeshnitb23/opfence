@@ -1,0 +1,5 @@
+# description: Delete build source bsr-shared01 with its build-time variables and secret files
+DELETE /v1/build-sources/bsr-shared01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

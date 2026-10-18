@@ -1,0 +1,7 @@
+# description: Connect a repository to Workers Builds in account 023e105f4ecef8ad9ca31a8372d0c353
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/repos/connections HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"provider_account_id":"cloudflare","provider_account_name":"Cloudflare","provider_type":"github","repo_id":"workers-sdk","repo_name":"workers-sdk"}

@@ -1,0 +1,5 @@
+# description: Read the token of Mesh node f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/warp_connector/f70ff985-a4ef-4643-bbbc-4a0ed4fc8415/token HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

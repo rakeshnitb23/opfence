@@ -1,0 +1,5 @@
+# description: Remove custom domain shop-example.com from Pages project shop-web
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects/shop-web/domains/shop-example.com HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

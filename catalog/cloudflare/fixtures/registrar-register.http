@@ -1,0 +1,7 @@
+# description: Register (buy) domain shop-example.com
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/registrar/registrations HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"domain_name":"shop-example.com","years":1,"auto_renew":true,"privacy_mode":"redaction"}

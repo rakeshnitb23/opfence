@@ -1,0 +1,32 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): bot-management
+operations:
+  - id: cloudflare.bot-management.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/bot_management" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change bot management of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/bot-management-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.bot-management.feedback
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/bot_management/feedback" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Report a bot detection mistake in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/bot-management-feedback.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

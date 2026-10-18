@@ -1,0 +1,7 @@
+# description: Create web_service service shop-web
+POST /v1/services HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"type":"web_service","name":"shop-web","ownerId":"tea-acme01","repo":"https://github.com/acme/shop","serviceDetails":{"runtime":"node","plan":"starter","envSpecificDetails":{"buildCommand":"npm ci","startCommand":"npm start"}}}

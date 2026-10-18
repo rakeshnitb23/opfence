@@ -1,0 +1,7 @@
+# description: Assign a dedicated IPv4 address to shop-api
+POST /v1/apps/shop-api/ip_assignments HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"type":"v4","region":"ams"}

@@ -1,0 +1,31 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): mtls-certificate
+operations:
+  - id: cloudflare.mtls-certificate.upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/mtls_certificates" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Upload mTLS certificate {body.name} to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The upload can include the certificate's private key.
+    tests:
+      - fixture: fixtures/mtls-certificate-upload.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.mtls-certificate.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/mtls_certificates/{mtls_certificate_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete mTLS certificate {mtls_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/mtls-certificate-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

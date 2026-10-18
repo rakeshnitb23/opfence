@@ -1,0 +1,7 @@
+# description: Clip a video in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/clip HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"clippedFromVideoUID":"ea95132c15732412d22c1476fa83f27a","startTimeSeconds":0,"endTimeSeconds":30}

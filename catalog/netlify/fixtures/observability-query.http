@@ -1,0 +1,7 @@
+# description: Query counts of the edge traffic of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+POST /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/observability/query/counts?from_ts=1760745600000&to_ts=1760832000000 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"data":[{"attributes":{"queries":[{"name":"status_codes"}]}}]}

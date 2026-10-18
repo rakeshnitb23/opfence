@@ -1,0 +1,7 @@
+{
+  "description": "Destroy Fly app shop-api with all its Machines and volumes",
+  "tool": "fly-apps-destroy",
+  "arguments": {
+    "name": "shop-api"
+  }
+}

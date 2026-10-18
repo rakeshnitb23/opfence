@@ -1,0 +1,7 @@
+# description: Set metadata keys through the deprecated PUT alias
+PUT /v1/apps/shop-api/machines/3d8d9d2b1c4e87/metadata HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"metadata":{"role":"worker"}}

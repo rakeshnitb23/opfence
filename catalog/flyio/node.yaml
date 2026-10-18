@@ -1,0 +1,30 @@
+# Fly.io GraphQL API: node
+operations:
+  - id: flyio.node.get
+    match: { graphql: { type: query, field: node } }
+    class: credential
+    card: "Read object {id} by its global ID"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      node returns any object by ID, including AddOn, AccessToken and
+      LimitedAccessToken with their secret fields.
+    tests:
+      - fixture: fixtures/node-get.http
+        expect: credential
+
+  - id: flyio.node.list
+    match: { graphql: { type: query, field: nodes } }
+    class: credential
+    card: "Read objects {ids} by their global IDs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Same as node, for several IDs.
+    tests:
+      - fixture: fixtures/node-list.http
+        expect: credential

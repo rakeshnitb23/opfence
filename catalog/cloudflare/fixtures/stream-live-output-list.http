@@ -1,0 +1,5 @@
+# description: List outputs of live input 66be4bf738797e01e1fca35a7bdecdcd with their stream keys
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/live_inputs/66be4bf738797e01e1fca35a7bdecdcd/outputs HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

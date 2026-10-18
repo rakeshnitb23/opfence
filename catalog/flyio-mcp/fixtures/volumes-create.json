@@ -1,0 +1,10 @@
+{
+  "description": "Create a 10 GB volume pg_data for app shop-api in ams",
+  "tool": "fly-volumes-create",
+  "arguments": {
+    "app": "shop-api",
+    "name": "pg_data",
+    "region": "ams",
+    "size": 10
+  }
+}

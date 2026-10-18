@@ -1,0 +1,7 @@
+# description: Deploy a new version of workflow wfl-etl01
+POST /v1/workflowversions HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"workflowId":"wfl-etl01","commit":"4f2a9c1"}

@@ -1,0 +1,5 @@
+# description: Delete internal DNS view 023e105f4ecef8ad9ca31a8372d0c359
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/dns_settings/views/023e105f4ecef8ad9ca31a8372d0c359 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

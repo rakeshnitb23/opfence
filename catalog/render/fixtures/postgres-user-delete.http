@@ -1,0 +1,5 @@
+# description: Delete database user analyst from Postgres dpg-shopdb01
+DELETE /v1/postgres/dpg-shopdb01/credentials/analyst HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

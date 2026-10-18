@@ -1,0 +1,79 @@
+# Cloudflare MCP servers: graphql
+operations:
+  - id: cloudflare-mcp.graphql.graphql-schema-search
+    match: { mcp: { tool: graphql_schema_search } }
+    class: read
+    card: "Search the Cloudflare GraphQL schema for {keyword}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    tests:
+      - fixture: fixtures/graphql-graphql-schema-search.http
+        expect: read
+
+  - id: cloudflare-mcp.graphql.graphql-schema-overview
+    match: { mcp: { tool: graphql_schema_overview } }
+    class: read
+    card: "Show an overview of the Cloudflare GraphQL schema"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    tests:
+      - fixture: fixtures/graphql-graphql-schema-overview.http
+        expect: read
+
+  - id: cloudflare-mcp.graphql.graphql-type-details
+    match: { mcp: { tool: graphql_type_details } }
+    class: read
+    card: "Show GraphQL type {typeName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    tests:
+      - fixture: fixtures/graphql-graphql-type-details.http
+        expect: read
+
+  - id: cloudflare-mcp.graphql.graphql-complete-schema
+    match: { mcp: { tool: graphql_complete_schema } }
+    class: read
+    card: "Read the complete Cloudflare GraphQL schema"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    tests:
+      - fixture: fixtures/graphql-graphql-complete-schema.http
+        expect: read
+
+  - id: cloudflare-mcp.graphql.graphql-query
+    match: { mcp: { tool: graphql_query } }
+    class: read
+    card: "Run a GraphQL Analytics query"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    notes: >-
+      The GraphQL Analytics API (/client/v4/graphql) has no mutations, so any
+      query only reads analytics.
+    tests:
+      - fixture: fixtures/graphql-graphql-query.http
+        expect: read
+
+  - id: cloudflare-mcp.graphql.graphql-api-explorer
+    match: { mcp: { tool: graphql_api_explorer } }
+    class: read
+    card: "Build a GraphQL Analytics API explorer link"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/graphql/src/tools/graphql.tools.ts
+    notes: >-
+      Returns a link to the GraphQL explorer with the query filled in; nothing
+      runs.
+    tests:
+      - fixture: fixtures/graphql-graphql-api-explorer.http
+        expect: read

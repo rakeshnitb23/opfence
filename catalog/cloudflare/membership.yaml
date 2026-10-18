@@ -1,0 +1,29 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): membership
+operations:
+  - id: cloudflare.membership.update
+    match: { rest: { method: PUT, path: "/client/v4/memberships/{membership_id}" } }
+    class: access
+    resource: { arg: membership_id, kind: membership }
+    card: "Accept or reject membership {membership_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/membership-update.http
+        expect: access
+        resource: "4536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.membership.delete
+    match: { rest: { method: DELETE, path: "/client/v4/memberships/{membership_id}" } }
+    class: access
+    resource: { arg: membership_id, kind: membership }
+    card: "Leave the account of membership {membership_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/membership-delete.http
+        expect: access
+        resource: "4536bcfad5faccb111b47003c79917fa"

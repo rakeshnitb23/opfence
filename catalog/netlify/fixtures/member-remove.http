@@ -1,0 +1,5 @@
+# description: Remove member 64f0cbd2e3a4b5c6d7e8f901 from team acme-web
+DELETE /api/v1/acme-web/members/64f0cbd2e3a4b5c6d7e8f901 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

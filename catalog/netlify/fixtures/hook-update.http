@@ -1,0 +1,7 @@
+# description: Change notification hook 64f0c8d9e0a1b2c3d4e5f678
+PUT /api/v1/hooks/64f0c8d9e0a1b2c3d4e5f678 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"type":"url","event":"deploy_created","data":{"url":"https://hooks.example.com/netlify"}}

@@ -1,0 +1,214 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): email-sending
+operations:
+  - id: cloudflare.email-sending.account-suppression-create-legacy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/sending/suppression" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add an email sending suppression (account, deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-account-suppression-create-legacy.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.account-suppression-delete-legacy
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/email/sending/suppression/{suppression_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete email sending suppression {suppression_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-account-suppression-delete-legacy.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.zone-suppression-create-legacy
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/sending/suppression" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Add an email sending suppression (zone, deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-zone-suppression-create-legacy.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.zone-suppression-delete-legacy
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/email/sending/suppression/{suppression_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete email sending suppression {suppression_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-zone-suppression-delete-legacy.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.send
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/sending/send" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Send an email to {body.to}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Sends mail from the account's domain. It cannot be unsent, but it changes
+      nothing in the account.
+    tests:
+      - fixture: fixtures/email-sending-send.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.send-raw
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/sending/send_raw" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Send a raw MIME email from account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-send-raw.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.suppression-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/sending/suppressions" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add an email sending suppression in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-suppression-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.suppressions-import
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/sending/suppressions/bulk" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Import email sending suppressions in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-suppressions-import.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.suppression-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/email/sending/suppressions/{suppression_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change email sending suppression {suppression_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-suppression-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.suppression-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/email/sending/suppressions/{suppression_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete email sending suppression {suppression_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-suppression-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-sending.subdomain-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/sending/subdomains" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a sending subdomain in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-subdomain-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.subdomain-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/email/sending/subdomains/{subdomain_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change sending subdomain {subdomain_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-subdomain-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.subdomain-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/email/sending/subdomains/{subdomain_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete sending subdomain {subdomain_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-subdomain-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.subdomain-dns-fix
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/sending/subdomains/{subdomain_id}/dns" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Fix DNS records of sending subdomain {subdomain_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-subdomain-dns-fix.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-sending.subdomain-preview
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/sending/subdomains/preview" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Preview DNS records for a sending subdomain in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-sending-subdomain-preview.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

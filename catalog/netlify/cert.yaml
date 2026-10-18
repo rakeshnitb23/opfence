@@ -1,0 +1,43 @@
+# Netlify REST API: TLS certificate
+operations:
+  - id: netlify.cert.provision
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/ssl" } }
+    class: write
+    when:
+      - if: { arg: query.key, present: true }
+        class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Provision a TLS certificate for Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Without parameters Netlify provisions a Let's Encrypt certificate.
+      With certificate, key and ca_certificates it installs a custom
+      certificate, which sets a private key.
+    tests:
+      - fixture: fixtures/cert-provision.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/cert-provision-custom.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.cert.renew
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/ssl/renew" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Renew the Let's Encrypt certificate of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Not a path of its own in the OpenAPI file;
+      provisionSiteTLSCertificate's description names it as the way to
+      renew a Let's Encrypt certificate.
+    tests:
+      - fixture: fixtures/cert-renew.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

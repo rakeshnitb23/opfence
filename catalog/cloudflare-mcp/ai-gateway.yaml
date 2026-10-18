@@ -1,0 +1,72 @@
+# Cloudflare MCP servers: ai-gateway
+operations:
+  - id: cloudflare-mcp.ai-gateway.list-gateways
+    match: { mcp: { tool: list_gateways } }
+    class: read
+    card: "List AI Gateways"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/ai-gateway/src/tools/ai-gateway.tools.ts
+    tests:
+      - fixture: fixtures/ai-gateway-list-gateways.http
+        expect: read
+
+  - id: cloudflare-mcp.ai-gateway.list-logs
+    match: { mcp: { tool: list_logs } }
+    class: read
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "List logs of AI Gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/ai-gateway/src/tools/ai-gateway.tools.ts
+    tests:
+      - fixture: fixtures/ai-gateway-list-logs.http
+        expect: read
+        resource: "shop-gateway"
+
+  - id: cloudflare-mcp.ai-gateway.get-log-details
+    match: { mcp: { tool: get_log_details } }
+    class: read
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Show log {log_id} of AI Gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/ai-gateway/src/tools/ai-gateway.tools.ts
+    tests:
+      - fixture: fixtures/ai-gateway-get-log-details.http
+        expect: read
+        resource: "shop-gateway"
+
+  - id: cloudflare-mcp.ai-gateway.get-log-request-body
+    match: { mcp: { tool: get_log_request_body } }
+    class: read
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Read the request body of log {log_id} in AI Gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/ai-gateway/src/tools/ai-gateway.tools.ts
+    notes: >-
+      AI Gateway does not log the provider API key headers, only the prompt
+      body.
+    tests:
+      - fixture: fixtures/ai-gateway-get-log-request-body.http
+        expect: read
+        resource: "shop-gateway"
+
+  - id: cloudflare-mcp.ai-gateway.get-log-response-body
+    match: { mcp: { tool: get_log_response_body } }
+    class: read
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Read the response body of log {log_id} in AI Gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/ai-gateway/src/tools/ai-gateway.tools.ts
+    tests:
+      - fixture: fixtures/ai-gateway-get-log-response-body.http
+        expect: read
+        resource: "shop-gateway"

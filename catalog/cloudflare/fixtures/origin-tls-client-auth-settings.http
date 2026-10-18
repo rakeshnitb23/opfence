@@ -1,0 +1,7 @@
+# description: Turn authenticated origin pulls on or off for zone 9f1839b6152d298aca64c4e906b6d074
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/origin_tls_client_auth/settings HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true}

@@ -1,0 +1,8 @@
+# description: Serve AI gateway shop-gateway on a custom domain
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/gateways/shop-gateway/custom-domains HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"domain":"ai.acme.com","zone_id":"395566f4c8a5b9d2a5fc0d457b007c44"}

@@ -1,0 +1,5 @@
+# description: Read admin override codes for device ed35569b41ce4d1facfe683550f5408c (deprecated)
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/devices/ed35569b41ce4d1facfe683550f5408c/override_codes HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

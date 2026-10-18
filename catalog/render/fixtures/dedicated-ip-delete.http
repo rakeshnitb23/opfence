@@ -1,0 +1,5 @@
+# description: Delete dedicated IP set dip-egress01
+DELETE /v1/dedicated-ips/dip-egress01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

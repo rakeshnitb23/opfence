@@ -1,0 +1,15 @@
+# Fly.io Machines API: platform
+operations:
+  - id: flyio.platform.placements
+    match: { rest: { method: POST, path: "/v1/platform/placements" } }
+    class: read
+    card: "Simulate placing Machines for organization {body.org_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Only simulates placement; creates nothing.
+    tests:
+      - fixture: fixtures/platform-placements.http
+        expect: read

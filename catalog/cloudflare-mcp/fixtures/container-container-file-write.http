@@ -1,0 +1,8 @@
+# description: Write /tmp/report.py in the sandbox container
+POST /mcp HTTP/1.1
+Host: containers.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":54,"method":"tools/call","params":{"name":"container_file_write","arguments":{"args":{"path":"/tmp/report.py","text":"print('ok')\n"}}}}

@@ -1,0 +1,7 @@
+# description: Move resources into environment evm-prod01
+POST /v1/environments/evm-prod01/resources HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"resourceIds":["srv-shopweb01"]}

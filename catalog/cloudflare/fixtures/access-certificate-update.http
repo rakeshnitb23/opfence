@@ -1,0 +1,7 @@
+# description: Change Access mTLS certificate 2458ce5a-0c35-4c7f-82c7-8e9487d3ff61
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/certificates/2458ce5a-0c35-4c7f-82c7-8e9487d3ff61 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"associated_hostnames":["admin.shop-example.com"]}

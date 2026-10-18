@@ -1,0 +1,7 @@
+# description: Record a signup
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateUserSignup($input: CreateUserSignupInput!) { createUserSignup(input: $input) { __typename } }","variables":{"input":{"source":"cli","startedAt":"2026-10-18T08:00:00Z"}}}

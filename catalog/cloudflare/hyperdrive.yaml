@@ -1,0 +1,130 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): hyperdrive
+operations:
+  - id: cloudflare.hyperdrive.list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/hyperdrive/configs" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List Hyperdrive configurations of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The origin password and Access client secret are write-only: the schema
+      says the API never returns them. The response holds host, port, database
+      and user, which are not secrets on their own.
+    tests:
+      - fixture: fixtures/hyperdrive-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.hyperdrive.read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}" } }
+    class: read
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Read Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The origin password and Access client secret are write-only: the schema
+      says the API never returns them. The response holds host, port, database
+      and user, which are not secrets on their own.
+    tests:
+      - fixture: fixtures/hyperdrive-read.http
+        expect: read
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+
+  - id: cloudflare.hyperdrive.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/hyperdrive/configs" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Hyperdrive configuration {body.name} with database credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores the origin database password.
+    tests:
+      - fixture: fixtures/hyperdrive-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.hyperdrive.replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}" } }
+    class: credential
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Replace Hyperdrive configuration {hyperdrive_id} and its database credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/hyperdrive-replace.http
+        expect: credential
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+
+  - id: cloudflare.hyperdrive.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}" } }
+    class: write
+    when:
+      - if: { arg: body.origin.password, present: true }
+        class: credential
+      - if: { arg: body.origin.access_client_secret, present: true }
+        class: credential
+      - if: { arg: body.origin.host, present: true }
+        class: credential
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Change Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Caching changes are writes. Setting the password or Access secret stores a
+      secret; changing the host alone keeps the stored password and sends it to
+      the new host on the next connection, which can leak it.
+    tests:
+      - fixture: fixtures/hyperdrive-update.http
+        expect: write
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+      - fixture: fixtures/hyperdrive-update-password.http
+        expect: credential
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+      - fixture: fixtures/hyperdrive-update-host.http
+        expect: credential
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+
+  - id: cloudflare.hyperdrive.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}" } }
+    class: irreversible
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Delete Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the stored database password with the configuration; Cloudflare
+      never returns it, so the configuration cannot be rebuilt without the
+      password from elsewhere.
+    tests:
+      - fixture: fixtures/hyperdrive-delete.http
+        expect: irreversible
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"
+
+  - id: cloudflare.hyperdrive.restart
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/hyperdrive/configs/{hyperdrive_id}/restart" } }
+    class: write
+    resource: { arg: hyperdrive_id, kind: hyperdrive }
+    card: "Restart Hyperdrive configuration {hyperdrive_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/hyperdrive-restart.http
+        expect: write
+        resource: "9a1b2c3d4e5f60718293a4b5c6d7e8f9"

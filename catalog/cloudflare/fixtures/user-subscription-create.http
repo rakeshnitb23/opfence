@@ -1,0 +1,7 @@
+# description: Create a paid subscription for your user
+POST /client/v4/user/subscriptions HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"frequency":"monthly"}

@@ -1,0 +1,43 @@
+# Cloudflare MCP servers: build
+operations:
+  - id: cloudflare-mcp.build.workers-builds-list-builds
+    match: { mcp: { tool: workers_builds_list_builds } }
+    class: read
+    resource: { arg: workerId, kind: worker }
+    card: "List builds of Worker {workerId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-builds/src/tools/workers-builds.tools.ts
+    tests:
+      - fixture: fixtures/build-workers-builds-list-builds.http
+        expect: read
+        resource: "a1b2c3d4e5f60718293a4b5c6d7e8f90"
+
+  - id: cloudflare-mcp.build.workers-builds-get-build
+    match: { mcp: { tool: workers_builds_get_build } }
+    class: read
+    resource: { arg: buildUUID, kind: build }
+    card: "Show build {buildUUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-builds/src/tools/workers-builds.tools.ts
+    tests:
+      - fixture: fixtures/build-workers-builds-get-build.http
+        expect: read
+        resource: "5c1f0e3a-8b7d-4c2e-9f6a-1d3b5e7c9a0b"
+
+  - id: cloudflare-mcp.build.workers-builds-get-build-logs
+    match: { mcp: { tool: workers_builds_get_build_logs } }
+    class: read
+    resource: { arg: buildUUID, kind: build }
+    card: "Read the logs of build {buildUUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-builds/src/tools/workers-builds.tools.ts
+    tests:
+      - fixture: fixtures/build-workers-builds-get-build-logs.http
+        expect: read
+        resource: "5c1f0e3a-8b7d-4c2e-9f6a-1d3b5e7c9a0b"

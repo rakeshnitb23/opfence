@@ -1,0 +1,7 @@
+# description: Reschedule maintenance run mrn-pg01
+PATCH /v1/maintenance/mrn-pg01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"scheduledAt":"2026-10-25T03:00:00Z"}

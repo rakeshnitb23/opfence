@@ -1,0 +1,8 @@
+# description: Create a custom page asset (zone)
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/custom_pages/assets HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"description":"Custom 500 error page","name":"my_custom_error_page","url":"https://example.com/error.html"}

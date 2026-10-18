@@ -1,0 +1,7 @@
+# description: Create MCP portal My MCP Portal
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/ai-controls/mcp/portals HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"allow_code_mode":true,"code_mode":"opt_in","description":"This is my custom MCP Portal","hostname":"example.com","id":"my-mcp-portal","name":"My MCP Portal"}

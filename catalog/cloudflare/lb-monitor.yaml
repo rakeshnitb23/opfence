@@ -1,0 +1,195 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): lb-monitor
+operations:
+  - id: cloudflare.lb-monitor.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers/monitors" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a load balancer monitor (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-account-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.lb-monitor.account-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/load_balancers/monitors/{monitor_id}" } }
+    class: write
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Replace load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-account-update.http
+        expect: write
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.account-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/load_balancers/monitors/{monitor_id}" } }
+    class: write
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Change load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-account-patch.http
+        expect: write
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/load_balancers/monitors/{monitor_id}" } }
+    class: delete
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Delete load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-account-delete.http
+        expect: delete
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.account-preview
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers/monitors/{monitor_id}/preview" } }
+    class: read
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Preview load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-account-preview.http
+        expect: read
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.user-create
+    match: { rest: { method: POST, path: "/client/v4/user/load_balancers/monitors" } }
+    class: write
+    card: "Create a load balancer monitor (user)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-user-create.http
+        expect: write
+
+  - id: cloudflare.lb-monitor.user-update
+    match: { rest: { method: PUT, path: "/client/v4/user/load_balancers/monitors/{monitor_id}" } }
+    class: write
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Replace load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-user-update.http
+        expect: write
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.user-patch
+    match: { rest: { method: PATCH, path: "/client/v4/user/load_balancers/monitors/{monitor_id}" } }
+    class: write
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Change load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-user-patch.http
+        expect: write
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.user-delete
+    match: { rest: { method: DELETE, path: "/client/v4/user/load_balancers/monitors/{monitor_id}" } }
+    class: delete
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Delete load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-user-delete.http
+        expect: delete
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.user-preview
+    match: { rest: { method: POST, path: "/client/v4/user/load_balancers/monitors/{monitor_id}/preview" } }
+    class: read
+    resource: { arg: monitor_id, kind: lb-monitor }
+    card: "Preview load balancer monitor {monitor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-user-preview.http
+        expect: read
+        resource: "f1aba936b94213e5b8dca0c0dbf1f9cc"
+
+  - id: cloudflare.lb-monitor.group-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers/monitor_groups" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a monitor group in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-group-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.lb-monitor.group-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/load_balancers/monitor_groups/{monitor_group_id}" } }
+    class: write
+    resource: { arg: monitor_group_id, kind: lb-monitor }
+    card: "Replace monitor group {monitor_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-group-update.http
+        expect: write
+        resource: "1d2b3c4e5f6a7b8c9d0e1f2a3b4c5d6e"
+
+  - id: cloudflare.lb-monitor.group-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/load_balancers/monitor_groups/{monitor_group_id}" } }
+    class: write
+    resource: { arg: monitor_group_id, kind: lb-monitor }
+    card: "Change monitor group {monitor_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-group-patch.http
+        expect: write
+        resource: "1d2b3c4e5f6a7b8c9d0e1f2a3b4c5d6e"
+
+  - id: cloudflare.lb-monitor.group-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/load_balancers/monitor_groups/{monitor_group_id}" } }
+    class: delete
+    resource: { arg: monitor_group_id, kind: lb-monitor }
+    card: "Delete monitor group {monitor_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-monitor-group-delete.http
+        expect: delete
+        resource: "1d2b3c4e5f6a7b8c9d0e1f2a3b4c5d6e"

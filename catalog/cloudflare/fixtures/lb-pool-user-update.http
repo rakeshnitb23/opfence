@@ -1,0 +1,7 @@
+# description: Replace load balancer pool 17b5962d775c646f3f9725cbc7a53df4
+PUT /client/v4/user/load_balancers/pools/17b5962d775c646f3f9725cbc7a53df4 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"eu-origins","origins":[{"name":"eu-1","address":"198.51.100.4","enabled":true}]}

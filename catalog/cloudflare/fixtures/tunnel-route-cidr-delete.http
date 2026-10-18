@@ -1,0 +1,5 @@
+# description: Delete the route for 172.16.0.0/16 (deprecated)
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/teamnet/routes/network/172.16.0.0%2F16 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,5 @@
+# description: Delete resource group 6d7f2f5f5b1d4a0e9081fdc98d432fd1
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/iam/resource_groups/6d7f2f5f5b1d4a0e9081fdc98d432fd1 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

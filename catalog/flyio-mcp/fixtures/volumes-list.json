@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-volumes-list",
+  "tool": "fly-volumes-list",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

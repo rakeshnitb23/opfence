@@ -1,0 +1,115 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): r2-catalog
+operations:
+  - id: cloudflare.r2-catalog.credential-store
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/basin-catalog/{bucket_name}/credential" } }
+    class: credential
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Store catalog credentials for R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-credential-store.http
+        expect: credential
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.enable
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/basin-catalog/{bucket_name}/enable" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Enable R2 Data Catalog on bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-enable.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.disable
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/basin-catalog/{bucket_name}/disable" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Disable R2 Data Catalog on bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-disable.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.delete
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/basin-catalog/{bucket_name}/delete" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete the R2 Data Catalog metadata of bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the Iceberg catalog metadata (table and namespace definitions).
+    tests:
+      - fixture: fixtures/r2-catalog-delete.http
+        expect: irreversible
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.credential-store-legacy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2-catalog/{bucket_name}/credential" } }
+    class: credential
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Store catalog credentials for R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-credential-store-legacy.http
+        expect: credential
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.enable-legacy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2-catalog/{bucket_name}/enable" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Enable R2 Data Catalog on bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-enable-legacy.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.disable-legacy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2-catalog/{bucket_name}/disable" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Disable R2 Data Catalog on bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-disable-legacy.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-catalog.delete-legacy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2-catalog/{bucket_name}/delete" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete the R2 Data Catalog metadata of bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-catalog-delete-legacy.http
+        expect: irreversible
+        resource: "shop-assets"

@@ -1,0 +1,7 @@
+# description: Verify the email address
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VerifyEmail($input: VerifyEmailInput!) { verifyEmail(input: $input) { __typename } }","variables":{"input":{"token":"EXAMPLE"}}}
