@@ -22,7 +22,7 @@ These are never forwarded silently; they become `unknown` (which asks by default
 - Signed git pushes (`git push --signed`).
 - AWS requests made with a placeholder key that Opfence cannot re-sign: presigned URLs, SigV4A (multi-Region) signatures, uploads with signed chunks, and bodies over 16 MiB without a hash header. These are blocked with a message saying why.
 - AWS requests made with a placeholder key to hosts their creators run rather than AWS: API Gateway (`execute-api`), load balancers, EC2 public names and VPC endpoints. Opfence does not send your real key's signature there, so IAM-authenticated calls to your own API Gateway need a key Opfence does not hold.
-- Request bodies that are neither JSON nor a form (plain text, binary uploads): rules that look at body fields treat them as `unknown`.
+- Request bodies that are neither JSON, a form nor multipart (plain text, binary uploads), and bodies over 64 KiB (a large Cloudflare Worker upload): rules that look at body fields treat them as `unknown`.
 
 ## What a decision cannot see
 
