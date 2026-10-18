@@ -426,6 +426,10 @@ func (l *loader) validateTest(r *Rule, i int, t Test) {
 			l.addf(f, ln, "%s: tests[%d]: fixture %q must be a clean path under %s/", r.ID, i, t.Fixture, FixturesDir)
 		} else if _, err := fs.Stat(l.fsys, path.Join(r.Provider.Dir, clean)); err != nil {
 			l.addf(f, ln, "%s: tests[%d]: fixture %s not found", r.ID, i, t.Fixture)
+		} else if strings.HasSuffix(clean, ".json") && r.Match.MCP == nil {
+			l.addf(f, ln, "%s: tests[%d]: .json tool-call fixtures are for mcp rules", r.ID, i)
+		} else if !strings.HasSuffix(clean, ".http") && !strings.HasSuffix(clean, ".json") {
+			l.addf(f, ln, "%s: tests[%d]: fixture %s must be a .http request or a .json tool call", r.ID, i, t.Fixture)
 		}
 	}
 	if !t.Expect.Valid() {

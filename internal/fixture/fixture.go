@@ -3,6 +3,8 @@
 package fixture
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"path"
@@ -57,17 +59,66 @@ func runOne(eng *engine.Engine, c *catalog.Catalog, r *catalog.Rule, t catalog.T
 	if err != nil {
 		return fail("%v", err)
 	}
+	var res engine.Result
+	if strings.HasSuffix(file, ".json") {
+		// A tool call as the agent hook sees it, for MCP servers that run
+		// on the user's machine and have no host the proxy could route by.
+		if r.Provider.MCP == nil {
+			return fail("tool-call fixtures are for MCP providers")
+		}
+		call, err := ParseToolCall(data)
+		if err != nil {
+			return fail("%v", err)
+		}
+		res = eng.EvaluateTool(r.Provider, call.Tool, call.Arguments)
+		return check(o, r, t, res)
+	}
 	req, _, err := request.ParseFixture(data)
 	if err != nil {
 		return fail("%v", err)
 	}
-	res := eng.Evaluate(req)
+	res = eng.Evaluate(req)
 	if res.Provider != r.Provider {
 		owner := "no provider"
 		if res.Provider != nil {
 			owner = "provider " + res.Provider.ID
 		}
 		return fail("fixture host %s belongs to %s, not %s", req.Host, owner, r.Provider.ID)
+	}
+	return check(o, r, t, res)
+}
+
+// ToolCall is a .json fixture: one MCP tool call with its arguments.
+type ToolCall struct {
+	Description string         `json:"description"`
+	Tool        string         `json:"tool"`
+	Arguments   map[string]any `json:"arguments"`
+}
+
+// ParseToolCall parses a tool-call fixture. Numbers stay json.Number, as
+// they do in the hook.
+func ParseToolCall(data []byte) (*ToolCall, error) {
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+	dec.DisallowUnknownFields()
+	var c ToolCall
+	if err := dec.Decode(&c); err != nil {
+		return nil, fmt.Errorf("tool-call fixture: %w", err)
+	}
+	if c.Tool == "" {
+		return nil, fmt.Errorf("tool-call fixture has no tool")
+	}
+	if c.Arguments == nil {
+		c.Arguments = map[string]any{}
+	}
+	return &c, nil
+}
+
+// check finds r's evaluation in res and compares it with t.
+func check(o Outcome, r *catalog.Rule, t catalog.Test, res engine.Result) Outcome {
+	fail := func(format string, args ...any) Outcome {
+		o.Problem = fmt.Sprintf(format, args...)
+		return o
 	}
 	var seen []string
 	for _, ev := range res.Evaluations {

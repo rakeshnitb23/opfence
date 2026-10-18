@@ -87,3 +87,37 @@ func TestEmbeddedCatalogPasses(t *testing.T) {
 		}
 	}
 }
+
+func TestToolCallFixture(t *testing.T) {
+	m := fstest.MapFS{
+		"local-mcp/provider.yaml": {Data: []byte("provider: local-mcp\ntitle: Local\nmcp: { names: [local] }\n")},
+		"local-mcp/r.yaml": {Data: []byte(`operations:
+  - id: local-mcp.app.destroy
+    match: { mcp: { tool: apps-destroy } }
+    class: irreversible
+    when:
+      - if: { arg: dry_run, equals: "true" }
+        class: read
+    resource: { arg: name, kind: app }
+    card: x
+    status: draft
+    tests:
+      - { fixture: fixtures/destroy.json, expect: irreversible, resource: web }
+      - { fixture: fixtures/destroy-dry.json, expect: read, resource: web }
+`)},
+		"local-mcp/fixtures/destroy.json":     {Data: []byte(`{"description": "Destroy web", "tool": "apps-destroy", "arguments": {"name": "web"}}`)},
+		"local-mcp/fixtures/destroy-dry.json": {Data: []byte(`{"tool": "apps-destroy", "arguments": {"name": "web", "dry_run": true}}`)},
+	}
+	c, err := catalog.Load(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep := Run(c); rep.Failed != 0 || len(rep.Outcomes) != 2 {
+		t.Fatalf("%+v", rep)
+	}
+	m["local-mcp/fixtures/destroy.json"] = &fstest.MapFile{Data: []byte(`{"tool": "apps-destroy", "arguments": {"name": "web"}, "extra": 1}`)}
+	c, _ = catalog.Load(m)
+	if rep := Run(c); rep.Failed != 1 || !strings.Contains(rep.Outcomes[0].Problem, "unknown field") {
+		t.Fatalf("unknown field accepted: %+v", rep.Outcomes[0])
+	}
+}
