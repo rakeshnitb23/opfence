@@ -1,0 +1,63 @@
+# Fly.io GraphQL API: service
+operations:
+  - id: flyio.service.register-service
+    match: { graphql: { type: mutation, field: registerService } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Register service {input.name} for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/service-register-service.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.service.delete-service
+    match: { graphql: { type: mutation, field: deleteService } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Delete service {input.name} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A registration record that can be registered again.
+    tests:
+      - fixture: fixtures/service-delete-service.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.service.register-network-policy
+    match: { graphql: { type: mutation, field: registerNetworkPolicy } }
+    class: access
+    resource: { arg: input.appId, kind: app }
+    card: "Register network policy {input.name} for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Changes what may reach the app.
+    tests:
+      - fixture: fixtures/service-register-network-policy.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.service.delete-network-policy
+    match: { graphql: { type: mutation, field: deleteNetworkPolicy } }
+    class: access
+    resource: { arg: input.appId, kind: app }
+    card: "Delete network policy {input.id} of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Removing a policy can open the app to traffic it blocked.
+    tests:
+      - fixture: fixtures/service-delete-network-policy.http
+        expect: access
+        resource: shop-api

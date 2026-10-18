@@ -1,0 +1,7 @@
+# description: Simulate Machine placement
+POST /v1/platform/placements HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"org_slug":"acme","count":2,"region":"ams"}

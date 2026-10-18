@@ -1,0 +1,7 @@
+# description: Release an IP address
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ReleaseIpAddress($input: ReleaseIPAddressInput!) { releaseIpAddress(input: $input) { __typename } }","variables":{"input":{"appId":"shop-api","ip":"2a09:8280:1::4f:2c1a"}}}

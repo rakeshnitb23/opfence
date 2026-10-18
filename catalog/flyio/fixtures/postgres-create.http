@@ -1,0 +1,7 @@
+# description: Create a Managed Postgres cluster
+POST /v1/postgres HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-db","org_slug":"acme","plan":"basic","region":"ams"}

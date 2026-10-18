@@ -1,0 +1,7 @@
+# description: Upload a custom certificate for shop.example.com
+POST /v1/apps/shop-api/certificates/custom HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"hostname":"shop.example.com","fullchain":"-----BEGIN CERTIFICATE-----\nEXAMPLE\n-----END CERTIFICATE-----\n","private_key":"-----BEGIN EC PRIVATE KEY-----\nEXAMPLE\n-----END EC PRIVATE KEY-----\n"}

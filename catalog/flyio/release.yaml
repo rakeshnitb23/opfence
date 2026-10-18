@@ -1,0 +1,60 @@
+# Fly.io GraphQL API: release
+operations:
+  - id: flyio.release.deploy-image
+    match: { graphql: { type: mutation, field: deployImage } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Deploy image {input.image} to app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/release-deploy-image.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.release.create-release
+    match: { graphql: { type: mutation, field: createRelease } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Create a release of app {input.appId} with image {input.image}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/release-create-release.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.release.update-release
+    match: { graphql: { type: mutation, field: updateRelease } }
+    class: write
+    resource: { arg: input.releaseId, kind: release }
+    card: "Update release {input.releaseId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/release-update-release.http
+        expect: write
+        resource: rel_2k9x
+
+  - id: flyio.release.create-template-deployment
+    match: { graphql: { type: mutation, field: createTemplateDeployment } }
+    class: money
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Deploy a template into organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Creates the apps, Machines and add-ons the template describes,
+      which are billed.
+    tests:
+      - fixture: fixtures/release-create-template-deployment.http
+        expect: money
+        resource: NOx4Zp9QkV2

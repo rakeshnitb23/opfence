@@ -1,0 +1,7 @@
+# description: Create an organization
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateOrganization($input: CreateOrganizationInput!) { createOrganization(input: $input) { __typename } }","variables":{"input":{"name":"acme-staging"}}}

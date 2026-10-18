@@ -1,0 +1,72 @@
+# Fly.io GraphQL API: org-member
+operations:
+  - id: flyio.org-member.create-organization-invitation
+    match: { graphql: { type: mutation, field: createOrganizationInvitation } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Invite {input.email} to organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/org-member-create-organization-invitation.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.org-member.delete-organization-invitation
+    match: { graphql: { type: mutation, field: deleteOrganizationInvitation } }
+    class: access
+    resource: { arg: input.invitationId, kind: invitation }
+    card: "Cancel invitation {input.invitationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/org-member-delete-organization-invitation.http
+        expect: access
+        resource: inv_1
+
+  - id: flyio.org-member.delete-organization-membership
+    match: { graphql: { type: mutation, field: deleteOrganizationMembership } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Remove user {input.userId} from organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/org-member-delete-organization-membership.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.org-member.update-organization-membership
+    match: { graphql: { type: mutation, field: updateOrganizationMembership } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Make user {input.userId} {input.role} of organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/org-member-update-organization-membership.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.org-member.redeem-organization-invitation
+    match: { graphql: { type: mutation, field: redeemOrganizationInvitation } }
+    class: credential
+    card: "Accept an organization invitation"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Joins the caller to the organization (access) and returns a token,
+      so credential.
+    tests:
+      - fixture: fixtures/org-member-redeem-organization-invitation.http
+        expect: credential

@@ -1,0 +1,7 @@
+# description: Finish a build
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation FinishBuild($input: FinishBuildInput!) { finishBuild(input: $input) { __typename } }","variables":{"input":{"appName":"shop-api","buildId":"bld_1x2y","status":"completed"}}}

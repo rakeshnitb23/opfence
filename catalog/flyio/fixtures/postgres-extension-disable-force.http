@@ -1,0 +1,4 @@
+# description: Disable pg_trgm and drop dependent objects
+DELETE /v1/postgres/pg7x2kq9m4/databases/orders/extensions/pg_trgm?force=true HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE

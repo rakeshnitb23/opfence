@@ -1,0 +1,7 @@
+# description: Register a network policy
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RegisterNetworkPolicy($input: RegisterNetworkPolicyInput!) { registerNetworkPolicy(input: $input) { __typename } }","variables":{"input":{"appId":"shop-api","id":"np_1","name":"allow-web","config":"{}","updatedAt":"2026-10-18T08:00:00Z"}}}

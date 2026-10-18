@@ -1,0 +1,7 @@
+# description: Resize a Machine to performance-2x
+POST /v1/apps/shop-api/machines/3d8d9d2b1c4e87 HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"config":{"image":"registry.fly.io/shop-api:deployment-01JA","guest":{"cpu_kind":"performance","cpus":2,"memory_mb":4096}}}

@@ -1,0 +1,46 @@
+# Fly.io GraphQL API: third-party
+operations:
+  - id: flyio.third-party.create-third-party-configuration
+    match: { graphql: { type: mutation, field: createThirdPartyConfiguration } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Add third-party token configuration {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Third-party configurations make the organization's tokens carry
+      caveats discharged by another service.
+    tests:
+      - fixture: fixtures/third-party-create-third-party-configuration.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.third-party.update-third-party-configuration
+    match: { graphql: { type: mutation, field: updateThirdPartyConfiguration } }
+    class: access
+    resource: { arg: input.thirdPartyConfigurationId, kind: third-party-configuration }
+    card: "Change third-party configuration {input.thirdPartyConfigurationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/third-party-update-third-party-configuration.http
+        expect: access
+        resource: tpc_1
+
+  - id: flyio.third-party.delete-third-party-configuration
+    match: { graphql: { type: mutation, field: deleteThirdPartyConfiguration } }
+    class: access
+    resource: { arg: input.thirdPartyConfigurationId, kind: third-party-configuration }
+    card: "Delete third-party configuration {input.thirdPartyConfigurationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/third-party-delete-third-party-configuration.http
+        expect: access
+        resource: tpc_1

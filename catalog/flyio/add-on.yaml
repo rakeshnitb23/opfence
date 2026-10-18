@@ -1,0 +1,107 @@
+# Fly.io GraphQL API: add-on
+operations:
+  - id: flyio.add-on.create-add-on
+    match: { graphql: { type: mutation, field: createAddOn } }
+    class: money
+    resource: { arg: input.name, kind: add-on }
+    card: "Create a {input.type} add-on {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Extensions (Upstash Redis, Tigris, Supabase, MySQL, Kubernetes,
+      Sentry, ...) are billed by their providers through Fly.
+    tests:
+      - fixture: fixtures/add-on-create-add-on.http
+        expect: money
+        resource: shop-cache
+
+  - id: flyio.add-on.delete-add-on
+    match: { graphql: { type: mutation, field: deleteAddOn } }
+    class: irreversible
+    resource: { arg: input.name, kind: add-on }
+    card: "Delete add-on {input.name} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Deletes the database or bucket with its data; the API offers no
+      restore.
+    tests:
+      - fixture: fixtures/add-on-delete-add-on.http
+        expect: irreversible
+        resource: shop-cache
+
+  - id: flyio.add-on.update-add-on
+    match: { graphql: { type: mutation, field: updateAddOn } }
+    class: write
+    when:
+      - if: { arg: input.planId, present: true }
+        class: money
+      - if: { arg: input.readRegions, present: true }
+        class: money
+    resource: { arg: input.name, kind: add-on }
+    card: "Change add-on {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A new plan or more read replicas change what the add-on bills.
+    tests:
+      - fixture: fixtures/add-on-update-add-on.http
+        expect: write
+        resource: shop-cache
+      - fixture: fixtures/add-on-update-add-on-plan.http
+        expect: money
+        resource: shop-cache
+
+  - id: flyio.add-on.reset-add-on-password
+    match: { graphql: { type: mutation, field: resetAddOnPassword } }
+    class: credential
+    resource: { arg: input.name, kind: add-on }
+    card: "Reset the password of add-on {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns the add-on with its new password, and clients using the
+      old one lose access.
+    tests:
+      - fixture: fixtures/add-on-reset-add-on-password.http
+        expect: credential
+        resource: shop-cache
+
+  - id: flyio.add-on.get
+    match: { graphql: { type: query, field: addOn } }
+    class: credential
+    resource: { arg: name, kind: add-on }
+    card: "Read add-on {name} with its password and URL"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      AddOn returns password, publicUrl (with the password in it) and
+      environment.
+    tests:
+      - fixture: fixtures/add-on-get.http
+        expect: credential
+        resource: shop-cache
+
+  - id: flyio.add-on.list
+    match: { graphql: { type: query, field: addOns } }
+    class: credential
+    card: "List add-ons with their passwords and URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Each AddOn returns password, publicUrl and environment.
+    tests:
+      - fixture: fixtures/add-on-list.http
+        expect: credential

@@ -1,0 +1,171 @@
+# Fly.io GraphQL API: user
+operations:
+  - id: flyio.user.delete-user
+    match: { graphql: { type: mutation, field: deleteUser } }
+    class: irreversible
+    card: "Delete the signed-in Fly.io user account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-delete-user.http
+        expect: irreversible
+
+  - id: flyio.user.update-user-profile
+    match: { graphql: { type: mutation, field: updateUserProfile } }
+    class: write
+    when:
+      - if: { arg: input.email, present: true }
+        class: access
+    card: "Change the user profile"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Changing the email address changes where password resets go.
+    tests:
+      - fixture: fixtures/user-update-user-profile.http
+        expect: write
+      - fixture: fixtures/user-update-user-profile-email.http
+        expect: access
+
+  - id: flyio.user.update-user-password
+    match: { graphql: { type: mutation, field: updateUserPassword } }
+    class: credential
+    card: "Change the account password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-update-user-password.http
+        expect: credential
+
+  - id: flyio.user.verify-user-password
+    match: { graphql: { type: mutation, field: verifyUserPassword } }
+    class: access
+    card: "Check the account password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Only answers whether a password is right, but that is an
+      authentication check.
+    tests:
+      - fixture: fixtures/user-verify-user-password.http
+        expect: access
+
+  - id: flyio.user.create-password-reset
+    match: { graphql: { type: mutation, field: createPasswordReset } }
+    class: access
+    card: "Send a password reset email to {input.email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-create-password-reset.http
+        expect: access
+
+  - id: flyio.user.resolve-password-reset
+    match: { graphql: { type: mutation, field: resolvePasswordReset } }
+    class: credential
+    card: "Set a new password with a reset token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-resolve-password-reset.http
+        expect: credential
+
+  - id: flyio.user.send-verification-email
+    match: { graphql: { type: mutation, field: sendVerificationEmail } }
+    class: write
+    card: "Send an email verification message"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-send-verification-email.http
+        expect: write
+
+  - id: flyio.user.verify-email
+    match: { graphql: { type: mutation, field: verifyEmail } }
+    class: write
+    card: "Verify the account email address"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-verify-email.http
+        expect: write
+
+  - id: flyio.user.create-user-signup
+    match: { graphql: { type: mutation, field: createUserSignup } }
+    class: write
+    card: "Record a signup event"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-create-user-signup.http
+        expect: write
+
+  - id: flyio.user.log-out
+    match: { graphql: { type: mutation, field: logOut } }
+    class: access
+    card: "Sign out and revoke the current session"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-log-out.http
+        expect: access
+
+  - id: flyio.user.prepare-user-for-hiring
+    match: { graphql: { type: mutation, field: prepareUserForHiring } }
+    class: unknown
+    card: "Prepare the user for hiring"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Internal mutation; the schema does not say what it changes.
+    tests:
+      - fixture: fixtures/user-prepare-user-for-hiring.http
+        expect: unknown
+
+  - id: flyio.user.delete-identity
+    match: { graphql: { type: mutation, field: deleteIdentity } }
+    class: access
+    resource: { arg: input.identityId, kind: identity }
+    card: "Unlink sign-in identity {input.identityId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-delete-identity.http
+        expect: access
+        resource: idn_1
+
+  - id: flyio.user.destroy-identities
+    match: { graphql: { type: mutation, field: destroyIdentities } }
+    class: access
+    card: "Unlink every sign-in identity of the user"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/user-destroy-identities.http
+        expect: access

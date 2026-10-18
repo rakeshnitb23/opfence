@@ -1,0 +1,75 @@
+# Fly.io GraphQL API: remote-builder
+operations:
+  - id: flyio.remote-builder.ensure-machine-remote-builder
+    match: { graphql: { type: mutation, field: ensureMachineRemoteBuilder } }
+    class: write
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Make sure a remote builder exists"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/remote-builder-ensure-machine-remote-builder.http
+        expect: write
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.remote-builder.ensure-depot-remote-builder
+    match: { graphql: { type: mutation, field: ensureDepotRemoteBuilder } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Get a Depot builder and build token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a build token.
+    tests:
+      - fixture: fixtures/remote-builder-ensure-depot-remote-builder.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.remote-builder.ensure-flyctl-machine-host
+    match: { graphql: { type: mutation, field: ensureFlyctlMachineHost } }
+    class: write
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Make sure a flyctl Machine host exists"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/remote-builder-ensure-flyctl-machine-host.http
+        expect: write
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.remote-builder.delete-remote-builder
+    match: { graphql: { type: mutation, field: deleteRemoteBuilder } }
+    class: delete
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Delete the remote builder of organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      flyctl creates a new builder on the next remote build.
+    tests:
+      - fixture: fixtures/remote-builder-delete-remote-builder.http
+        expect: delete
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.remote-builder.update-remote-builder
+    match: { graphql: { type: mutation, field: updateRemoteBuilder } }
+    class: write
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Set the remote builder image to {input.image}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/remote-builder-update-remote-builder.http
+        expect: write
+        resource: NOx4Zp9QkV2

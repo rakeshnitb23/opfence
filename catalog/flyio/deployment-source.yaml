@@ -1,0 +1,31 @@
+# Fly.io GraphQL API: deployment-source
+operations:
+  - id: flyio.deployment-source.save-deployment-source
+    match: { graphql: { type: mutation, field: saveDeploymentSource } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Deploy app {input.appId} from repository {input.repositoryId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/deployment-source-save-deployment-source.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.deployment-source.delete-deployment-source
+    match: { graphql: { type: mutation, field: deleteDeploymentSource } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Disconnect the repository of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Can be connected again.
+    tests:
+      - fixture: fixtures/deployment-source-delete-deployment-source.http
+        expect: delete
+        resource: shop-api

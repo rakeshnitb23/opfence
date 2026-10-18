@@ -1,0 +1,25 @@
+# Fly.io GraphQL API: doctor
+operations:
+  - id: flyio.doctor.create-doctor-report
+    match: { graphql: { type: mutation, field: createDoctorReport } }
+    class: write
+    card: "Upload a flyctl doctor report"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/doctor-create-doctor-report.http
+        expect: write
+
+  - id: flyio.doctor.create-doctor-url
+    match: { graphql: { type: mutation, field: createDoctorUrl } }
+    class: write
+    card: "Get an upload URL for a flyctl doctor report"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/doctor-create-doctor-url.http
+        expect: write

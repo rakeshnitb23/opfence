@@ -1,0 +1,65 @@
+# Fly.io GraphQL API: scale
+operations:
+  - id: flyio.scale.scale-app
+    match: { graphql: { type: mutation, field: scaleApp } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Scale app {input.appId} across regions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      More instances bill more.
+    tests:
+      - fixture: fixtures/scale-scale-app.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.scale.set-vm-count
+    match: { graphql: { type: mutation, field: setVmCount } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Set the VM count of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      More VMs bill more.
+    tests:
+      - fixture: fixtures/scale-set-vm-count.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.scale.set-vm-size
+    match: { graphql: { type: mutation, field: setVmSize } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Set the VM size of app {input.appId} to {input.sizeName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Larger VMs bill more.
+    tests:
+      - fixture: fixtures/scale-set-vm-size.http
+        expect: money
+        resource: shop-api
+
+  - id: flyio.scale.update-autoscale-config
+    match: { graphql: { type: mutation, field: updateAutoscaleConfig } }
+    class: money
+    resource: { arg: input.appId, kind: app }
+    card: "Change autoscaling of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Raises how many instances the app may bill for.
+    tests:
+      - fixture: fixtures/scale-update-autoscale-config.http
+        expect: money
+        resource: shop-api

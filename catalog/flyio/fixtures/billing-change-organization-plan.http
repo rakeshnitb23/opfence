@@ -1,0 +1,7 @@
+# description: Change an organization plan
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ChangeOrganizationPlan($input: ChangeOrganizationPlanInput!) { changeOrganizationPlan(input: $input) { __typename } }","variables":{"input":{"organizationId":"NOx4Zp9QkV2","newPlanId":"launch"}}}

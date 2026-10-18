@@ -1,0 +1,67 @@
+# flyctl MCP server (fly mcp server): orgs
+operations:
+  - id: flyio-mcp.orgs.create
+    match: { mcp: { tool: fly-orgs-create } }
+    class: write
+    resource: { arg: name, kind: organization }
+    card: "Create organization {name}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.orgs.delete
+    match: { mcp: { tool: fly-orgs-delete } }
+    class: irreversible
+    resource: { arg: slug, kind: organization }
+    card: "Delete organization {slug} with all its apps"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Runs fly orgs delete --yes; every app and Machine in the
+      organization is deleted.
+
+  - id: flyio-mcp.orgs.invite
+    match: { mcp: { tool: fly-orgs-invite } }
+    class: access
+    resource: { arg: slug, kind: organization }
+    card: "Invite {email} to organization {slug}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.orgs.list
+    match: { mcp: { tool: fly-orgs-list } }
+    class: read
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.orgs.remove
+    match: { mcp: { tool: fly-orgs-remove } }
+    class: access
+    resource: { arg: slug, kind: organization }
+    card: "Remove {email} from organization {slug}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.orgs.show
+    match: { mcp: { tool: fly-orgs-show } }
+    class: read
+    resource: { arg: slug, kind: organization }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/orgs.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go

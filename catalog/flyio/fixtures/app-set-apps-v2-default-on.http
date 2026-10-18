@@ -1,0 +1,7 @@
+# description: Turn on Apps V2 by default
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SetAppsV2DefaultOn($input: SetAppsv2DefaultOnInput!) { setAppsV2DefaultOn(input: $input) { __typename } }","variables":{"input":{"organizationSlug":"acme","defaultOn":true}}}

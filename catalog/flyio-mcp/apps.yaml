@@ -1,0 +1,69 @@
+# flyctl MCP server (fly mcp server): apps
+operations:
+  - id: flyio-mcp.apps.create
+    match: { mcp: { tool: fly-apps-create } }
+    class: write
+    resource: { arg: name, kind: app }
+    card: "Create Fly app {name} in organization {org}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.apps.destroy
+    match: { mcp: { tool: fly-apps-destroy } }
+    class: irreversible
+    resource: { arg: name, kind: app }
+    card: "Destroy Fly app {name} with all its Machines and volumes"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Runs fly apps destroy --yes; volumes and their data go with the
+      app.
+
+  - id: flyio-mcp.apps.list
+    match: { mcp: { tool: fly-apps-list } }
+    class: read
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.apps.move
+    match: { mcp: { tool: fly-apps-move } }
+    class: access
+    resource: { arg: name, kind: app }
+    card: "Move app {name} to organization {org}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Changes which organization controls the app.
+
+  - id: flyio-mcp.apps.releases
+    match: { mcp: { tool: fly-apps-releases } }
+    class: read
+    resource: { arg: name, kind: app }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.apps.restart
+    match: { mcp: { tool: fly-apps-restart } }
+    class: write
+    resource: { arg: name, kind: app }
+    card: "Restart every Machine of app {name}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/apps.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go

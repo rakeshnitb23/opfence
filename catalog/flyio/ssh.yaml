@@ -1,0 +1,35 @@
+# Fly.io GraphQL API: ssh
+operations:
+  - id: flyio.ssh.issue-certificate
+    match: { graphql: { type: mutation, field: issueCertificate } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Issue an SSH certificate for organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns an SSH certificate (and a private key when none is given)
+      that opens a shell on Machines.
+    tests:
+      - fixture: fixtures/ssh-issue-certificate.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.ssh.establish-ssh-key
+    match: { graphql: { type: mutation, field: establishSshKey } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Create the SSH CA of organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Creates (or with override replaces) the organization's SSH
+      certificate authority.
+    tests:
+      - fixture: fixtures/ssh-establish-ssh-key.http
+        expect: credential
+        resource: NOx4Zp9QkV2

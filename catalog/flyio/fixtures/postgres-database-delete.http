@@ -1,0 +1,4 @@
+# description: Drop a database
+DELETE /v1/postgres/pg7x2kq9m4/databases/orders HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE

@@ -1,0 +1,26 @@
+provider: flyio
+title: Fly.io
+docs: https://fly.io/docs/machines/api/
+# Two APIs: the Machines REST API (api.machines.dev, /v1/...) and the GraphQL
+# API flyctl uses (api.fly.io/graphql). api.fly.io also serves a few REST
+# endpoints flyctl calls (CLI login sessions, logs).
+hosts: [api.machines.dev, api.fly.io]
+graphql: [/graphql]
+auth:
+  - header: Authorization          # flyctl's older tokens (fly-go AuthorizationHeader)
+    scheme: Bearer
+  - header: Authorization          # macaroon tokens (fm1r_, fm2_), comma-separated
+    scheme: FlyV1
+detect:
+  env: [FLY_API_TOKEN, FLY_ACCESS_TOKEN]
+# No detect.prefixes: fly-go names the macaroon prefixes (fm1r_, fm1a_, fm2_),
+# but the body is standard base64 (+, /, =) and a header may join several
+# tokens with commas, which Opfence's prefix scanner would cut short.
+defaults:
+  graphql_query: read              # queries only read, except the ones listed as credential
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# GraphQL rules match the root field only. Nested fields can still reach
+# secret values (app/organization { addOns { password } limitedAccessTokens
+# { token } }, viewer { identities { token } }); only the root fields that
+# return those types directly (addOn, addOns, accessTokens, node, nodes) are
+# credential.
