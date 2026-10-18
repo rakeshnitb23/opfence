@@ -1,0 +1,58 @@
+# MongoDB Atlas Administration API: legacy-restore-job
+operations:
+  - id: mongodb-atlas.legacy-restore-job.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/restoreJobs" } }
+    class: irreversible
+    when:
+      - if: { arg: body.delivery.methodName, in: ["HTTP", "CLIENT_PIT_HTTP"] }
+        class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Restore legacy snapshot {body.snapshotId} of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      An automated restore replaces the target cluster's data; an HTTP restore
+      creates a download link that hands the snapshot to whoever holds it.
+    tests:
+      - fixture: fixtures/legacy-restore-job-create.http
+        expect: irreversible
+        resource: orders-prod
+      - fixture: fixtures/legacy-restore-job-create-http.http
+        expect: credential
+        resource: orders-prod
+
+  - id: mongodb-atlas.legacy-restore-job.list
+    match: { rest: { method: GET, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/restoreJobs" } }
+    class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "List legacy restore jobs of cluster {clusterName}, with their download links"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      HTTP restore jobs return delivery.url, which includes the verification key
+      needed to download the snapshot.
+    tests:
+      - fixture: fixtures/legacy-restore-job-list.http
+        expect: credential
+        resource: orders-prod
+
+  - id: mongodb-atlas.legacy-restore-job.get
+    match: { rest: { method: GET, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/restoreJobs/{jobId}" } }
+    class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Read legacy restore job {jobId} of cluster {clusterName}, with its download link"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      HTTP restore jobs return delivery.url, which includes the verification key
+      needed to download the snapshot.
+    tests:
+      - fixture: fixtures/legacy-restore-job-get.http
+        expect: credential
+        resource: orders-prod

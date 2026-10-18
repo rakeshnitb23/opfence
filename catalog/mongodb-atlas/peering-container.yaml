@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: peering-container
+operations:
+  - id: mongodb-atlas.peering-container.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/containers" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.providerName} network peering container in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/peering-container-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.peering-container.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/containers/{containerId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change network peering container {containerId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/peering-container-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.peering-container.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/containers/{containerId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete network peering container {containerId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/peering-container-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

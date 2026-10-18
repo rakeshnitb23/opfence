@@ -1,0 +1,8 @@
+# description: Set the rejection status of query shape 8F2A6B1C9D3E4F50A1B2C3D4E5F60718 on cluster orders-prod
+PATCH /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusters/orders-prod/queryShapes/8F2A6B1C9D3E4F50A1B2C3D4E5F60718 HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"status":"REJECTED"}

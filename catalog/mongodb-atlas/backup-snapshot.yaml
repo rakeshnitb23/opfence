@@ -1,0 +1,60 @@
+# MongoDB Atlas Administration API: backup-snapshot
+operations:
+  - id: mongodb-atlas.backup-snapshot.take
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/snapshots" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Take an on-demand snapshot of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-snapshot-take.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-snapshot.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/snapshots/{snapshotId}" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change the expiry of snapshot {snapshotId} of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      A shorter retention makes Atlas delete the snapshot sooner, but not
+      immediately; deleting it outright is a separate, irreversible rule.
+    tests:
+      - fixture: fixtures/backup-snapshot-update.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-snapshot.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/snapshots/{snapshotId}" } }
+    class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete snapshot {snapshotId} of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-snapshot-delete.http
+        expect: irreversible
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-snapshot.delete-sharded
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/snapshots/shardedCluster/{snapshotId}" } }
+    class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete sharded cluster snapshot {snapshotId} of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-snapshot-delete-sharded.http
+        expect: irreversible
+        resource: orders-prod

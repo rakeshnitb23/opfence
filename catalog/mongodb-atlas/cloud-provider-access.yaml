@@ -1,0 +1,46 @@
+# MongoDB Atlas Administration API: cloud-provider-access
+operations:
+  - id: mongodb-atlas.cloud-provider-access.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/cloudProviderAccess" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.providerName} access role for project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Sets up the role Atlas assumes in your cloud account (for KMS, export
+      buckets, data federation).
+    tests:
+      - fixture: fixtures/cloud-provider-access-create.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.cloud-provider-access.authorize
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/cloudProviderAccess/{roleId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Authorize cloud provider access role {roleId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cloud-provider-access-authorize.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.cloud-provider-access.deauthorize
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/cloudProviderAccess/{cloudProvider}/{roleId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Deauthorize {cloudProvider} access role {roleId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cloud-provider-access-deauthorize.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

@@ -1,0 +1,29 @@
+# MongoDB Atlas Administration API: backup-private-endpoint
+operations:
+  - id: mongodb-atlas.backup-private-endpoint.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/backup/{cloudProvider}/privateEndpoints" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create a {cloudProvider} object storage private endpoint for backups in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-private-endpoint-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.backup-private-endpoint.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/backup/{cloudProvider}/privateEndpoints/{endpointId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete backup private endpoint {endpointId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-private-endpoint-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

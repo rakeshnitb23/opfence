@@ -1,0 +1,15 @@
+# MongoDB Atlas Administration API: org-delegation
+operations:
+  - id: mongodb-atlas.org-delegation.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/delegationSettings" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change delegation settings of organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-delegation-update.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

@@ -1,0 +1,8 @@
+# description: Give API key 5f8a9b0c1d2e3f4a5b6c7d8e access to project 32b6e34b3d91647abb20e7b8
+POST /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/apiKeys/5f8a9b0c1d2e3f4a5b6c7d8e HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+[{"roleName":"GROUP_READ_ONLY"}]

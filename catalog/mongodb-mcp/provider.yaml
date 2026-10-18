@@ -1,0 +1,18 @@
+provider: mongodb-mcp
+title: MongoDB MCP
+docs: https://www.mongodb.com/docs/mcp-server/overview/
+# The official MongoDB MCP server (mongodb-mcp-server). It usually runs locally
+# over stdio: its database tools (find, update-many, delete-many, drop-*) talk
+# to MongoDB over the wire protocol and its atlas-* tools call the Atlas Admin
+# API (catalog/mongodb-atlas), so the agent hook is what sees the tool calls.
+# MongoDB also hosts the Atlas tools as a remote server at mcp.mongodb.com,
+# reached with a service account's bearer token (mongodb-atlas-mcp-remote).
+# That token is minted at cloud.mongodb.com from MDB_MCP_API_CLIENT_SECRET,
+# which catalog/mongodb-atlas detects, so nothing is detected here.
+hosts: [mcp.mongodb.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+mcp:
+  names: [MongoDB, mongodb, mongo, mongodb-mcp-server, mongodb-atlas-mcp-remote]
+  package: "mongodb-mcp-server"

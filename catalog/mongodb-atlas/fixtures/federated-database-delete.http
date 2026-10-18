@@ -1,0 +1,6 @@
+# description: Delete federated database instance analytics-federated from project 32b6e34b3d91647abb20e7b8
+DELETE /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/dataFederation/analytics-federated HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+

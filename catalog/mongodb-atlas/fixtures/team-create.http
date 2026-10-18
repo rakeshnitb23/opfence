@@ -1,0 +1,8 @@
+# description: Create team orders-devs in organization 4888442a3354817a7320eb61
+POST /api/atlas/v2/orgs/4888442a3354817a7320eb61/teams HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"name":"orders-devs","usernames":["dev@example.com"]}

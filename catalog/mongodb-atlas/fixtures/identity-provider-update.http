@@ -1,0 +1,8 @@
+# description: Change identity provider 6650a1b2c3d4e5f6a7b8c909 in federation 55fa922fb343282757d9554e
+PATCH /api/atlas/v2/federationSettings/55fa922fb343282757d9554e/identityProviders/6650a1b2c3d4e5f6a7b8c909 HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"displayName":"Okta"}

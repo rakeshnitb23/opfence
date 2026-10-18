@@ -1,0 +1,8 @@
+# description: Allow API key 5f8a9b0c1d2e3f4a5b6c7d8e to be used from new addresses
+POST /api/atlas/v2/orgs/4888442a3354817a7320eb61/apiKeys/5f8a9b0c1d2e3f4a5b6c7d8e/accessList HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+[{"ipAddress":"203.0.113.10"}]

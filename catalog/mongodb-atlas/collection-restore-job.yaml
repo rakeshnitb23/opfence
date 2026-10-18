@@ -1,0 +1,24 @@
+# MongoDB Atlas Administration API: collection-restore-job
+operations:
+  - id: mongodb-atlas.collection-restore-job.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/collectionRestoreJobs" } }
+    class: write
+    when:
+      - if: { arg: body.writeStrategy, equals: "OVERWRITE_EXISTING" }
+        class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Restore collections from snapshot {body.snapshotId} of cluster {clusterName} into {body.targetClusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      OVERWRITE_EXISTING replaces the target collections; CREATE_NEW writes new
+      ones beside them.
+    tests:
+      - fixture: fixtures/collection-restore-job-create.http
+        expect: write
+        resource: orders-prod
+      - fixture: fixtures/collection-restore-job-create-overwrite.http
+        expect: irreversible
+        resource: orders-prod

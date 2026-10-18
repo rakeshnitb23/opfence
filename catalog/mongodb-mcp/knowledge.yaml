@@ -1,0 +1,25 @@
+# MongoDB MCP server: knowledge
+operations:
+  - id: mongodb-mcp.knowledge.search
+    match: { mcp: { tool: search-knowledge } }
+    class: read
+    card: "Search MongoDB documentation for {query}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-assistant/src/tools/read/searchKnowledge.ts
+    tests:
+      - fixture: fixtures/knowledge-search.http
+        expect: read
+
+  - id: mongodb-mcp.knowledge.list-sources
+    match: { mcp: { tool: list-knowledge-sources } }
+    class: read
+    card: "List MongoDB documentation sources"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-assistant/src/tools/read/listKnowledgeSources.ts
+    tests:
+      - fixture: fixtures/knowledge-list-sources.http
+        expect: read

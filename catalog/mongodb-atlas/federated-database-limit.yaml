@@ -1,0 +1,32 @@
+# MongoDB Atlas Administration API: federated-database-limit
+operations:
+  - id: mongodb-atlas.federated-database-limit.set
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/dataFederation/{tenantName}/limits/{limitName}" } }
+    class: write
+    resource: { arg: tenantName, kind: federated-database }
+    card: "Set query limit {limitName} of federated database {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/federated-database-limit-set.http
+        expect: write
+        resource: analytics-federated
+
+  - id: mongodb-atlas.federated-database-limit.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/dataFederation/{tenantName}/limits/{limitName}" } }
+    class: money
+    resource: { arg: tenantName, kind: federated-database }
+    card: "Remove query limit {limitName} of federated database {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Query limits cap the data scanned, which is what Data Federation bills;
+      removing one removes a spending cap.
+    tests:
+      - fixture: fixtures/federated-database-limit-delete.http
+        expect: money
+        resource: analytics-federated

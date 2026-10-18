@@ -1,0 +1,8 @@
+# description: Exchange service account credentials for an Atlas access token
+POST /api/oauth/token HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Basic bWRiX3NhX2lkX2V4YW1wbGU6b3BmX21vbmdvZGItYXRsYXNfRVhBTVBMRQ==
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials

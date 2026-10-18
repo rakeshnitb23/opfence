@@ -1,0 +1,159 @@
+# MongoDB MCP server: cluster
+operations:
+  - id: mongodb-mcp.cluster.list
+    match: { mcp: { tool: atlas-list-clusters } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List Atlas clusters in project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/listClusters.ts
+    tests:
+      - fixture: fixtures/cluster-list.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-mcp.cluster.inspect
+    match: { mcp: { tool: atlas-inspect-cluster } }
+    class: read
+    resource: { arg: clusterName, kind: cluster }
+    card: "Show Atlas cluster {clusterName} in project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/inspectCluster.ts
+    tests:
+      - fixture: fixtures/cluster-inspect.http
+        expect: read
+        resource: orders-prod
+
+  - id: mongodb-mcp.cluster.regions
+    match: { mcp: { tool: atlas-get-regions } }
+    class: read
+    card: "List Atlas regions on {provider}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/getRegions.ts
+    tests:
+      - fixture: fixtures/cluster-regions.http
+        expect: read
+
+  - id: mongodb-mcp.cluster.performance-advisor
+    match: { mcp: { tool: atlas-get-performance-advisor } }
+    class: read
+    resource: { arg: clusterName, kind: cluster }
+    card: "Show Performance Advisor suggestions for Atlas cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/getPerformanceAdvisor.ts
+    tests:
+      - fixture: fixtures/cluster-performance-advisor.http
+        expect: read
+        resource: orders-prod
+
+  - id: mongodb-mcp.cluster.create-free
+    match: { mcp: { tool: atlas-create-free-cluster } }
+    class: access
+    resource: { arg: name, kind: cluster }
+    card: "Create free Atlas cluster {name} in project {projectId} and allow this machine's IP"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/createFreeCluster.ts
+    notes: >-
+      The cluster is free, but the tool also adds the MCP server's current
+      public IP to the project's IP access list, which opens the project's
+      clusters to that address.
+    tests:
+      - fixture: fixtures/cluster-create-free.http
+        expect: access
+        resource: orders-dev
+
+  - id: mongodb-mcp.cluster.create
+    match: { mcp: { tool: atlas-create-cluster } }
+    class: money
+    resource: { arg: clusterName, kind: cluster }
+    card: "Create dedicated Atlas cluster {clusterName} in project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/createCluster.ts
+    notes: >-
+      Dedicated clusters are billed by the hour. The tool also adds the current
+      public IP to the project's IP access list; money and access are both
+      always asked.
+    tests:
+      - fixture: fixtures/cluster-create.http
+        expect: money
+        resource: orders-prod
+
+  - id: mongodb-mcp.cluster.upgrade
+    match: { mcp: { tool: atlas-upgrade-cluster } }
+    class: money
+    resource: { arg: clusterName, kind: cluster }
+    card: "Upgrade Atlas cluster {clusterName} to {targetTier}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/update/upgradeCluster.ts
+    notes: >-
+      Moves a free or flex cluster to a paid tier, or resizes a dedicated
+      cluster.
+    tests:
+      - fixture: fixtures/cluster-upgrade.http
+        expect: money
+        resource: orders-dev
+
+  - id: mongodb-mcp.cluster.pause-resume
+    match: { mcp: { tool: atlas-pause-resume-cluster } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "{action} Atlas cluster {clusterName} in project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/update/pauseResumeCluster.ts
+    notes: >-
+      Pausing stops the cluster's compute and takes it offline until resumed; no
+      data is lost.
+    tests:
+      - fixture: fixtures/cluster-pause-resume.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-mcp.cluster.load-sample-dataset
+    match: { mcp: { tool: atlas-load-sample-dataset } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Load the sample dataset into Atlas cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/loadSampleDataset.ts
+    notes: >-
+      Adds the sample_* databases to the cluster.
+    tests:
+      - fixture: fixtures/cluster-load-sample-dataset.http
+        expect: write
+        resource: orders-dev
+
+  - id: mongodb-mcp.cluster.connect
+    match: { mcp: { tool: atlas-connect-cluster } }
+    class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Connect to Atlas cluster {clusterName} with a temporary database user"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/connect/connectCluster.ts
+    notes: >-
+      Creates a temporary database user (readWriteAnyDatabase unless the server
+      is read-only, deleted after four hours by default) and adds the current
+      public IP to the project's IP access list.
+    tests:
+      - fixture: fixtures/cluster-connect.http
+        expect: access
+        resource: orders-prod

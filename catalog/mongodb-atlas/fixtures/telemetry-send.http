@@ -1,0 +1,8 @@
+# description: Send client telemetry events to Atlas
+POST /api/private/v1.0/telemetry/events HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+[{"timestamp":"2026-10-17T10:00:00Z","source":"mdbmcp","properties":{"command":"find","result":"success"}}]

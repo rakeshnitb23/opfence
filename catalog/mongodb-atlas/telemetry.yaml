@@ -1,0 +1,30 @@
+# MongoDB Atlas Administration API: telemetry
+operations:
+  - id: mongodb-atlas.telemetry.send
+    match: { rest: { method: POST, path: "/api/private/v1.0/telemetry/events" } }
+    class: write
+    card: "Send client telemetry events to Atlas"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/atlas-api-client/src/apiClient.ts
+    notes: >-
+      Private endpoint the official MongoDB clients post usage telemetry to.
+    tests:
+      - fixture: fixtures/telemetry-send.http
+        expect: write
+
+  - id: mongodb-atlas.telemetry.send-unauthenticated
+    match: { rest: { method: POST, path: "/api/private/unauth/telemetry/events" } }
+    class: write
+    card: "Send anonymous client telemetry events to Atlas"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/atlas-api-client/src/apiClient.ts
+    notes: >-
+      Private endpoint the official MongoDB clients post usage telemetry to when
+      not signed in.
+    tests:
+      - fixture: fixtures/telemetry-send-unauthenticated.http
+        expect: write

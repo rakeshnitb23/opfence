@@ -1,0 +1,53 @@
+# MongoDB Atlas Administration API: backup-schedule
+operations:
+  - id: mongodb-atlas.backup-schedule.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/schedule" } }
+    class: write
+    when:
+      - if: { arg: body.deleteSnapshots, equals: "true" }
+        class: irreversible
+      - if: { arg: body.deleteCopySnapshots, equals: "true" }
+        class: irreversible
+      - if: { arg: body.deleteCopiedBackups, present: true }
+        class: irreversible
+      - if: { arg: body.updateSnapshots, equals: "true" }
+        class: irreversible
+      - if: { arg: body.updateCopySnapshots, equals: "true" }
+        class: irreversible
+      - if: { arg: body.restoreWindowDays, present: true }
+        class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change the backup schedule of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      deleteSnapshots, deleteCopySnapshots and deleteCopiedBackups delete
+      snapshots; updateSnapshots applies a new (possibly shorter) retention to
+      existing snapshots; a smaller restoreWindowDays discards point-in-time
+      history.
+    tests:
+      - fixture: fixtures/backup-schedule-update.http
+        expect: write
+        resource: orders-prod
+      - fixture: fixtures/backup-schedule-update-retention.http
+        expect: irreversible
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-schedule.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/schedule" } }
+    class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Remove every backup schedule of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Stops scheduled snapshots and drops the retention policies; turning off a
+      safety net is as dangerous as what it protects.
+    tests:
+      - fixture: fixtures/backup-schedule-delete.http
+        expect: irreversible
+        resource: orders-prod

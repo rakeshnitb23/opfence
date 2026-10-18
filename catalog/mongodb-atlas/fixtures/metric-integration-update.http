@@ -1,0 +1,8 @@
+# description: Replace metric integration 6650a1b2c3d4e5f6a7b8c90c in project 32b6e34b3d91647abb20e7b8
+PUT /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/metricIntegrations/6650a1b2c3d4e5f6a7b8c90c HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"integrationType":"OTEL","providerType":"CUSTOM","endpoint":"https://otel.example.com/v1/metrics","authType":"OAUTH2","oauth":{"clientAuthMethod":"PRIVATE_KEY_JWT","clientId":"atlas-metrics","tokenEndpoint":"https://auth.example.com/token"}}

@@ -1,0 +1,24 @@
+# MongoDB Atlas Administration API: audit-log
+operations:
+  - id: mongodb-atlas.audit-log.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/auditLog" } }
+    class: write
+    when:
+      - if: { arg: body.enabled, equals: "false" }
+        class: access
+    resource: { arg: groupId, kind: project }
+    card: "Change database auditing of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Turning auditing off removes the record of who did what on the clusters,
+      so it is access.
+    tests:
+      - fixture: fixtures/audit-log-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/audit-log-update-disable.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

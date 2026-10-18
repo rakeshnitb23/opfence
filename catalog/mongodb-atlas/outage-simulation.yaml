@@ -1,0 +1,32 @@
+# MongoDB Atlas Administration API: outage-simulation
+operations:
+  - id: mongodb-atlas.outage-simulation.start
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/outageSimulation" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Simulate a regional outage on cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Takes nodes in the chosen regions offline until the simulation ends; no
+      data is lost.
+    tests:
+      - fixture: fixtures/outage-simulation-start.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.outage-simulation.end
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/outageSimulation" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "End the outage simulation on cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/outage-simulation-end.http
+        expect: write
+        resource: orders-prod

@@ -1,0 +1,8 @@
+# description: Read recent global log events from MongoDB
+POST / HTTP/1.1
+Host: mcp.mongodb.com
+Authorization: Bearer opf_mongodb-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"mongodb-logs","arguments":{"connectionId":"conn-orders","type":"global","limit":50}}}

@@ -1,0 +1,47 @@
+# MongoDB MCP server: connection
+operations:
+  - id: mongodb-mcp.connection.connect
+    match: { mcp: { tool: connect } }
+    class: read
+    card: "Connect to MongoDB (connection name {connectionName})"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/connect/connect.ts
+    notes: >-
+      Opens a connection with a connection string the agent already holds;
+      nothing in the database changes. The tool talks to MongoDB over the wire
+      protocol, not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/connection-connect.http
+        expect: read
+
+  - id: mongodb-mcp.connection.disconnect
+    match: { mcp: { tool: disconnect } }
+    class: read
+    card: "Close MongoDB connection {connectionId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/connect/disconnect.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/connection-disconnect.http
+        expect: read
+
+  - id: mongodb-mcp.connection.list
+    match: { mcp: { tool: list-connections } }
+    class: read
+    card: "List open MongoDB connections"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/connect/listConnections.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/connection-list.http
+        expect: read

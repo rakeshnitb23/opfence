@@ -1,0 +1,8 @@
+# description: Replace alert configuration 57b76ddc96e8215c017ceafb in project 32b6e34b3d91647abb20e7b8
+PUT /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/alertConfigs/57b76ddc96e8215c017ceafb HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"eventTypeName":"NO_PRIMARY","enabled":true,"notifications":[{"typeName":"GROUP","intervalMin":5,"delayMin":0,"emailEnabled":true,"roles":["GROUP_OWNER"]}]}

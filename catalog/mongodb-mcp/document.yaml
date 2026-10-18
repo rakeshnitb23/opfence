@@ -1,0 +1,161 @@
+# MongoDB MCP server: document
+operations:
+  - id: mongodb-mcp.document.find
+    match: { mcp: { tool: find } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Find documents in {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/read/find.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-find.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.document.count
+    match: { mcp: { tool: count } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Count documents in {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/read/count.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-count.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.document.aggregate
+    match: { mcp: { tool: aggregate } }
+    class: read
+    when:
+      - if: { arg: pipeline.$out, present: true }
+        class: irreversible
+      - if: { arg: pipeline.$merge, present: true }
+        class: write
+    resource: { arg: collection, kind: collection }
+    card: "Run an aggregation on {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/read/aggregate.ts
+    notes: >-
+      A pipeline is a read unless it has a write stage: $out replaces the whole
+      target collection, $merge writes into an existing one. The server asks the
+      user to confirm either stage too. The tool talks to MongoDB over the wire
+      protocol, not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-aggregate.http
+        expect: read
+        resource: orders
+      - fixture: fixtures/document-aggregate-out.http
+        expect: irreversible
+        resource: orders
+      - fixture: fixtures/document-aggregate-merge.http
+        expect: write
+        resource: orders
+
+  - id: mongodb-mcp.document.explain
+    match: { mcp: { tool: explain } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Explain a query plan on {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/explain.ts
+    notes: >-
+      Explains without running writes. The tool talks to MongoDB over the wire
+      protocol, not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-explain.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.document.export
+    match: { mcp: { tool: export } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Export documents from {collection} in {database} ({exportTitle})"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/read/export.ts
+    notes: >-
+      Writes the results to a file on the MCP server's machine; the server
+      rejects $out and $merge here. The tool talks to MongoDB over the wire
+      protocol, not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-export.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.document.insert
+    match: { mcp: { tool: insert-many } }
+    class: write
+    resource: { arg: collection, kind: collection }
+    card: "Insert documents into {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/create/insertMany.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-insert.http
+        expect: write
+        resource: orders
+
+  - id: mongodb-mcp.document.update
+    match: { mcp: { tool: update-many } }
+    class: write
+    when:
+      - if: { arg: filter, absent: true }
+        class: irreversible
+    resource: { arg: collection, kind: collection }
+    card: "Update documents in {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/update/updateMany.ts
+    notes: >-
+      Without a filter the update runs on every document in the collection, and
+      the old values are gone. An empty filter ({}) does the same, but Opfence
+      conditions compare scalars and cannot tell an empty object from a narrow
+      one, so that case is a write. The tool talks to MongoDB over the wire
+      protocol, not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-update.http
+        expect: write
+        resource: orders
+      - fixture: fixtures/document-update-no-filter.http
+        expect: irreversible
+        resource: orders
+
+  - id: mongodb-mcp.document.delete
+    match: { mcp: { tool: delete-many } }
+    class: irreversible
+    resource: { arg: collection, kind: collection }
+    card: "Delete documents from {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/delete/deleteMany.ts
+    notes: >-
+      Deleted documents are gone; without a filter every document in the
+      collection is deleted. The tool talks to MongoDB over the wire protocol,
+      not HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/document-delete.http
+        expect: irreversible
+        resource: orders

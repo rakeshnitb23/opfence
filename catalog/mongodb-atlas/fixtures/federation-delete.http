@@ -1,0 +1,6 @@
+# description: Delete federation settings 55fa922fb343282757d9554e
+DELETE /api/atlas/v2/federationSettings/55fa922fb343282757d9554e HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+

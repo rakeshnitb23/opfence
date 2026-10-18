@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: project-team
+operations:
+  - id: mongodb-atlas.project-team.add
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/teams" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Add teams to project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-team-add.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-team.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/teams/{teamId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Change the roles of team {teamId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-team-update.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-team.remove
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/teams/{teamId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove team {teamId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-team-remove.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

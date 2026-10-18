@@ -1,0 +1,32 @@
+# MongoDB MCP server: db-user
+operations:
+  - id: mongodb-mcp.db-user.list
+    match: { mcp: { tool: atlas-list-db-users } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List database users in Atlas project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/listDBUsers.ts
+    tests:
+      - fixture: fixtures/db-user-list.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-mcp.db-user.create
+    match: { mcp: { tool: atlas-create-db-user } }
+    class: credential
+    resource: { arg: username, kind: database-user }
+    card: "Create database user {username} in Atlas project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/createDBUser.ts
+    notes: >-
+      When no password is given the tool generates one and returns it to the
+      agent. It also adds the current public IP to the project's IP access list.
+    tests:
+      - fixture: fixtures/db-user-create.http
+        expect: credential
+        resource: app-backend

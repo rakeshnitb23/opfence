@@ -1,0 +1,33 @@
+# MongoDB Atlas Administration API: backup-compliance-policy
+operations:
+  - id: mongodb-atlas.backup-compliance-policy.update
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/backupCompliancePolicy" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change the Backup Compliance Policy of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-compliance-policy-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.backup-compliance-policy.disable
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/backupCompliancePolicy" } }
+    class: irreversible
+    resource: { arg: groupId, kind: project }
+    card: "Turn off the Backup Compliance Policy of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The policy is what stops anyone deleting backups or shortening their
+      retention; turning off a safety net is as dangerous as what it protects.
+      Atlas requires a support ticket first.
+    tests:
+      - fixture: fixtures/backup-compliance-policy-disable.http
+        expect: irreversible
+        resource: 32b6e34b3d91647abb20e7b8

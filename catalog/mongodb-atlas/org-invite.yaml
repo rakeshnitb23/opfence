@@ -1,0 +1,57 @@
+# MongoDB Atlas Administration API: org-invite
+operations:
+  - id: mongodb-atlas.org-invite.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/invites" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Invite {body.username} to organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-invite-create.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-invite.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/invites" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change the invitation of {body.username} to organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-invite-update.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-invite.update-by-id
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/invites/{invitationId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change invitation {invitationId} to organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-invite-update-by-id.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-invite.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/invites/{invitationId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Delete invitation {invitationId} to organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-invite-delete.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

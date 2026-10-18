@@ -1,0 +1,94 @@
+# MongoDB Atlas Administration API: data-lake-pipeline
+operations:
+  - id: mongodb-atlas.data-lake-pipeline.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create data lake pipeline {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Data Lake pipelines were deprecated and removed from the current spec; the
+      rule follows the SDK spec they were removed from.
+    tests:
+      - fixture: fixtures/data-lake-pipeline-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.data-lake-pipeline.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}" } }
+    class: write
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Change data lake pipeline {pipelineName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Removed from the current spec but documented in the SDK spec it was
+      removed from.
+    tests:
+      - fixture: fixtures/data-lake-pipeline-update.http
+        expect: write
+        resource: orders-pipeline
+
+  - id: mongodb-atlas.data-lake-pipeline.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}" } }
+    class: delete
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Delete data lake pipeline {pipelineName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Removes the pipeline definition; its datasets are separate. Removed from
+      the current spec.
+    tests:
+      - fixture: fixtures/data-lake-pipeline-delete.http
+        expect: delete
+        resource: orders-pipeline
+
+  - id: mongodb-atlas.data-lake-pipeline.pause
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/pause" } }
+    class: write
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Pause data lake pipeline {pipelineName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    tests:
+      - fixture: fixtures/data-lake-pipeline-pause.http
+        expect: write
+        resource: orders-pipeline
+
+  - id: mongodb-atlas.data-lake-pipeline.resume
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/resume" } }
+    class: write
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Resume data lake pipeline {pipelineName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    tests:
+      - fixture: fixtures/data-lake-pipeline-resume.http
+        expect: write
+        resource: orders-pipeline
+
+  - id: mongodb-atlas.data-lake-pipeline.trigger
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/trigger" } }
+    class: write
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Run data lake pipeline {pipelineName} on a snapshot"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    tests:
+      - fixture: fixtures/data-lake-pipeline-trigger.http
+        expect: write
+        resource: orders-pipeline

@@ -1,0 +1,113 @@
+# MongoDB Atlas Administration API: alert-config
+operations:
+  - id: mongodb-atlas.alert-config.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/alertConfigs" } }
+    class: write
+    when:
+      - if: { arg: body.notifications.apiToken, present: true }
+        class: credential
+      - if: { arg: body.notifications.datadogApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.notificationToken, present: true }
+        class: credential
+      - if: { arg: body.notifications.opsGenieApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.serviceKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.victorOpsApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.victorOpsRoutingKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.webhookSecret, present: true }
+        class: credential
+      - if: { arg: body.notifications.microsoftTeamsWebhookUrl, present: true }
+        class: credential
+      - if: { arg: body.notifications.webhookUrl, present: true }
+        class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.eventTypeName} alert in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Notifications can carry a third-party API key, token or webhook secret
+      (Slack, Datadog, PagerDuty, OpsGenie, Splunk On-Call, webhook); setting
+      one stores a secret, so it is credential.
+    tests:
+      - fixture: fixtures/alert-config-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/alert-config-create-secret.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.alert-config.update
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/alertConfigs/{alertConfigId}" } }
+    class: write
+    when:
+      - if: { arg: body.notifications.apiToken, present: true }
+        class: credential
+      - if: { arg: body.notifications.datadogApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.notificationToken, present: true }
+        class: credential
+      - if: { arg: body.notifications.opsGenieApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.serviceKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.victorOpsApiKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.victorOpsRoutingKey, present: true }
+        class: credential
+      - if: { arg: body.notifications.webhookSecret, present: true }
+        class: credential
+      - if: { arg: body.notifications.microsoftTeamsWebhookUrl, present: true }
+        class: credential
+      - if: { arg: body.notifications.webhookUrl, present: true }
+        class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Replace alert configuration {alertConfigId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Notifications can carry a third-party API key, token or webhook secret
+      (Slack, Datadog, PagerDuty, OpsGenie, Splunk On-Call, webhook); setting
+      one stores a secret, so it is credential.
+    tests:
+      - fixture: fixtures/alert-config-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/alert-config-update-secret.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.alert-config.toggle
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/alertConfigs/{alertConfigId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Set alert configuration {alertConfigId} enabled={body.enabled} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/alert-config-toggle.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.alert-config.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/alertConfigs/{alertConfigId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete alert configuration {alertConfigId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/alert-config-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

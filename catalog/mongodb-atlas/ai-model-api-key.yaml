@@ -1,0 +1,47 @@
+# MongoDB Atlas Administration API: ai-model-api-key
+operations:
+  - id: mongodb-atlas.ai-model-api-key.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/aiModelApiKeys" } }
+    class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create AI model API key {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Returns the full key secret once, in the response.
+    tests:
+      - fixture: fixtures/ai-model-api-key-create.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.ai-model-api-key.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/aiModelApiKeys/{apiKeyId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Rename AI model API key {apiKeyId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/ai-model-api-key-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.ai-model-api-key.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/aiModelApiKeys/{apiKeyId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Delete AI model API key {apiKeyId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Revokes a key; like other key deletions in the catalog this is access.
+    tests:
+      - fixture: fixtures/ai-model-api-key-delete.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
