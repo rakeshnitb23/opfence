@@ -1,0 +1,222 @@
+# Netlify REST API: deploys
+operations:
+  - id: netlify.deploy.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/deploys" } }
+    class: write
+    when:
+      - if: { arg: body.environment.is_secret, equals: "true" }
+        class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Deploy Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      environment sets deploy-specific variables; one marked is_secret is
+      a secret. A zip sent as the raw body cannot be read, so such a
+      request is unknown.
+    tests:
+      - fixture: fixtures/deploy-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/deploy-create-secret-env.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.deploy.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/deploys/{deploy_id}" } }
+    class: write
+    when:
+      - if: { arg: body.environment.is_secret, equals: "true" }
+        class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Update deploy {deploy_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/deploy-update-secret-env.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.deploy.delete-for-site
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/deploys/{deploy_id}" } }
+    class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Delete deploy {deploy_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A Git-based deploy can be rebuilt from its commit and a CLI deploy
+      from the local files, but its unique URL and build output are gone.
+    tests:
+      - fixture: fixtures/deploy-delete-for-site.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.deploy.delete
+    match: { rest: { method: DELETE, path: "/api/v1/deploys/{deploy_id}" } }
+    class: delete
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Delete Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A Git-based deploy can be rebuilt from its commit and a CLI deploy
+      from the local files, but its unique URL and build output are gone.
+    tests:
+      - fixture: fixtures/deploy-delete.http
+        expect: delete
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.cancel
+    match: { rest: { method: POST, path: "/api/v1/deploys/{deploy_id}/cancel" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Cancel Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-cancel.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.restore
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/deploys/{deploy_id}/restore" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Publish earlier deploy {deploy_id} as the live version of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-restore.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.deploy.rollback
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/rollback" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Roll Netlify site {site_id} back to its previous deploy"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-rollback.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.deploy.lock
+    match: { rest: { method: POST, path: "/api/v1/deploys/{deploy_id}/lock" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Lock Netlify deploy {deploy_id} as the published deploy"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Stops auto publishing: new deploys build but do not go live until
+      unlocked.
+    tests:
+      - fixture: fixtures/deploy-lock.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.unlock
+    match: { rest: { method: POST, path: "/api/v1/deploys/{deploy_id}/unlock" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Unlock Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-unlock.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.update-validations
+    match: { rest: { method: PATCH, path: "/api/v1/deploys/{deploy_id}/validations_report" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Update the validations report of Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-update-validations.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.upload-file
+    match: { rest: { method: PUT, path: "/api/v1/deploys/{deploy_id}/files/{path*}" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Upload file {path} to Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-upload-file.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.upload-function
+    match: { rest: { method: PUT, path: "/api/v1/deploys/{deploy_id}/functions/{name}" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Upload function {name} to Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-upload-function.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.upload-server
+    match: { rest: { method: PUT, path: "/api/v1/deploys/{deploy_id}/server/{code_sha}" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Upload server code {code_sha} to Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-upload-server.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify.deploy.upload-edge-function
+    match: { rest: { method: PUT, path: "/api/v1/deploys/{deploy_id}/edge_functions/{code_sha}" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Upload edge functions {code_sha} to Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/deploy-upload-edge-function.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0

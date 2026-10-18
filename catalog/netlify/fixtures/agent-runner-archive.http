@@ -1,0 +1,5 @@
+# description: Archive agent run 64f0cdd4e5a6b7c8d9e0f123
+POST /api/v1/agent_runners/64f0cdd4e5a6b7c8d9e0f123/archive HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

@@ -1,0 +1,46 @@
+# Netlify REST API: DNS zones
+operations:
+  - id: netlify.dns-zone.create
+    match: { rest: { method: POST, path: "/api/v1/dns_zones" } }
+    class: write
+    card: "Create DNS zone {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dns-zone-create.http
+        expect: write
+
+  - id: netlify.dns-zone.delete
+    match: { rest: { method: DELETE, path: "/api/v1/dns_zones/{zone_id}" } }
+    class: irreversible
+    resource: { arg: zone_id, kind: dns-zone }
+    card: "Delete DNS zone {zone_id} and all its records"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Every record in the zone goes with it and the domain stops
+      resolving.
+    tests:
+      - fixture: fixtures/dns-zone-delete.http
+        expect: irreversible
+        resource: 64f0c6d7e8a9b0c1d2e3f456
+
+  - id: netlify.dns-zone.transfer
+    match: { rest: { method: PUT, path: "/api/v1/dns_zones/{zone_id}/transfer" } }
+    class: access
+    resource: { arg: zone_id, kind: dns-zone }
+    card: "Transfer DNS zone {zone_id} to account {query.transfer_account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Hands the zone to another account.
+    tests:
+      - fixture: fixtures/dns-zone-transfer.http
+        expect: access
+        resource: 64f0c6d7e8a9b0c1d2e3f456

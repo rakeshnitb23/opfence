@@ -1,0 +1,31 @@
+# Netlify REST API: OAuth tickets
+operations:
+  - id: netlify.oauth-ticket.create
+    match: { rest: { method: POST, path: "/api/v1/oauth/tickets" } }
+    class: credential
+    card: "Start an access token request for OAuth client {query.client_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The first step of minting a Netlify access token for a client.
+    tests:
+      - fixture: fixtures/oauth-ticket-create.http
+        expect: credential
+
+  - id: netlify.oauth-ticket.exchange
+    match: { rest: { method: POST, path: "/api/v1/oauth/tickets/{ticket_id}/exchange" } }
+    class: credential
+    resource: { arg: ticket_id, kind: ticket }
+    card: "Exchange OAuth ticket {ticket_id} for an access token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Returns a new access token.
+    tests:
+      - fixture: fixtures/oauth-ticket-exchange.http
+        expect: credential
+        resource: 64f0c9d0e1a2b3c4d5e6f789

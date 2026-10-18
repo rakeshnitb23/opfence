@@ -1,0 +1,34 @@
+# Netlify REST API: deploy keys
+operations:
+  - id: netlify.deploy-key.create
+    match: { rest: { method: POST, path: "/api/v1/deploy_keys" } }
+    class: credential
+    card: "Create a Netlify deploy key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Creates an SSH key pair whose private half Netlify uses to read a
+      repository.
+    tests:
+      - fixture: fixtures/deploy-key-create.http
+        expect: credential
+
+  - id: netlify.deploy-key.delete
+    match: { rest: { method: DELETE, path: "/api/v1/deploy_keys/{key_id}" } }
+    class: access
+    resource: { arg: key_id, kind: deploy-key }
+    card: "Delete Netlify deploy key {key_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Revokes the key: builds of sites that clone with it fail until a new
+      key is added to the repository. Deploy keys only return their public
+      half, so listing them stays a read.
+    tests:
+      - fixture: fixtures/deploy-key-delete.http
+        expect: access
+        resource: 64f0cad1e2a3b4c5d6e7f890

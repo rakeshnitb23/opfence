@@ -1,0 +1,5 @@
+# description: Cancel Netlify deploy 6528a1b2c3d4e5f6a7b8c9d0
+POST /api/v1/deploys/6528a1b2c3d4e5f6a7b8c9d0/cancel HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

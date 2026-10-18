@@ -1,0 +1,7 @@
+# description: Change settings of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+PUT /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"processing_settings":{"ignore_html_forms":true}}

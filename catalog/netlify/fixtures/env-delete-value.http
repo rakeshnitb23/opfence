@@ -1,0 +1,5 @@
+# description: Delete value 0d6f1c2e-8a4b-4e1f-9c3d-7b2a5e6f8091 of environment variable STRIPE_SECRET_KEY in team 5e8f9a0b1c2d3e4f5a6b7c8d
+DELETE /api/v1/accounts/5e8f9a0b1c2d3e4f5a6b7c8d/env/STRIPE_SECRET_KEY/value/0d6f1c2e-8a4b-4e1f-9c3d-7b2a5e6f8091 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

@@ -1,0 +1,59 @@
+# Netlify REST API: split tests
+operations:
+  - id: netlify.split-test.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/traffic_splits" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Create a split test for Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/split-test-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.split-test.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/traffic_splits/{split_test_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change split test {split_test_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/split-test-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.split-test.publish
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/traffic_splits/{split_test_id}/publish" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Start split test {split_test_id} on Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Sends a share of live traffic to the branch deploys in the test.
+    tests:
+      - fixture: fixtures/split-test-publish.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.split-test.unpublish
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/traffic_splits/{split_test_id}/unpublish" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Stop split test {split_test_id} on Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/split-test-unpublish.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

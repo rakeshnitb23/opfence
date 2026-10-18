@@ -1,0 +1,56 @@
+# Netlify Blobs API (api.netlify.com/api/v1/blobs)
+operations:
+  - id: netlify.blob.set
+    match: { rest: { method: PUT, path: "/api/v1/blobs/{site_id}/{store}/{key*}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Write blob {key} in store {store} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/client.ts
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/store.ts
+    notes: >-
+      Not in the OpenAPI file; the path comes from the official
+      @netlify/blobs client. Overwriting a key replaces its value, like an
+      S3 PutObject.
+    tests:
+      - fixture: fixtures/blob-set.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.blob.delete
+    match: { rest: { method: DELETE, path: "/api/v1/blobs/{site_id}/{store}/{key*}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete blob {key} from store {store} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/client.ts
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/store.ts
+    notes: >-
+      Not in the OpenAPI file; the path comes from the official
+      @netlify/blobs client. Blobs are not versioned.
+    tests:
+      - fixture: fixtures/blob-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.blob.delete-store
+    match: { rest: { method: DELETE, path: "/api/v1/blobs/{site_id}/{store}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete every blob in store {store} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/client.ts
+      - https://github.com/netlify/primitives/blob/main/packages/blobs/src/store.ts
+    notes: >-
+      Store.deleteAll in the official @netlify/blobs client sends DELETE
+      on the store path until it is empty.
+    tests:
+      - fixture: fixtures/blob-delete-store.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

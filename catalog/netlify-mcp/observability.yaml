@@ -1,0 +1,132 @@
+# Netlify MCP server: observability
+operations:
+  - id: netlify-mcp.observability.reader
+    match: { mcp: { tool: netlify-observability-services-reader } }
+    class: read
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-counts" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-topk" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-timeseries" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-request-logs" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-request-detail" }
+        class: read
+    resource: { arg: selectSchema.params.siteId, kind: site }
+    card: "Run Netlify observability query {selectSchema.operation} on site {selectSchema.params.siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. Every operation reads
+      edge traffic counts or request logs.
+    tests:
+      - fixture: fixtures/observability-reader.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/observability-reader-logs.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.observability.counts
+    match: { mcp: { tool: netlify-observability-get-counts } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Run observability query get-counts on Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/observability-counts.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.observability.topk
+    match: { mcp: { tool: netlify-observability-get-topk } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Run observability query get-topk on Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/observability-topk.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.observability.timeseries
+    match: { mcp: { tool: netlify-observability-get-timeseries } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Run observability query get-timeseries on Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/observability-timeseries.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.observability.request-logs
+    match: { mcp: { tool: netlify-observability-get-request-logs } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Run observability query get-request-logs on Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/observability-request-logs.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.observability.request-detail
+    match: { mcp: { tool: netlify-observability-get-request-detail } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Run observability query get-request-detail on Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/observability-tools/index.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/observability-request-detail.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

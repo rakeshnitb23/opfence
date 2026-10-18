@@ -1,0 +1,83 @@
+# Netlify REST API: add-on service instances
+operations:
+  - id: netlify.service-instance.list
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/service-instances" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the add-ons of Netlify site {site_id} with their credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A service instance's env holds the credentials the add-on injects
+      into the site.
+    tests:
+      - fixture: fixtures/service-instance-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.service-instance.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/services/{addon}/instances/{instance_id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read add-on {addon} instance {instance_id} of Netlify site {site_id} with its credentials"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A service instance's env holds the credentials the add-on injects
+      into the site.
+    tests:
+      - fixture: fixtures/service-instance-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.service-instance.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/services/{addon}/instances" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Add add-on {addon} to Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Provisions the add-on (which may be billed by its provider) and
+      returns its credentials in env.
+    tests:
+      - fixture: fixtures/service-instance-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.service-instance.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/services/{addon}/instances/{instance_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change add-on {addon} instance {instance_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/service-instance-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.service-instance.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/services/{addon}/instances/{instance_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Remove add-on {addon} instance {instance_id} from Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Deprovisioning can delete whatever the add-on stored; Opfence cannot
+      see which add-on keeps data.
+    tests:
+      - fixture: fixtures/service-instance-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

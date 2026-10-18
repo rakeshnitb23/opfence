@@ -1,0 +1,7 @@
+# description: Add CNAME record www.example.com to DNS zone 64f0c6d7e8a9b0c1d2e3f456
+POST /api/v1/dns_zones/64f0c6d7e8a9b0c1d2e3f456/dns_records HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"type":"CNAME","hostname":"www.example.com","value":"shop-web.netlify.app","ttl":3600}

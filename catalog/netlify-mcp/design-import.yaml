@@ -1,0 +1,38 @@
+# Netlify MCP server: Claude Design import (hosted server, Claude clients only)
+operations:
+  - id: netlify-mcp.design-import.import
+    match: { mcp: { tool: import-claude-design-from-url } }
+    class: write
+    when:
+      - if: { arg: password, present: true }
+        class: access
+    card: "Publish the design at {url} as a Netlify site"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/netlify/functions/mcp.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/design-import/import-claude-design.ts
+    notes: >-
+      Creates (or, with claude_design_project_id, updates) a site and
+      deploys the HTML from url to it. password sets the new site's
+      visitor password, which is an access setting.
+    tests:
+      - fixture: fixtures/design-import-import.http
+        expect: write
+      - fixture: fixtures/design-import-import-password.http
+        expect: access
+
+  - id: netlify-mcp.design-import.status
+    match: { mcp: { tool: get-design-import-job-status } }
+    class: read
+    resource: { arg: job_id, kind: job }
+    card: "Check design import job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/netlify/functions/mcp.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/design-import/import-claude-design.ts
+    tests:
+      - fixture: fixtures/design-import-status.http
+        expect: read
+        resource: 6528a1b2c3d4e5f6a7b8c9d0

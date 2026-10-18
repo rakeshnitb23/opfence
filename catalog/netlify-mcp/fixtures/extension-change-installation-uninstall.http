@@ -1,0 +1,8 @@
+# description: Install (false) extension neon in team 5e8f9a0b1c2d3e4f5a6b7c8d
+POST /mcp HTTP/1.1
+Host: netlify-mcp.netlify.app
+Authorization: Bearer opf_netlify-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"netlify-extension-change-extension-installation","arguments":{"extensionSlug":"neon","shouldBeInstalled":false,"teamId":"5e8f9a0b1c2d3e4f5a6b7c8d"}}}

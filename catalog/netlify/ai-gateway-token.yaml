@@ -1,0 +1,29 @@
+# Netlify REST API: AI Gateway tokens
+operations:
+  - id: netlify.ai-gateway-token.get-for-site
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/ai-gateway/token" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the AI Gateway token of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/ai-gateway-token-get-for-site.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.ai-gateway-token.get-for-account
+    match: { rest: { method: GET, path: "/api/v1/accounts/{account_id}/ai-gateway/token" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read the AI Gateway token of team {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/ai-gateway-token-get-for-account.http
+        expect: credential
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d

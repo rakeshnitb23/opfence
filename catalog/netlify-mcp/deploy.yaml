@@ -1,0 +1,145 @@
+# Netlify MCP server: deploy
+operations:
+  - id: netlify-mcp.deploy.reader
+    match: { mcp: { tool: netlify-deploy-services-reader } }
+    class: read
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-deploy" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-deploy-for-site" }
+        class: read
+    resource: { arg: selectSchema.params.deployId, kind: deploy }
+    card: "Run Netlify deploy operation {selectSchema.operation} on deploy {selectSchema.params.deployId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/get-deploy.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/get-deploy-for-site.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have.
+    tests:
+      - fixture: fixtures/deploy-reader.http
+        expect: read
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+      - fixture: fixtures/deploy-reader-for-site.http
+        expect: read
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify-mcp.deploy.updater
+    match: { mcp: { tool: netlify-deploy-services-updater } }
+    class: write
+    when:
+      - if: { arg: selectSchema.operation, equals: "deploy-site" }
+        class: write
+    resource: { arg: selectSchema.params.siteId, kind: site }
+    card: "Deploy {selectSchema.params.deployDirectory} to Netlify site {selectSchema.params.siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/deploy-site.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. Locally deploy-site
+      zips deployDirectory and posts it to the site's builds; the hosted
+      server instead returns a command carrying a 30-minute proxy token
+      that can only start builds of that site and read deploys. Either way
+      the result is a deploy, which the previous deploy can replace again.
+    tests:
+      - fixture: fixtures/deploy-updater.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.deploy.get
+    match: { mcp: { tool: netlify-deploy-get-deploy } }
+    class: read
+    resource: { arg: deployId, kind: deploy }
+    card: "Read Netlify deploy {deployId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/get-deploy.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/deploy-get.http
+        expect: read
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify-mcp.deploy.get-for-site
+    match: { mcp: { tool: netlify-deploy-get-deploy-for-site } }
+    class: read
+    resource: { arg: deployId, kind: deploy }
+    card: "Read deploy {deployId} of Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/get-deploy-for-site.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/deploy-get-for-site.http
+        expect: read
+        resource: 6528a1b2c3d4e5f6a7b8c9d0
+
+  - id: netlify-mcp.deploy.deploy-site-local
+    match: { mcp: { tool: netlify-deploy-deploy-site } }
+    class: write
+    resource: { arg: siteId, kind: site }
+    card: "Deploy {deployDirectory} to Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/deploy-site.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level. Local
+      server only. Locally deploy-site zips deployDirectory and posts it
+      to the site's builds; the hosted server instead returns a command
+      carrying a 30-minute proxy token that can only start builds of that
+      site and read deploys. Either way the result is a deploy, which the
+      previous deploy can replace again.
+    tests:
+      - fixture: fixtures/deploy-deploy-site-local.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.deploy.deploy-site-remote
+    match: { mcp: { tool: netlify-deploy-site } }
+    class: write
+    resource: { arg: siteId, kind: site }
+    card: "Get a command that deploys to Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/deploy-tools/deploy-site.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level. Hosted
+      server only (granularToolName). Locally deploy-site zips
+      deployDirectory and posts it to the site's builds; the hosted server
+      instead returns a command carrying a 30-minute proxy token that can
+      only start builds of that site and read deploys. Either way the
+      result is a deploy, which the previous deploy can replace again.
+    tests:
+      - fixture: fixtures/deploy-deploy-site-remote.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

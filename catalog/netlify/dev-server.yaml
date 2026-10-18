@@ -1,0 +1,59 @@
+# Netlify REST API: dev servers
+operations:
+  - id: netlify.dev-server.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/dev_servers" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Start a dev server for branch {query.branch} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dev-server-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server.delete-all
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/dev_servers" } }
+    class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Stop the dev servers of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Dev servers run from the repository and can be started again.
+    tests:
+      - fixture: fixtures/dev-server-delete-all.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server.activity
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/dev_servers/{dev_server_id}/activity" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Mark dev server {dev_server_id} of Netlify site {site_id} as active"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dev-server-activity.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.dev-server.state
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/dev_servers/{dev_server_id}/state" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Set dev server {dev_server_id} of Netlify site {site_id} to {body.state}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dev-server-state.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

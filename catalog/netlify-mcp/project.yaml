@@ -1,0 +1,319 @@
+# Netlify MCP server: project
+operations:
+  - id: netlify-mcp.project.reader
+    match: { mcp: { tool: netlify-project-services-reader } }
+    class: read
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-project" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-projects" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-forms-for-project" }
+        class: read
+    resource: { arg: selectSchema.params.siteId, kind: site }
+    card: "Run Netlify project operation {selectSchema.operation} on site {selectSchema.params.siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-project.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-projects.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-forms-for-project.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. The server trims sites
+      to id, name, plan, URLs and protection flags, so unlike the REST
+      endpoint no secret comes back.
+    tests:
+      - fixture: fixtures/project-reader.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-reader-list.http
+        expect: read
+      - fixture: fixtures/project-reader-forms.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.updater
+    match: { mcp: { tool: netlify-project-services-updater } }
+    class: irreversible
+    when:
+      - if: { arg: selectSchema.operation, equals: "update-visitor-access-controls" }
+        class: access
+      - if: { arg: selectSchema.operation, equals: "update-forms" }
+        class: write
+      - if: { arg: selectSchema.operation, equals: "update-project-name" }
+        class: delete
+      - if: { arg: selectSchema.operation, equals: "manage-env-vars" }
+        class: credential
+      - if: { arg: selectSchema.params.deleteEnvVar, equals: "true" }
+        class: irreversible
+      - if: { arg: selectSchema.operation, equals: "create-new-project" }
+        class: write
+      - if: { arg: selectSchema.params.action, equals: "get-submissions" }
+        class: read
+      - if: { arg: selectSchema.params.action, equals: "delete-submission" }
+        class: irreversible
+    resource: { arg: selectSchema.params.siteId, kind: site }
+    card: "Run Netlify project operation {selectSchema.operation} on site {selectSchema.params.siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-visitor-access-controls.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-project-forms.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/manage-form-submissions.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-project-name.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/manage-project-env-vars.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/create-new-project.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. manage-form-
+      submissions has no condition of its own: its action decides, and
+      without one the rule's class applies. update-visitor-access-controls
+      replaces the site's password and SSO settings; requirePassword false
+      with no SSO removes all protection and makes the site public.
+      manage-form-submissions reads submissions, or with action delete-
+      submission deletes one permanently. update-project-name renames the
+      netlify.app subdomain: old links break and the old name is released
+      for anyone to claim (the server marks it destructive), so it is a
+      delete that can usually, not always, be undone. manage-env-vars
+      lists variables with their values (getAllEnvVars), creates or
+      overwrites one (upsertEnvVar; for an existing key the secret flag is
+      left as it was, so it may be a secret), or deletes one permanently
+      (deleteEnvVar, which wins over the others). Listing and upserting
+      are credential, deleting irreversible.
+    tests:
+      - fixture: fixtures/project-updater-access.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-forms.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-rename.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-env-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-env-upsert.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-env-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-create.http
+        expect: write
+      - fixture: fixtures/project-updater-submissions.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-submission-delete.http
+        expect: irreversible
+      - fixture: fixtures/project-updater-submissions-no-action.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-updater-unknown-op.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.get
+    match: { mcp: { tool: netlify-project-get-project } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "Read Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-project.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/project-get.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.list
+    match: { mcp: { tool: netlify-project-get-projects } }
+    class: read
+    card: "List Netlify sites"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-projects.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: netlify-mcp.project.get-forms
+    match: { mcp: { tool: netlify-project-get-forms-for-project } }
+    class: read
+    resource: { arg: siteId, kind: site }
+    card: "List the forms of Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/get-forms-for-project.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/project-get-forms.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.update-visitor-access
+    match: { mcp: { tool: netlify-project-update-visitor-access-controls } }
+    class: access
+    resource: { arg: siteId, kind: site }
+    card: "Change who can view Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-visitor-access-controls.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      update-visitor-access-controls replaces the site's password and SSO
+      settings; requirePassword false with no SSO removes all protection
+      and makes the site public.
+    tests:
+      - fixture: fixtures/project-update-visitor-access.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.update-forms
+    match: { mcp: { tool: netlify-project-update-forms } }
+    class: write
+    resource: { arg: siteId, kind: site }
+    card: "Set form processing of Netlify site {siteId} to {forms}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-project-forms.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      Disabling stops capturing new submissions; existing ones stay.
+    tests:
+      - fixture: fixtures/project-update-forms.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.manage-form-submissions
+    match: { mcp: { tool: netlify-project-manage-form-submissions } }
+    class: irreversible
+    when:
+      - if: { arg: action, equals: "get-submissions" }
+        class: read
+      - if: { arg: action, equals: "delete-submission" }
+        class: irreversible
+    resource: { arg: siteId, kind: site }
+    card: "{action} form submissions of Netlify site {siteId} (submission {submissionId})"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/manage-form-submissions.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      manage-form-submissions reads submissions, or with action delete-
+      submission deletes one permanently. Without an action the rule's
+      class applies.
+    tests:
+      - fixture: fixtures/project-manage-form-submissions.http
+        expect: read
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-manage-form-submissions-delete.http
+        expect: irreversible
+
+  - id: netlify-mcp.project.update-name
+    match: { mcp: { tool: netlify-project-update-project-name } }
+    class: delete
+    resource: { arg: siteId, kind: site }
+    card: "Rename Netlify site {siteId} to {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-project-name.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      update-project-name renames the netlify.app subdomain: old links
+      break and the old name is released for anyone to claim (the server
+      marks it destructive), so it is a delete that can usually, not
+      always, be undone.
+    tests:
+      - fixture: fixtures/project-update-name.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.manage-env-vars
+    match: { mcp: { tool: netlify-project-manage-env-vars } }
+    class: credential
+    when:
+      - if: { arg: deleteEnvVar, equals: "true" }
+        class: irreversible
+    resource: { arg: siteId, kind: site }
+    card: "Read or change environment variable {envVarKey} of Netlify site {siteId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/manage-project-env-vars.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+      manage-env-vars lists variables with their values (getAllEnvVars),
+      creates or overwrites one (upsertEnvVar; for an existing key the
+      secret flag is left as it was, so it may be a secret), or deletes
+      one permanently (deleteEnvVar, which wins over the others). Listing
+      and upserting are credential, deleting irreversible.
+    tests:
+      - fixture: fixtures/project-manage-env-vars.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/project-manage-env-vars-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify-mcp.project.create
+    match: { mcp: { tool: netlify-project-create-new-project } }
+    class: write
+    card: "Create Netlify site {name} in team {teamSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/create-new-project.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write

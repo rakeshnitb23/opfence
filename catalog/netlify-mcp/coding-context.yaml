@@ -1,0 +1,33 @@
+# Netlify MCP server: coding context
+operations:
+  - id: netlify-mcp.coding-context.get-local
+    match: { mcp: { tool: netlify-coding-rules } }
+    class: read
+    card: "Read Netlify coding guidance for {creationType}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/netlify-mcp.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/context/register-coding-context-tool.ts
+    notes: >-
+      Name of the coding-context tool on the local (stdio) server. Returns
+      documentation only.
+    tests:
+      - fixture: fixtures/coding-context-get-local.http
+        expect: read
+
+  - id: netlify-mcp.coding-context.get-remote
+    match: { mcp: { tool: get-netlify-coding-context } }
+    class: read
+    card: "Read Netlify coding guidance for {creationType}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/netlify/functions/mcp.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/context/register-coding-context-tool.ts
+    notes: >-
+      Name of the coding-context tool on the hosted server. Returns
+      documentation only.
+    tests:
+      - fixture: fixtures/coding-context-get-remote.http
+        expect: read

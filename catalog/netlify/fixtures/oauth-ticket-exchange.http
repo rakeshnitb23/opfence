@@ -1,0 +1,5 @@
+# description: Exchange OAuth ticket 64f0c9d0e1a2b3c4d5e6f789 for an access token
+POST /api/v1/oauth/tickets/64f0c9d0e1a2b3c4d5e6f789/exchange HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

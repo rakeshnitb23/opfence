@@ -1,0 +1,82 @@
+# Netlify REST API: build hooks
+operations:
+  - id: netlify.build-hook.list
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/build_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the build hook URLs of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each build hook's url is a secret: anyone holding it can trigger
+      builds.
+    tests:
+      - fixture: fixtures/build-hook-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.build-hook.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/build_hooks/{id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the URL of build hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each build hook's url is a secret: anyone holding it can trigger
+      builds.
+    tests:
+      - fixture: fixtures/build-hook-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.build-hook.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/build_hooks" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Create build hook {body.title} for Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Creates a secret URL that triggers builds and returns it.
+    tests:
+      - fixture: fixtures/build-hook-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.build-hook.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/build_hooks/{id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Change build hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/build-hook-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.build-hook.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/build_hooks/{id}" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Delete build hook {id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Revokes the hook URL, like revoking a token: whatever calls it stops
+      working, and a new hook gets a new URL.
+    tests:
+      - fixture: fixtures/build-hook-delete.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

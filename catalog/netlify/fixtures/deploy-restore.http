@@ -1,0 +1,5 @@
+# description: Publish earlier deploy 6528a1b2c3d4e5f6a7b8c9d0 as the live version of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+POST /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/deploys/6528a1b2c3d4e5f6a7b8c9d0/restore HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+
