@@ -1,0 +1,8 @@
+{
+  "description": "Restart Machine 3d8d9d2b1c4e87",
+  "tool": "fly-machine-restart",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87"
+  }
+}

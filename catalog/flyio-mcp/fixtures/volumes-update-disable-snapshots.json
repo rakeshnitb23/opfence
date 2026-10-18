@@ -1,0 +1,9 @@
+{
+  "description": "Turn scheduled snapshots off",
+  "tool": "fly-volumes-update",
+  "arguments": {
+    "app": "shop-api",
+    "id": "vol_4r8kz2q7m1xd9p6v",
+    "scheduled-snapshots": false
+  }
+}

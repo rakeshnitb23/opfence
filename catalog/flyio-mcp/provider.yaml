@@ -8,8 +8,8 @@ docs: https://github.com/superfly/flyctl/tree/master/internal/command/mcp
 # "flyctl" when it writes MCP client configs.
 # No detect or auth block: the server uses flyctl's own token, and
 # FLY_API_TOKEN belongs to catalog/flyio (an env var can map to one provider).
-# Rules are community, not verified: the fixture runner routes requests by
-# host, so a local server's tool calls cannot be replayed from fixtures.
+# Fixtures are .json tool calls (tool + arguments), replayed through the
+# hook's evaluation, since a local server has no host to route requests by.
 mcp:
   names: [flyctl, fly, flyio, fly-io]
   package: "github.com/superfly/flyctl"   # Go binary (fly mcp server); no npm package

@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-certs-list",
+  "tool": "fly-certs-list",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

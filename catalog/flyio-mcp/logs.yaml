@@ -4,8 +4,12 @@ operations:
     match: { mcp: { tool: fly-logs } }
     class: read
     resource: { arg: app, kind: app }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/logs.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/logs-logs.json
+        expect: read
+        resource: shop-api

@@ -1,0 +1,8 @@
+{
+  "description": "Allocate static egress IPs for Machine 3d8d9d2b1c4e87",
+  "tool": "fly-machine-egress-ip-allocate",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87"
+  }
+}

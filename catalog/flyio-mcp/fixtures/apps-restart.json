@@ -1,0 +1,8 @@
+{
+  "description": "Restart every Machine of app shop-api",
+  "tool": "fly-apps-restart",
+  "arguments": {
+    "name": "shop-api",
+    "force-stop": false
+  }
+}

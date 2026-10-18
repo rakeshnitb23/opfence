@@ -1,0 +1,8 @@
+{
+  "description": "Move app shop-api to organization acme-staging",
+  "tool": "fly-apps-move",
+  "arguments": {
+    "name": "shop-api",
+    "org": "acme-staging"
+  }
+}

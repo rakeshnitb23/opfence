@@ -1,0 +1,10 @@
+{
+  "description": "Release IP addresses ['2a09:8280:1::4f:2c1a'] from app shop-api",
+  "tool": "fly-ips-release",
+  "arguments": {
+    "app": "shop-api",
+    "addresses": [
+      "2a09:8280:1::4f:2c1a"
+    ]
+  }
+}

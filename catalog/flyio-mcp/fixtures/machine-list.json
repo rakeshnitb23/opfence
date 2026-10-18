@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-machine-list",
+  "tool": "fly-machine-list",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Invite new@example.com to organization acme",
+  "tool": "fly-orgs-invite",
+  "arguments": {
+    "slug": "acme",
+    "email": "new@example.com"
+  }
+}

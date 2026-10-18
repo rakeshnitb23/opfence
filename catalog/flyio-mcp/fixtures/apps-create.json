@@ -1,0 +1,8 @@
+{
+  "description": "Create Fly app shop-api in organization acme",
+  "tool": "fly-apps-create",
+  "arguments": {
+    "name": "shop-api",
+    "org": "acme"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "description": "Call fly-orgs-list",
+  "tool": "fly-orgs-list",
+  "arguments": {}
+}

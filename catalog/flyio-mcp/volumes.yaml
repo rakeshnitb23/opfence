@@ -5,18 +5,22 @@ operations:
     class: money
     resource: { arg: app, kind: app }
     card: "Create a {size} GB volume {name} for app {app} in {region}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-create.json
+        expect: money
+        resource: shop-api
 
   - id: flyio-mcp.volumes.destroy
     match: { mcp: { tool: fly-volumes-destroy } }
     class: irreversible
     resource: { arg: id, kind: volume }
     card: "Destroy volume {id} of app {app} and all data on it"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
@@ -25,71 +29,99 @@ operations:
     notes: >-
       The tool says it permanently deletes all the volume's data;
       snapshots may not exist.
+    tests:
+      - fixture: fixtures/volumes-destroy.json
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.extend
     match: { mcp: { tool: fly-volumes-extend } }
     class: money
     resource: { arg: id, kind: volume }
     card: "Grow volume {id} of app {app} to {size} GB"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-extend.json
+        expect: money
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.fork
     match: { mcp: { tool: fly-volumes-fork } }
     class: money
     resource: { arg: id, kind: volume }
     card: "Fork volume {id} of app {app}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
     notes: >-
       Creates a new billed volume.
+    tests:
+      - fixture: fixtures/volumes-fork.json
+        expect: money
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.list
     match: { mcp: { tool: fly-volumes-list } }
     class: read
     resource: { arg: app, kind: app }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-list.json
+        expect: read
+        resource: shop-api
 
   - id: flyio-mcp.volumes.show
     match: { mcp: { tool: fly-volumes-show } }
     class: read
     resource: { arg: id, kind: volume }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-show.json
+        expect: read
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.snapshots-create
     match: { mcp: { tool: fly-volumes-snapshots-create } }
     class: write
     resource: { arg: id, kind: volume }
     card: "Snapshot volume {id} of app {app}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-snapshots-create.json
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.snapshots-list
     match: { mcp: { tool: fly-volumes-snapshots-list } }
     class: read
     resource: { arg: id, kind: volume }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/volumes-snapshots-list.json
+        expect: read
+        resource: vol_4r8kz2q7m1xd9p6v
 
   - id: flyio-mcp.volumes.update
     match: { mcp: { tool: fly-volumes-update } }
@@ -101,7 +133,7 @@ operations:
         class: irreversible
     resource: { arg: id, kind: volume }
     card: "Change the snapshot settings of volume {id}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/volumes.go
@@ -109,3 +141,13 @@ operations:
     notes: >-
       Turning scheduled snapshots off, or changing retention (which can
       drop snapshots), removes the safety net for the volume's data.
+    tests:
+      - fixture: fixtures/volumes-update.json
+        expect: write
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volumes-update-disable-snapshots.json
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v
+      - fixture: fixtures/volumes-update-retention.json
+        expect: irreversible
+        resource: vol_4r8kz2q7m1xd9p6v

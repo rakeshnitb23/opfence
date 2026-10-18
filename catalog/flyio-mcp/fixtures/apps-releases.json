@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-apps-releases",
+  "tool": "fly-apps-releases",
+  "arguments": {
+    "name": "shop-api"
+  }
+}

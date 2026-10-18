@@ -16,7 +16,7 @@ operations:
         class: access
     resource: { arg: app, kind: app }
     card: "Allocate an IPv4 address for app {app}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/ips.go
@@ -25,13 +25,29 @@ operations:
       Without shared it allocates a dedicated IPv4, billed at $2/mo,
       that exposes the app (money and access); with shared: true a free
       shared address (access).
+    tests:
+      - fixture: fixtures/ips-allocate-v4.json
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ips-allocate-v4.json
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ips-allocate-v4-dedicated.json
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ips-allocate-v4-dedicated.json
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/ips-allocate-v4-shared.json
+        expect: access
+        resource: shop-api
 
   - id: flyio-mcp.ips.allocate-v6
     match: { mcp: { tool: fly-ips-allocate-v6 } }
     class: access
     resource: { arg: app, kind: app }
     card: "Allocate an IPv6 address for app {app}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/ips.go
@@ -39,36 +55,52 @@ operations:
     notes: >-
       A public IPv6 exposes the app; a private (Flycast) one opens it to
       the organization network.
+    tests:
+      - fixture: fixtures/ips-allocate-v6.json
+        expect: access
+        resource: shop-api
 
   - id: flyio-mcp.ips.list
     match: { mcp: { tool: fly-ips-list } }
     class: read
     resource: { arg: app, kind: app }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/ips.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/ips-list.json
+        expect: read
+        resource: shop-api
 
   - id: flyio-mcp.ips.release
     match: { mcp: { tool: fly-ips-release } }
     class: delete
     resource: { arg: app, kind: app }
     card: "Release IP addresses {addresses} from app {app}"
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/ips.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
     notes: >-
       New addresses can be allocated, not the same ones.
+    tests:
+      - fixture: fixtures/ips-release.json
+        expect: delete
+        resource: shop-api
 
   - id: flyio-mcp.ips.private
     match: { mcp: { tool: fly-ips-private } }
     class: read
     resource: { arg: app, kind: app }
-    status: community
+    status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/ips.go
       - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    tests:
+      - fixture: fixtures/ips-private.json
+        expect: read
+        resource: shop-api

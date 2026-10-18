@@ -1,0 +1,8 @@
+{
+  "description": "Call fly-certs-show",
+  "tool": "fly-certs-show",
+  "arguments": {
+    "app": "shop-api",
+    "hostname": "shop.example.com"
+  }
+}

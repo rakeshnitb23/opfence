@@ -1,0 +1,8 @@
+{
+  "description": "Release the static egress IPs of Machine 3d8d9d2b1c4e87",
+  "tool": "fly-machine-egress-ip-release",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87"
+  }
+}

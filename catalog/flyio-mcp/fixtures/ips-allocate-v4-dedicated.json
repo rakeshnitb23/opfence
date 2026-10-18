@@ -1,0 +1,8 @@
+{
+  "description": "Allocate a dedicated IPv4 with shared: false",
+  "tool": "fly-ips-allocate-v4",
+  "arguments": {
+    "app": "shop-api",
+    "shared": false
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "description": "Call fly-platform-vm-sizes",
+  "tool": "fly-platform-vm-sizes",
+  "arguments": {}
+}

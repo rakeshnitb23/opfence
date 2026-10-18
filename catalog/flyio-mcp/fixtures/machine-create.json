@@ -1,0 +1,10 @@
+{
+  "description": "Create a Machine from image nginx:1.27 in app shop-api",
+  "tool": "fly-machine-create",
+  "arguments": {
+    "app": "shop-api",
+    "image": "nginx:1.27",
+    "region": "ams",
+    "vm-size": "shared-cpu-1x"
+  }
+}

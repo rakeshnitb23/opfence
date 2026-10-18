@@ -1,0 +1,8 @@
+{
+  "description": "Serve app shop-api on hostname shop.example.com",
+  "tool": "fly-certs-add",
+  "arguments": {
+    "app": "shop-api",
+    "hostname": "shop.example.com"
+  }
+}

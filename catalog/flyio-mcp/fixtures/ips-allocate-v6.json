@@ -1,0 +1,7 @@
+{
+  "description": "Allocate an IPv6 address for app shop-api",
+  "tool": "fly-ips-allocate-v6",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

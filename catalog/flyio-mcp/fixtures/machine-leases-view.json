@@ -1,0 +1,8 @@
+{
+  "description": "Call fly-machine-leases-view",
+  "tool": "fly-machine-leases-view",
+  "arguments": {
+    "app": "shop-api",
+    "id": "3d8d9d2b1c4e87"
+  }
+}

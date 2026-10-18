@@ -1,0 +1,7 @@
+{
+  "description": "Call fly-status",
+  "tool": "fly-status",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

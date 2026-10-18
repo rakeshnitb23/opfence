@@ -1,0 +1,8 @@
+{
+  "description": "Remove hostname shop.example.com from app shop-api",
+  "tool": "fly-certs-remove",
+  "arguments": {
+    "app": "shop-api",
+    "hostname": "shop.example.com"
+  }
+}

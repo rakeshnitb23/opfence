@@ -1,0 +1,5 @@
+{
+  "description": "Call fly-platform-status",
+  "tool": "fly-platform-status",
+  "arguments": {}
+}
