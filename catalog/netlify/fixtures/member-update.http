@@ -1,0 +1,7 @@
+# description: Change the role of member 64f0cbd2e3a4b5c6d7e8f901 in team acme-web to Owner
+PUT /api/v1/acme-web/members/64f0cbd2e3a4b5c6d7e8f901 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"role":"Owner","site_access":"all"}

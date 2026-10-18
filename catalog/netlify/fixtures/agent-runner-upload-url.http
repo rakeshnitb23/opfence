@@ -1,0 +1,5 @@
+# description: Get an upload URL for agent file mockup.png
+POST /api/v1/agent_runners/upload_url?account_id=5e8f9a0b1c2d3e4f5a6b7c8d&filename=mockup.png&content_type=image%2Fpng HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

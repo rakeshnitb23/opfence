@@ -1,0 +1,100 @@
+# Netlify REST API: Netlify Database branches
+operations:
+  - id: netlify.database-branch.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database/branch" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Create database branch {body.branch_id} for site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The response carries the branch's connection string with its
+      password.
+    tests:
+      - fixture: fixtures/database-branch-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-branch.list
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/database/branches" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the database branches of site {site_id} with their connection strings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Each branch carries its connection string with its password.
+    tests:
+      - fixture: fixtures/database-branch-list.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-branch.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/database/branch/{branch_id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read database branch {branch_id} of site {site_id} with its connection string"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The branch carries its connection string with its password.
+    tests:
+      - fixture: fixtures/database-branch-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-branch.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/database/branch/{branch_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete database branch {branch_id} of site {site_id} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Opfence cannot tell a disposable preview branch from one holding
+      data nobody else has.
+    tests:
+      - fixture: fixtures/database-branch-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-branch.reset
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database/branch/{branch_id}/reset" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Reset database branch {branch_id} of site {site_id} from {body.source_branch_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Re-forks the branch, discarding everything written to it since it
+      was created.
+    tests:
+      - fixture: fixtures/database-branch-reset.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database-branch.set-compute
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/database/branch/{branch_id}/compute/settings" } }
+    class: money
+    resource: { arg: site_id, kind: site }
+    card: "Change the compute size of database branch {branch_id} of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Compute units and sleep timeout decide what the branch costs.
+    tests:
+      - fixture: fixtures/database-branch-set-compute.http
+        expect: money
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

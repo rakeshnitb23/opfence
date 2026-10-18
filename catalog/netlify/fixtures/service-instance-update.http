@@ -1,0 +1,7 @@
+# description: Change add-on fauna instance 64f0d0d7e8a9b0c1d2e3f456 of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+PUT /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/services/fauna/instances/64f0d0d7e8a9b0c1d2e3f456 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"region":"eu"}

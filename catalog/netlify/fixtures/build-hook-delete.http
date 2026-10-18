@@ -1,0 +1,5 @@
+# description: Delete build hook 64f0c4d5e6a7b8c9d0e1f234 of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+DELETE /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/build_hooks/64f0c4d5e6a7b8c9d0e1f234 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

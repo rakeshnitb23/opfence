@@ -1,0 +1,8 @@
+# description: Run Netlify project operation get-projects on site (none)
+POST /mcp HTTP/1.1
+Host: netlify-mcp.netlify.app
+Authorization: Bearer opf_netlify-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"netlify-project-services-reader","arguments":{"selectSchema":{"operation":"get-projects","params":{"projectNameSearchValue":"shop"}}}}}

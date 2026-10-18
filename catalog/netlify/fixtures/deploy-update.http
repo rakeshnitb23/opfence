@@ -1,0 +1,7 @@
+# description: Update deploy 6528a1b2c3d4e5f6a7b8c9d0 of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+PUT /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/deploys/6528a1b2c3d4e5f6a7b8c9d0 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"files":{"/index.html":"907d14fb3af2b0d4f18c2d46abe8aedce17367bd"}}

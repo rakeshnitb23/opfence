@@ -1,0 +1,29 @@
+# Netlify REST API: build plugins
+operations:
+  - id: netlify.plugin.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/plugins/{package}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Pin build plugin {package} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/plugin-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.plugin.run-create
+    match: { rest: { method: POST, path: "/api/v1/deploys/{deploy_id}/plugin_runs" } }
+    class: write
+    resource: { arg: deploy_id, kind: deploy }
+    card: "Record a plugin run for Netlify deploy {deploy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/plugin-run-create.http
+        expect: write
+        resource: 6528a1b2c3d4e5f6a7b8c9d0

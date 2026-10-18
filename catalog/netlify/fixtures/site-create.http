@@ -1,0 +1,7 @@
+# description: Create Netlify site shop-web
+POST /api/v1/sites HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-web"}

@@ -1,0 +1,5 @@
+# description: Transfer DNS zone 64f0c6d7e8a9b0c1d2e3f456 to account 7a8b9c0d1e2f3a4b5c6d7e8f
+PUT /api/v1/dns_zones/64f0c6d7e8a9b0c1d2e3f456/transfer?account_id=5e8f9a0b1c2d3e4f5a6b7c8d&transfer_account_id=7a8b9c0d1e2f3a4b5c6d7e8f&transfer_user_id=8b9c0d1e2f3a4b5c6d7e8f90 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

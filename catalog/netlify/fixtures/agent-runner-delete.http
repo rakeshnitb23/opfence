@@ -1,0 +1,5 @@
+# description: Delete agent run 64f0cdd4e5a6b7c8d9e0f123 and its unmerged changes
+DELETE /api/v1/agent_runners/64f0cdd4e5a6b7c8d9e0f123 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

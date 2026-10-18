@@ -1,0 +1,62 @@
+# Netlify REST API: site assets
+operations:
+  - id: netlify.asset.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/assets" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Upload asset {query.name} to Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/asset-create.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.asset.update
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/assets/{asset_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Update asset {asset_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/asset-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.asset.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/assets/{asset_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete asset {asset_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The uploaded file is stored only by Netlify.
+    tests:
+      - fixture: fixtures/asset-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.asset.public-signature
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/assets/{asset_id}/public_signature" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Get a signed URL for asset {asset_id} of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Returns a signed URL that lets anyone holding it fetch a private
+      asset.
+    tests:
+      - fixture: fixtures/asset-public-signature.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

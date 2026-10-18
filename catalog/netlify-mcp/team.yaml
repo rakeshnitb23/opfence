@@ -1,0 +1,98 @@
+# Netlify MCP server: team
+operations:
+  - id: netlify-mcp.team.reader
+    match: { mcp: { tool: netlify-team-services-reader } }
+    class: credential
+    when:
+      - if: { arg: selectSchema.operation, equals: "get-teams" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-team" }
+        class: read
+      - if: { arg: selectSchema.operation, equals: "get-team-env-vars" }
+        class: credential
+    resource: { arg: selectSchema.params.teamId, kind: team }
+    card: "Run Netlify team operation {selectSchema.operation} on team {selectSchema.params.teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-teams.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-team.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-team-env-vars.ts
+    notes: >-
+      One tool fronts several operations, chosen by selectSchema.operation
+      with their arguments in selectSchema.params (the default tool
+      surface, local and hosted). Each operation gets its own class; an
+      operation this rule does not name falls back to the rule's class,
+      the strictest any of its operations can have. get-team-env-vars
+      returns the team's shared environment variables with their values;
+      only variables marked secret are withheld.
+    tests:
+      - fixture: fixtures/team-reader.http
+        expect: read
+      - fixture: fixtures/team-reader-get.http
+        expect: read
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/team-reader-env-vars.http
+        expect: credential
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+      - fixture: fixtures/team-reader-unknown-op.http
+        expect: credential
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify-mcp.team.list
+    match: { mcp: { tool: netlify-team-get-teams } }
+    class: read
+    card: "List Netlify teams"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-teams.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/team-list.http
+        expect: read
+
+  - id: netlify-mcp.team.get
+    match: { mcp: { tool: netlify-team-get-team } }
+    class: read
+    resource: { arg: teamId, kind: team }
+    card: "Read Netlify team {teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-team.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level.
+    tests:
+      - fixture: fixtures/team-get.http
+        expect: read
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d
+
+  - id: netlify-mcp.team.get-env-vars
+    match: { mcp: { tool: netlify-team-get-team-env-vars } }
+    class: credential
+    resource: { arg: teamId, kind: team }
+    card: "Read the shared environment variables of Netlify team {teamId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/index.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/team-tools/get-team-env-vars.ts
+    notes: >-
+      Granular tool surface: one tool per operation, registered when the
+      local server runs with --verbose or the hosted one is reached with
+      ?verbose=true or by OpenAI's client. Arguments are top level. get-
+      team-env-vars returns the team's shared environment variables with
+      their values; only variables marked secret are withheld.
+    tests:
+      - fixture: fixtures/team-get-env-vars.http
+        expect: credential
+        resource: 5e8f9a0b1c2d3e4f5a6b7c8d

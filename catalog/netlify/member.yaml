@@ -1,0 +1,43 @@
+# Netlify REST API: team members
+operations:
+  - id: netlify.member.add
+    match: { rest: { method: POST, path: "/api/v1/{account_slug}/members" } }
+    class: access
+    resource: { arg: account_slug, kind: team }
+    card: "Invite {body.email} to team {account_slug} as {body.role}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/member-add.http
+        expect: access
+        resource: acme-web
+
+  - id: netlify.member.update
+    match: { rest: { method: PUT, path: "/api/v1/{account_slug}/members/{member_id}" } }
+    class: access
+    resource: { arg: account_slug, kind: team }
+    card: "Change the role of member {member_id} in team {account_slug} to {body.role}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/member-update.http
+        expect: access
+        resource: acme-web
+
+  - id: netlify.member.remove
+    match: { rest: { method: DELETE, path: "/api/v1/{account_slug}/members/{member_id}" } }
+    class: access
+    resource: { arg: account_slug, kind: team }
+    card: "Remove member {member_id} from team {account_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/member-remove.http
+        expect: access
+        resource: acme-web

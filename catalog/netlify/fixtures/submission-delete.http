@@ -1,0 +1,5 @@
+# description: Permanently delete form submission 64f0c2d3e4a5b6c7d8e9f012
+DELETE /api/v1/submissions/64f0c2d3e4a5b6c7d8e9f012 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+

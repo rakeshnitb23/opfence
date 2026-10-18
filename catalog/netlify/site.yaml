@@ -1,0 +1,251 @@
+# Netlify REST API: site
+operations:
+  - id: netlify.site.create
+    match: { rest: { method: POST, path: "/api/v1/sites" } }
+    class: write
+    card: "Create Netlify site {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/site-create.http
+        expect: write
+
+  - id: netlify.site.create-in-team
+    match: { rest: { method: POST, path: "/api/v1/{account_slug}/sites" } }
+    class: write
+    resource: { arg: account_slug, kind: team }
+    card: "Create Netlify site {body.name} in team {account_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/site-create-in-team.http
+        expect: write
+        resource: acme-web
+
+  - id: netlify.site.update
+    match: { rest: { method: PATCH, path: "/api/v1/sites/{site_id}" } }
+    class: write
+    when:
+      - if: { arg: body.password, present: true }
+        class: access
+      - if: { arg: body.password_context, present: true }
+        class: access
+      - if: { arg: body.sso_login, present: true }
+        class: access
+      - if: { arg: body.sso_login_context, present: true }
+        class: access
+      - if: { arg: body.build_settings.public_repo, present: true }
+        class: access
+      - if: { arg: body.build_settings.private_logs, present: true }
+        class: access
+      - if: { arg: body.repo.public_repo, present: true }
+        class: access
+      - if: { arg: body.repo.private_logs, present: true }
+        class: access
+      - if: { arg: body.default_hooks_data.access_token, present: true }
+        class: credential
+      - if: { arg: body.name, present: true }
+        class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Change settings of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Visitor password and SSO protection (password, password_context,
+      sso_login, sso_login_context, the fields the official MCP server's
+      update-visitor-access-controls sends) and public repo or public
+      build logs change who can see the site or its builds, so they are
+      access; an empty password removes protection.
+      default_hooks_data.access_token sets a token. Changing name renames
+      the netlify.app subdomain: old links break and the old name is
+      released for anyone to claim, so it is treated as a delete that can
+      usually, not always, be undone.
+    tests:
+      - fixture: fixtures/site-update.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/site-update-password.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/site-update-public-logs.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/site-update-rename.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.replace
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}" } }
+    class: write
+    when:
+      - if: { arg: body.password, present: true }
+        class: access
+      - if: { arg: body.password_context, present: true }
+        class: access
+      - if: { arg: body.sso_login, present: true }
+        class: access
+      - if: { arg: body.sso_login_context, present: true }
+        class: access
+      - if: { arg: body.build_settings.public_repo, present: true }
+        class: access
+      - if: { arg: body.build_settings.private_logs, present: true }
+        class: access
+      - if: { arg: body.repo.public_repo, present: true }
+        class: access
+      - if: { arg: body.repo.private_logs, present: true }
+        class: access
+      - if: { arg: body.default_hooks_data.access_token, present: true }
+        class: credential
+      - if: { arg: body.name, present: true }
+        class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Change settings of Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-visitor-access-controls.ts
+      - https://github.com/netlify/netlify-mcp/blob/main/src/tools/project-tools/update-project-name.ts
+    notes: >-
+      The OpenAPI file lists PATCH only; the official MCP server updates
+      sites with PUT and the same body, so PUT gets the same conditions.
+      Visitor password and SSO protection (password, password_context,
+      sso_login, sso_login_context, the fields the official MCP server's
+      update-visitor-access-controls sends) and public repo or public
+      build logs change who can see the site or its builds, so they are
+      access; an empty password removes protection.
+      default_hooks_data.access_token sets a token. Changing name renames
+      the netlify.app subdomain: old links break and the old name is
+      released for anyone to claim, so it is treated as a delete that can
+      usually, not always, be undone.
+    tests:
+      - fixture: fixtures/site-replace.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/site-replace-unprotect.http
+        expect: access
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+      - fixture: fixtures/site-replace-rename.http
+        expect: delete
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete Netlify site {site_id} with its deploys, forms, submissions and variables"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/site-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.list
+    match: { rest: { method: GET, path: "/api/v1/sites" } }
+    class: credential
+    card: "List Netlify sites with their settings and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The site object carries password (the visitor password),
+      build_settings.env and repo.env (legacy environment variable
+      values), deploy_hook (a build hook URL) and
+      default_hooks_data.access_token, so reading a site reads secrets.
+    tests:
+      - fixture: fixtures/site-list.http
+        expect: credential
+
+  - id: netlify.site.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read Netlify site {site_id} with its settings and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The site object carries password (the visitor password),
+      build_settings.env and repo.env (legacy environment variable
+      values), deploy_hook (a build hook URL) and
+      default_hooks_data.access_token, so reading a site reads secrets.
+    tests:
+      - fixture: fixtures/site-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.list-for-team
+    match: { rest: { method: GET, path: "/api/v1/{account_slug}/sites" } }
+    class: credential
+    resource: { arg: account_slug, kind: team }
+    card: "List sites of team {account_slug} with their settings and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The site object carries password (the visitor password),
+      build_settings.env and repo.env (legacy environment variable
+      values), deploy_hook (a build hook URL) and
+      default_hooks_data.access_token, so reading a site reads secrets.
+    tests:
+      - fixture: fixtures/site-list-for-team.http
+        expect: credential
+        resource: acme-web
+
+  - id: netlify.site.enable
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/enable" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Enable Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/site-enable.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.disable
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/disable" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Disable Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A disabled site stops serving until it is enabled again.
+    tests:
+      - fixture: fixtures/site-disable.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.site.unlink-repo
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/unlink_repo" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Unlink the Git repository from Netlify site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Stops continuous deployment; the repository can be linked again.
+    tests:
+      - fixture: fixtures/site-unlink-repo.http
+        expect: write
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

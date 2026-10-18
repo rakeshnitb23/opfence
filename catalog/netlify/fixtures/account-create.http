@@ -1,0 +1,7 @@
+# description: Create team Acme Web on plan pro
+POST /api/v1/accounts HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"name":"Acme Web","type_id":"pro","payment_method_id":"64f0ccd3e4a5b6c7d8e9f012","period":"monthly"}

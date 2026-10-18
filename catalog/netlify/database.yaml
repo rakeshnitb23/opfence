@@ -1,0 +1,100 @@
+# Netlify REST API: Netlify Database
+operations:
+  - id: netlify.database.create
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Create a Netlify Database for site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The response carries the database connection string with its
+      password. The database is also billed by usage; credential is the
+      stricter of the two.
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database.get
+    match: { rest: { method: GET, path: "/api/v1/sites/{site_id}/database" } }
+    class: credential
+    resource: { arg: site_id, kind: site }
+    card: "Read the Netlify Database of site {site_id} with its connection string"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      The response carries the database connection string with its
+      password.
+    tests:
+      - fixture: fixtures/database-get.http
+        expect: credential
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database.delete
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/database" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Delete the Netlify Database of site {site_id} with all its branches and data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database.set-compute
+    match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}/database/compute/settings" } }
+    class: money
+    resource: { arg: site_id, kind: site }
+    card: "Change the compute size of the Netlify Database of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Compute units and sleep timeout decide what the database costs.
+    tests:
+      - fixture: fixtures/database-set-compute.http
+        expect: money
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database.clear-compute
+    match: { rest: { method: DELETE, path: "/api/v1/sites/{site_id}/database/compute/settings" } }
+    class: money
+    resource: { arg: site_id, kind: site }
+    card: "Reset the compute size of the Netlify Database of site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Returns compute settings to the defaults, which changes what the
+      database costs.
+    tests:
+      - fixture: fixtures/database-clear-compute.http
+        expect: money
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+
+  - id: netlify.database.run-migrations
+    match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/database/migrations/{deploy_id}" } }
+    class: irreversible
+    resource: { arg: site_id, kind: site }
+    card: "Run the database migrations of deploy {deploy_id} on site {site_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Migrations are arbitrary SQL from the deploy and can drop data;
+      dry_run is not trusted to lower the class.
+    tests:
+      - fixture: fixtures/database-run-migrations.http
+        expect: irreversible
+        resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f

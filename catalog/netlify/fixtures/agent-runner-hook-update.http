@@ -1,0 +1,7 @@
+# description: Change agent runner hook 64f0cfd6e7a8b9c0d1e2f345 of Netlify site 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
+PUT /api/v1/sites/3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f/agent_runner_hooks/64f0cfd6e7a8b9c0d1e2f345 HTTP/1.1
+Host: api.netlify.com
+Authorization: Bearer opf_netlify_EXAMPLE
+Content-Type: application/json
+
+{"title":"Nightly audit","branch":"main","prompt":"Fix lint errors","agent":"claude"}

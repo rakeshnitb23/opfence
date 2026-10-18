@@ -1,0 +1,31 @@
+# Netlify REST API: DNS records
+operations:
+  - id: netlify.dns-record.create
+    match: { rest: { method: POST, path: "/api/v1/dns_zones/{zone_id}/dns_records" } }
+    class: write
+    resource: { arg: zone_id, kind: dns-zone }
+    card: "Add {body.type} record {body.hostname} to DNS zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: 64f0c6d7e8a9b0c1d2e3f456
+
+  - id: netlify.dns-record.delete
+    match: { rest: { method: DELETE, path: "/api/v1/dns_zones/{zone_id}/dns_records/{dns_record_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: dns-zone }
+    card: "Delete record {dns_record_id} from DNS zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      A record can be added again with the same values.
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: 64f0c6d7e8a9b0c1d2e3f456

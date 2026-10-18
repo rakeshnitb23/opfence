@@ -1,0 +1,46 @@
+# Netlify REST API: agent runner sessions
+operations:
+  - id: netlify.agent-runner-session.create
+    match: { rest: { method: POST, path: "/api/v1/agent_runners/{agent_runner_id}/sessions" } }
+    class: money
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Continue agent run {agent_runner_id}: {query.prompt}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    notes: >-
+      Starts an AI coding agent on Netlify's infrastructure; agent runs
+      use the team's paid credits.
+    tests:
+      - fixture: fixtures/agent-runner-session-create.http
+        expect: money
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner-session.update
+    match: { rest: { method: PATCH, path: "/api/v1/agent_runners/{agent_runner_id}/sessions/{agent_runner_session_id}" } }
+    class: write
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Update session {agent_runner_session_id} of agent run {agent_runner_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-session-update.http
+        expect: write
+        resource: 64f0cdd4e5a6b7c8d9e0f123
+
+  - id: netlify.agent-runner-session.delete
+    match: { rest: { method: DELETE, path: "/api/v1/agent_runners/{agent_runner_id}/sessions/{agent_runner_session_id}" } }
+    class: irreversible
+    resource: { arg: agent_runner_id, kind: agent-runner }
+    card: "Delete session {agent_runner_session_id} of agent run {agent_runner_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/netlify/open-api/blob/master/swagger.yml
+    tests:
+      - fixture: fixtures/agent-runner-session-delete.http
+        expect: irreversible
+        resource: 64f0cdd4e5a6b7c8d9e0f123
