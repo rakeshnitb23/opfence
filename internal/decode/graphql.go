@@ -204,6 +204,9 @@ func graphqlOperations(gr graphqlRequest, base Operation) ([]Operation, error) {
 			op.GraphQLType = opType
 			op.Field = f.Name
 			op.Args = args
+			if op.Selected, err = selectedFields(doc, f.SelectionSet, map[string]bool{}, nil); err != nil {
+				return nil, err
+			}
 			ops = append(ops, op)
 			if len(ops) > MaxOperations {
 				return nil, fmt.Errorf("request carries more than 200 operations")
@@ -246,6 +249,43 @@ func rootFields(doc *ast.QueryDocument, set ast.SelectionSet, active map[string]
 		}
 		if len(out) > MaxOperations {
 			return nil, fmt.Errorf("request carries more than 200 operations")
+		}
+	}
+	return out, nil
+}
+
+// maxSelected caps the field names collected under one root field.
+const maxSelected = 10000
+
+// selectedFields appends the name of every field selected in set, at any
+// depth, following fragments, so a secret field cannot hide behind an alias
+// or a fragment.
+func selectedFields(doc *ast.QueryDocument, set ast.SelectionSet, active map[string]bool, out []string) ([]string, error) {
+	for _, sel := range set {
+		var err error
+		switch s := sel.(type) {
+		case *ast.Field:
+			out = append(out, s.Name)
+			out, err = selectedFields(doc, s.SelectionSet, active, out)
+		case *ast.InlineFragment:
+			out, err = selectedFields(doc, s.SelectionSet, active, out)
+		case *ast.FragmentSpread:
+			frag := doc.Fragments.ForName(s.Name)
+			if frag == nil {
+				return nil, fmt.Errorf("unknown fragment %q", s.Name)
+			}
+			if active[s.Name] {
+				return nil, fmt.Errorf("fragment %q spreads itself", s.Name)
+			}
+			active[s.Name] = true
+			out, err = selectedFields(doc, frag.SelectionSet, active, out)
+			delete(active, s.Name)
+		}
+		if err != nil {
+			return nil, err
+		}
+		if len(out) > maxSelected {
+			return nil, fmt.Errorf("GraphQL operation selects more than %d fields", maxSelected)
 		}
 	}
 	return out, nil

@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 	"unicode"
 
@@ -137,6 +138,10 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 			c, src := p.DefaultClass(op)
 			ev.Classes, ev.ClassSource = []classes.Class{c}, src
 		}
+		if f := secretField(p, op); f != "" && !slices.Contains(ev.Classes, classes.Credential) {
+			ev.Classes = append(ev.Classes, classes.Credential)
+			ev.ClassSource += "; selects secret field " + f
+		}
 	}
 
 	provID := ""
@@ -177,6 +182,19 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 	}
 	ev.Card = card(ev, host)
 	return ev
+}
+
+// secretField returns the first field op selects that p lists as secret.
+func secretField(p *catalog.Provider, op decode.Operation) string {
+	if op.Protocol != decode.GraphQL {
+		return ""
+	}
+	for _, f := range op.Selected {
+		if slices.Contains(p.Defaults.GraphQLSecretFields, f) {
+			return f
+		}
+	}
+	return ""
 }
 
 var placeholderRe = regexp.MustCompile(`\{([^{}]*)\}`)

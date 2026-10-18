@@ -32,6 +32,8 @@ var restMethods = map[string]bool{
 	"GET": true, "HEAD": true, "POST": true, "PUT": true, "PATCH": true, "DELETE": true, "OPTIONS": true,
 }
 
+var graphQLNameRe = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
+
 func (l *loader) validate(c *Catalog) {
 	hostOwner := map[string]string{}
 	mcpNameOwner := map[string]string{}
@@ -171,6 +173,14 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 	}
 	if p.Defaults.GraphQLQuery != "" && len(p.GraphQL) == 0 {
 		l.addf(file, 0, "defaults.graphql_query needs graphql paths")
+	}
+	if len(p.Defaults.GraphQLSecretFields) > 0 && len(p.GraphQL) == 0 {
+		l.addf(file, 0, "defaults.graphql_secret_fields needs graphql paths")
+	}
+	for _, f := range p.Defaults.GraphQLSecretFields {
+		if !graphQLNameRe.MatchString(f) {
+			l.addf(file, 0, "defaults.graphql_secret_fields: %q is not a GraphQL field name", f)
+		}
 	}
 	if p.Defaults.AWSReadActions != "" && !p.SigV4 {
 		l.addf(file, 0, "defaults.aws_read_actions needs sigv4: true")

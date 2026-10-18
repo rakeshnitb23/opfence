@@ -33,6 +33,9 @@ type Operation struct {
 
 	GraphQLType string // query, mutation or subscription
 	Field       string // GraphQL root field name (never the alias)
+	// Selected lists every field name selected under the root field, at
+	// any depth, fragments flattened (never aliases).
+	Selected []string
 
 	Tool      string // MCP tool name, for tools/call
 	MCPMethod string // JSON-RPC method, or "http GET" etc. for non-POST requests

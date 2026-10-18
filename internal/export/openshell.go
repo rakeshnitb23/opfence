@@ -152,7 +152,10 @@ func graphQLEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catal
 			b[2] = append(b[2], m.Field)
 		}
 	}
-	queryDefault := prov.Defaults.GraphQLQuery != "" && DefaultDecision(p, prov.Defaults.GraphQLQuery, env) == classes.Allow
+	// With secret fields, any query might select one, which OpenShell
+	// cannot see.
+	queryDefault := prov.Defaults.GraphQLQuery != "" && DefaultDecision(p, prov.Defaults.GraphQLQuery, env) == classes.Allow &&
+		(len(prov.Defaults.GraphQLSecretFields) == 0 || DefaultDecision(p, classes.Credential, env) == classes.Allow)
 	for _, t := range []string{"query", "mutation", "subscription"} {
 		b := byType[t]
 		if b == nil {

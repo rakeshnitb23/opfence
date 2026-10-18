@@ -19,8 +19,18 @@ detect:
 defaults:
   graphql_query: read              # queries only read, except the ones listed as credential
   rest_safe_methods: read          # GETs only read, except the ones listed as credential
-# GraphQL rules match the root field only. Nested fields can still reach
-# secret values (app/organization { addOns { password } limitedAccessTokens
-# { token } }, viewer { identities { token } }); only the root fields that
-# return those types directly (addOn, addOns, accessTokens, node, nodes) are
-# credential.
+  # Fields that hold secret values in fly-go's schema.graphql. A query that
+  # selects one at any depth (app { addOns { password } }, viewer
+  # { identities { token } }) is also credential, whatever its root field.
+  graphql_secret_fields:
+    - accessToken                  # CreateAccessTokenPayload
+    - authToken                    # DischargeRootTokenPayload
+    - buildToken                   # EnsureDepotRemoteBuilderPayload
+    - clientSecret                 # CreateStripeVerificationSessionPayload
+    - connectionString             # AttachPostgresClusterPayload
+    - password                     # AddOn
+    - privateKey                   # Mutations.privateKey
+    - privkey                      # DummyWireGuardPeerPayload
+    - sealedToken                  # Identity
+    - token                        # AccessToken, Identity, LimitedAccessToken, ...
+    - tokenHeader                  # LimitedAccessToken

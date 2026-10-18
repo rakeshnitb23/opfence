@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"slices"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -16,7 +17,7 @@ var testFS = fstest.MapFS{
 title: Railway
 hosts: [backboard.railway.com]
 graphql: [/graphql/v2]
-defaults: { graphql_query: read }
+defaults: { graphql_query: read, graphql_secret_fields: [token] }
 `)},
 	"railway/rules.yaml": {Data: []byte(`operations:
   - id: railway.volume.delete
@@ -282,5 +283,23 @@ func TestHash(t *testing.T) {
 	spaced := eval(t, e, strings.Replace(pocketOS, `"variables"`, ` "variables"`, 1))
 	if spaced.Hash == a.Hash {
 		t.Error("different body bytes should hash differently")
+	}
+}
+
+func TestGraphQLSecretFields(t *testing.T) {
+	e := newEngine(t, "", "")
+	q := func(query string) string {
+		return "POST /graphql/v2 HTTP/1.1\nHost: backboard.railway.com\nContent-Type: application/json\n\n{\"query\":\"" + query + "\"}"
+	}
+	for query, want := range map[string]classes.Class{
+		`{ me { name } }`:                                 classes.Read,
+		`{ me { teams { token } } }`:                      classes.Credential,
+		`{ me { ...F } } fragment F on User { x: token }`: classes.Credential,
+		`{ me { ... on User { token } } }`:                classes.Credential,
+	} {
+		ev := eval(t, e, q(query)).Evaluations[0]
+		if !slices.Contains(ev.Classes, want) || (want == classes.Read && len(ev.Classes) != 1) {
+			t.Errorf("%s: classes %v (%s), want %s", query, ev.Classes, ev.ClassSource, want)
+		}
 	}
 }

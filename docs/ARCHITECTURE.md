@@ -113,7 +113,7 @@ type Request struct {
 }
 ```
 
-`request.ParseHTTP` reads the `.http` fixture format: an HTTP/1.1 request as it appears on the wire, with an optional leading comment block of `# key: value` metadata (description, captured-on). It is the same text `mitmproxy` exports with "Copy as raw request", so fixtures can be captured from real traffic.
+`request.ParseHTTP` reads the `.http` fixture format: an HTTP/1.1 request as it appears on the wire, with an optional leading comment block of `# key: value` metadata (description, captured-on). It is the same text `mitmproxy` exports with "Copy as raw request", so fixtures can be captured from real traffic. MCP servers that run on the user's machine have no host to route by, so their rules use tool-call fixtures instead: a `.json` file holding `{"description", "tool", "arguments"}`, which `opfence test` evaluates the way the agent hook does.
 
 Body handling (shared by fixtures and the proxy):
 
@@ -213,9 +213,10 @@ defaults:                             # classify unlisted operations
   graphql_query: read                 # every GraphQL query is a read on this API
   rest_safe_methods: read             # GET/HEAD/OPTIONS (off unless declared)
   # aws_read_actions: read            # sigv4 providers: Describe*, Get*, List*, Head*, BatchGet*, Scan, Query
+  # graphql_secret_fields: [password] # selecting one at any depth adds credential
 ```
 
-`defaults` is how the catalog classifies **every** operation without listing thousands of them (review suggestion 1): GraphQL queries and safe HTTP methods are reads on most APIs, and the exceptions (a `GET` that returns a decrypted secret) get explicit rules, which always beat defaults. Anything not covered by a rule or a default is `unknown`.
+`defaults` is how the catalog classifies **every** operation without listing thousands of them (review suggestion 1): GraphQL queries and safe HTTP methods are reads on most APIs, and the exceptions (a `GET` that returns a decrypted secret) get explicit rules, which always beat defaults. Anything not covered by a rule or a default is `unknown`. GraphQL rules match root fields, but a query can reach a secret through a nested selection (`app { addOns { password } }`); `graphql_secret_fields` names the fields that hold secrets in the provider's schema, and an operation that selects one anywhere (aliases and fragments followed) also gets `credential`. Exporters, which cannot see selection sets, treat every query on such a provider as possibly `credential`.
 
 A provider whose hosts also serve git lists them under `git:`; GitHub has `hosts: [api.github.com, github.com]`, `git: [github.com]` and `auth: [{header: Authorization}, {basic: password}]`, since git sends the token as a Basic-auth password.
 
