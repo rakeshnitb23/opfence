@@ -1,0 +1,375 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): ai-gateway
+operations:
+  - id: cloudflare.ai-gateway.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create AI gateway {body.id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{id}" } }
+    class: write
+    resource: { arg: id, kind: ai-gateway }
+    card: "Change AI gateway {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-update.http
+        expect: write
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-gateway.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{id}" } }
+    class: irreversible
+    resource: { arg: id, kind: ai-gateway }
+    card: "Delete AI gateway {id} with its logs and provider keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The gateway's logs and stored provider keys go with it.
+    tests:
+      - fixture: fixtures/ai-gateway-delete.http
+        expect: irreversible
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-gateway.logs-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/logs" } }
+    class: irreversible
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Delete logs of AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-logs-delete.http
+        expect: irreversible
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.log-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/logs/{id}" } }
+    class: write
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Annotate log {id} of AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-log-update.http
+        expect: write
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.provider-key-store
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/provider_configs" } }
+    class: credential
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Store a provider API key in AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-provider-key-store.http
+        expect: credential
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.provider-key-rotate
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/provider_configs/{id}" } }
+    class: credential
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Rotate provider key {id} of AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-provider-key-rotate.http
+        expect: credential
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.provider-key-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/provider_configs/{id}" } }
+    class: irreversible
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Delete provider key {id} of AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a stored secret is irreversible.
+    tests:
+      - fixture: fixtures/ai-gateway-provider-key-delete.http
+        expect: irreversible
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.custom-domain-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/custom-domains" } }
+    class: access
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Serve AI gateway {gateway_id} on a custom domain"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Publishes the gateway on a public hostname.
+    tests:
+      - fixture: fixtures/ai-gateway-custom-domain-create.http
+        expect: access
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.custom-domain-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/custom-domains/{hostname}" } }
+    class: delete
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Remove custom domain {hostname} from AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-custom-domain-delete.http
+        expect: delete
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.route-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/routes" } }
+    class: write
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Create a dynamic route in AI gateway {gateway_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-route-create.http
+        expect: write
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.route-rename
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/routes/{id}" } }
+    class: write
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Rename dynamic route {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-route-rename.http
+        expect: write
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.route-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/routes/{id}" } }
+    class: delete
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Delete dynamic route {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-route-delete.http
+        expect: delete
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.route-version-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/routes/{id}/versions" } }
+    class: write
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Create a version of dynamic route {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-route-version-create.http
+        expect: write
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.route-deploy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/gateways/{gateway_id}/routes/{id}/deployments" } }
+    class: write
+    resource: { arg: gateway_id, kind: ai-gateway }
+    card: "Deploy a version of dynamic route {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-route-deploy.http
+        expect: write
+        resource: "shop-gateway"
+
+  - id: cloudflare.ai-gateway.topup
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/topup" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Buy AI Gateway credits for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Charges the account to add credits.
+    tests:
+      - fixture: fixtures/ai-gateway-topup.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.topup-config-set
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/topup/config" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Set automatic AI Gateway credit top-ups for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-topup-config-set.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.topup-config-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/topup/config" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Remove automatic AI Gateway credit top-ups for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-topup-config-delete.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.spending-limit-set
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/spending-limit" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Set the AI Gateway spending limit of account {account_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-spending-limit-set.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.spending-limit-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/spending-limit" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Remove the AI Gateway spending limit of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing a spending limit lets spend grow without bound.
+    tests:
+      - fixture: fixtures/ai-gateway-spending-limit-delete.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.topup-eligibility
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/topup/eligibility" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check AI Gateway top-up eligibility of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-topup-eligibility.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.topup-status
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/billing/topup/status" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check an AI Gateway top-up in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-topup-status.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.logging-state
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/ai-gateway/logging-state" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Move AI Gateway logging to Workers Observability in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-logging-state.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.custom-provider-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-gateway/custom-providers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a custom AI provider in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-custom-provider-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.custom-provider-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/ai-gateway/custom-providers/{id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change custom AI provider {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-custom-provider-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-gateway.custom-provider-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-gateway/custom-providers/{id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete custom AI provider {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-gateway-custom-provider-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

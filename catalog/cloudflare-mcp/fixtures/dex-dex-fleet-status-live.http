@@ -1,0 +1,8 @@
+# description: Show live WARP fleet status
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":152,"method":"tools/call","params":{"name":"dex_fleet_status_live","arguments":{"since_minutes":10}}}

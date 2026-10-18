@@ -1,0 +1,5 @@
+# description: Delete version 3 of ruleset 2f2feab2026849078ba485f918791bdc
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/rulesets/2f2feab2026849078ba485f918791bdc/versions/3 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

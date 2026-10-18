@@ -1,0 +1,8 @@
+# description: Read warp-status.txt of WARP diagnostic c0ffee00-1234-4abc-8def-0123456789ab
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":158,"method":"tools/call","params":{"name":"dex_explore_remote_warp_diag_output","arguments":{"commandId":"c0ffee00-1234-4abc-8def-0123456789ab","deviceId":"e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b","filepath":"warp-status.txt"}}}

@@ -1,0 +1,5 @@
+# description: Delete waiting room event 25756b2dfe6e378a06b033b670413757
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/waiting_rooms/699d98642c564d2e855e9661899b7253/events/25756b2dfe6e378a06b033b670413757 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

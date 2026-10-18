@@ -1,0 +1,6 @@
+# description: Change the storage class of R2 bucket shop-assets
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2/buckets/shop-assets HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+cf-r2-storage-class: InfrequentAccess
+

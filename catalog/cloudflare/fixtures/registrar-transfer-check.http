@@ -1,0 +1,7 @@
+# description: Check whether domains can be transferred to account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/registrar/domain-transfer-check HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"domains":["shop-example.com"]}

@@ -1,0 +1,5 @@
+# description: Create live view URLs for browser session 478f4d7d-e943-40f6-a77e-c79a1e2a5c3e
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/browser-rendering/devtools/browser/478f4d7d-e943-40f6-a77e-c79a1e2a5c3e/live_view HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

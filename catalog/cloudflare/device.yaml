@@ -1,0 +1,35 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): device
+operations:
+  - id: cloudflare.device.override-codes
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/devices/registrations/{registration_id}/override_codes" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read admin override codes for device registration {registration_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      An override code lets a user switch off WARP and its Gateway policies on
+      the device.
+    tests:
+      - fixture: fixtures/device-override-codes.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.device.override-codes-legacy
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/devices/{device_id}/override_codes" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read admin override codes for device {device_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      An override code lets a user switch off WARP and its Gateway policies on
+      the device.
+    tests:
+      - fixture: fixtures/device-override-codes-legacy.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

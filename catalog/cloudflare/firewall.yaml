@@ -1,0 +1,460 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): firewall
+operations:
+  - id: cloudflare.firewall.lockdown-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/firewall/lockdowns" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a zone lockdown rule in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-lockdown-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.lockdown-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/firewall/lockdowns/{lock_downs_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change zone lockdown rule {lock_downs_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-lockdown-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.lockdown-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/lockdowns/{lock_downs_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete zone lockdown rule {lock_downs_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-lockdown-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.ua-rule-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/firewall/ua_rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a user agent blocking rule in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-ua-rule-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.ua-rule-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/firewall/ua_rules/{ua_rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change user agent blocking rule {ua_rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-ua-rule-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.ua-rule-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/ua_rules/{ua_rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete user agent blocking rule {ua_rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-ua-rule-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rules-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/firewall/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create firewall rules in zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rules-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rules-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/firewall/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change firewall rules of zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rules-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rules-priority
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Reorder firewall rules of zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rules-priority.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rules-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete firewall rules of zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rules-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rule-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/firewall/rules/{rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change firewall rule {rule_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rule-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rule-priority
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/rules/{rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Reorder firewall rule {rule_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rule-priority.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rule-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/rules/{rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete firewall rule {rule_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rule-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.filters-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/filters" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create filters in zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-filters-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.filters-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/filters" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change filters of zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-filters-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.filters-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/filters" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete filters of zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-filters-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.filter-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/filters/{filter_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change filter {filter_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-filter-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.filter-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/filters/{filter_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete filter {filter_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-filter-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-override-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/firewall/waf/overrides" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a WAF override in zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-override-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-override-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/firewall/waf/overrides/{overrides_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change WAF override {overrides_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-override-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-override-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/waf/overrides/{overrides_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete WAF override {overrides_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-override-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-package-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/waf/packages/{package_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change WAF package {package_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-package-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-group-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/waf/packages/{package_id}/groups/{group_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change WAF rule group {group_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-group-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.waf-rule-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/waf/packages/{package_id}/rules/{rule_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change WAF rule {rule_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-waf-rule-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rate-limit-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/rate_limits" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a rate limit in zone {zone_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rate-limit-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rate-limit-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/rate_limits/{rate_limit_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change rate limit {rate_limit_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rate-limit-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall.rate-limit-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/rate_limits/{rate_limit_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete rate limit {rate_limit_id} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-rate-limit-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"

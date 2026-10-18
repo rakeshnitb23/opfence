@@ -1,0 +1,31 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): argo
+operations:
+  - id: cloudflare.argo.smart-routing
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/argo/smart_routing" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Argo Smart Routing for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Argo Smart Routing is billed per GB of traffic.
+    tests:
+      - fixture: fixtures/argo-smart-routing.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.argo.tiered-caching
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/argo/tiered_caching" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Tiered Caching for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/argo-tiered-caching.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

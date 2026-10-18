@@ -1,0 +1,5 @@
+# description: Abort all migration jobs in account 023e105f4ecef8ad9ca31a8372d0c353
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/slurper/jobs/abortAll HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,8 @@
+# description: Create a token validation configuration in zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/token_validation/config HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"credentials":{"keys":[]},"description":"Long description for Token Validation Configuration","title":"Example Token Validation Configuration","token_sources":["http.request.headers[\"x-auth\"][0]","http.request.cookies[\"Authorization\"][0]"],"token_type":"JWT"}

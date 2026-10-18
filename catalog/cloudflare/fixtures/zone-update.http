@@ -1,0 +1,7 @@
+# description: Change zone 9f1839b6152d298aca64c4e906b6d074
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"vanity_name_servers":["ns1.shop-example.com","ns2.shop-example.com"]}

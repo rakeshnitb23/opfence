@@ -1,0 +1,46 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): client-certificate
+operations:
+  - id: cloudflare.client-certificate.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/client_certificates" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Issue an mTLS client certificate in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Issues a certificate that authenticates a client to the zone's mTLS rules:
+      a new credential.
+    tests:
+      - fixture: fixtures/client-certificate-create.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.client-certificate.revoke
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/client_certificates/{client_certificate_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Revoke mTLS client certificate {client_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/client-certificate-revoke.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.client-certificate.reactivate
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/client_certificates/{client_certificate_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Reactivate mTLS client certificate {client_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/client-certificate-reactivate.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"

@@ -1,0 +1,210 @@
+# Cloudflare MCP servers: browser
+operations:
+  - id: cloudflare-mcp.browser.get-url-html-content
+    match: { mcp: { tool: get_url_html_content } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Fetch the HTML of {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-html-content.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-markdown
+    match: { mcp: { tool: get_url_markdown } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Fetch {url} as Markdown"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-markdown.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-screenshot
+    match: { mcp: { tool: get_url_screenshot } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Take a screenshot of {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-screenshot.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-pdf
+    match: { mcp: { tool: get_url_pdf } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Render {url} as PDF"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-pdf.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-snapshot
+    match: { mcp: { tool: get_url_snapshot } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Take a snapshot of {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-snapshot.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.scrape-url-elements
+    match: { mcp: { tool: scrape_url_elements } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Scrape elements of {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-scrape-url-elements.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-json
+    match: { mcp: { tool: get_url_json } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Extract JSON from {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-json.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.get-url-links
+    match: { mcp: { tool: get_url_links } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "List the links on {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Loads a public web page in Cloudflare's headless browser; nothing in the
+      account changes.
+    tests:
+      - fixture: fixtures/browser-get-url-links.http
+        expect: read
+        resource: "https://shop-example.com/pricing"
+
+  - id: cloudflare-mcp.browser.start-crawl
+    match: { mcp: { tool: start_crawl } }
+    class: write
+    resource: { arg: url, kind: url }
+    card: "Start crawling {url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Starts a billed Browser Rendering crawl job; it only reads the crawled
+      site.
+    tests:
+      - fixture: fixtures/browser-start-crawl.http
+        expect: write
+        resource: "https://shop-example.com/docs"
+
+  - id: cloudflare-mcp.browser.get-crawl-result
+    match: { mcp: { tool: get_crawl_result } }
+    class: read
+    resource: { arg: job_id, kind: crawl }
+    card: "Read the result of crawl {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    tests:
+      - fixture: fixtures/browser-get-crawl-result.http
+        expect: read
+        resource: "c7a1e9f0-2b3d-4e5f-8a9b-0c1d2e3f4a5b"
+
+  - id: cloudflare-mcp.browser.cancel-crawl
+    match: { mcp: { tool: cancel_crawl } }
+    class: write
+    resource: { arg: job_id, kind: crawl }
+    card: "Cancel crawl {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    tests:
+      - fixture: fixtures/browser-cancel-crawl.http
+        expect: write
+        resource: "c7a1e9f0-2b3d-4e5f-8a9b-0c1d2e3f4a5b"
+
+  - id: cloudflare-mcp.browser.list-browser-sessions
+    match: { mcp: { tool: list_browser_sessions } }
+    class: read
+    card: "List browser sessions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    tests:
+      - fixture: fixtures/browser-list-browser-sessions.http
+        expect: read
+
+  - id: cloudflare-mcp.browser.kill-browser-session
+    match: { mcp: { tool: kill_browser_session } }
+    class: write
+    resource: { arg: session_id, kind: browser-session }
+    card: "Close browser session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/browser-rendering/src/tools/browser.tools.ts
+    notes: >-
+      Closes a running headless browser session; nothing stored is lost.
+    tests:
+      - fixture: fixtures/browser-kill-browser-session.http
+        expect: write
+        resource: "1d2c3b4a-5e6f-4a7b-8c9d-0e1f2a3b4c5d"

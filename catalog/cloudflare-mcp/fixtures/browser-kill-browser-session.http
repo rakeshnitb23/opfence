@@ -1,0 +1,8 @@
+# description: Close browser session 1d2c3b4a-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":69,"method":"tools/call","params":{"name":"kill_browser_session","arguments":{"session_id":"1d2c3b4a-5e6f-4a7b-8c9d-0e1f2a3b4c5d"}}}

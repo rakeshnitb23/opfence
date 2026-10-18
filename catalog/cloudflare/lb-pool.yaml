@@ -1,0 +1,175 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): lb-pool
+operations:
+  - id: cloudflare.lb-pool.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers/pools" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Create load balancer pool {body.name} (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Load balancing is billed by load balancer and origin count, so creating
+      one adds to the bill.
+    tests:
+      - fixture: fixtures/lb-pool-account-create.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.lb-pool.account-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/load_balancers/pools/{pool_id}" } }
+    class: write
+    resource: { arg: pool_id, kind: pool }
+    card: "Replace load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-account-update.http
+        expect: write
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.account-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/load_balancers/pools/{pool_id}" } }
+    class: write
+    resource: { arg: pool_id, kind: pool }
+    card: "Change load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-account-patch.http
+        expect: write
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.account-patch-many
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/load_balancers/pools" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change notification email of all pools (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-account-patch-many.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.lb-pool.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/load_balancers/pools/{pool_id}" } }
+    class: delete
+    resource: { arg: pool_id, kind: pool }
+    card: "Delete load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Pool configuration can be recreated; no data is lost.
+    tests:
+      - fixture: fixtures/lb-pool-account-delete.http
+        expect: delete
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.account-preview
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/load_balancers/pools/{pool_id}/preview" } }
+    class: read
+    resource: { arg: pool_id, kind: pool }
+    card: "Preview health of pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-account-preview.http
+        expect: read
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.user-create
+    match: { rest: { method: POST, path: "/client/v4/user/load_balancers/pools" } }
+    class: money
+    card: "Create load balancer pool {body.name} (user)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Load balancing is billed by load balancer and origin count, so creating
+      one adds to the bill.
+    tests:
+      - fixture: fixtures/lb-pool-user-create.http
+        expect: money
+
+  - id: cloudflare.lb-pool.user-update
+    match: { rest: { method: PUT, path: "/client/v4/user/load_balancers/pools/{pool_id}" } }
+    class: write
+    resource: { arg: pool_id, kind: pool }
+    card: "Replace load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-user-update.http
+        expect: write
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.user-patch
+    match: { rest: { method: PATCH, path: "/client/v4/user/load_balancers/pools/{pool_id}" } }
+    class: write
+    resource: { arg: pool_id, kind: pool }
+    card: "Change load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-user-patch.http
+        expect: write
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.user-patch-many
+    match: { rest: { method: PATCH, path: "/client/v4/user/load_balancers/pools" } }
+    class: write
+    card: "Change notification email of all pools (user)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-user-patch-many.http
+        expect: write
+
+  - id: cloudflare.lb-pool.user-delete
+    match: { rest: { method: DELETE, path: "/client/v4/user/load_balancers/pools/{pool_id}" } }
+    class: delete
+    resource: { arg: pool_id, kind: pool }
+    card: "Delete load balancer pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Pool configuration can be recreated; no data is lost.
+    tests:
+      - fixture: fixtures/lb-pool-user-delete.http
+        expect: delete
+        resource: "17b5962d775c646f3f9725cbc7a53df4"
+
+  - id: cloudflare.lb-pool.user-preview
+    match: { rest: { method: POST, path: "/client/v4/user/load_balancers/pools/{pool_id}/preview" } }
+    class: read
+    resource: { arg: pool_id, kind: pool }
+    card: "Preview health of pool {pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/lb-pool-user-preview.http
+        expect: read
+        resource: "17b5962d775c646f3f9725cbc7a53df4"

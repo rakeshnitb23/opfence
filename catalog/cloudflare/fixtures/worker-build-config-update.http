@@ -1,0 +1,7 @@
+# description: Change the build configuration of Worker e1a2b3c4d5e64f708192a3b4c5d6e7f9
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/workers/e1a2b3c4d5e64f708192a3b4c5d6e7f9 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"previews_enabled":true}

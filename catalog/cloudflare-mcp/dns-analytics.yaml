@@ -1,0 +1,41 @@
+# Cloudflare MCP servers: dns-analytics
+operations:
+  - id: cloudflare-mcp.dns-analytics.dns-report
+    match: { mcp: { tool: dns_report } }
+    class: read
+    resource: { arg: zone, kind: zone }
+    card: "Report DNS analytics of zone {zone}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dns-analytics/src/tools/dex-analytics.tools.ts
+    tests:
+      - fixture: fixtures/dns-analytics-dns-report.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare-mcp.dns-analytics.show-account-dns-settings
+    match: { mcp: { tool: show_account_dns_settings } }
+    class: read
+    card: "Show account DNS settings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dns-analytics/src/tools/dex-analytics.tools.ts
+    tests:
+      - fixture: fixtures/dns-analytics-show-account-dns-settings.http
+        expect: read
+
+  - id: cloudflare-mcp.dns-analytics.show-zone-dns-settings
+    match: { mcp: { tool: show_zone_dns_settings } }
+    class: read
+    resource: { arg: zone, kind: zone }
+    card: "Show DNS settings of zone {zone}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dns-analytics/src/tools/dex-analytics.tools.ts
+    tests:
+      - fixture: fixtures/dns-analytics-show-zone-dns-settings.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

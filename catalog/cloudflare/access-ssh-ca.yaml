@@ -1,0 +1,35 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-ssh-ca
+operations:
+  - id: cloudflare.access-ssh-ca.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/gateway_ca" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add an SSH certificate authority for Access"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-ssh-ca-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-ssh-ca.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/gateway_ca/{certificate_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete SSH certificate authority {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-ssh-ca-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

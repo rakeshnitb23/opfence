@@ -1,0 +1,5 @@
+# description: Remove consumer 8a2b7c6d5e4f4a3b9c8d7e6f5a4b3c2d from queue 3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/queues/3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e/consumers/8a2b7c6d5e4f4a3b9c8d7e6f5a4b3c2d HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

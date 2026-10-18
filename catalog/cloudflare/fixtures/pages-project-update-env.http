@@ -1,0 +1,7 @@
+# description: Change Pages project shop-web
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects/shop-web HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"deployment_configs":{"preview":{"env_vars":{"STRIPE_KEY":{"type":"secret_text","value":"opf_cloudflare_EXAMPLE"}}}}}

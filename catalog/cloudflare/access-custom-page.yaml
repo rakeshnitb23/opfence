@@ -1,0 +1,57 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-custom-page
+operations:
+  - id: cloudflare.access-custom-page.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/custom_pages" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Access custom page {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-custom-page-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-custom-page.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/custom_pages/{custom_page_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change Access custom page {custom_page_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-custom-page-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-custom-page.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/custom_pages/{custom_page_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete Access custom page {custom_page_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-custom-page-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-custom-page.validate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/custom_pages/validate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Validate an Access custom page template"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-custom-page-validate.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

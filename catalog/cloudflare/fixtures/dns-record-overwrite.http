@@ -1,0 +1,8 @@
+# description: Overwrite DNS record 372e67954025e0ba6aaa6d586b9e0b59 in zone 9f1839b6152d298aca64c4e906b6d074
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/dns_records/372e67954025e0ba6aaa6d586b9e0b59 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"type":"A","name":"api.shop-example.com","content":"198.51.100.5","ttl":3600,"proxied":true}

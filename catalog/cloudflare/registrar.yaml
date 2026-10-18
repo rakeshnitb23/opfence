@@ -1,0 +1,108 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): registrar
+operations:
+  - id: cloudflare.registrar.domain-check
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/registrar/domain-check" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check availability of domains in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/registrar-domain-check.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.registrar.transfer-check
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/registrar/domain-transfer-check" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check whether domains can be transferred to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/registrar-transfer-check.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.registrar.register
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/registrar/registrations" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Register (buy) domain {body.domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare documents this as billable and non-refundable: it charges the
+      account's default payment method.
+    tests:
+      - fixture: fixtures/registrar-register.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.registrar.registration-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/registrar/registrations/{domain_name}" } }
+    class: money
+    resource: { arg: domain_name, kind: domain }
+    card: "Change auto-renewal of domain {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The only field is auto_renew, which decides whether Cloudflare charges for
+      the next renewal.
+    tests:
+      - fixture: fixtures/registrar-registration-update.http
+        expect: money
+        resource: "shop-example.com"
+
+  - id: cloudflare.registrar.transfer-in
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/registrar/registrations/{domain_name}/transfer-in" } }
+    class: money
+    resource: { arg: domain_name, kind: domain }
+    card: "Transfer domain {domain_name} to Cloudflare Registrar"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A transfer includes a paid year of registration.
+    tests:
+      - fixture: fixtures/registrar-transfer-in.http
+        expect: money
+        resource: "shop-example.com"
+
+  - id: cloudflare.registrar.domain-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/registrar/domains/{domain_name}" } }
+    class: write
+    when:
+      - if: { arg: body.auto_renew, present: true }
+        class: money
+      - if: { arg: body.locked, present: true }
+        class: access
+    resource: { arg: domain_name, kind: domain }
+    card: "Change registrar settings of domain {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Privacy is a write. auto_renew decides future charges (money); locked is
+      the transfer lock that keeps the domain from being moved to another
+      registrar (access).
+    tests:
+      - fixture: fixtures/registrar-domain-update.http
+        expect: write
+        resource: "shop-example.com"
+      - fixture: fixtures/registrar-domain-update-auto-renew.http
+        expect: money
+        resource: "shop-example.com"
+      - fixture: fixtures/registrar-domain-update-unlock.http
+        expect: access
+        resource: "shop-example.com"

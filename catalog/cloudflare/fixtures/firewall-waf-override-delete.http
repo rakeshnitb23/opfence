@@ -1,0 +1,5 @@
+# description: Delete WAF override de677e5818985db1285d0e80225f06e5 (deprecated API)
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/firewall/waf/overrides/de677e5818985db1285d0e80225f06e5 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

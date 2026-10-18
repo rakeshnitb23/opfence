@@ -1,0 +1,8 @@
+# description: Show build 5c1f0e3a-8b7d-4c2e-9f6a-1d3b5e7c9a0b
+POST /mcp HTTP/1.1
+Host: builds.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":34,"method":"tools/call","params":{"name":"workers_builds_get_build","arguments":{"buildUUID":"5c1f0e3a-8b7d-4c2e-9f6a-1d3b5e7c9a0b"}}}

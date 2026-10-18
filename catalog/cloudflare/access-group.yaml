@@ -1,0 +1,103 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-group
+operations:
+  - id: cloudflare.access-group.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/groups" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Access group {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-group.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: access-group }
+    card: "Change Access group {group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-update.http
+        expect: access
+        resource: "aa0a4aab-672b-4bdb-bc33-a59f1130a11f"
+
+  - id: cloudflare.access-group.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: access-group }
+    card: "Delete Access group {group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-delete.http
+        expect: access
+        resource: "aa0a4aab-672b-4bdb-bc33-a59f1130a11f"
+
+  - id: cloudflare.access-group.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/groups" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create Access group {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-zone-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-group.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: access-group }
+    card: "Change Access group {group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-zone-update.http
+        expect: access
+        resource: "aa0a4aab-672b-4bdb-bc33-a59f1130a11f"
+
+  - id: cloudflare.access-group.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: access-group }
+    card: "Delete Access group {group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-group-zone-delete.http
+        expect: access
+        resource: "aa0a4aab-672b-4bdb-bc33-a59f1130a11f"

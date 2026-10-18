@@ -1,0 +1,7 @@
+# description: List telemetry values in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/observability/telemetry/values HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"datasets":["cloudflare-workers"],"key":"$metadata.service","type":"string","timeframe":{"from":1760745600000,"to":1760832000000}}

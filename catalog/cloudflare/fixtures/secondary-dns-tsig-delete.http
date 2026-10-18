@@ -1,0 +1,6 @@
+# description: Delete TSIG key 69cd1e104af3e6ed3cb344f263fd0d5a
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/secondary_dns/tsigs/69cd1e104af3e6ed3cb344f263fd0d5a HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

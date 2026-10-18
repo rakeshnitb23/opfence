@@ -1,0 +1,68 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-policy
+operations:
+  - id: cloudflare.access-policy.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/policies" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create reusable Access policy {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-policy-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-policy.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/policies/{policy_id}" } }
+    class: access
+    resource: { arg: policy_id, kind: access-policy }
+    card: "Change reusable Access policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-policy-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8416"
+
+  - id: cloudflare.access-policy.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/policies/{policy_id}" } }
+    class: access
+    resource: { arg: policy_id, kind: access-policy }
+    card: "Delete reusable Access policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-policy-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8416"
+
+  - id: cloudflare.access-policy.test
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/policy-tests" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Test Access policies in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Evaluates policies; changes nothing.
+    tests:
+      - fixture: fixtures/access-policy-test.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

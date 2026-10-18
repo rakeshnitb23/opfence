@@ -1,0 +1,8 @@
+# description: Invite dev@shop-example.com to account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/members HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"email":"dev@shop-example.com","roles":["3536bcfad5faccb111b47003c79917fa"],"status":"pending"}

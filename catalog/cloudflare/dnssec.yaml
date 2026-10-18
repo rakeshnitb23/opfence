@@ -1,0 +1,42 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): dnssec
+operations:
+  - id: cloudflare.dnssec.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/dnssec" } }
+    class: write
+    when:
+      - if: { arg: body.status, equals: "disabled" }
+        class: irreversible
+    resource: { arg: zone_id, kind: zone }
+    card: "Change DNSSEC for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Disabling DNSSEC destroys the zone's signing keys; while the registrar
+      still publishes the old DS record the domain stops resolving, and the keys
+      cannot be brought back. Enabling or changing options is a write.
+    tests:
+      - fixture: fixtures/dnssec-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/dnssec-update-disable.http
+        expect: irreversible
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dnssec.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/dnssec" } }
+    class: irreversible
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete the DNSSEC keys of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Same effect as disabling DNSSEC: the keys are gone and a stale DS record
+      at the registrar breaks resolution.
+    tests:
+      - fixture: fixtures/dnssec-delete.http
+        expect: irreversible
+        resource: "9f1839b6152d298aca64c4e906b6d074"

@@ -1,0 +1,8 @@
+# description: Cancel crawl c7a1e9f0-2b3d-4e5f-8a9b-0c1d2e3f4a5b
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":67,"method":"tools/call","params":{"name":"cancel_crawl","arguments":{"job_id":"c7a1e9f0-2b3d-4e5f-8a9b-0c1d2e3f4a5b"}}}

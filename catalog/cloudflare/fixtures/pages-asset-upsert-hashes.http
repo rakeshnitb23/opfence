@@ -1,0 +1,8 @@
+# description: Record uploaded Pages asset hashes
+POST /client/v4/pages/assets/upsert-hashes HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"hashes":["c8d2f6a1b3e4d5c6a7b8c9d0e1f2a3b4"]}

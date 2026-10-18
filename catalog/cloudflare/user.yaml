@@ -1,0 +1,25 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): user
+operations:
+  - id: cloudflare.user.update
+    match: { rest: { method: PATCH, path: "/client/v4/user" } }
+    class: write
+    card: "Change your Cloudflare user details"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-update.http
+        expect: write
+
+  - id: cloudflare.user.communication-preferences
+    match: { rest: { method: PUT, path: "/client/v4/user/communication_preferences" } }
+    class: write
+    card: "Change your email preferences"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-communication-preferences.http
+        expect: write

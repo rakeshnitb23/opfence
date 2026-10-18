@@ -1,0 +1,7 @@
+# description: Create Logpush job http-requests (zone)
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/logpush/jobs HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"http-requests","dataset":"http_requests","destination_conf":"r2://shop-logs/{DATE}?account-id=023e105f4ecef8ad9ca31a8372d0c353","enabled":true}

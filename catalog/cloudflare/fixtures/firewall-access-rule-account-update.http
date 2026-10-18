@@ -1,0 +1,8 @@
+# description: Change IP access rule 2536bcfad5faccb111b47003c79917fa
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/firewall/access_rules/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"mode":"challenge"}

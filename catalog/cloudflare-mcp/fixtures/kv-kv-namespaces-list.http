@@ -1,0 +1,8 @@
+# description: List KV namespaces
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":14,"method":"tools/call","params":{"name":"kv_namespaces_list","arguments":{"params":{"per_page":20}}}}

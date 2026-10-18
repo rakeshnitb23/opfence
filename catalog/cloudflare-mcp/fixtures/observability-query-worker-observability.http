@@ -1,0 +1,8 @@
+# description: Query Workers logs and metrics
+POST /mcp HTTP/1.1
+Host: observability.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":36,"method":"tools/call","params":{"name":"query_worker_observability","arguments":{"query":{"view":"events","queryId":"adhoc","limit":10,"parameters":{"filters":[{"key":"$metadata.service","operation":"eq","type":"string","value":"shop-api"}]},"timeframe":{"from":1792000000000,"to":1792003600000}}}}}

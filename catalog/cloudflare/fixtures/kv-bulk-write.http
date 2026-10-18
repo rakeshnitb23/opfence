@@ -1,0 +1,7 @@
+# description: Write several keys to KV namespace 0f2ac74b498b48028cb68387c421e279
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/storage/kv/namespaces/0f2ac74b498b48028cb68387c421e279/bulk HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"key":"flags:checkout","value":"{\"enabled\":true}"}]

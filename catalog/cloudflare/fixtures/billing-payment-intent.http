@@ -1,0 +1,5 @@
+# description: Start adding a payment method to account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/billing/profile/payment-method HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,8 @@
+# description: Show URL scan 0a9b8c7d-6e5f-4a3b-2c1d-0e9f8a7b6c5d
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":141,"method":"tools/call","params":{"name":"get_url_scan","arguments":{"scanId":"0a9b8c7d-6e5f-4a3b-2c1d-0e9f8a7b6c5d"}}}

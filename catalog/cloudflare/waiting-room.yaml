@@ -1,0 +1,211 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): waiting-room
+operations:
+  - id: cloudflare.waiting-room.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/waiting_rooms" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create waiting room {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.waiting-room.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Replace waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-update.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Change waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-patch.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}" } }
+    class: delete
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Delete waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-delete.http
+        expect: delete
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.preview
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/waiting_rooms/preview" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Preview a waiting room page in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-preview.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.waiting-room.settings-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/waiting_rooms/settings" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change waiting room settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-settings-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.waiting-room.settings-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/waiting_rooms/settings" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change waiting room settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-settings-patch.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.waiting-room.event-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/events" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Schedule an event for waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-event-create.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.event-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/events/{event_id}" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Replace waiting room event {event_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-event-update.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.event-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/events/{event_id}" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Change waiting room event {event_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-event-patch.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.event-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/events/{event_id}" } }
+    class: delete
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Delete waiting room event {event_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-event-delete.http
+        expect: delete
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.rule-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/rules" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Add a rule to waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-rule-create.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.rules-replace
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/rules" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Replace the rules of waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-rules-replace.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.rule-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/rules/{rule_id}" } }
+    class: write
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Change rule {rule_id} of waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-rule-update.http
+        expect: write
+        resource: "699d98642c564d2e855e9661899b7253"
+
+  - id: cloudflare.waiting-room.rule-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/waiting_rooms/{waiting_room_id}/rules/{rule_id}" } }
+    class: delete
+    resource: { arg: waiting_room_id, kind: waiting-room }
+    card: "Delete rule {rule_id} of waiting room {waiting_room_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/waiting-room-rule-delete.http
+        expect: delete
+        resource: "699d98642c564d2e855e9661899b7253"

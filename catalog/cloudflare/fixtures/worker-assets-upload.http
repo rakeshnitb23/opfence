@@ -1,0 +1,12 @@
+# description: Upload static assets for a Worker in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/assets/upload?base64=true HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="c8d2f6a1b3e4d5c6a7b8c9d0e1f2a3b4"; filename="c8d2f6a1b3e4d5c6a7b8c9d0e1f2a3b4"
+Content-Type: text/html
+
+PGgxPmhlbGxvPC9oMT4=
+------opfence7MA4YWxkTrZu0gW--

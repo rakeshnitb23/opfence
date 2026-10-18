@@ -1,0 +1,93 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): kv
+operations:
+  - id: cloudflare.kv.bulk-write
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk" } }
+    class: write
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Write several keys to KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Overwrites existing values, like any write to a store.
+    tests:
+      - fixture: fixtures/kv-bulk-write.http
+        expect: write
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv.bulk-delete
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk/delete" } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Delete several keys from KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      KV keeps no copy of deleted values.
+    tests:
+      - fixture: fixtures/kv-bulk-delete.http
+        expect: irreversible
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv.bulk-delete-legacy
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk" } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Delete several keys from KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deprecated form of bulk delete.
+    tests:
+      - fixture: fixtures/kv-bulk-delete-legacy.http
+        expect: irreversible
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv.bulk-get
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk/get" } }
+    class: read
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Read several keys of KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/kv-bulk-get.http
+        expect: read
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv.value-write
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}" } }
+    class: write
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Write key {key_name} in KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/kv-value-write.http
+        expect: write
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv.value-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}" } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Delete key {key_name} from KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      KV keeps no copy of a deleted value.
+    tests:
+      - fixture: fixtures/kv-value-delete.http
+        expect: irreversible
+        resource: "0f2ac74b498b48028cb68387c421e279"

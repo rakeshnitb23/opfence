@@ -1,0 +1,13 @@
+# Cloudflare MCP servers: demo-day
+operations:
+  - id: cloudflare-mcp.demo-day.mcp-demo-day-info
+    match: { mcp: { tool: mcp_demo_day_info } }
+    class: read
+    card: "Show information about Cloudflare MCP Demo Day"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/demo-day/src/demo-day.app.ts
+    tests:
+      - fixture: fixtures/demo-day-mcp-demo-day-info.http
+        expect: read

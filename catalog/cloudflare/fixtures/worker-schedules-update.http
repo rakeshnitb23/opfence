@@ -1,0 +1,7 @@
+# description: Replace the cron triggers of Worker shop-api
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/scripts/shop-api/schedules HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"cron":"*/30 * * * *"}]

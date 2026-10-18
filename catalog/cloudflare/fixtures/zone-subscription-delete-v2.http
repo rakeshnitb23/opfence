@@ -1,0 +1,5 @@
+# description: Cancel the plan subscription of zone 9f1839b6152d298aca64c4e906b6d074
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/subscriptions HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

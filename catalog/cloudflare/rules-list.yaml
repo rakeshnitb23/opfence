@@ -1,0 +1,103 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): rules-list
+operations:
+  - id: cloudflare.rules-list.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/rules/lists" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create list {body.name} for firewall rules"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.rules-list.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/rules/lists/{list_id}" } }
+    class: access
+    resource: { arg: list_id, kind: rules-list }
+    card: "Change list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-update.http
+        expect: access
+        resource: "2c0fc9fa937b11eaa1b71c4d701ab86e"
+
+  - id: cloudflare.rules-list.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/rules/lists/{list_id}" } }
+    class: access
+    resource: { arg: list_id, kind: rules-list }
+    card: "Delete list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-delete.http
+        expect: access
+        resource: "2c0fc9fa937b11eaa1b71c4d701ab86e"
+
+  - id: cloudflare.rules-list.items-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/rules/lists/{list_id}/items" } }
+    class: access
+    resource: { arg: list_id, kind: rules-list }
+    card: "Add items to list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-items-create.http
+        expect: access
+        resource: "2c0fc9fa937b11eaa1b71c4d701ab86e"
+
+  - id: cloudflare.rules-list.items-replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/rules/lists/{list_id}/items" } }
+    class: access
+    resource: { arg: list_id, kind: rules-list }
+    card: "Replace the items of list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-items-replace.http
+        expect: access
+        resource: "2c0fc9fa937b11eaa1b71c4d701ab86e"
+
+  - id: cloudflare.rules-list.items-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/rules/lists/{list_id}/items" } }
+    class: access
+    resource: { arg: list_id, kind: rules-list }
+    card: "Remove items from list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/rules-list-items-delete.http
+        expect: access
+        resource: "2c0fc9fa937b11eaa1b71c4d701ab86e"

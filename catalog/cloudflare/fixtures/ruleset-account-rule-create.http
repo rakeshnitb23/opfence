@@ -1,0 +1,7 @@
+# description: Add a rule to ruleset 2f2feab2026849078ba485f918791bdc
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/rulesets/2f2feab2026849078ba485f918791bdc/rules HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"action":"skip","action_parameters":{"ruleset":"current"},"expression":"http.request.uri.path eq \"/healthz\""}

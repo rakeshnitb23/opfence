@@ -1,0 +1,5 @@
+# description: Start image migration 5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/images/v2/sourcingkit/migrations/5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b/lifecycle/start HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

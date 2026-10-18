@@ -1,0 +1,7 @@
+# description: Start an assets upload for Worker shop-api
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/scripts/shop-api/assets-upload-session HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"manifest":{"/index.html":{"hash":"c8d2f6a1b3e4d5c6a7b8c9d0e1f2a3b4","size":1024}}}

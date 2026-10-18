@@ -1,0 +1,12 @@
+# description: Import a BIND zone file into zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/dns_records/import HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="shop-example.com.txt"
+Content-Type: text/plain
+
+www.shop-example.com. 3600 IN CNAME shop-example.com.
+------opfence7MA4YWxkTrZu0gW--

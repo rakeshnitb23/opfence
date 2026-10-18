@@ -1,0 +1,152 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): firewall-access-rule
+operations:
+  - id: cloudflare.firewall-access-rule.user-create
+    match: { rest: { method: POST, path: "/client/v4/user/firewall/access_rules/rules" } }
+    class: access
+    card: "Create an IP access rule (user)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-user-create.http
+        expect: access
+
+  - id: cloudflare.firewall-access-rule.user-update
+    match: { rest: { method: PATCH, path: "/client/v4/user/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Change IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-user-update.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.firewall-access-rule.user-delete
+    match: { rest: { method: DELETE, path: "/client/v4/user/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Delete IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-user-delete.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.firewall-access-rule.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/firewall/access_rules/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create an IP access rule (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-account-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.firewall-access-rule.account-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Change IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-account-update.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.firewall-access-rule.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Delete IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-account-delete.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.firewall-access-rule.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/firewall/access_rules/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create an IP access rule (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-zone-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.firewall-access-rule.zone-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Change IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-zone-update.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"
+
+  - id: cloudflare.firewall-access-rule.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/firewall/access_rules/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: access-rule }
+    card: "Delete IP access rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Firewall and ruleset changes decide what traffic reaches the site, so
+      every change, including a delete that removes protection, is access.
+    tests:
+      - fixture: fixtures/firewall-access-rule-zone-delete.http
+        expect: access
+        resource: "2536bcfad5faccb111b47003c79917fa"

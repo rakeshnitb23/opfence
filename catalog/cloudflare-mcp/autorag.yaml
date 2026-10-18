@@ -1,0 +1,27 @@
+# Cloudflare MCP servers: autorag
+operations:
+  - id: cloudflare-mcp.autorag.list-rags
+    match: { mcp: { tool: list_rags } }
+    class: read
+    card: "List AI Search instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/autorag/src/tools/autorag.tools.ts
+    tests:
+      - fixture: fixtures/autorag-list-rags.http
+        expect: read
+
+  - id: cloudflare-mcp.autorag.ai-search
+    match: { mcp: { tool: ai_search } }
+    class: read
+    resource: { arg: rag_id, kind: ai-search }
+    card: "Ask AI Search instance {rag_id}: {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/autorag/src/tools/autorag.tools.ts
+    tests:
+      - fixture: fixtures/autorag-ai-search.http
+        expect: read
+        resource: "shop-docs"

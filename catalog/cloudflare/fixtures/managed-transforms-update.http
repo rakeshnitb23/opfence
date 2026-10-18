@@ -1,0 +1,7 @@
+# description: Change managed transforms of zone 9f1839b6152d298aca64c4e906b6d074
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/managed_headers HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"managed_request_headers":[{"id":"add_true_client_ip_headers","enabled":true}],"managed_response_headers":[]}

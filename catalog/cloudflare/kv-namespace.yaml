@@ -1,0 +1,46 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): kv-namespace
+operations:
+  - id: cloudflare.kv-namespace.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create KV namespace {body.title}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/kv-namespace-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.kv-namespace.rename
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}" } }
+    class: write
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Rename KV namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/kv-namespace-rename.http
+        expect: write
+        resource: "0f2ac74b498b48028cb68387c421e279"
+
+  - id: cloudflare.kv-namespace.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}" } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: kv-namespace }
+    card: "Delete KV namespace {namespace_id} and every key in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare documents that the namespace is deleted with its stored key-
+      value pairs; KV has no backup or undelete.
+    tests:
+      - fixture: fixtures/kv-namespace-delete.http
+        expect: irreversible
+        resource: "0f2ac74b498b48028cb68387c421e279"

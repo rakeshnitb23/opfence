@@ -1,0 +1,7 @@
+# description: Create Logpush job http-requests (account)
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/logpush/jobs HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"http-requests","dataset":"http_requests","destination_conf":"s3://shop-logs/http?region=us-east-1&access-key-id=AKIAEXAMPLE&secret-access-key=opf_cloudflare_EXAMPLE","enabled":true}

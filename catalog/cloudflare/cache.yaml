@@ -1,0 +1,141 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): cache
+operations:
+  - id: cloudflare.cache.purge
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/purge_cache" } }
+    class: write
+    when:
+      - if: { arg: body.purge_everything, equals: "true" }
+        class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Purge cached content of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cached files are refetched from the origin, so nothing is lost. Purging
+      everything sends every request to the origin at once, so it is classed
+      delete (rebuildable) rather than write.
+    tests:
+      - fixture: fixtures/cache-purge.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/cache-purge-everything.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.reserve
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/cache/cache_reserve" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Cache Reserve for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cache Reserve is a paid subscription billed by storage and operations.
+    tests:
+      - fixture: fixtures/cache-reserve.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.reserve-clear
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/cache/cache_reserve_clear" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Clear Cache Reserve of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cached copies are refetched from the origin.
+    tests:
+      - fixture: fixtures/cache-reserve-clear.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.regional-tiered
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/cache/regional_tiered_cache" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Regional Tiered Cache for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-regional-tiered.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.smart-topology-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/cache/tiered_cache_smart_topology_enable" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Smart Tiered Cache for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-smart-topology-patch.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.smart-topology-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/cache/tiered_cache_smart_topology_enable" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Enable Smart Tiered Cache for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-smart-topology-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.smart-topology-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/cache/tiered_cache_smart_topology_enable" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the Smart Tiered Cache setting of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-smart-topology-delete.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.variants-patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/cache/variants" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change cache variants of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-variants-patch.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.cache.variants-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/cache/variants" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the cache variants setting of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cache-variants-delete.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

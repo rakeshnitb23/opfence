@@ -1,0 +1,195 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): notification
+operations:
+  - id: cloudflare.notification.webhook-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/destinations/webhooks" } }
+    class: write
+    when:
+      - if: { arg: body.secret, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create notification webhook {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-webhook-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/notification-webhook-create-secret.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.webhook-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/alerting/v3/destinations/webhooks/{webhook_id}" } }
+    class: write
+    when:
+      - if: { arg: body.secret, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change notification webhook {webhook_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-webhook-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/notification-webhook-update-secret.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.webhook-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/alerting/v3/destinations/webhooks/{webhook_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete notification webhook {webhook_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-webhook-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.pagerduty-connect
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/destinations/pagerduty/connect" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create a PagerDuty integration token for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-pagerduty-connect.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.pagerduty-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/alerting/v3/destinations/pagerduty" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Remove PagerDuty destinations of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-pagerduty-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.policy-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/policies" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create notification policy {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-policy-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.policy-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/alerting/v3/policies/{policy_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change notification policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-policy-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.policy-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/alerting/v3/policies/{policy_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete notification policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-policy-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.policy-test
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/policies/{policy_id}/test" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Send a test notification for policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-policy-test.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.policy-unsubscribe
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/policies/{policy_id}/email/unsubscribe" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Unsubscribe an email from notification policy {policy_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-policy-unsubscribe.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.silences-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/alerting/v3/silences" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Silence notifications in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-silences-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.silences-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/alerting/v3/silences" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change notification silences in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-silences-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.notification.silence-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/alerting/v3/silences/{silence_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete notification silence {silence_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/notification-silence-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

@@ -1,0 +1,22 @@
+provider: cloudflare-mcp
+title: Cloudflare MCP
+docs: https://developers.cloudflare.com/agents/model-context-protocol/mcp-servers-for-cloudflare/
+# mcp.cloudflare.com is the code-mode API server (github.com/cloudflare/mcp);
+# each server of github.com/cloudflare/mcp-server-cloudflare has its own
+# subdomain (bindings., builds., observability., radar., ...), plus -staging.
+hosts: [mcp.cloudflare.com, "*.mcp.cloudflare.com"]
+auth:
+  - header: Authorization
+    scheme: Bearer                 # OAuth access token, or a Cloudflare API token
+mcp:
+  # The READMEs name cloudflare-api, cloudflare-blog, cloudflare-casb and
+  # cloudflare-stack; the other names follow the same pattern.
+  names: [cloudflare, cloudflare-api, cloudflare-bindings, cloudflare-builds, cloudflare-observability,
+          cloudflare-docs, cloudflare-radar, cloudflare-browser, cloudflare-containers, cloudflare-dns-analytics,
+          cloudflare-graphql, cloudflare-logpush, cloudflare-ai-gateway, cloudflare-autorag, cloudflare-auditlogs,
+          cloudflare-casb, cloudflare-dex, cloudflare-blog, cloudflare-stack]
+# The tokens these servers take are the same Cloudflare API tokens the
+# cloudflare provider detects, so this provider claims no environment variables.
+# With ?codemode=false, mcp.cloudflare.com registers one tool per API endpoint,
+# generated at runtime from the OpenAPI spec; those tools have no rule here and
+# are unknown.

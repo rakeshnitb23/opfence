@@ -1,0 +1,151 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): ai-search
+operations:
+  - id: cloudflare.ai-search.autorag-search
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/autorag/rags/{id}/search" } }
+    class: read
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Search AutoRAG instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-autorag-search.http
+        expect: read
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.autorag-ai-search
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/autorag/rags/{id}/ai-search" } }
+    class: read
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Ask AutoRAG instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-autorag-ai-search.http
+        expect: read
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.autorag-sync
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/autorag/rags/{id}/sync" } }
+    class: write
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Re-index AutoRAG instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-autorag-sync.http
+        expect: write
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.token-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-search/tokens" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Store an API token for AI Search in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores a Cloudflare API token that AI Search uses to read its sources.
+    tests:
+      - fixture: fixtures/ai-search-token-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-search.token-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/ai-search/tokens/{id}" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change stored AI Search token {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-token-update.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-search.token-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-search/tokens/{id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete stored AI Search token {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a stored secret is irreversible.
+    tests:
+      - fixture: fixtures/ai-search-token-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.ai-search.instance-search
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-search/namespaces/{namespace}/instances/{id}/search" } }
+    class: read
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Search AI Search instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-instance-search.http
+        expect: read
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.instance-chat
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/ai-search/namespaces/{namespace}/instances/{id}/chat/completions" } }
+    class: read
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Ask AI Search instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ai-search-instance-chat.http
+        expect: read
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.instance-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-search/namespaces/{namespace}/instances/{id}" } }
+    class: delete
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Delete AI Search instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The index is built from its data source and can be rebuilt; the source
+      data is untouched.
+    tests:
+      - fixture: fixtures/ai-search-instance-delete.http
+        expect: delete
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"
+
+  - id: cloudflare.ai-search.item-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/ai-search/namespaces/{namespace}/instances/{id}/items/{item_id}" } }
+    class: irreversible
+    resource: { arg: id, kind: ai-search-instance }
+    card: "Delete item {item_id} from AI Search instance {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Items uploaded straight to the instance have no other source to rebuild
+      from.
+    tests:
+      - fixture: fixtures/ai-search-item-delete.http
+        expect: irreversible
+        resource: "a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d"

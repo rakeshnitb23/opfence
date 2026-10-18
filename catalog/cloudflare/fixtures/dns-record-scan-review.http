@@ -1,0 +1,7 @@
+# description: Accept or reject scanned DNS records in zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/dns_records/scan/review HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"accepts":[{"type":"A","name":"mail.shop-example.com","content":"198.51.100.9"}],"rejects":[]}

@@ -1,0 +1,8 @@
+# description: Radar: Get email security data
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":89,"method":"tools/call","params":{"name":"get_email_security_data","arguments":{"dateRange":"7d"}}}

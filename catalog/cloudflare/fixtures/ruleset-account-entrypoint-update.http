@@ -1,0 +1,7 @@
+# description: Replace the http_request_firewall_custom entry point ruleset of account 023e105f4ecef8ad9ca31a8372d0c353
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/rulesets/phases/http_request_firewall_custom/entrypoint HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"rules":[{"action":"block","expression":"ip.src in {192.0.2.0/24}","description":"Block abusive range"}]}

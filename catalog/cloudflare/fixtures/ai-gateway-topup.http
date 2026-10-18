@@ -1,0 +1,7 @@
+# description: Buy AI Gateway credits for account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/billing/topup HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"amount":5000,"payment_method_id":"pm_123"}

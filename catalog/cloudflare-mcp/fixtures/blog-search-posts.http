@@ -1,0 +1,8 @@
+# description: Search the Cloudflare blog for Durable Objects SQLite
+POST /mcp HTTP/1.1
+Host: blog.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":175,"method":"tools/call","params":{"name":"search_posts","arguments":{"query":"Durable Objects SQLite"}}}

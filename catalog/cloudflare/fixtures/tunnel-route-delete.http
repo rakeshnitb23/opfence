@@ -1,0 +1,6 @@
+# description: Delete tunnel route 023e105f4ecef8ad9ca31a8372d0c354
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/teamnet/routes/023e105f4ecef8ad9ca31a8372d0c354 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

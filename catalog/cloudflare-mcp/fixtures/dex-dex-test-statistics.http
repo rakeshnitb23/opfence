@@ -1,0 +1,8 @@
+# description: Show statistics of DEX test 4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":144,"method":"tools/call","params":{"name":"dex_test_statistics","arguments":{"testId":"4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8","from":"2026-10-17T00:00:00Z","to":"2026-10-18T00:00:00Z"}}}

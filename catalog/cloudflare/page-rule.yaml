@@ -1,0 +1,90 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): page-rule
+operations:
+  - id: cloudflare.page-rule.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/pagerules" } }
+    class: write
+    when:
+      - if: { arg: body.actions.id, in: [always_use_https, automatic_https_rewrites, browser_check, disable_security, email_obfuscation, opportunistic_encryption, security_level, ssl, waf, server_side_exclude] }
+        class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a page rule in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Caching and forwarding actions are writes. Actions that turn down SSL,
+      HTTPS rewrites, the WAF, browser checks or the security level (or disable
+      security outright) for matching URLs are access.
+    tests:
+      - fixture: fixtures/page-rule-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/page-rule-create-ssl-off.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.page-rule.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/pagerules/{pagerule_id}" } }
+    class: write
+    when:
+      - if: { arg: body.actions.id, in: [always_use_https, automatic_https_rewrites, browser_check, disable_security, email_obfuscation, opportunistic_encryption, security_level, ssl, waf, server_side_exclude] }
+        class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace page rule {pagerule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Caching and forwarding actions are writes. Actions that turn down SSL,
+      HTTPS rewrites, the WAF, browser checks or the security level (or disable
+      security outright) for matching URLs are access.
+    tests:
+      - fixture: fixtures/page-rule-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/page-rule-update-disable-security.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.page-rule.edit
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/pagerules/{pagerule_id}" } }
+    class: write
+    when:
+      - if: { arg: body.actions.id, in: [always_use_https, automatic_https_rewrites, browser_check, disable_security, email_obfuscation, opportunistic_encryption, security_level, ssl, waf, server_side_exclude] }
+        class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change page rule {pagerule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Caching and forwarding actions are writes. Actions that turn down SSL,
+      HTTPS rewrites, the WAF, browser checks or the security level (or disable
+      security outright) for matching URLs are access.
+    tests:
+      - fixture: fixtures/page-rule-edit.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/page-rule-edit-waf-off.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.page-rule.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/pagerules/{pagerule_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete page rule {pagerule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A page rule is a URL pattern and a few actions that can be recreated; the
+      audit log keeps its values.
+    tests:
+      - fixture: fixtures/page-rule-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

@@ -1,0 +1,295 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): image
+operations:
+  - id: cloudflare.image.upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v1" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Upload an image to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-upload.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/images/v1/{image_id}" } }
+    class: write
+    when:
+      - if: { arg: body.requireSignedURLs, equals: "false" }
+        class: access
+    resource: { arg: image_id, kind: image }
+    card: "Change image {image_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Setting requireSignedURLs to false makes a private image public.
+    tests:
+      - fixture: fixtures/image-update.http
+        expect: write
+        resource: "083eb7b2-5392-4565-b69e-aff66acddd00"
+      - fixture: fixtures/image-update-public.http
+        expect: access
+        resource: "083eb7b2-5392-4565-b69e-aff66acddd00"
+
+  - id: cloudflare.image.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/images/v1/{image_id}" } }
+    class: irreversible
+    resource: { arg: image_id, kind: image }
+    card: "Delete image {image_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare Images keeps no copy of a deleted image.
+    tests:
+      - fixture: fixtures/image-delete.http
+        expect: irreversible
+        resource: "083eb7b2-5392-4565-b69e-aff66acddd00"
+
+  - id: cloudflare.image.direct-upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v2/direct_upload" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a direct upload URL in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-direct-upload.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.direct-upload-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v1/direct_upload" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a direct upload URL in account {account_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-direct-upload-v1.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.signing-key-create
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/images/v1/keys/{signing_key_name}" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create image signing key {signing_key_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns the key used to sign image URLs.
+    tests:
+      - fixture: fixtures/image-signing-key-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.signing-key-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/images/v1/keys/{signing_key_name}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete image signing key {signing_key_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a secret is irreversible; URLs signed with it stop working.
+    tests:
+      - fixture: fixtures/image-signing-key-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.signing-keys-list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/images/v1/keys" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "List image signing keys of account {account_id} with their values"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes each key's value.
+    tests:
+      - fixture: fixtures/image-signing-keys-list.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.variant-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v1/variants" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create image variant {body.id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-variant-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.variant-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/images/v1/variants/{variant_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change image variant {variant_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-variant-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.variant-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/images/v1/variants/{variant_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete image variant {variant_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A variant is a resize preset; images are untouched.
+    tests:
+      - fixture: fixtures/image-variant-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.sourcing-source-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/sources" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Add an S3 import source {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores access keys for the source bucket.
+    tests:
+      - fixture: fixtures/image-sourcing-source-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.sourcing-source-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/sources/{source_id}" } }
+    class: write
+    when:
+      - if: { arg: body.secret, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change import source {source_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-sourcing-source-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/image-sourcing-source-update-secret.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.sourcing-source-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/sources/{source_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete import source {source_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the stored source credentials.
+    tests:
+      - fixture: fixtures/image-sourcing-source-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.sourcing-precheck
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/sources/connectivity-precheck" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check connectivity to an import source"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-sourcing-precheck.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.migration-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/migrations" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create an image migration in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-migration-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.migration-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/migrations/{migration_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete image migration {migration_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-migration-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.migration-start
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/migrations/{migration_id}/lifecycle/start" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Start image migration {migration_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-migration-start.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.image.migration-abort
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/images/v2/sourcingkit/migrations/{migration_id}/lifecycle/abort" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Abort image migration {migration_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/image-migration-abort.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

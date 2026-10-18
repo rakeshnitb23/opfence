@@ -1,0 +1,6 @@
+# description: Read Access application f174e90a-fafe-4643-bbbc-4a0ed4fc8415 with its provisioning credentials
+GET /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/access/apps/f174e90a-fafe-4643-bbbc-4a0ed4fc8415 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

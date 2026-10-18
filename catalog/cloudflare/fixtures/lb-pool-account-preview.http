@@ -1,0 +1,7 @@
+# description: Preview health of pool 17b5962d775c646f3f9725cbc7a53df4
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/load_balancers/pools/17b5962d775c646f3f9725cbc7a53df4/preview HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"type":"https","path":"/healthz"}

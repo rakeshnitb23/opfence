@@ -1,0 +1,241 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): worker-v2
+operations:
+  - id: cloudflare.worker-v2.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/workers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Worker {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-v2.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}" } }
+    class: write
+    resource: { arg: worker_id, kind: worker }
+    card: "Replace Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-update.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.edit
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}" } }
+    class: write
+    resource: { arg: worker_id, kind: worker }
+    card: "Change Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-edit.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}" } }
+    class: irreversible
+    resource: { arg: worker_id, kind: worker }
+    card: "Delete Worker {worker_id} with its versions and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Same as deleting a script: its secrets and version history go with it.
+    tests:
+      - fixture: fixtures/worker-v2-delete.http
+        expect: irreversible
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.version-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/versions" } }
+    class: write
+    when:
+      - if: { arg: body.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+    resource: { arg: worker_id, kind: worker }
+    card: "Create a version of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A version's bindings can include secret_text values.
+    tests:
+      - fixture: fixtures/worker-v2-version-create.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+      - fixture: fixtures/worker-v2-version-create-secret.http
+        expect: credential
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.version-latest
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/versions/latest" } }
+    class: write
+    when:
+      - if: { arg: body.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+    resource: { arg: worker_id, kind: worker }
+    card: "Change the latest version of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-version-latest.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+      - fixture: fixtures/worker-v2-version-latest-secret.http
+        expect: credential
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.version-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/versions/{version_id}" } }
+    class: delete
+    resource: { arg: worker_id, kind: worker }
+    card: "Delete version {version_id} of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A version is code that can be uploaded again.
+    tests:
+      - fixture: fixtures/worker-v2-version-delete.http
+        expect: delete
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.version-profile
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/versions/{version_id}/profile" } }
+    class: read
+    resource: { arg: worker_id, kind: worker }
+    card: "Capture a CPU or heap profile of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-version-profile.http
+        expect: read
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews" } }
+    class: write
+    resource: { arg: worker_id, kind: worker }
+    card: "Create a preview of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-create.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}" } }
+    class: write
+    resource: { arg: worker_id, kind: worker }
+    card: "Replace preview {preview_id} of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-update.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-edit
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}" } }
+    class: write
+    resource: { arg: worker_id, kind: worker }
+    card: "Change preview {preview_id} of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-edit.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}" } }
+    class: delete
+    resource: { arg: worker_id, kind: worker }
+    card: "Delete preview {preview_id} of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-delete.http
+        expect: delete
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-deployment-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}/deployments" } }
+    class: write
+    when:
+      - if: { arg: body.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+    resource: { arg: worker_id, kind: worker }
+    card: "Deploy preview {preview_id} of Worker {worker_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-deployment-create.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+      - fixture: fixtures/worker-v2-preview-deployment-create-secret.http
+        expect: credential
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-deployment-latest
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}/deployments/latest" } }
+    class: write
+    when:
+      - if: { arg: body.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+    resource: { arg: worker_id, kind: worker }
+    card: "Change the latest deployment of preview {preview_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-deployment-latest.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+      - fixture: fixtures/worker-v2-preview-deployment-latest-secret.http
+        expect: credential
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"
+
+  - id: cloudflare.worker-v2.preview-deployment-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/workers/{worker_id}/previews/{preview_id}/deployments/{deployment_id}" } }
+    class: delete
+    resource: { arg: worker_id, kind: worker }
+    card: "Delete deployment {deployment_id} of preview {preview_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-v2-preview-deployment-delete.http
+        expect: delete
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f8"

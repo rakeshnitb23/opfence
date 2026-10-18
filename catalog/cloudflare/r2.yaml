@@ -1,0 +1,17 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): r2
+operations:
+  - id: cloudflare.r2.temp-credentials
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2/temp-access-credentials" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create temporary R2 access credentials in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns an access key ID, secret access key and session token.
+    tests:
+      - fixture: fixtures/r2-temp-credentials.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

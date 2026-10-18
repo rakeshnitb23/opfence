@@ -1,0 +1,5 @@
+# description: Delete custom AI provider a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/custom-providers/a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

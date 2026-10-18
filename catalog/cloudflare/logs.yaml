@@ -1,0 +1,43 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): logs
+operations:
+  - id: cloudflare.logs.retention-flag
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logs/control/retention/flag" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change log retention for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logs-retention-flag.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logs.cmb-config-update
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logs/control/cmb/config" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change the log storage region of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logs-cmb-config-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logs.cmb-config-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/logs/control/cmb/config" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Remove the log storage region setting of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logs-cmb-config-delete.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

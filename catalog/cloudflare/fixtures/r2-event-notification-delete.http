@@ -1,0 +1,7 @@
+# description: Delete event notification rules of R2 bucket shop-assets
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/event_notifications/r2/shop-assets/configuration/queues/3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

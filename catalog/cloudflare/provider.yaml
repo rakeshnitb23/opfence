@@ -1,0 +1,19 @@
+provider: cloudflare
+title: Cloudflare
+docs: https://developers.cloudflare.com/api/
+hosts: [api.cloudflare.com]
+graphql: [/client/v4/graphql]      # the GraphQL Analytics API: queries only, no mutations
+auth:
+  - header: Authorization
+    scheme: Bearer                 # API tokens
+  - header: X-Auth-Key             # legacy Global API Key, sent with X-Auth-Email (not a secret)
+  - header: X-Auth-User-Service-Key # legacy Origin CA key
+detect:
+  # The cloudflare SDK reads the first three; wrangler still accepts the
+  # deprecated CF_API_TOKEN and CF_API_KEY. Cloudflare documents no token prefix.
+  env: [CLOUDFLARE_API_TOKEN, CLOUDFLARE_API_KEY, CLOUDFLARE_API_USER_SERVICE_KEY, CF_API_TOKEN, CF_API_KEY]
+defaults:
+  graphql_query: read
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Every path is written with the /client/v4 prefix, exactly as the schema's
+# server URL gives it. Non-GET operations without a rule here are unknown.

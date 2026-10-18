@@ -1,0 +1,7 @@
+# description: Change load balancer 699d98642c564d2e855e9661899b7252
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/load_balancers/699d98642c564d2e855e9661899b7252 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true}

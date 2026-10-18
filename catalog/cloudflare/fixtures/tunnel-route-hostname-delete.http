@@ -1,0 +1,6 @@
+# description: Delete hostname route f70ff985-a4ef-4643-bbbc-4a0ed4fc8419
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/zerotrust/routes/hostname/f70ff985-a4ef-4643-bbbc-4a0ed4fc8419 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

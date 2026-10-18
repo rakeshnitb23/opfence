@@ -1,0 +1,7 @@
+# description: Create Gateway list Allowed domains
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/gateway/lists HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Allowed domains","type":"DOMAIN","items":[{"value":"shop-example.com"}]}

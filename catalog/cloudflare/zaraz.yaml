@@ -1,0 +1,57 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): zaraz
+operations:
+  - id: cloudflare.zaraz.config-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/settings/zaraz/config" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace the Zaraz configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zaraz-config-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zaraz.history-restore
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/settings/zaraz/history" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Restore an earlier Zaraz configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zaraz-history-restore.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zaraz.publish
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/settings/zaraz/publish" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Publish the Zaraz preview configuration of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zaraz-publish.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zaraz.workflow-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/settings/zaraz/workflow" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the Zaraz workflow of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zaraz-workflow-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

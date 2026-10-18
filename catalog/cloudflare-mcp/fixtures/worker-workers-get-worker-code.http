@@ -1,0 +1,8 @@
+# description: Read the source code of Worker shop-api
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":11,"method":"tools/call","params":{"name":"workers_get_worker_code","arguments":{"scriptName":"shop-api"}}}

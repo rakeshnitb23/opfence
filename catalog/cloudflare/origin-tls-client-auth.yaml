@@ -1,0 +1,153 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): origin-tls-client-auth
+operations:
+  - id: cloudflare.origin-tls-client-auth.upload
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Upload an authenticated origin pull certificate and key to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-upload.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/{certificate_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete authenticated origin pull certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.hostnames
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/hostnames" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Turn authenticated origin pulls on or off for hostnames in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-hostnames.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.hostname-certificate-upload
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/hostnames/certificates" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Upload a per-hostname origin pull certificate and key to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-hostname-certificate-upload.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.hostname-certificate-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/hostnames/certificates/{certificate_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete per-hostname origin pull certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-hostname-certificate-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/settings" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Turn authenticated origin pulls on or off for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-settings.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.list
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "List authenticated origin pull certificates of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists private_key in the response; Opfence cannot see whether
+      Cloudflare redacts it, so it assumes the key is returned.
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-list.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.read
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/{certificate_id}" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Read authenticated origin pull certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists private_key in the response; Opfence assumes the key is
+      returned.
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-read.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.hostnames-list
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/hostnames" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "List per-hostname authenticated origin pull settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns certificate ids and status, no keys. Listed so the credential rule
+      for GET /origin_tls_client_auth/{certificate_id} does not catch it.
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-hostnames-list.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.origin-tls-client-auth.settings-read
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/origin_tls_client_auth/settings" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Read the authenticated origin pull setting of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns only the enabled flag. Listed so the credential rule for GET
+      /origin_tls_client_auth/{certificate_id} does not catch it.
+    tests:
+      - fixture: fixtures/origin-tls-client-auth-settings-read.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

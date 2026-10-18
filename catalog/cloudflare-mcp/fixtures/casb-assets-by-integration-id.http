@@ -1,0 +1,8 @@
+# description: List assets of CASB integration 6b5a4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d
+POST /mcp HTTP/1.1
+Host: casb.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":166,"method":"tools/call","params":{"name":"assets_by_integration_id","arguments":{"integrationIdParam":"6b5a4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d"}}}

@@ -1,0 +1,141 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): dns-record
+operations:
+  - id: cloudflare.dns-record.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Add DNS record {body.name} to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/dns_records/{dns_record_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change DNS record {dns_record_id} in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.overwrite
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/dns_records/{dns_record_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Overwrite DNS record {dns_record_id} in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-overwrite.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/dns_records/{dns_record_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete DNS record {dns_record_id} from zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has no undelete for a record, but a record is a few fields that
+      can be recreated: the zone's audit log keeps the deleted values. Classed
+      delete, like DNS record deletion elsewhere in the catalog; deleting the
+      whole zone is irreversible.
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.batch
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records/batch" } }
+    class: write
+    when:
+      - if: { arg: body.deletes, present: true }
+        class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Apply a batch of DNS record changes to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Posts, patches and puts are writes; a batch with deletes takes the class
+      of a record delete.
+    tests:
+      - fixture: fixtures/dns-record-batch.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/dns-record-batch-deletes.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.import
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records/import" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Import a BIND zone file into zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-import.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.scan
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records/scan" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Scan for DNS records to add to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-scan.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.scan-trigger
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records/scan/trigger" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Start a DNS record scan for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-scan-trigger.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.dns-record.scan-review
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/dns_records/scan/review" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Accept or reject scanned DNS records in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dns-record-scan-review.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

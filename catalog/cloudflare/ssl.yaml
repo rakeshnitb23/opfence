@@ -1,0 +1,195 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): ssl
+operations:
+  - id: cloudflare.ssl.analyze
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/ssl/analyze" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Analyze a certificate for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Only inspects the submitted certificate.
+    tests:
+      - fixture: fixtures/ssl-analyze.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.certificate-pack-order
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/ssl/certificate_packs/order" } }
+    class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Order an Advanced Certificate Manager certificate pack for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced certificate packs are a paid Advanced Certificate Manager
+      feature.
+    tests:
+      - fixture: fixtures/ssl-certificate-pack-order.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.certificate-pack-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/ssl/certificate_packs/{certificate_pack_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Restart validation of certificate pack {certificate_pack_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-certificate-pack-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.certificate-pack-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/ssl/certificate_packs/{certificate_pack_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete certificate pack {certificate_pack_id} of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Certificates can be ordered again; holds no data.
+    tests:
+      - fixture: fixtures/ssl-certificate-pack-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.universal-settings
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/ssl/universal/settings" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Universal SSL for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Turning Universal SSL off removes the edge certificate, so HTTPS stops
+      working for the zone.
+    tests:
+      - fixture: fixtures/ssl-universal-settings.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.verification-method
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/ssl/verification/{certificate_pack_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the validation method of certificate pack {certificate_pack_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-verification-method.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.total-tls
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/acm/total_tls" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Total TLS for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-total-tls.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.trust-store-upload
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/acm/custom_trust_store" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Upload a custom origin trust store to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Decides which origin certificates Cloudflare trusts.
+    tests:
+      - fixture: fixtures/ssl-trust-store-upload.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.trust-store-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/acm/custom_trust_store/{custom_origin_trust_store_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete custom origin trust store {custom_origin_trust_store_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-trust-store-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.ca-hostname-associations
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/certificate_authorities/hostname_associations" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace the mTLS hostname associations of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-ca-hostname-associations.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.hostname-tls-setting
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/hostnames/settings/{setting_id}/{hostname}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change TLS setting {setting_id} for hostname {hostname}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-hostname-tls-setting.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.hostname-tls-setting-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/hostnames/settings/{setting_id}/{hostname}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove TLS setting {setting_id} for hostname {hostname}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-hostname-tls-setting-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.ssl.ct-alerting
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/ct/alerting" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Certificate Transparency alerting for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/ssl-ct-alerting.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

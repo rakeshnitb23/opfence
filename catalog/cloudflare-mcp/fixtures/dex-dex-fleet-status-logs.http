@@ -1,0 +1,8 @@
+# description: Read WARP fleet status logs
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":154,"method":"tools/call","params":{"name":"dex_fleet_status_logs","arguments":{"from":"2026-10-17T00:00:00Z","to":"2026-10-18T00:00:00Z","page":1,"source":"last_seen"}}}

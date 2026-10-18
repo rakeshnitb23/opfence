@@ -1,0 +1,7 @@
+# description: Rename Cloudflare Tunnel f70ff985-a4ef-4643-bbbc-4a0ed4fc8415
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/cfd_tunnel/f70ff985-a4ef-4643-bbbc-4a0ed4fc8415 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"office-tunnel-2"}

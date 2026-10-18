@@ -1,0 +1,205 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-user
+operations:
+  - id: cloudflare.access-user.population-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/user_populations" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a user population in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change user population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete user population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-user-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}/users" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add a user to population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-user-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-user-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}/users/{user_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change user {user_id} in population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-user-patch.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-user-replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}/users/{user_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Replace user {user_id} in population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-user-replace.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.population-user-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/user_populations/{user_population_id}/users/{user_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Remove user {user_id} from population {user_population_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-population-user-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/users" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Zero Trust user {body.email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/users/{user_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Zero Trust user {user_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/users/{user_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Zero Trust user {user_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.mfa-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/users/{user_id}/mfa_authenticators/{authenticator_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete an MFA authenticator of user {user_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-mfa-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-user.passkey-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/users/{user_id}/passkeys/{authenticator_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete a passkey of user {user_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-user-passkey-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

@@ -1,0 +1,321 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): worker-build
+operations:
+  - id: cloudflare.worker-build.token-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/tokens" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Store build token {body.build_token_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores an API token value that builds use to deploy.
+    tests:
+      - fixture: fixtures/worker-build-token-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.token-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/tokens/{build_token_uuid}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete build token {build_token_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a stored secret is irreversible.
+    tests:
+      - fixture: fixtures/worker-build-token-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.trigger-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/triggers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a build trigger in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-trigger-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.trigger-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change build trigger {trigger_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-trigger-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.trigger-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete build trigger {trigger_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-trigger-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.build-start
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}/builds" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Start a build of trigger {trigger_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-build-start.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.variables-set
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}/environment_variables" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Set build variables of trigger {trigger_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The body is a map of variable names; Opfence cannot tell from a name
+      whether is_secret is set, so this stays a write. A reviewer may prefer
+      credential, since a variable can be marked secret.
+    tests:
+      - fixture: fixtures/worker-build-variables-set.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.variable-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}/environment_variables/{environment_variable_key}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete build variable {environment_variable_key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      No API keeps a deleted variable's value.
+    tests:
+      - fixture: fixtures/worker-build-variable-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.cache-purge
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/triggers/{trigger_uuid}/purge_build_cache" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Purge the build cache of trigger {trigger_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-cache-purge.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.build-cancel
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/builds/builds/{build_uuid}/cancel" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Cancel build {build_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-build-cancel.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.repo-connection
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/builds/repos/connections" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Connect a repository to Workers Builds in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-repo-connection.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.repo-connection-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/repos/connections/{repo_connection_uuid}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete repository connection {repo_connection_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-repo-connection-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.config-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/workers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a Worker build configuration in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-config-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-build.config-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/builds/workers/{script_tag}" } }
+    class: write
+    resource: { arg: script_tag, kind: worker }
+    card: "Change the build configuration of Worker {script_tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-config-update.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f9"
+
+  - id: cloudflare.worker-build.config-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/workers/{script_tag}" } }
+    class: delete
+    resource: { arg: script_tag, kind: worker }
+    card: "Delete the build configuration of Worker {script_tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-config-delete.http
+        expect: delete
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f9"
+
+  - id: cloudflare.worker-build.migrate-to-previews
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/workers/{script_tag}/migrate_to_previews" } }
+    class: write
+    resource: { arg: script_tag, kind: worker }
+    card: "Move Worker {script_tag} to preview builds"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-migrate-to-previews.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f9"
+
+  - id: cloudflare.worker-build.preview-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/builds/workers/{script_tag}/previews/{preview_id}" } }
+    class: write
+    resource: { arg: script_tag, kind: worker }
+    card: "Change build preview {preview_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-preview-update.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f9"
+
+  - id: cloudflare.worker-build.preview-build
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/workers/{script_tag}/previews/{preview_id}/builds" } }
+    class: write
+    resource: { arg: script_tag, kind: worker }
+    card: "Build preview {preview_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-preview-build.http
+        expect: write
+        resource: "e1a2b3c4d5e64f708192a3b4c5d6e7f9"
+
+  - id: cloudflare.worker-build.deploy-hook-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/builds/workers/{script_name}/deploy_hooks" } }
+    class: credential
+    resource: { arg: script_name, kind: worker }
+    card: "Create a deploy hook for Worker {script_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response is a secret URL that anyone can call to trigger a deploy.
+    tests:
+      - fixture: fixtures/worker-build-deploy-hook-create.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: cloudflare.worker-build.deploy-hook-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/builds/workers/{script_name}/deploy_hooks/{deploy_hook_uuid}" } }
+    class: write
+    resource: { arg: script_name, kind: worker }
+    card: "Change deploy hook {deploy_hook_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-deploy-hook-update.http
+        expect: write
+        resource: "shop-api"
+
+  - id: cloudflare.worker-build.deploy-hook-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/builds/workers/{script_name}/deploy_hooks/{deploy_hook_uuid}" } }
+    class: access
+    resource: { arg: script_name, kind: worker }
+    card: "Delete deploy hook {deploy_hook_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Revokes the hook URL.
+    tests:
+      - fixture: fixtures/worker-build-deploy-hook-delete.http
+        expect: access
+        resource: "shop-api"
+
+  - id: cloudflare.worker-build.deploy-hook-trigger
+    match: { rest: { method: POST, path: "/client/v4/workers/builds/deploy_hooks/{deploy_hook_uuid}" } }
+    class: write
+    card: "Trigger deploy hook {deploy_hook_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-build-deploy-hook-trigger.http
+        expect: write

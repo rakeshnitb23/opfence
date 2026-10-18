@@ -1,0 +1,8 @@
+# description: Analyse WARP diagnostic c0ffee00-1234-4abc-8def-0123456789ab
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":159,"method":"tools/call","params":{"name":"dex_analyze_warp_diag","arguments":{"command_id":"c0ffee00-1234-4abc-8def-0123456789ab"}}}

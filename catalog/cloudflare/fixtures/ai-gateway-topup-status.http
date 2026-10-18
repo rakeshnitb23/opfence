@@ -1,0 +1,7 @@
+# description: Check an AI Gateway top-up in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/billing/topup/status HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"payment_intent_id":"in_1abc"}

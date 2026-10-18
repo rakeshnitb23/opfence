@@ -1,0 +1,240 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): browser-rendering
+operations:
+  - id: cloudflare.browser-rendering.content
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/content" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch HTML of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-content.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.markdown
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/markdown" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch Markdown of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-markdown.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.pdf
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/pdf" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch a PDF of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-pdf.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.screenshot
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/screenshot" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch a screenshot of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-screenshot.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.snapshot
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/snapshot" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch HTML and a screenshot of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-snapshot.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.json
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/json" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch structured data from {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-json.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.links
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/links" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch the links on {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-links.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.scrape
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/scrape" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch elements of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-scrape.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.accessibilitytree
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/accessibilityTree" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Fetch the accessibility tree of {body.url} with Browser Rendering"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Loads a public page in a headless browser and returns what it rendered;
+      changes nothing in the account.
+    tests:
+      - fixture: fixtures/browser-rendering-accessibilitytree.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.crawl
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/crawl" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Start a crawl of {body.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/browser-rendering-crawl.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.crawl-cancel
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/browser-rendering/crawl/{job_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Cancel crawl job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/browser-rendering-crawl-cancel.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.session-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/devtools/browser" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Start a remote browser session in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/browser-rendering-session-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.session-close
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/browser-rendering/devtools/browser/{session_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Close browser session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/browser-rendering-session-close.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.session-tab
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/browser-rendering/devtools/browser/{session_id}/json/new" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Open a tab in browser session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/browser-rendering-session-tab.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.browser-rendering.session-live-view
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/browser-rendering/devtools/browser/{session_id}/live_view" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create live view URLs for browser session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The URLs let whoever holds them watch and control the session.
+    tests:
+      - fixture: fixtures/browser-rendering-session-live-view.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

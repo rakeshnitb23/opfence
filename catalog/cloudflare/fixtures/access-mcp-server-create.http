@@ -1,0 +1,7 @@
+# description: Add MCP server My MCP Server to Access
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/ai-controls/mcp/servers HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"auth_credentials":"opf_cloudflare_EXAMPLE","auth_type":"unauthenticated","description":"This is one remote MCP server","hostname":"https://example.com/mcp","id":"my-mcp-server","name":"My MCP Server"}

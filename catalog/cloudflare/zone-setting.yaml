@@ -1,0 +1,87 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): zone-setting
+operations:
+  - id: cloudflare.zone-setting.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/settings/{setting_id}" } }
+    class: write
+    when:
+      - if: { arg: setting_id, in: [ssl, min_tls_version, tls_1_3, tls_1_2_only, ciphers, always_use_https, automatic_https_rewrites, opportunistic_encryption, security_header, security_level, waf, browser_check, challenge_ttl, hotlink_protection, privacy_pass, server_side_exclude, email_obfuscation, tls_client_auth, ssl_recommender, ssl_automatic_mode, 0rtt, ech, origin_tls_compliance_modes, auto_origin_tls_kex, advanced_ddos] }
+        class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change setting {setting_id} of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Most settings (caching, performance, compression) are writes. Settings
+      that decide TLS, HTTPS redirects, the WAF, bot and challenge behaviour are
+      access: turning one down exposes the site.
+    tests:
+      - fixture: fixtures/zone-setting-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/zone-setting-update-ssl.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/zone-setting-update-security-level.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-setting.update-many
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/settings" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change several settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deprecated bulk edit. The list can carry any setting, including ssl and
+      security_level, so it takes the class of the most sensitive one.
+    tests:
+      - fixture: fixtures/zone-setting-update-many.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-setting.origin-tls-compliance-replace
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/settings/origin_tls_compliance_modes" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace the origin TLS compliance modes of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-setting-origin-tls-compliance-replace.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-setting.origin-tls-compliance-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/settings/origin_tls_compliance_modes" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the origin TLS compliance modes of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-setting-origin-tls-compliance-delete.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone-setting.google-tag-gateway
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/settings/google-tag-gateway/config" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the Google tag gateway of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-setting-google-tag-gateway.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

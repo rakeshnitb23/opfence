@@ -1,0 +1,7 @@
+# description: Change user group 6d7f2f5f5b1d4a0e9081fdc98d432fd2
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/iam/user_groups/6d7f2f5f5b1d4a0e9081fdc98d432fd2 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"My New User Group"}

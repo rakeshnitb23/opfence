@@ -1,0 +1,8 @@
+# description: List Logpush jobs of account 023e105f4ecef8ad9ca31a8372d0c353
+POST /mcp HTTP/1.1
+Host: logs.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":39,"method":"tools/call","params":{"name":"logpush_jobs_by_account_id","arguments":{"account_id":"023e105f4ecef8ad9ca31a8372d0c353"}}}

@@ -1,0 +1,8 @@
+# description: Delete D1 database f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":26,"method":"tools/call","params":{"name":"d1_database_delete","arguments":{"database_id":"f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"}}}

@@ -1,0 +1,8 @@
+# description: Fetch https://shop-example.com/pricing as Markdown
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":58,"method":"tools/call","params":{"name":"get_url_markdown","arguments":{"url":"https://shop-example.com/pricing"}}}

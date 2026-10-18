@@ -1,0 +1,17 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-seat
+operations:
+  - id: cloudflare.access-seat.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/access/seats" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Zero Trust seats in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing a seat removes the user's access.
+    tests:
+      - fixture: fixtures/access-seat-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

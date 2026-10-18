@@ -1,0 +1,7 @@
+# description: Change firewall rule 2536bcfad5faccb111b47003c79917fa (deprecated API)
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/firewall/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"action":"block","filter":{"id":"372e67954025e0ba6aaa6d586b9e0b5c"}}

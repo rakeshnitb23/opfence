@@ -1,0 +1,8 @@
+# description: Delete KV namespace 0f2ac74b498b48028cb68387c421e279 and every key in it
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":18,"method":"tools/call","params":{"name":"kv_namespace_delete","arguments":{"namespace_id":"0f2ac74b498b48028cb68387c421e279"}}}

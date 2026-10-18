@@ -1,0 +1,81 @@
+# Cloudflare MCP servers: url-scanner
+operations:
+  - id: cloudflare-mcp.url-scanner.search-url-scans
+    match: { mcp: { tool: search_url_scans } }
+    class: read
+    card: "Search URL scans for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/url-scanner.tools.ts
+    tests:
+      - fixture: fixtures/url-scanner-search-url-scans.http
+        expect: read
+
+  - id: cloudflare-mcp.url-scanner.create-url-scan
+    match: { mcp: { tool: create_url_scan } }
+    class: write
+    when:
+      - if: { arg: visibility, absent: true }
+        class: access
+      - if: { arg: visibility, equals: "Public" }
+        class: access
+    resource: { arg: url, kind: url }
+    card: "Scan {url} with the URL Scanner ({visibility})"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/url-scanner.tools.ts
+    notes: >-
+      Visibility defaults to Public: a public scan publishes the URL, a
+      screenshot and the page contents in Radar search, which exposes internal
+      or tokenised URLs to the internet (access). An Unlisted scan is a write.
+    tests:
+      - fixture: fixtures/url-scanner-create-url-scan.http
+        expect: write
+        resource: "https://shop-example.com/checkout"
+      - fixture: fixtures/url-scanner-create-url-scan-public.http
+        expect: access
+        resource: "https://shop-example.com/checkout"
+
+  - id: cloudflare-mcp.url-scanner.get-url-scan
+    match: { mcp: { tool: get_url_scan } }
+    class: read
+    resource: { arg: scanId, kind: url-scan }
+    card: "Show URL scan {scanId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/url-scanner.tools.ts
+    tests:
+      - fixture: fixtures/url-scanner-get-url-scan.http
+        expect: read
+        resource: "0a9b8c7d-6e5f-4a3b-2c1d-0e9f8a7b6c5d"
+
+  - id: cloudflare-mcp.url-scanner.get-url-scan-screenshot
+    match: { mcp: { tool: get_url_scan_screenshot } }
+    class: read
+    resource: { arg: scanId, kind: url-scan }
+    card: "Show the screenshot of URL scan {scanId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/url-scanner.tools.ts
+    tests:
+      - fixture: fixtures/url-scanner-get-url-scan-screenshot.http
+        expect: read
+        resource: "0a9b8c7d-6e5f-4a3b-2c1d-0e9f8a7b6c5d"
+
+  - id: cloudflare-mcp.url-scanner.get-url-scan-har
+    match: { mcp: { tool: get_url_scan_har } }
+    class: read
+    resource: { arg: scanId, kind: url-scan }
+    card: "Download the HAR of URL scan {scanId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/url-scanner.tools.ts
+    tests:
+      - fixture: fixtures/url-scanner-get-url-scan-har.http
+        expect: read
+        resource: "0a9b8c7d-6e5f-4a3b-2c1d-0e9f8a7b6c5d"

@@ -1,0 +1,8 @@
+# description: Run SQL on D1 database f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/d1/database/f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11/query HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"sql":"SELECT * FROM orders WHERE id = ?1","params":["1042"]}

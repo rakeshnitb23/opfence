@@ -1,0 +1,7 @@
+# description: Change organization a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1
+PUT /client/v4/organizations/a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"example"}

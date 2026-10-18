@@ -1,0 +1,7 @@
+# description: Create waiting room checkout_queue
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/waiting_rooms HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"checkout_queue","host":"shop-example.com","path":"/checkout","new_users_per_minute":200,"total_active_users":1000}

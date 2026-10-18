@@ -1,0 +1,125 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): log-explorer
+operations:
+  - id: cloudflare.log-explorer.account-dataset-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logs/explorer/datasets" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a Log Explorer dataset (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/log-explorer-account-dataset-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.log-explorer.account-dataset-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/logs/explorer/datasets/{dataset_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change Log Explorer dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/log-explorer-account-dataset-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.log-explorer.account-dataset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/logs/explorer/datasets/{dataset_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete Log Explorer dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Assumed to delete the logs stored for the dataset; the schema does not say
+      they are kept.
+    tests:
+      - fixture: fixtures/log-explorer-account-dataset-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.log-explorer.account-query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logs/explorer/query/sql" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Run a Log Explorer query (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Log Explorer only queries stored logs; the SQL is not Postgres and is not
+      classified, but the endpoint cannot change data.
+    tests:
+      - fixture: fixtures/log-explorer-account-query.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.log-explorer.zone-dataset-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logs/explorer/datasets" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a Log Explorer dataset (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/log-explorer-zone-dataset-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.log-explorer.zone-dataset-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/logs/explorer/datasets/{dataset_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Log Explorer dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/log-explorer-zone-dataset-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.log-explorer.zone-dataset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/logs/explorer/datasets/{dataset_id}" } }
+    class: irreversible
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete Log Explorer dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Assumed to delete the logs stored for the dataset; the schema does not say
+      they are kept.
+    tests:
+      - fixture: fixtures/log-explorer-zone-dataset-delete.http
+        expect: irreversible
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.log-explorer.zone-query
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logs/explorer/query/sql" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Run a Log Explorer query (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Log Explorer only queries stored logs; the SQL is not Postgres and is not
+      classified, but the endpoint cannot change data.
+    tests:
+      - fixture: fixtures/log-explorer-zone-query.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

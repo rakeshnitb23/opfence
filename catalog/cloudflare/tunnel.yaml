@@ -1,0 +1,120 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): tunnel
+operations:
+  - id: cloudflare.tunnel.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cfd_tunnel" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Cloudflare Tunnel {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Creates the credential a connector runs with: the tunnel secret (sent or
+      generated) and its token.
+    tests:
+      - fixture: fixtures/tunnel-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}" } }
+    class: write
+    when:
+      - if: { arg: body.tunnel_secret, present: true }
+        class: credential
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Rename Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A rename is a write; setting tunnel_secret replaces the tunnel's
+      credential.
+    tests:
+      - fixture: fixtures/tunnel-update.http
+        expect: write
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+      - fixture: fixtures/tunnel-update-secret.http
+        expect: credential
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.tunnel.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}" } }
+    class: delete
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Delete Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare only deletes a tunnel with no active connections. Its routing
+      configuration is lost, but a tunnel holds no data and can be recreated
+      with a new token.
+    tests:
+      - fixture: fixtures/tunnel-delete.http
+        expect: delete
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.tunnel.configuration-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/configurations" } }
+    class: access
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Change the ingress rules of Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Ingress rules publish internal services on public hostnames.
+    tests:
+      - fixture: fixtures/tunnel-configuration-update.http
+        expect: access
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.tunnel.connections-cleanup
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/connections" } }
+    class: write
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Clean up stale connections of Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/tunnel-connections-cleanup.http
+        expect: write
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.tunnel.management-token
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/management" } }
+    class: credential
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Get a management token for Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/tunnel-management-token.http
+        expect: credential
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.tunnel.token
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/token" } }
+    class: credential
+    resource: { arg: tunnel_id, kind: tunnel }
+    card: "Read the token of Cloudflare Tunnel {tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The tunnel token lets anyone run a connector for the tunnel and receive
+      its traffic.
+    tests:
+      - fixture: fixtures/tunnel-token.http
+        expect: credential
+        resource: "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"

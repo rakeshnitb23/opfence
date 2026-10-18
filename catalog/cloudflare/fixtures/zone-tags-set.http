@@ -1,0 +1,8 @@
+# description: Set tags on a resource in zone 9f1839b6152d298aca64c4e906b6d074
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/tags HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"resource_id":"023e105f4ecef8ad9ca31a8372d0c353","resource_type":"zone","tags":{"environment":"production","team":"engineering"}}

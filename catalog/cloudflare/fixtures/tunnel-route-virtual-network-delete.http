@@ -1,0 +1,5 @@
+# description: Delete virtual network f70ff985-a4ef-4643-bbbc-4a0ed4fc8418
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/teamnet/virtual_networks/f70ff985-a4ef-4643-bbbc-4a0ed4fc8418 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

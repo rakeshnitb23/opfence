@@ -1,0 +1,7 @@
+# description: Change token validation rules in zone 9f1839b6152d298aca64c4e906b6d074
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/token_validation/rules/bulk HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"id":"0d9bf70c-92e1-4bb3-9411-34a3bcc59003"}]

@@ -1,0 +1,7 @@
+# description: Replace the snippet rules of zone 9f1839b6152d298aca64c4e906b6d074
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/snippets/snippet_rules HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"rules":[{"expression":"http.request.uri.path eq \"/\"","snippet_name":"add_security_headers","enabled":true}]}

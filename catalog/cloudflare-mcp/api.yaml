@@ -1,0 +1,73 @@
+# Cloudflare MCP servers: api
+operations:
+  - id: cloudflare-mcp.api.execute
+    match: { mcp: { tool: execute } }
+    class: irreversible
+    when:
+      - if: { arg: code, matches: "(?i)(tokens|api_tokens|service_tokens|/secrets|secret_text|client_secret|private_key|password|/token\\b|credentials|signing-keys|keys/rotate)" }
+        class: credential
+      - if: { arg: code, matches: "(?i)(tokens|api_tokens|service_tokens|/secrets|secret_text|client_secret|private_key|password|/token\\b|credentials|signing-keys|keys/rotate)" }
+        class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Run JavaScript against the Cloudflare API in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp/blob/main/src/tools/execute.ts
+    notes: >-
+      The code calls any Cloudflare API endpoint with the user's token
+      (destructiveHint true), so Opfence cannot see which operation runs:
+      irreversible. Code that mentions tokens, secrets, passwords or keys can
+      also mint or read credentials, so it is credential as well. Calling
+      cloudflare.request is the only way out of the sandbox.
+    tests:
+      - fixture: fixtures/api-execute.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/api-execute-token.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare-mcp.api.search
+    match: { mcp: { tool: search } }
+    class: read
+    card: "Search the Cloudflare API spec, or AI Search instance {rag_id} for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp/blob/main/src/tools/search.ts
+    notes: >-
+      Two servers name a tool search. In cloudflare/mcp it runs JavaScript in an
+      isolate with no network access (globalOutbound null) that can only read
+      the bundled OpenAPI spec. In the AutoRAG server
+      (apps/autorag/src/tools/autorag.tools.ts) it searches an AI Search
+      instance. Both only read.
+    tests:
+      - fixture: fixtures/api-search.http
+        expect: read
+      - fixture: fixtures/api-search-autorag.http
+        expect: read
+
+  - id: cloudflare-mcp.api.docs
+    match: { mcp: { tool: docs } }
+    class: read
+    card: "Search Cloudflare documentation for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp/blob/main/src/tools/docs-search.ts
+    tests:
+      - fixture: fixtures/api-docs.http
+        expect: read
+
+  - id: cloudflare-mcp.api.whoami
+    match: { mcp: { tool: whoami } }
+    class: read
+    card: "Show the Cloudflare identity of this connection"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp/blob/main/src/tools/whoami.ts
+    tests:
+      - fixture: fixtures/api-whoami.http
+        expect: read

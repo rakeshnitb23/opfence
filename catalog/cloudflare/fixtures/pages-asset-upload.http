@@ -1,0 +1,7 @@
+# description: Upload Pages assets
+POST /client/v4/pages/assets/upload HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"key":"c8d2f6a1b3e4d5c6a7b8c9d0e1f2a3b4","value":"PGgxPmhlbGxvPC9oMT4=","metadata":{"contentType":"text/html"},"base64":true}]

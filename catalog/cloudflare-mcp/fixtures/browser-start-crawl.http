@@ -1,0 +1,8 @@
+# description: Start crawling https://shop-example.com/docs
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":65,"method":"tools/call","params":{"name":"start_crawl","arguments":{"url":"https://shop-example.com/docs","depth":2,"limit":50}}}

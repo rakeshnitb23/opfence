@@ -1,0 +1,147 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): zone
+operations:
+  - id: cloudflare.zone.create
+    match: { rest: { method: POST, path: "/client/v4/zones" } }
+    class: write
+    card: "Add zone {body.name} to Cloudflare"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-create.http
+        expect: write
+
+  - id: cloudflare.zone.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}" } }
+    class: write
+    when:
+      - if: { arg: body.paused, present: true }
+        class: access
+      - if: { arg: body.plan, present: true }
+        class: money
+    resource: { arg: zone_id, kind: zone }
+    card: "Change zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Only one property changes per call. paused stops Cloudflare proxying the
+      zone, so the origin is exposed without WAF or DDoS protection (access);
+      plan changes what the zone costs (money).
+    tests:
+      - fixture: fixtures/zone-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/zone-update-paused.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/zone-update-plan.http
+        expect: money
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}" } }
+    class: irreversible
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete zone {zone_id} with all its DNS records and settings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a zone removes its DNS records, rules, certificates and settings.
+      Cloudflare has no API to restore a deleted zone; adding the domain again
+      starts from an empty zone.
+    tests:
+      - fixture: fixtures/zone-delete.http
+        expect: irreversible
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.activation-check
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/activation_check" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Re-run the activation check of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-activation-check.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.hold-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/hold" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Put a hold on zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A zone hold stops the zone (and optionally its subdomains) being added to
+      other accounts; changing it is a security setting.
+    tests:
+      - fixture: fixtures/zone-hold-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.hold-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/hold" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the hold on zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-hold-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.hold-remove
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/hold" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove the hold on zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-hold-remove.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.tags-set
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/tags" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Set tags on a resource in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-tags-set.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.zone.tags-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/tags" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove tags from a resource in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zone-tags-delete.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

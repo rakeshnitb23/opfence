@@ -1,0 +1,7 @@
+# description: Preview load balancer monitor f1aba936b94213e5b8dca0c0dbf1f9cc
+POST /client/v4/user/load_balancers/monitors/f1aba936b94213e5b8dca0c0dbf1f9cc/preview HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"type":"https","path":"/healthz"}

@@ -1,0 +1,57 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): custom-csr
+operations:
+  - id: cloudflare.custom-csr.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/custom_csrs" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a CSR in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-csr-zone-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-csr.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_csrs/{custom_csr_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete CSR {custom_csr_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-csr-zone-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-csr.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/custom_csrs" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a CSR in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-csr-account-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-csr.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/custom_csrs/{custom_csr_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete CSR {custom_csr_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-csr-account-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

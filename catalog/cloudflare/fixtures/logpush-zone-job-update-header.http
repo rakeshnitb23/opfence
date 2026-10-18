@@ -1,0 +1,7 @@
+# description: Change Logpush job 13
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/logpush/jobs/13 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"destination_conf":"https://logs.shop-example.com/ingest?header_Authorization=Bearer%20opf_cloudflare_EXAMPLE"}

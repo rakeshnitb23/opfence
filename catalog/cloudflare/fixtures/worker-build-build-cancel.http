@@ -1,0 +1,5 @@
+# description: Cancel build e6c1c1a3-1c4e-4b8e-9e2a-6f8e2c7a9b10
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/builds/e6c1c1a3-1c4e-4b8e-9e2a-6f8e2c7a9b10/cancel HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

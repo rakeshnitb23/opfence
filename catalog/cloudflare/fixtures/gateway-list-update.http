@@ -1,0 +1,7 @@
+# description: Replace Gateway list 2c0fc9fa937b11eaa1b71c4d701ab86e
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/gateway/lists/2c0fc9fa937b11eaa1b71c4d701ab86e HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Allowed domains","items":[{"value":"shop-example.com"}]}

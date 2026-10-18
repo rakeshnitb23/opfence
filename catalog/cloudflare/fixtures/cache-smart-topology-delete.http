@@ -1,0 +1,6 @@
+# description: Remove the Smart Tiered Cache setting of zone 9f1839b6152d298aca64c4e906b6d074
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/cache/tiered_cache_smart_topology_enable HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

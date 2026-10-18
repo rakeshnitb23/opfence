@@ -1,0 +1,8 @@
+# description: Read the Pages to Workers migration guide
+POST /mcp HTTP/1.1
+Host: docs.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"migrate_pages_to_workers_guide","arguments":{}}}

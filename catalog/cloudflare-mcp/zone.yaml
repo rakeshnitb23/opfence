@@ -1,0 +1,27 @@
+# Cloudflare MCP servers: zone
+operations:
+  - id: cloudflare-mcp.zone.zones-list
+    match: { mcp: { tool: zones_list } }
+    class: read
+    card: "List zones"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/zone.tools.ts
+    tests:
+      - fixture: fixtures/zone-zones-list.http
+        expect: read
+
+  - id: cloudflare-mcp.zone.zone-details
+    match: { mcp: { tool: zone_details } }
+    class: read
+    resource: { arg: zoneId, kind: zone }
+    card: "Show zone {zoneId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/zone.tools.ts
+    tests:
+      - fixture: fixtures/zone-zone-details.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"

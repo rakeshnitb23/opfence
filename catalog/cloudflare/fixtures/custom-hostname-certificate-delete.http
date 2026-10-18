@@ -1,0 +1,5 @@
+# description: Delete a certificate of custom hostname 0d89c70d-ad9f-4843-b99f-6cc0252067e9
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/custom_hostnames/0d89c70d-ad9f-4843-b99f-6cc0252067e9/certificate_pack/3822ff90-ea29-44df-9e55-21300bb9419b/certificates/2458ce5a-0c35-4c7f-82c7-8e9487d3ff61 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

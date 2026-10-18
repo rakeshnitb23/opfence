@@ -1,0 +1,8 @@
+# description: Scrape elements of https://shop-example.com/pricing
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":62,"method":"tools/call","params":{"name":"scrape_url_elements","arguments":{"url":"https://shop-example.com/pricing","elements":[{"selector":"h1"}]}}}

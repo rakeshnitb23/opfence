@@ -1,0 +1,7 @@
+# description: Create token validation rules in zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/token_validation/rules/bulk HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"action":"log","description":"Long description for Token Validation Rule","enabled":true,"expression":"is_jwt_valid(\"52973293-cb04-4a97-8f55-e7d2ad1107dd\") or is_jwt_valid(\"46eab8d1-6376-45e3-968f-2c649d77d423\")","selector":{},"title":"Example Token Validation Rule"}]

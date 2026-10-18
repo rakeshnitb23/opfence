@@ -1,0 +1,6 @@
+# description: Delete Worker shop-api from dispatch namespace customer-workers
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/dispatch/namespaces/customer-workers/scripts/shop-api HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

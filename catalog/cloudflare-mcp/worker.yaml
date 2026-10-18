@@ -1,0 +1,45 @@
+# Cloudflare MCP servers: worker
+operations:
+  - id: cloudflare-mcp.worker.workers-list
+    match: { mcp: { tool: workers_list } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List Workers in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/worker.tools.ts
+    tests:
+      - fixture: fixtures/worker-workers-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare-mcp.worker.workers-get-worker
+    match: { mcp: { tool: workers_get_worker } }
+    class: read
+    resource: { arg: scriptName, kind: worker }
+    card: "Show Worker {scriptName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/worker.tools.ts
+    tests:
+      - fixture: fixtures/worker-workers-get-worker.http
+        expect: read
+        resource: "shop-api"
+
+  - id: cloudflare-mcp.worker.workers-get-worker-code
+    match: { mcp: { tool: workers_get_worker_code } }
+    class: read
+    resource: { arg: scriptName, kind: worker }
+    card: "Read the source code of Worker {scriptName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/packages/mcp-common/src/shared-tools/worker.tools.ts
+    notes: >-
+      Returns the script source only; secret bindings are not part of it.
+    tests:
+      - fixture: fixtures/worker-workers-get-worker-code.http
+        expect: read
+        resource: "shop-api"

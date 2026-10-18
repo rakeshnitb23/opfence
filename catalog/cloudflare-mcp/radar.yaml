@@ -1,0 +1,733 @@
+# Cloudflare MCP servers: radar
+operations:
+  - id: cloudflare-mcp.radar.list-autonomous-systems
+    match: { mcp: { tool: list_autonomous_systems } }
+    class: read
+    card: "Radar: List autonomous systems"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-autonomous-systems.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-as-details
+    match: { mcp: { tool: get_as_details } }
+    class: read
+    card: "Radar: Get AS details for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-as-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-ip-details
+    match: { mcp: { tool: get_ip_details } }
+    class: read
+    card: "Radar: Get IP details for {ip}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-ip-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-traffic-anomalies
+    match: { mcp: { tool: get_traffic_anomalies } }
+    class: read
+    card: "Radar: Get traffic anomalies for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-traffic-anomalies.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-internet-services-ranking
+    match: { mcp: { tool: get_internet_services_ranking } }
+    class: read
+    card: "Radar: Get internet services ranking"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-internet-services-ranking.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-domains-ranking
+    match: { mcp: { tool: get_domains_ranking } }
+    class: read
+    card: "Radar: Get domains ranking"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-domains-ranking.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-domain-rank-details
+    match: { mcp: { tool: get_domain_rank_details } }
+    class: read
+    card: "Radar: Get domain rank details for {domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-domain-rank-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-http-data
+    match: { mcp: { tool: get_http_data } }
+    class: read
+    card: "Radar: Get http data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-http-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-dns-queries-data
+    match: { mcp: { tool: get_dns_queries_data } }
+    class: read
+    card: "Radar: Get DNS queries data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-dns-queries-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-l7-attack-data
+    match: { mcp: { tool: get_l7_attack_data } }
+    class: read
+    card: "Radar: Get L7 attack data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-l7-attack-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-l3-attack-data
+    match: { mcp: { tool: get_l3_attack_data } }
+    class: read
+    card: "Radar: Get L3 attack data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-l3-attack-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-email-routing-data
+    match: { mcp: { tool: get_email_routing_data } }
+    class: read
+    card: "Radar: Get email routing data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-email-routing-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-email-security-data
+    match: { mcp: { tool: get_email_security_data } }
+    class: read
+    card: "Radar: Get email security data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-email-security-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-internet-speed-data
+    match: { mcp: { tool: get_internet_speed_data } }
+    class: read
+    card: "Radar: Get internet speed data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-internet-speed-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-internet-quality-data
+    match: { mcp: { tool: get_internet_quality_data } }
+    class: read
+    card: "Radar: Get internet quality data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-internet-quality-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-ai-data
+    match: { mcp: { tool: get_ai_data } }
+    class: read
+    card: "Radar: Get AI data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-ai-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-hijacks
+    match: { mcp: { tool: get_bgp_hijacks } }
+    class: read
+    card: "Radar: Get BGP hijacks for {prefix}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-hijacks.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-leaks
+    match: { mcp: { tool: get_bgp_leaks } }
+    class: read
+    card: "Radar: Get BGP leaks"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-leaks.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-route-stats
+    match: { mcp: { tool: get_bgp_route_stats } }
+    class: read
+    card: "Radar: Get BGP route stats for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-route-stats.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bots-data
+    match: { mcp: { tool: get_bots_data } }
+    class: read
+    card: "Radar: Get bots data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bots-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-certificate-transparency-data
+    match: { mcp: { tool: get_certificate_transparency_data } }
+    class: read
+    card: "Radar: Get certificate transparency data for {tld}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-certificate-transparency-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-netflows-data
+    match: { mcp: { tool: get_netflows_data } }
+    class: read
+    card: "Radar: Get netflows data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-netflows-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-origins
+    match: { mcp: { tool: list_origins } }
+    class: read
+    card: "Radar: List origins"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-origins.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-origin-details
+    match: { mcp: { tool: get_origin_details } }
+    class: read
+    card: "Radar: Get origin details for {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-origin-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-origins-data
+    match: { mcp: { tool: get_origins_data } }
+    class: read
+    card: "Radar: Get origins data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-origins-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-robots-txt-data
+    match: { mcp: { tool: get_robots_txt_data } }
+    class: read
+    card: "Radar: Get robots txt data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-robots-txt-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bots-crawlers-data
+    match: { mcp: { tool: get_bots_crawlers_data } }
+    class: read
+    card: "Radar: Get bots crawlers data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bots-crawlers-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-bots
+    match: { mcp: { tool: list_bots } }
+    class: read
+    card: "Radar: List bots"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-bots.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bot-details
+    match: { mcp: { tool: get_bot_details } }
+    class: read
+    card: "Radar: Get bot details for {botSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bot-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-leaked-credentials-data
+    match: { mcp: { tool: get_leaked_credentials_data } }
+    class: read
+    card: "Radar: Get leaked credentials data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-leaked-credentials-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-as112-data
+    match: { mcp: { tool: get_as112_data } }
+    class: read
+    card: "Radar: Get AS112 data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-as112-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-geolocations
+    match: { mcp: { tool: list_geolocations } }
+    class: read
+    card: "Radar: List geolocations for {geoId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-geolocations.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-geolocation-details
+    match: { mcp: { tool: get_geolocation_details } }
+    class: read
+    card: "Radar: Get geolocation details for {geoId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-geolocation-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-tcp-resets-timeouts-data
+    match: { mcp: { tool: get_tcp_resets_timeouts_data } }
+    class: read
+    card: "Radar: Get TCP resets timeouts data for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-tcp-resets-timeouts-data.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-annotations
+    match: { mcp: { tool: get_annotations } }
+    class: read
+    card: "Radar: Get annotations for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-annotations.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-outages
+    match: { mcp: { tool: get_outages } }
+    class: read
+    card: "Radar: Get outages for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-outages.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-ct-authorities
+    match: { mcp: { tool: list_ct_authorities } }
+    class: read
+    card: "Radar: List CT authorities"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-ct-authorities.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-ct-authority-details
+    match: { mcp: { tool: get_ct_authority_details } }
+    class: read
+    card: "Radar: Get CT authority details for {caSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-ct-authority-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-ct-logs
+    match: { mcp: { tool: list_ct_logs } }
+    class: read
+    card: "Radar: List CT logs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-ct-logs.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-ct-log-details
+    match: { mcp: { tool: get_ct_log_details } }
+    class: read
+    card: "Radar: Get CT log details for {logSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-ct-log-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-timeseries
+    match: { mcp: { tool: get_bgp_timeseries } }
+    class: read
+    card: "Radar: Get BGP timeseries for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-timeseries.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-top-ases
+    match: { mcp: { tool: get_bgp_top_ases } }
+    class: read
+    card: "Radar: Get BGP top ases for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-top-ases.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-top-prefixes
+    match: { mcp: { tool: get_bgp_top_prefixes } }
+    class: read
+    card: "Radar: Get BGP top prefixes for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-top-prefixes.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-moas
+    match: { mcp: { tool: get_bgp_moas } }
+    class: read
+    card: "Radar: Get BGP MOAS for {prefix}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-moas.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-pfx2as
+    match: { mcp: { tool: get_bgp_pfx2as } }
+    class: read
+    card: "Radar: Get BGP PFX2AS for {prefix}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-pfx2as.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-ip-space-timeseries
+    match: { mcp: { tool: get_bgp_ip_space_timeseries } }
+    class: read
+    card: "Radar: Get BGP IP space timeseries for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-ip-space-timeseries.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-routes-realtime
+    match: { mcp: { tool: get_bgp_routes_realtime } }
+    class: read
+    card: "Radar: Get BGP routes realtime for {prefix}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-routes-realtime.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-as-set
+    match: { mcp: { tool: get_as_set } }
+    class: read
+    card: "Radar: Get AS set for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-as-set.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-as-relationships
+    match: { mcp: { tool: get_as_relationships } }
+    class: read
+    card: "Radar: Get AS relationships for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-as-relationships.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.list-tlds
+    match: { mcp: { tool: list_tlds } }
+    class: read
+    card: "Radar: List TLDS for {tld}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-list-tlds.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-tld-details
+    match: { mcp: { tool: get_tld_details } }
+    class: read
+    card: "Radar: Get TLD details for {tld}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-tld-details.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-domains-ranking-timeseries
+    match: { mcp: { tool: get_domains_ranking_timeseries } }
+    class: read
+    card: "Radar: Get domains ranking timeseries"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-domains-ranking-timeseries.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-speed-histogram
+    match: { mcp: { tool: get_speed_histogram } }
+    class: read
+    card: "Radar: Get speed histogram for {asn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-speed-histogram.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-internet-services-timeseries
+    match: { mcp: { tool: get_internet_services_timeseries } }
+    class: read
+    card: "Radar: Get internet services timeseries"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-internet-services-timeseries.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-outages-by-location
+    match: { mcp: { tool: get_outages_by_location } }
+    class: read
+    card: "Radar: Get outages by location"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-outages-by-location.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-traffic-anomalies-by-location
+    match: { mcp: { tool: get_traffic_anomalies_by_location } }
+    class: read
+    card: "Radar: Get traffic anomalies by location"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-traffic-anomalies-by-location.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-routing-table-ases
+    match: { mcp: { tool: get_bgp_routing_table_ases } }
+    class: read
+    card: "Radar: Get BGP routing table ases"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-routing-table-ases.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-top-ases-by-prefixes
+    match: { mcp: { tool: get_bgp_top_ases_by_prefixes } }
+    class: read
+    card: "Radar: Get BGP top ases by prefixes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-top-ases-by-prefixes.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-rpki-aspa-snapshot
+    match: { mcp: { tool: get_bgp_rpki_aspa_snapshot } }
+    class: read
+    card: "Radar: Get BGP RPKI ASPA snapshot for {customerAsn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-rpki-aspa-snapshot.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-rpki-aspa-changes
+    match: { mcp: { tool: get_bgp_rpki_aspa_changes } }
+    class: read
+    card: "Radar: Get BGP RPKI ASPA changes for {customerAsn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-rpki-aspa-changes.http
+        expect: read
+
+  - id: cloudflare-mcp.radar.get-bgp-rpki-aspa-timeseries
+    match: { mcp: { tool: get_bgp_rpki_aspa_timeseries } }
+    class: read
+    card: "Radar: Get BGP RPKI ASPA timeseries"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/radar/src/tools/radar.tools.ts
+    tests:
+      - fixture: fixtures/radar-get-bgp-rpki-aspa-timeseries.http
+        expect: read

@@ -1,0 +1,8 @@
+# description: Delete R2 bucket shop-assets
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":22,"method":"tools/call","params":{"name":"r2_bucket_delete","arguments":{"name":"shop-assets"}}}

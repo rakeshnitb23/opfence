@@ -1,0 +1,7 @@
+# description: Start a video upload in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Tus-Resumable: 1.0.0
+Upload-Length: 1048576
+

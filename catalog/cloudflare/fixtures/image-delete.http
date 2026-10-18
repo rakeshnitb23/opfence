@@ -1,0 +1,5 @@
+# description: Delete image 083eb7b2-5392-4565-b69e-aff66acddd00
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/images/v1/083eb7b2-5392-4565-b69e-aff66acddd00 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,211 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): billing
+operations:
+  - id: cloudflare.billing.profile-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/billing/profile" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Create the billing profile of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-profile-create.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.profile-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/billing/profile" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Replace the billing profile of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-profile-update.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.profile-email
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/billing/profile" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change the billing email of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-profile-email.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.profile-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/billing/profile" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Delete the billing profile of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-profile-delete.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.payment-intent
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/billing/profile/payment-method" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Start adding a payment method to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-payment-intent.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.payment-method-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/payment-methods" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Add a payment method to account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-payment-method-create.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.payment-method-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/payment-methods/{payment_method_id}" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Change payment method {payment_method_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-payment-method-update.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.payment-method-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/payment-methods/{payment_method_id}" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Remove payment method {payment_method_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-payment-method-delete.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.payment-method-default
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/payment-methods/{payment_method_id}/set-as-default" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Make {payment_method_id} the default payment method"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-payment-method-default.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.pay-invoice
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pay-invoice" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Pay an invoice for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-pay-invoice.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.pay-bad-debt
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pay-bad-debt" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Pay outstanding debt for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-pay-bad-debt.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.invoices-pdf
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/invoices" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Turn PDF invoices on or off for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-invoices-pdf.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.ut-billing
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/settings/ut-billing" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Change Unique Transformations billing for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-ut-billing.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.usage-query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/billable/usage" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Query billable usage of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A POST that only queries usage data.
+    tests:
+      - fixture: fixtures/billing-usage-query.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.billing.address-validate
+    match: { rest: { method: POST, path: "/client/v4/billing/address-validation" } }
+    class: read
+    card: "Validate a billing address"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/billing-address-validate.http
+        expect: read

@@ -1,0 +1,43 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-tag
+operations:
+  - id: cloudflare.access-tag.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/tags" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Access tag {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-tag-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-tag.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/tags/{tag_name}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Rename Access tag {tag_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-tag-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-tag.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/tags/{tag_name}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Delete Access tag {tag_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/access-tag-delete.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
