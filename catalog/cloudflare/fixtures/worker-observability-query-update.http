@@ -1,0 +1,8 @@
+# description: Change saved query 5a1b2c3d-4e5f-4a6b-7c8d-9e0f1a2b3c50
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/observability/queries/5a1b2c3d-4e5f-4a6b-7c8d-9e0f1a2b3c50 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"description":"Query description","name":"example","parameters":{}}

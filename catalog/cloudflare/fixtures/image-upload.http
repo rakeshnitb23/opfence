@@ -1,0 +1,15 @@
+# description: Upload an image to account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/images/v1 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="url"
+
+https://shop-example.com/img/banner.png
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="requireSignedURLs"
+
+true
+------opfence7MA4YWxkTrZu0gW--

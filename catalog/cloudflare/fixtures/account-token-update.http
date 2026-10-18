@@ -1,0 +1,7 @@
+# description: Change the permissions or status of account API token ed17574386854bf78a67040be0a770b0
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/tokens/ed17574386854bf78a67040be0a770b0 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ci-deploy","status":"active","policies":[]}

@@ -1,0 +1,8 @@
+# description: Radar: Get domain rank details for shop-example.com
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":83,"method":"tools/call","params":{"name":"get_domain_rank_details","arguments":{"domain":"shop-example.com"}}}

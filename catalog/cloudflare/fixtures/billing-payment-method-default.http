@@ -1,0 +1,5 @@
+# description: Make pm_example_card the default payment method
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/payment-methods/pm_example_card/set-as-default HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

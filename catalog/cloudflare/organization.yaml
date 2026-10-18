@@ -1,0 +1,113 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): organization
+operations:
+  - id: cloudflare.organization.create
+    match: { rest: { method: POST, path: "/client/v4/organizations" } }
+    class: write
+    card: "Create organization {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-create.http
+        expect: write
+
+  - id: cloudflare.organization.update
+    match: { rest: { method: PUT, path: "/client/v4/organizations/{organization_id}" } }
+    class: write
+    resource: { arg: organization_id, kind: organization }
+    card: "Change organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-update.http
+        expect: write
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.delete
+    match: { rest: { method: DELETE, path: "/client/v4/organizations/{organization_id}" } }
+    class: irreversible
+    resource: { arg: organization_id, kind: organization }
+    card: "Delete organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      No API restores a deleted organization.
+    tests:
+      - fixture: fixtures/organization-delete.http
+        expect: irreversible
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.profile-update
+    match: { rest: { method: PUT, path: "/client/v4/organizations/{organization_id}/profile" } }
+    class: write
+    resource: { arg: organization_id, kind: organization }
+    card: "Change the profile of organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-profile-update.http
+        expect: write
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.invite-respond
+    match: { rest: { method: PUT, path: "/client/v4/organizations/{organization_id}/invites/{member_code}" } }
+    class: access
+    resource: { arg: organization_id, kind: organization }
+    card: "Respond to an invitation to organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-invite-respond.http
+        expect: access
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.member-add
+    match: { rest: { method: POST, path: "/client/v4/organizations/{organization_id}/members" } }
+    class: access
+    resource: { arg: organization_id, kind: organization }
+    card: "Add a member to organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-member-add.http
+        expect: access
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.member-add-batch
+    match: { rest: { method: POST, path: "/client/v4/organizations/{organization_id}/members:batchCreate" } }
+    class: access
+    resource: { arg: organization_id, kind: organization }
+    card: "Add members to organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-member-add-batch.http
+        expect: access
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"
+
+  - id: cloudflare.organization.member-remove
+    match: { rest: { method: DELETE, path: "/client/v4/organizations/{organization_id}/members/{member_id}" } }
+    class: access
+    resource: { arg: organization_id, kind: organization }
+    card: "Remove member {member_id} from organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/organization-member-remove.http
+        expect: access
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"

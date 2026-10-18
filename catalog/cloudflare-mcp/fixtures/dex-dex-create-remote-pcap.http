@@ -1,0 +1,8 @@
+# description: Capture network packets on device e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b of ada@shop-example.com
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":160,"method":"tools/call","params":{"name":"dex_create_remote_pcap","arguments":{"device_id":"e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b","user_email":"ada@shop-example.com"}}}

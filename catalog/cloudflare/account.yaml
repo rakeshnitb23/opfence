@@ -1,0 +1,114 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): account
+operations:
+  - id: cloudflare.account.create
+    match: { rest: { method: POST, path: "/client/v4/accounts" } }
+    class: write
+    card: "Create Cloudflare account {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-create.http
+        expect: write
+
+  - id: cloudflare.account.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}" } }
+    class: write
+    when:
+      - if: { arg: body.settings, present: true }
+        class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change settings of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A rename is a write. The settings object holds enforce_twofactor (two-
+      factor login for every member), so any change to it is access.
+    tests:
+      - fixture: fixtures/account-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/account-update-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete account {account_id} and every zone and resource in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare documents this as permanent: it deletes every zone and resource
+      under the account.
+    tests:
+      - fixture: fixtures/account-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account.move
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/move" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Move account {account_id} into another organization"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Changes which organization (and so which administrators) control the
+      account.
+    tests:
+      - fixture: fixtures/account-move.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account.profile-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/profile" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change the profile of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-profile-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account.tags-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/tags" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Set tags on a resource in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-tags-set.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account.tags-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/tags" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Remove tags from a resource in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tags are labels; removing them loses no data.
+    tests:
+      - fixture: fixtures/account-tags-delete.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

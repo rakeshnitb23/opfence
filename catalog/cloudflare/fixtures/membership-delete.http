@@ -1,0 +1,5 @@
+# description: Leave the account of membership 4536bcfad5faccb111b47003c79917fa
+DELETE /client/v4/memberships/4536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

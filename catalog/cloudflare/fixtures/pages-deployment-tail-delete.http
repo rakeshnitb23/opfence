@@ -1,0 +1,6 @@
+# description: Stop log tail 03dc9f77817b488fb26c5861ec18f791
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects/shop-web/deployments/7e2f1a9c-3b4d-4e5f-8a6b-1c2d3e4f5a6b/tails/03dc9f77817b488fb26c5861ec18f791 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

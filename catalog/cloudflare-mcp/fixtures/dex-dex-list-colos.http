@@ -1,0 +1,8 @@
+# description: List Cloudflare colos seen by WARP devices
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":156,"method":"tools/call","params":{"name":"dex_list_colos","arguments":{"from":"2026-10-17T00:00:00Z","to":"2026-10-18T00:00:00Z"}}}

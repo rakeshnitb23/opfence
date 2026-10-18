@@ -1,0 +1,5 @@
+# description: Remove member 4536bcfad5faccb111b47003c79917fa from account 023e105f4ecef8ad9ca31a8372d0c353
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/members/4536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

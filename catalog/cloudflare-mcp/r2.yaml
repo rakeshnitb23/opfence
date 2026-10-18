@@ -1,0 +1,58 @@
+# Cloudflare MCP servers: r2
+operations:
+  - id: cloudflare-mcp.r2.r2-buckets-list
+    match: { mcp: { tool: r2_buckets_list } }
+    class: read
+    card: "List R2 buckets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/r2_bucket.tools.ts
+    tests:
+      - fixture: fixtures/r2-r2-buckets-list.http
+        expect: read
+
+  - id: cloudflare-mcp.r2.r2-bucket-create
+    match: { mcp: { tool: r2_bucket_create } }
+    class: write
+    resource: { arg: name, kind: bucket }
+    card: "Create R2 bucket {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/r2_bucket.tools.ts
+    tests:
+      - fixture: fixtures/r2-r2-bucket-create.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare-mcp.r2.r2-bucket-get
+    match: { mcp: { tool: r2_bucket_get } }
+    class: read
+    resource: { arg: name, kind: bucket }
+    card: "Show R2 bucket {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/r2_bucket.tools.ts
+    tests:
+      - fixture: fixtures/r2-r2-bucket-get.http
+        expect: read
+        resource: "shop-assets"
+
+  - id: cloudflare-mcp.r2.r2-bucket-delete
+    match: { mcp: { tool: r2_bucket_delete } }
+    class: delete
+    resource: { arg: name, kind: bucket }
+    card: "Delete R2 bucket {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/r2_bucket.tools.ts
+    notes: >-
+      The R2 API only deletes empty buckets, so no objects are lost and the
+      bucket can be created again (same as cloudflare.r2.bucket-delete).
+    tests:
+      - fixture: fixtures/r2-r2-bucket-delete.http
+        expect: delete
+        resource: "shop-assets"

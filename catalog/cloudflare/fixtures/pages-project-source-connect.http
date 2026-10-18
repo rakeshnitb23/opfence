@@ -1,0 +1,7 @@
+# description: Connect a Git repository to Pages project shop-web
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects/shop-web/source HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"config":{"deployments_enabled":true,"owner":"my-org","owner_id":"12345678","path_excludes":[],"path_includes":[],"pr_comments_enabled":true,"preview_branch_excludes":[],"preview_branch_includes":[],"preview_deployment_setting":"all","production_branch":"main","production_deployments_enabled":true,"repo_id":"12345678","repo_name":"my-repo"},"type":"github"}

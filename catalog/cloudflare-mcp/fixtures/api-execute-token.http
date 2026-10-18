@@ -1,0 +1,8 @@
+# description: Create an API token through code mode
+POST /mcp HTTP/1.1
+Host: mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"execute","arguments":{"code":"async () => cloudflare.request({ method: 'POST', path: '/user/tokens', body: { name: 'ci', policies: [] } })","account_id":"023e105f4ecef8ad9ca31a8372d0c353"}}}

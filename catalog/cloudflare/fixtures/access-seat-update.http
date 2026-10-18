@@ -1,0 +1,7 @@
+# description: Change Zero Trust seats in account 023e105f4ecef8ad9ca31a8372d0c353
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/seats HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+[{"seat_uid":"seat-42","access_seat":false,"gateway_seat":false}]

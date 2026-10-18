@@ -1,0 +1,41 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): user-subscription
+operations:
+  - id: cloudflare.user-subscription.create
+    match: { rest: { method: POST, path: "/client/v4/user/subscriptions" } }
+    class: money
+    card: "Create a paid subscription for your user"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-subscription-create.http
+        expect: money
+
+  - id: cloudflare.user-subscription.update
+    match: { rest: { method: PUT, path: "/client/v4/user/subscriptions/{identifier}" } }
+    class: money
+    resource: { arg: identifier, kind: subscription }
+    card: "Change user subscription {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-subscription-update.http
+        expect: money
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.user-subscription.delete
+    match: { rest: { method: DELETE, path: "/client/v4/user/subscriptions/{identifier}" } }
+    class: money
+    resource: { arg: identifier, kind: subscription }
+    card: "Cancel user subscription {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-subscription-delete.http
+        expect: money
+        resource: "ea95132c15732412d22c1476fa83f27a"

@@ -1,0 +1,5 @@
+# description: Revoke mTLS client certificate b2134436-2555-4acf-be5b-26c48136575e
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/client_certificates/b2134436-2555-4acf-be5b-26c48136575e HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

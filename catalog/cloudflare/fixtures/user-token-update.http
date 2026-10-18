@@ -1,0 +1,8 @@
+# description: Change the permissions or status of API token ed17574386854bf78a67040be0a770b0
+PUT /client/v4/user/tokens/ed17574386854bf78a67040be0a770b0 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ci-deploy","status":"active","policies":[]}

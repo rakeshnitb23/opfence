@@ -1,0 +1,213 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): tunnel-route
+operations:
+  - id: cloudflare.tunnel-route.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/teamnet/routes" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Route network {body.network} through tunnel {body.tunnel_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/teamnet/routes/{route_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change tunnel route {route_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/teamnet/routes/{route_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete tunnel route {route_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.cidr-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/teamnet/routes/network/{ip_network_encoded}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Route network {ip_network_encoded} through a tunnel (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-cidr-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.cidr-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/teamnet/routes/network/{ip_network_encoded}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change the route for {ip_network_encoded} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-cidr-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.cidr-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/teamnet/routes/network/{ip_network_encoded}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete the route for {ip_network_encoded} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-cidr-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.virtual-network-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/teamnet/virtual_networks" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create virtual network {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/tunnel-route-virtual-network-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.virtual-network-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/teamnet/virtual_networks/{virtual_network_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change virtual network {virtual_network_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/tunnel-route-virtual-network-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.virtual-network-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/teamnet/virtual_networks/{virtual_network_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete virtual network {virtual_network_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/tunnel-route-virtual-network-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.hostname-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/zerotrust/routes/hostname" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Route hostname {body.hostname} through a tunnel"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-hostname-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.hostname-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/zerotrust/routes/hostname/{hostname_route_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change hostname route {hostname_route_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-hostname-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.hostname-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/zerotrust/routes/hostname/{hostname_route_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete hostname route {hostname_route_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-hostname-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.tunnel-route.connectivity-settings
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/zerotrust/connectivity_settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Zero Trust connectivity settings of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Tunnel routes make private networks and hostnames reachable for WARP users
+      through a tunnel.
+    tests:
+      - fixture: fixtures/tunnel-route-connectivity-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

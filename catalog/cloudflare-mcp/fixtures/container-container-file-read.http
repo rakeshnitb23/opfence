@@ -1,0 +1,8 @@
+# description: Read /tmp/report.csv in the sandbox container
+POST /mcp HTTP/1.1
+Host: containers.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":56,"method":"tools/call","params":{"name":"container_file_read","arguments":{"args":{"path":"/tmp/report.csv"}}}}

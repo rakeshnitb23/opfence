@@ -1,0 +1,539 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): stream
+operations:
+  - id: cloudflare.stream.upload-tus
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Start a video upload in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-upload-tus.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.clip
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/clip" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Clip a video in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-clip.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.copy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/copy" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Upload a video from {body.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-copy.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.direct-upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/direct_upload" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a direct video upload URL in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-direct-upload.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.signing-key-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/keys" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create a Stream signing key in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns the private key (PEM and JWK) used to sign playback tokens.
+    tests:
+      - fixture: fixtures/stream-signing-key-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.signing-key-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/keys/{identifier}" } }
+    class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Delete Stream signing key {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deleting a secret is irreversible; tokens signed with it stop working.
+    tests:
+      - fixture: fixtures/stream-signing-key-delete.http
+        expect: irreversible
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.video-edit
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}" } }
+    class: write
+    when:
+      - if: { arg: body.requireSignedURLs, equals: "false" }
+        class: access
+      - if: { arg: body.scheduledDeletion, present: true }
+        class: irreversible
+    resource: { arg: identifier, kind: video }
+    card: "Change video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      requireSignedURLs=false makes a private video public; scheduledDeletion
+      makes Stream delete the video at that time.
+    tests:
+      - fixture: fixtures/stream-video-edit.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+      - fixture: fixtures/stream-video-edit-public.http
+        expect: access
+        resource: "ea95132c15732412d22c1476fa83f27a"
+      - fixture: fixtures/stream-video-edit-scheduled-deletion.http
+        expect: irreversible
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.video-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/{identifier}" } }
+    class: irreversible
+    resource: { arg: identifier, kind: video }
+    card: "Delete video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stream keeps no copy of a deleted video.
+    tests:
+      - fixture: fixtures/stream-video-delete.http
+        expect: irreversible
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.audio-add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}/audio/copy" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Add an audio track to video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-audio-add.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.audio-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/stream/{identifier}/audio/{audio_identifier}" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Change audio track {audio_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-audio-update.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.audio-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/{identifier}/audio/{audio_identifier}" } }
+    class: irreversible
+    resource: { arg: identifier, kind: video }
+    card: "Delete audio track {audio_identifier} of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The uploaded track is gone.
+    tests:
+      - fixture: fixtures/stream-audio-delete.http
+        expect: irreversible
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.captions-upload
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/stream/{identifier}/captions/{language}" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Upload {language} captions for video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-captions-upload.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.captions-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/{identifier}/captions/{language}" } }
+    class: irreversible
+    resource: { arg: identifier, kind: video }
+    card: "Delete {language} captions of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Uploaded captions are gone; only AI-generated captions could be generated
+      again.
+    tests:
+      - fixture: fixtures/stream-captions-delete.http
+        expect: irreversible
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.captions-generate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}/captions/{language}/generate" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Generate {language} captions for video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-captions-generate.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.downloads-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}/downloads" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Create downloads of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-downloads-create.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.downloads-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/{identifier}/downloads" } }
+    class: delete
+    resource: { arg: identifier, kind: video }
+    card: "Delete downloads of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Downloads are generated from the video and can be created again.
+    tests:
+      - fixture: fixtures/stream-downloads-delete.http
+        expect: delete
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.download-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}/downloads/{download_type}" } }
+    class: write
+    resource: { arg: identifier, kind: video }
+    card: "Create a {download_type} download of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-download-create.http
+        expect: write
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.download-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/{identifier}/downloads/{download_type}" } }
+    class: delete
+    resource: { arg: identifier, kind: video }
+    card: "Delete the {download_type} download of video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-download-delete.http
+        expect: delete
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.token-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/{identifier}/token" } }
+    class: credential
+    resource: { arg: identifier, kind: video }
+    card: "Create a signed playback token for video {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The token grants playback of a video that requires signed URLs.
+    tests:
+      - fixture: fixtures/stream-token-create.http
+        expect: credential
+        resource: "ea95132c15732412d22c1476fa83f27a"
+
+  - id: cloudflare.stream.live-input-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/live_inputs" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create a live input in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the RTMPS and SRT stream keys.
+    tests:
+      - fixture: fixtures/stream-live-input-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.live-input-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}" } }
+    class: write
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Change live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-live-input-update.http
+        expect: write
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-input-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}" } }
+    class: delete
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Delete live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Recordings are separate videos and remain; the input's configuration can
+      be recreated with new keys.
+    tests:
+      - fixture: fixtures/stream-live-input-delete.http
+        expect: delete
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-input-enable
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/enable" } }
+    class: write
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Enable live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-live-input-enable.http
+        expect: write
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-input-disable
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/disable" } }
+    class: write
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Disable live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-live-input-disable.http
+        expect: write
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-input-rotate-keys
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/rotate_keys" } }
+    class: credential
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Rotate the stream keys of live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-live-input-rotate-keys.http
+        expect: credential
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-input-read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}" } }
+    class: credential
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Read live input {live_input_identifier} with its stream keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes rtmps.streamKey, the secret that lets anyone
+      broadcast to the input.
+    tests:
+      - fixture: fixtures/stream-live-input-read.http
+        expect: credential
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-output-list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/outputs" } }
+    class: credential
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "List outputs of live input {live_input_identifier} with their stream keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Each output includes the streamKey for its target (for example a third-
+      party streaming account).
+    tests:
+      - fixture: fixtures/stream-live-output-list.http
+        expect: credential
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-output-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/outputs" } }
+    class: credential
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Add an output to live input {live_input_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores the stream key of the target service.
+    tests:
+      - fixture: fixtures/stream-live-output-create.http
+        expect: credential
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-output-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/outputs/{output_identifier}" } }
+    class: write
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Turn output {output_identifier} on or off"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-live-output-update.http
+        expect: write
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.live-output-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/live_inputs/{live_input_identifier}/outputs/{output_identifier}" } }
+    class: irreversible
+    resource: { arg: live_input_identifier, kind: live-input }
+    card: "Delete output {output_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the stored stream key of the target.
+    tests:
+      - fixture: fixtures/stream-live-output-delete.http
+        expect: irreversible
+        resource: "66be4bf738797e01e1fca35a7bdecdcd"
+
+  - id: cloudflare.stream.watermark-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/stream/watermarks" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a watermark profile in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-watermark-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.watermark-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/watermarks/{identifier}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete watermark profile {identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-watermark-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.webhook-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/stream/webhook" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Set the Stream webhook URL of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the secret used to sign webhook calls.
+    tests:
+      - fixture: fixtures/stream-webhook-set.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.webhook-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/stream/webhook" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete the Stream webhook of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/stream-webhook-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.stream.webhook-read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/stream/webhook" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read the Stream webhook of account {account_id} with its signing secret"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response includes the webhook signing secret.
+    tests:
+      - fixture: fixtures/stream-webhook-read.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

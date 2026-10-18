@@ -1,0 +1,7 @@
+# description: Create Access group Engineers
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/access/groups HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Engineers","include":[{"email_domain":{"domain":"shop-example.com"}}]}

@@ -1,0 +1,33 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): origin-ca-certificate
+operations:
+  - id: cloudflare.origin-ca-certificate.create
+    match: { rest: { method: POST, path: "/client/v4/certificates" } }
+    class: write
+    card: "Issue an Origin CA certificate for {body.hostnames}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare signs a CSR; the private key never reaches the API and the
+      certificate is public.
+    tests:
+      - fixture: fixtures/origin-ca-certificate-create.http
+        expect: write
+
+  - id: cloudflare.origin-ca-certificate.revoke
+    match: { rest: { method: DELETE, path: "/client/v4/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: certificate_id, kind: certificate }
+    card: "Revoke Origin CA certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Revocation is permanent; origins using the certificate fail TLS until a
+      new one is installed. Classed like revoking a credential.
+    tests:
+      - fixture: fixtures/origin-ca-certificate-revoke.http
+        expect: access
+        resource: "2458ce5a-0c35-4c7f-82c7-8e9487d3ff61"

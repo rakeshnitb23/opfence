@@ -1,0 +1,6 @@
+# description: Delete repository connection 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5e
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/repos/connections/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5e HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

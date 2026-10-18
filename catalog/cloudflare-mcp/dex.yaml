@@ -1,0 +1,243 @@
+# Cloudflare MCP servers: dex
+operations:
+  - id: cloudflare-mcp.dex.dex-test-statistics
+    match: { mcp: { tool: dex_test_statistics } }
+    class: read
+    resource: { arg: testId, kind: dex-test }
+    card: "Show statistics of DEX test {testId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-test-statistics.http
+        expect: read
+        resource: "4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8"
+
+  - id: cloudflare-mcp.dex.dex-list-tests
+    match: { mcp: { tool: dex_list_tests } }
+    class: read
+    card: "List DEX tests"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-tests.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-http-test-details
+    match: { mcp: { tool: dex_http_test_details } }
+    class: read
+    resource: { arg: testId, kind: dex-test }
+    card: "Show HTTP results of DEX test {testId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-http-test-details.http
+        expect: read
+        resource: "4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8"
+
+  - id: cloudflare-mcp.dex.dex-traceroute-test-details
+    match: { mcp: { tool: dex_traceroute_test_details } }
+    class: read
+    resource: { arg: testId, kind: dex-test }
+    card: "Show traceroute results of DEX test {testId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-traceroute-test-details.http
+        expect: read
+        resource: "4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8"
+
+  - id: cloudflare-mcp.dex.dex-traceroute-test-network-path
+    match: { mcp: { tool: dex_traceroute_test_network_path } }
+    class: read
+    resource: { arg: testId, kind: dex-test }
+    card: "Show the network path of DEX test {testId} on device {deviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-traceroute-test-network-path.http
+        expect: read
+        resource: "4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8"
+
+  - id: cloudflare-mcp.dex.dex-traceroute-test-result-network-path
+    match: { mcp: { tool: dex_traceroute_test_result_network_path } }
+    class: read
+    resource: { arg: testResultId, kind: dex-test-result }
+    card: "Show the network path of DEX test result {testResultId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-traceroute-test-result-network-path.http
+        expect: read
+        resource: "9a8b7c6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d"
+
+  - id: cloudflare-mcp.dex.dex-list-remote-capture-eligible-devices
+    match: { mcp: { tool: dex_list_remote_capture_eligible_devices } }
+    class: read
+    card: "List devices that allow remote captures"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-remote-capture-eligible-devices.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-list-remote-captures
+    match: { mcp: { tool: dex_list_remote_captures } }
+    class: read
+    card: "List remote captures"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-remote-captures.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-fleet-status-live
+    match: { mcp: { tool: dex_fleet_status_live } }
+    class: read
+    card: "Show live WARP fleet status"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-fleet-status-live.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-fleet-status-over-time
+    match: { mcp: { tool: dex_fleet_status_over_time } }
+    class: read
+    card: "Show WARP fleet status over time"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-fleet-status-over-time.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-fleet-status-logs
+    match: { mcp: { tool: dex_fleet_status_logs } }
+    class: read
+    card: "Read WARP fleet status logs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-fleet-status-logs.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-list-warp-change-events
+    match: { mcp: { tool: dex_list_warp_change_events } }
+    class: read
+    card: "List WARP change events"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-warp-change-events.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-list-colos
+    match: { mcp: { tool: dex_list_colos } }
+    class: read
+    card: "List Cloudflare colos seen by WARP devices"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-colos.http
+        expect: read
+
+  - id: cloudflare-mcp.dex.dex-list-remote-warp-diag-contents
+    match: { mcp: { tool: dex_list_remote_warp_diag_contents } }
+    class: read
+    resource: { arg: deviceId, kind: device }
+    card: "List the files of WARP diagnostic {commandId} from device {deviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-list-remote-warp-diag-contents.http
+        expect: read
+        resource: "e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b"
+
+  - id: cloudflare-mcp.dex.dex-explore-remote-warp-diag-output
+    match: { mcp: { tool: dex_explore_remote_warp_diag_output } }
+    class: read
+    resource: { arg: deviceId, kind: device }
+    card: "Read {filepath} of WARP diagnostic {commandId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-explore-remote-warp-diag-output.http
+        expect: read
+        resource: "e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b"
+
+  - id: cloudflare-mcp.dex.dex-analyze-warp-diag
+    match: { mcp: { tool: dex_analyze_warp_diag } }
+    class: read
+    resource: { arg: command_id, kind: dex-command }
+    card: "Analyse WARP diagnostic {command_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    tests:
+      - fixture: fixtures/dex-dex-analyze-warp-diag.http
+        expect: read
+        resource: "c0ffee00-1234-4abc-8def-0123456789ab"
+
+  - id: cloudflare-mcp.dex.dex-create-remote-pcap
+    match: { mcp: { tool: dex_create_remote_pcap } }
+    class: write
+    resource: { arg: device_id, kind: device }
+    card: "Capture network packets on device {device_id} of {user_email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    notes: >-
+      Runs a capture on an employee's device and uploads the result to the
+      account; it changes no configuration.
+    tests:
+      - fixture: fixtures/dex-dex-create-remote-pcap.http
+        expect: write
+        resource: "e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b"
+
+  - id: cloudflare-mcp.dex.dex-create-remote-warp-diag
+    match: { mcp: { tool: dex_create_remote_warp_diag } }
+    class: write
+    resource: { arg: device_id, kind: device }
+    card: "Collect a WARP diagnostic from device {device_id} of {user_email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/dex-analysis/src/tools/dex-analysis.tools.ts
+    notes: >-
+      Runs a capture on an employee's device and uploads the result to the
+      account; it changes no configuration.
+    tests:
+      - fixture: fixtures/dex-dex-create-remote-warp-diag.http
+        expect: write
+        resource: "e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b"

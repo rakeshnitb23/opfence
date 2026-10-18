@@ -1,0 +1,310 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): email-routing
+operations:
+  - id: cloudflare.email-routing.settings-update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/email/routing" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Email Routing settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-settings-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.settings-apply
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/email/routing" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Apply Email Routing settings to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-settings-apply.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.enable
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/dns" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Enable Email Routing for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Adds Cloudflare's MX and SPF records.
+    tests:
+      - fixture: fixtures/email-routing-enable.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.enable-legacy
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/enable" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Enable Email Routing for zone {zone_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-enable-legacy.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.disable
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/email/routing/dns" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Disable Email Routing for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removes the MX records, so mail stops arriving; re-enabling restores them.
+    tests:
+      - fixture: fixtures/email-routing-disable.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.disable-legacy
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/disable" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Disable Email Routing for zone {zone_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-disable-legacy.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.dns-unlock
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/email/routing/dns" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Unlock the Email Routing DNS records of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-dns-unlock.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.unlock-legacy
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/unlock" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Unlock Email Routing for zone {zone_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-unlock-legacy.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.rule-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/rules" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Create an email routing rule in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Routing rules decide where the domain's email is delivered; pointing them
+      elsewhere hands someone else the domain's mail.
+    tests:
+      - fixture: fixtures/email-routing-rule-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.rule-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/email/routing/rules/{rule_identifier}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change email routing rule {rule_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Routing rules decide where the domain's email is delivered; pointing them
+      elsewhere hands someone else the domain's mail.
+    tests:
+      - fixture: fixtures/email-routing-rule-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.rule-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/email/routing/rules/{rule_identifier}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete email routing rule {rule_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-rule-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.catch-all
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/email/routing/rules/catch_all" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the catch-all email rule of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Routing rules decide where the domain's email is delivered; pointing them
+      elsewhere hands someone else the domain's mail.
+    tests:
+      - fixture: fixtures/email-routing-catch-all.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.address-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/routing/addresses" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add destination address {body.email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The address must be verified by its owner before mail is forwarded to it.
+    tests:
+      - fixture: fixtures/email-routing-address-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.address-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/email/routing/addresses/{destination_address_identifier}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change destination address {destination_address_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-address-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.address-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/email/routing/addresses/{destination_address_identifier}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete destination address {destination_address_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-address-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.rules-plan
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/routing/rules/plan" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Plan routing rule changes in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-rules-plan.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.account-suppression-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/email/routing/suppression" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add an email suppression (account, deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-account-suppression-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.account-suppression-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/email/routing/suppression/{suppression_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete email suppression {suppression_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-account-suppression-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.email-routing.zone-suppression-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/email/routing/suppression" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Add an email suppression (zone, deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-zone-suppression-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.zone-suppression-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/email/routing/suppression/{suppression_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete email suppression {suppression_id} (deprecated)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-zone-suppression-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.email-routing.dmarc-reports
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/email/auth/dmarc-reports" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change DMARC report settings of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/email-routing-dmarc-reports.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

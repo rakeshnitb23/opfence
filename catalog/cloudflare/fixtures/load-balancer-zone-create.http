@@ -1,0 +1,8 @@
+# description: Create load balancer lb.shop-example.com (zone)
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/load_balancers HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"lb.shop-example.com","default_pools":["17b5962d775c646f3f9725cbc7a53df4"],"fallback_pool":"17b5962d775c646f3f9725cbc7a53df4","proxied":true}

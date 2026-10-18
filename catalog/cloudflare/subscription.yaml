@@ -1,0 +1,90 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): subscription
+operations:
+  - id: cloudflare.subscription.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/subscriptions" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Create a paid subscription in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/subscription-create.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.subscription.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/subscriptions/{subscription_identifier}" } }
+    class: money
+    resource: { arg: subscription_identifier, kind: subscription }
+    card: "Change subscription {subscription_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/subscription-update.http
+        expect: money
+        resource: "506e3185e9c882d175a2d0cb0093d9f2"
+
+  - id: cloudflare.subscription.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/subscriptions/{subscription_identifier}" } }
+    class: money
+    resource: { arg: subscription_identifier, kind: subscription }
+    card: "Cancel subscription {subscription_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cancelling changes what the account pays and switches the paid features
+      off.
+    tests:
+      - fixture: fixtures/subscription-delete.http
+        expect: money
+        resource: "506e3185e9c882d175a2d0cb0093d9f2"
+
+  - id: cloudflare.subscription.cancel-downgrade
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/subscriptions/cancel-downgrade" } }
+    class: money
+    resource: { arg: account_id, kind: account }
+    card: "Cancel a scheduled downgrade in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/subscription-cancel-downgrade.http
+        expect: money
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.subscription.append-action
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/subscriptions/{subscription_identifier}/action/append" } }
+    class: money
+    resource: { arg: subscription_identifier, kind: subscription }
+    card: "Append an action to subscription {subscription_identifier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/subscription-append-action.http
+        expect: money
+        resource: "506e3185e9c882d175a2d0cb0093d9f2"
+
+  - id: cloudflare.subscription.cancel-reason
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/subscriptions/{subscription_identifier}/cancel-reason" } }
+    class: write
+    resource: { arg: subscription_identifier, kind: subscription }
+    card: "Record why subscription {subscription_identifier} is cancelled"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Feedback only; the cancellation itself is a separate call.
+    tests:
+      - fixture: fixtures/subscription-cancel-reason.http
+        expect: write
+        resource: "506e3185e9c882d175a2d0cb0093d9f2"

@@ -1,0 +1,8 @@
+# description: Store an API token for AI Search in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-search/tokens HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ai-search-r2","cf_api_id":"ed17574386854bf78a67040be0a770b0","cf_api_key":"opf_cloudflare_EXAMPLE"}

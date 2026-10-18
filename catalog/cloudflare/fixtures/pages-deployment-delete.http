@@ -1,0 +1,5 @@
+# description: Delete deployment 7e2f1a9c-3b4d-4e5f-8a6b-1c2d3e4f5a6b of Pages project shop-web
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects/shop-web/deployments/7e2f1a9c-3b4d-4e5f-8a6b-1c2d3e4f5a6b HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

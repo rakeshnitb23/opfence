@@ -1,0 +1,35 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-key
+operations:
+  - id: cloudflare.access-key.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/keys" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change the Access signing key rotation of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-key-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-key.rotate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/keys/rotate" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Rotate the Access signing keys of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Rotating signing keys invalidates tokens that origins validate with the
+      old key.
+    tests:
+      - fixture: fixtures/access-key-rotate.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

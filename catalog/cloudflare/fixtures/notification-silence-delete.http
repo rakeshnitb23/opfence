@@ -1,0 +1,5 @@
+# description: Delete notification silence f878e90c23f44126ae3cfc399f646977
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/alerting/v3/silences/f878e90c23f44126ae3cfc399f646977 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

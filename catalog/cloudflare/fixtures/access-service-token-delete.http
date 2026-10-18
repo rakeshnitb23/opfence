@@ -1,0 +1,6 @@
+# description: Delete Access service token 3537a672-e4d8-4d89-aab9-26cb622918a1
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/service_tokens/3537a672-e4d8-4d89-aab9-26cb622918a1 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

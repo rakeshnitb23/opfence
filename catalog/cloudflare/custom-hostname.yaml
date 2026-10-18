@@ -1,0 +1,110 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): custom-hostname
+operations:
+  - id: cloudflare.custom-hostname.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/custom_hostnames" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Add custom hostname {body.hostname} to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-hostname-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/custom_hostnames/{custom_hostname_id}" } }
+    class: write
+    when:
+      - if: { arg: body.ssl.custom_key, present: true }
+        class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Change custom hostname {custom_hostname_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A custom certificate's private key in the body is a secret.
+    tests:
+      - fixture: fixtures/custom-hostname-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/custom-hostname-update-custom-key.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_hostnames/{custom_hostname_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete custom hostname {custom_hostname_id} and its certificates"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The hostname can be added again and certificates reissued; it holds no
+      data.
+    tests:
+      - fixture: fixtures/custom-hostname-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.fallback-origin-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_hostnames/fallback_origin" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change the fallback origin for custom hostnames in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-hostname-fallback-origin-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.fallback-origin-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_hostnames/fallback_origin" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete the fallback origin for custom hostnames in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-hostname-fallback-origin-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.certificate-replace
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_hostnames/{custom_hostname_id}/certificate_pack/{certificate_pack_id}/certificates/{certificate_id}" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace the certificate and key of custom hostname {custom_hostname_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-hostname-certificate-replace.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-hostname.certificate-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_hostnames/{custom_hostname_id}/certificate_pack/{certificate_pack_id}/certificates/{certificate_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete a certificate of custom hostname {custom_hostname_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-hostname-certificate-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

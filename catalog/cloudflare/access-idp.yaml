@@ -1,0 +1,299 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): access-idp
+operations:
+  - id: cloudflare.access-idp.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/identity_providers" } }
+    class: access
+    when:
+      - if: { arg: body.config.client_secret, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Add Access identity provider {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Identity providers are how users log in (access). The config holds the
+      OAuth client secret, so sending one stores a secret (credential).
+    tests:
+      - fixture: fixtures/access-idp-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/access-idp-create-secret.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-idp.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}" } }
+    class: access
+    when:
+      - if: { arg: body.config.client_secret, present: true }
+        class: credential
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Change Access identity provider {identity_provider_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Identity providers are how users log in (access). The config holds the
+      OAuth client secret, so sending one stores a secret (credential).
+    tests:
+      - fixture: fixtures/access-idp-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+      - fixture: fixtures/access-idp-update-secret.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}" } }
+    class: access
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Delete Access identity provider {identity_provider_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Users who log in through this provider lose access.
+    tests:
+      - fixture: fixtures/access-idp-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/access/identity_providers" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "List Access identity providers with their configuration"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns config.client_secret (not marked write-only for every
+      provider type) and scim_config.secret; Opfence cannot see whether they are
+      redacted, so listing identity providers is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/access-idp-list.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-idp.read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}" } }
+    class: credential
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Read Access identity provider {identity_provider_id} and its configuration"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns config.client_secret (not marked write-only for every
+      provider type) and scim_config.secret; Opfence cannot see whether they are
+      redacted, so listing identity providers is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/access-idp-read.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.zone-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/access/identity_providers" } }
+    class: access
+    when:
+      - if: { arg: body.config.client_secret, present: true }
+        class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Add Access identity provider {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Identity providers are how users log in (access). The config holds the
+      OAuth client secret, so sending one stores a secret (credential).
+    tests:
+      - fixture: fixtures/access-idp-zone-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/access-idp-zone-create-secret.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-idp.zone-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/access/identity_providers/{identity_provider_id}" } }
+    class: access
+    when:
+      - if: { arg: body.config.client_secret, present: true }
+        class: credential
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Change Access identity provider {identity_provider_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Identity providers are how users log in (access). The config holds the
+      OAuth client secret, so sending one stores a secret (credential).
+    tests:
+      - fixture: fixtures/access-idp-zone-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+      - fixture: fixtures/access-idp-zone-update-secret.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.zone-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/access/identity_providers/{identity_provider_id}" } }
+    class: access
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Delete Access identity provider {identity_provider_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Users who log in through this provider lose access.
+    tests:
+      - fixture: fixtures/access-idp-zone-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.zone-list
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/access/identity_providers" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "List Access identity providers with their configuration"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns config.client_secret (not marked write-only for every
+      provider type) and scim_config.secret; Opfence cannot see whether they are
+      redacted, so listing identity providers is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/access-idp-zone-list.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.access-idp.zone-read
+    match: { rest: { method: GET, path: "/client/v4/zones/{zone_id}/access/identity_providers/{identity_provider_id}" } }
+    class: credential
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Read Access identity provider {identity_provider_id} and its configuration"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema returns config.client_secret (not marked write-only for every
+      provider type) and scim_config.secret; Opfence cannot see whether they are
+      redacted, so listing identity providers is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/access-idp-zone-read.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.saml-certificate-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}/saml_certificate" } }
+    class: access
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Create a SAML encryption certificate for identity provider {identity_provider_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-saml-certificate-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.scim-group-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}/scim/groups/{group_id}" } }
+    class: access
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Delete SCIM group {group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-scim-group-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.scim-user-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/identity_providers/{identity_provider_id}/scim/users/{user_id}" } }
+    class: access
+    resource: { arg: identity_provider_id, kind: identity-provider }
+    card: "Delete SCIM user {user_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-scim-user-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8417"
+
+  - id: cloudflare.access-idp.federation-grant-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/idp_federation_grants" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create an IdP federation grant in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-federation-grant-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-idp.federation-grant-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/access/idp_federation_grants/{grant_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete IdP federation grant {grant_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-federation-grant-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.access-idp.saml-certificate-rotate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/access/saml_certificates/{saml_cert_set_id}/rotate" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Rotate SAML certificate set {saml_cert_set_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Access applications, policies, groups and identity providers decide who
+      can reach protected services; every change is access.
+    tests:
+      - fixture: fixtures/access-idp-saml-certificate-rotate.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

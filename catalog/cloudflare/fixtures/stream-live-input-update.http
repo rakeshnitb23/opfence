@@ -1,0 +1,8 @@
+# description: Change live input 66be4bf738797e01e1fca35a7bdecdcd
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/live_inputs/66be4bf738797e01e1fca35a7bdecdcd HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"meta":{"name":"Launch stream"}}

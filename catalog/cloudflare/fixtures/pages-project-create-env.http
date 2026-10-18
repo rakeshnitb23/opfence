@@ -1,0 +1,8 @@
+# description: Create Pages project shop-web
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/pages/projects HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-web","production_branch":"main","deployment_configs":{"production":{"env_vars":{"STRIPE_KEY":{"type":"secret_text","value":"opf_cloudflare_EXAMPLE"}}}}}

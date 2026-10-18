@@ -1,0 +1,69 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): custom-certificate
+operations:
+  - id: cloudflare.custom-certificate.upload
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/custom_certificates" } }
+    class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Upload a custom certificate and private key to zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The request carries the certificate's private key, a secret Cloudflare
+      then holds.
+    tests:
+      - fixture: fixtures/custom-certificate-upload.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-certificate.update
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/custom_certificates/{custom_certificate_id}" } }
+    class: write
+    when:
+      - if: { arg: body.private_key, present: true }
+        class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Change custom certificate {custom_certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-certificate-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/custom-certificate-update-key.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-certificate.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/custom_certificates/{custom_certificate_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete custom certificate {custom_certificate_id} of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The certificate can be uploaded again by whoever holds it; Cloudflare
+      never returns the key, so this is not reading a secret.
+    tests:
+      - fixture: fixtures/custom-certificate-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-certificate.prioritize
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_certificates/prioritize" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Reorder the custom certificates of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-certificate-prioritize.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"

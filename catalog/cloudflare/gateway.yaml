@@ -1,0 +1,523 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): gateway
+operations:
+  - id: cloudflare.gateway.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create the Zero Trust account for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/gateway-account-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.configuration-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/configuration" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Replace the Gateway configuration of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-configuration-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.configuration-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/gateway/configuration" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change the Gateway configuration of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-configuration-patch.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.logging-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/logging" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Gateway logging of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Turning logging off removes the audit trail of filtered traffic.
+    tests:
+      - fixture: fixtures/gateway-logging-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rule-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Gateway rule {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rule-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rule-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/rules/{rule_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Replace Gateway rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rule-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rule-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/gateway/rules/{rule_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Gateway rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rule-patch.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rules-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/gateway/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change several Gateway rules in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rules-patch.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rule-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/rules/{rule_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Gateway rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rule-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.rule-reset-expiration
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/rules/{rule_id}/reset_expiration" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Reset the expiration of Gateway rule {rule_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-rule-reset-expiration.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.list-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/lists" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Gateway list {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-list-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.list-upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/lists/upload" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a Gateway list from CSV in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-list-upload.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.list-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/lists/{list_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Replace Gateway list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-list-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.list-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/gateway/lists/{list_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Gateway list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-list-patch.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.list-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/lists/{list_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Gateway list {list_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-list-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.location-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/locations" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Gateway location {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-location-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.location-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/locations/{location_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Gateway location {location_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-location-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.location-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/locations/{location_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Gateway location {location_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-location-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.proxy-endpoint-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/proxy_endpoints" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a Gateway proxy endpoint in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-proxy-endpoint-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.proxy-endpoint-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/gateway/proxy_endpoints/{proxy_endpoint_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Gateway proxy endpoint {proxy_endpoint_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-proxy-endpoint-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.proxy-endpoint-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/proxy_endpoints/{proxy_endpoint_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Gateway proxy endpoint {proxy_endpoint_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-proxy-endpoint-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.pacfile-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/pacfiles" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a PAC file in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-pacfile-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.pacfile-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/pacfiles/{pacfile_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change PAC file {pacfile_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-pacfile-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.pacfile-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/pacfiles/{pacfile_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete PAC file {pacfile_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-pacfile-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.certificate-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/certificates" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a Gateway inspection certificate in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway certificates are the CA devices trust for TLS inspection.
+    tests:
+      - fixture: fixtures/gateway-certificate-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.certificate-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/gateway/certificates/{certificate_id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete Gateway certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-certificate-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.certificate-activate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/certificates/{certificate_id}/activate" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Activate Gateway certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-certificate-activate.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.certificate-deactivate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/certificates/{certificate_id}/deactivate" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Deactivate Gateway certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-certificate-deactivate.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.ssh-settings-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/audit_ssh_settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change Zero Trust SSH audit settings of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-ssh-settings-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.ssh-seed-rotate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/gateway/audit_ssh_settings/rotate_seed" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Rotate the Zero Trust SSH account seed of account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-ssh-seed-rotate.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.gateway.app-review-status
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/gateway/apps/review_status" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Change application review statuses in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Gateway policies, lists and certificates decide what traffic from the
+      organisation's devices is filtered or inspected.
+    tests:
+      - fixture: fixtures/gateway-app-review-status.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

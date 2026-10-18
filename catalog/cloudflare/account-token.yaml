@@ -1,0 +1,59 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): account-token
+operations:
+  - id: cloudflare.account-token.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/tokens" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create account API token {body.name} in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare returns the new token value in the response, once.
+    tests:
+      - fixture: fixtures/account-token-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.account-token.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/tokens/{token_id}" } }
+    class: access
+    resource: { arg: token_id, kind: api-token }
+    card: "Change the permissions or status of account API token {token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-token-update.http
+        expect: access
+        resource: "ed17574386854bf78a67040be0a770b0"
+
+  - id: cloudflare.account-token.roll
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/tokens/{token_id}/value" } }
+    class: credential
+    resource: { arg: token_id, kind: api-token }
+    card: "Roll account API token {token_id} and return the new value"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-token-roll.http
+        expect: credential
+        resource: "ed17574386854bf78a67040be0a770b0"
+
+  - id: cloudflare.account-token.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/tokens/{token_id}" } }
+    class: access
+    resource: { arg: token_id, kind: api-token }
+    card: "Delete account API token {token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/account-token-delete.http
+        expect: access
+        resource: "ed17574386854bf78a67040be0a770b0"

@@ -1,0 +1,7 @@
+# description: Create a CSR in zone 9f1839b6152d298aca64c4e906b6d074
+POST /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/custom_csrs HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"common_name":"example.com","country":"US","key_type":"rsa2048","locality":"San Francisco","organization":"Cloudflare, Inc.","sans":["example.com","www.example.com"],"state":"California"}

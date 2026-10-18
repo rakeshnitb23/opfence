@@ -1,0 +1,8 @@
+# description: Change user agent blocking rule 372e67954025e0ba6aaa6d586b9e0b5b
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/firewall/ua_rules/372e67954025e0ba6aaa6d586b9e0b5b HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"configuration":{},"description":"Prevent multiple login failures to mitigate brute force attacks","mode":{},"paused":false}

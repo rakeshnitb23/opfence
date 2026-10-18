@@ -1,0 +1,7 @@
+# description: Store build token ci-builds
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/tokens HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"build_token_name":"ci-builds","build_token_secret":"opf_cloudflare_EXAMPLE","cloudflare_token_id":"ed17574386854bf78a67040be0a770b0"}

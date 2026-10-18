@@ -1,0 +1,171 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): d1
+operations:
+  - id: cloudflare.d1.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create D1 database {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/d1-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.d1.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}" } }
+    class: write
+    resource: { arg: database_id, kind: database }
+    card: "Change D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/d1-update.http
+        expect: write
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}" } }
+    class: write
+    resource: { arg: database_id, kind: database }
+    card: "Change D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/d1-patch.http
+        expect: write
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}" } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Delete D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Time Travel restores a live database to an earlier point but cannot bring
+      back a deleted one. The schema now has an undelete endpoint, but documents
+      no retention window for deleted databases, so Opfence assumes the worse
+      case.
+    tests:
+      - fixture: fixtures/d1-delete.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.undelete
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/undelete" } }
+    class: write
+    resource: { arg: database_id, kind: database }
+    card: "Restore deleted D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/d1-undelete.http
+        expect: write
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/query" } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Run SQL on D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      D1 runs SQLite, not Postgres, so the SQL is not classified (the Postgres
+      classifier could misread SQLite quoting and comments). Any statement may
+      be a DROP or a DELETE, so the rule has the fixed class irreversible. D1
+      Time Travel can restore the database for 30 days, but Opfence cannot know
+      a bookmark was kept.
+    tests:
+      - fixture: fixtures/d1-query.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.raw
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/raw" } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Run raw SQL on D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      D1 runs SQLite, not Postgres, so the SQL is not classified (the Postgres
+      classifier could misread SQLite quoting and comments). Any statement may
+      be a DROP or a DELETE, so the rule has the fixed class irreversible. D1
+      Time Travel can restore the database for 30 days, but Opfence cannot know
+      a bookmark was kept.
+    tests:
+      - fixture: fixtures/d1-raw.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.import
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/import" } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Import SQL into D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      An import runs an uploaded SQL file, which may drop or overwrite tables.
+      D1 runs SQLite, not Postgres, so the SQL is not classified (the Postgres
+      classifier could misread SQLite quoting and comments). Any statement may
+      be a DROP or a DELETE, so the rule has the fixed class irreversible. D1
+      Time Travel can restore the database for 30 days, but Opfence cannot know
+      a bookmark was kept.
+    tests:
+      - fixture: fixtures/d1-import.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.export
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/export" } }
+    class: read
+    resource: { arg: database_id, kind: database }
+    card: "Export D1 database {database_id} as SQL"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Produces a SQL dump to download; changes nothing.
+    tests:
+      - fixture: fixtures/d1-export.http
+        expect: read
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare.d1.time-travel-restore
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/time_travel/restore" } }
+    class: delete
+    resource: { arg: database_id, kind: database }
+    card: "Restore D1 database {database_id} to an earlier point in time"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Discards changes made after the restore point, but the response returns
+      the bookmark from before the restore, so it can be undone within the Time
+      Travel window. Classed delete (restorable).
+    tests:
+      - fixture: fixtures/d1-time-travel-restore.http
+        expect: delete
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"

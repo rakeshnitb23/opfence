@@ -1,0 +1,5 @@
+# description: Delete deployment 7e2f1a9c-3b4d-4e5f-8a6b-1c2d3e4f5a6b of preview a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/workers/e1a2b3c4d5e64f708192a3b4c5d6e7f8/previews/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d/deployments/7e2f1a9c-3b4d-4e5f-8a6b-1c2d3e4f5a6b HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

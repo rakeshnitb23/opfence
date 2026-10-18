@@ -1,0 +1,8 @@
+# description: Add account custom nameserver ns1.shop-example.com
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/custom_ns HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"ns_name":"ns1.shop-example.com","ns_set":1}

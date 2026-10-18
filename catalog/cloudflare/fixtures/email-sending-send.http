@@ -1,0 +1,7 @@
+# description: Send an email to customer@example.net
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/email/sending/send HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"from":"orders@shop-example.com","to":"customer@example.net","subject":"Your order","text":"Thanks for your order."}

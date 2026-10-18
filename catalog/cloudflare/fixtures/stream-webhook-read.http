@@ -1,0 +1,5 @@
+# description: Read the Stream webhook of account 023e105f4ecef8ad9ca31a8372d0c353 with its signing secret
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/stream/webhook HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

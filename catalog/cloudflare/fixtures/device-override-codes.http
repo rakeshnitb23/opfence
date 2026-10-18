@@ -1,0 +1,5 @@
+# description: Read admin override codes for device registration ed35569b41ce4d1facfe683550f5408b
+GET /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/devices/registrations/ed35569b41ce4d1facfe683550f5408b/override_codes HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

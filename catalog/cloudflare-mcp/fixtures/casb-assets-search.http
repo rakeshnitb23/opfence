@@ -1,0 +1,8 @@
+# description: Search CASB assets for payroll
+POST /mcp HTTP/1.1
+Host: casb.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":164,"method":"tools/call","params":{"name":"assets_search","arguments":{"assetSearchTerm":"payroll"}}}

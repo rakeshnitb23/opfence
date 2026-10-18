@@ -1,0 +1,6 @@
+# description: Sync the capabilities of Access MCP server a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/ai-controls/mcp/servers/a1b2c3d4e5f64a7b8c9d0e1f2a3b4c5d/sync HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,45 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): r2-object
+operations:
+  - id: cloudflare.r2-object.upload
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/objects/{object_key}" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Upload object {object_key} to R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-object-upload.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-object.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/objects/{object_key}" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete object {object_key} from R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      R2 has no object versioning, so a deleted object is gone.
+    tests:
+      - fixture: fixtures/r2-object-delete.http
+        expect: irreversible
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-object.delete-many
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/objects" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete objects from R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-object-delete-many.http
+        expect: irreversible
+        resource: "shop-assets"

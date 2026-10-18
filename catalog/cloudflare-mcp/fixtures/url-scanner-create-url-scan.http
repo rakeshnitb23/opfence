@@ -1,0 +1,8 @@
+# description: Scan https://shop-example.com/checkout with the URL Scanner (Unlisted)
+POST /mcp HTTP/1.1
+Host: radar.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":139,"method":"tools/call","params":{"name":"create_url_scan","arguments":{"url":"https://shop-example.com/checkout","visibility":"Unlisted"}}}

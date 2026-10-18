@@ -1,0 +1,8 @@
+# description: Show CASB asset 3c2b1a0f-9e8d-4c7b-a6f5-e4d3c2b1a0f9
+POST /mcp HTTP/1.1
+Host: casb.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":165,"method":"tools/call","params":{"name":"asset_by_id","arguments":{"assetIdParam":"3c2b1a0f-9e8d-4c7b-a6f5-e4d3c2b1a0f9"}}}

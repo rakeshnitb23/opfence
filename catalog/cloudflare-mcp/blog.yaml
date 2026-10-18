@@ -1,0 +1,49 @@
+# Cloudflare MCP servers: blog
+operations:
+  - id: cloudflare-mcp.blog.search-posts
+    match: { mcp: { tool: search_posts } }
+    class: read
+    card: "Search the Cloudflare blog for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/cloudflare-blog/src/tools/blog.tools.ts
+    tests:
+      - fixture: fixtures/blog-search-posts.http
+        expect: read
+
+  - id: cloudflare-mcp.blog.list-posts
+    match: { mcp: { tool: list_posts } }
+    class: read
+    card: "List Cloudflare blog posts"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/cloudflare-blog/src/tools/blog.tools.ts
+    tests:
+      - fixture: fixtures/blog-list-posts.http
+        expect: read
+
+  - id: cloudflare-mcp.blog.get-post
+    match: { mcp: { tool: get_post } }
+    class: read
+    card: "Read Cloudflare blog post {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/cloudflare-blog/src/tools/blog.tools.ts
+    tests:
+      - fixture: fixtures/blog-get-post.http
+        expect: read
+
+  - id: cloudflare-mcp.blog.list-tags
+    match: { mcp: { tool: list_tags } }
+    class: read
+    card: "List Cloudflare blog tags"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/cloudflare-blog/src/tools/blog.tools.ts
+    tests:
+      - fixture: fixtures/blog-list-tags.http
+        expect: read

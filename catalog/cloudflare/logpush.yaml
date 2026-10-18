@@ -1,0 +1,351 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): logpush
+operations:
+  - id: cloudflare.logpush.account-job-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/jobs" } }
+    class: access
+    when:
+      - if: { arg: body.destination_conf, matches: "(?i)(secret|access-key|sig=|authorization|token|password|api[-_]?key)" }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Logpush job {body.name} (account)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A Logpush job sends request logs (which can include headers and cookies)
+      to the destination it names, so creating or repointing one is access.
+      destination_conf usually embeds the destination's credentials (an S3
+      secret key, a signed URL or an Authorization header), which makes it
+      credential.
+    tests:
+      - fixture: fixtures/logpush-account-job-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/logpush-account-job-create-s3-keys.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-job-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/logpush/jobs/{job_id}" } }
+    class: access
+    when:
+      - if: { arg: body.destination_conf, matches: "(?i)(secret|access-key|sig=|authorization|token|password|api[-_]?key)" }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change Logpush job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A Logpush job sends request logs (which can include headers and cookies)
+      to the destination it names, so creating or repointing one is access.
+      destination_conf usually embeds the destination's credentials (an S3
+      secret key, a signed URL or an Authorization header), which makes it
+      credential.
+    tests:
+      - fixture: fixtures/logpush-account-job-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/logpush-account-job-update-header.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-job-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/logpush/jobs/{job_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete Logpush job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The job configuration can be recreated; logs produced while no job exists
+      are not pushed later.
+    tests:
+      - fixture: fixtures/logpush-account-job-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-ownership
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/ownership" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Request a Logpush ownership challenge for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-account-ownership.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-ownership-validate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/ownership/validate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Validate a Logpush ownership challenge for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-account-ownership-validate.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-validate-destination
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/validate/destination" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Validate a Logpush destination for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-account-validate-destination.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-validate-destination-exists
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/validate/destination/exists" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Check whether a Logpush destination exists for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-account-validate-destination-exists.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.account-validate-origin
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/validate/origin" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Validate Logpush options for account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-account-validate-origin.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.zone-job-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/jobs" } }
+    class: access
+    when:
+      - if: { arg: body.destination_conf, matches: "(?i)(secret|access-key|sig=|authorization|token|password|api[-_]?key)" }
+        class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Create Logpush job {body.name} (zone)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A Logpush job sends request logs (which can include headers and cookies)
+      to the destination it names, so creating or repointing one is access.
+      destination_conf usually embeds the destination's credentials (an S3
+      secret key, a signed URL or an Authorization header), which makes it
+      credential.
+    tests:
+      - fixture: fixtures/logpush-zone-job-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/logpush-zone-job-create-s3-keys.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-job-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/logpush/jobs/{job_id}" } }
+    class: access
+    when:
+      - if: { arg: body.destination_conf, matches: "(?i)(secret|access-key|sig=|authorization|token|password|api[-_]?key)" }
+        class: credential
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Logpush job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A Logpush job sends request logs (which can include headers and cookies)
+      to the destination it names, so creating or repointing one is access.
+      destination_conf usually embeds the destination's credentials (an S3
+      secret key, a signed URL or an Authorization header), which makes it
+      credential.
+    tests:
+      - fixture: fixtures/logpush-zone-job-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+      - fixture: fixtures/logpush-zone-job-update-header.http
+        expect: credential
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-job-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/logpush/jobs/{job_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete Logpush job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The job configuration can be recreated; logs produced while no job exists
+      are not pushed later.
+    tests:
+      - fixture: fixtures/logpush-zone-job-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-ownership
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/ownership" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Request a Logpush ownership challenge for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-zone-ownership.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-ownership-validate
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/ownership/validate" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Validate a Logpush ownership challenge for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-zone-ownership-validate.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-validate-destination
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/validate/destination" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Validate a Logpush destination for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-zone-validate-destination.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-validate-destination-exists
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/validate/destination/exists" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Check whether a Logpush destination exists for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-zone-validate-destination-exists.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-validate-origin
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/validate/origin" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Validate Logpush options for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-zone-validate-origin.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.zone-instant-logs
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/logpush/edge/jobs" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    card: "Start an Instant Logs session for zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Streams live logs over a WebSocket.
+    tests:
+      - fixture: fixtures/logpush-zone-instant-logs.http
+        expect: read
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.logpush.transformer-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/transformers" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a Logpush transformer in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-transformer-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.transformer-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/logpush/transformers/{transformer_id}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change Logpush transformer {transformer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-transformer-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.transformer-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/logpush/transformers/{transformer_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete Logpush transformer {transformer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-transformer-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.logpush.transformer-preview
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/logpush/transformers/preview" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Preview a Logpush transformer in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/logpush-transformer-preview.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

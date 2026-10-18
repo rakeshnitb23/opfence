@@ -1,0 +1,7 @@
+# description: Change TLS setting always_online for hostname app.shop-example.com
+PUT /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/hostnames/settings/always_online/app.shop-example.com HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"value":"1.2"}

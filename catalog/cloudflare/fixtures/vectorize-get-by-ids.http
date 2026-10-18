@@ -1,0 +1,8 @@
+# description: Read vectors from index shop-embeddings
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/vectorize/v2/indexes/shop-embeddings/get_by_ids HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"ids":["sku-1042"]}

@@ -1,0 +1,207 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): pages-project
+operations:
+  - id: cloudflare.pages-project.list
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/pages/projects" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "List Pages projects of account {account_id} with their environment variables"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists a value for secret_text environment variables in
+      deployment configs. Opfence cannot see whether Cloudflare redacts them, so
+      reading a project or deployment is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/pages-project-list.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.pages-project.read
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}" } }
+    class: credential
+    resource: { arg: project_name, kind: pages-project }
+    card: "Read Pages project {project_name} with its environment variables"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The schema lists a value for secret_text environment variables in
+      deployment configs. Opfence cannot see whether Cloudflare redacts them, so
+      reading a project or deployment is assumed to reveal secrets.
+    tests:
+      - fixture: fixtures/pages-project-read.http
+        expect: credential
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.upload-token
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/upload-token" } }
+    class: credential
+    resource: { arg: project_name, kind: pages-project }
+    card: "Get an upload token for Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns a JWT that authorises direct uploads to the project.
+    tests:
+      - fixture: fixtures/pages-project-upload-token.http
+        expect: credential
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects" } }
+    class: write
+    when:
+      - if: { arg: body.deployment_configs.production.env_vars, present: true }
+        class: credential
+      - if: { arg: body.deployment_configs.preview.env_vars, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create Pages project {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Environment variables may be secret_text; their names say nothing about
+      type in a way Opfence can rely on, so any env_vars in the body count as
+      setting a secret.
+    tests:
+      - fixture: fixtures/pages-project-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/pages-project-create-env.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.pages-project.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}" } }
+    class: write
+    when:
+      - if: { arg: body.deployment_configs.production.env_vars, present: true }
+        class: credential
+      - if: { arg: body.deployment_configs.preview.env_vars, present: true }
+        class: credential
+    resource: { arg: project_name, kind: pages-project }
+    card: "Change Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Setting a variable to null deletes it, and secret_text values are secrets,
+      so any env_vars change is credential.
+    tests:
+      - fixture: fixtures/pages-project-update.http
+        expect: write
+        resource: "shop-web"
+      - fixture: fixtures/pages-project-update-env.http
+        expect: credential
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}" } }
+    class: irreversible
+    resource: { arg: project_name, kind: pages-project }
+    card: "Delete Pages project {project_name} with all deployments"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare documents this as permanent. Deployments could be rebuilt from
+      git, but the project's environment variables and secrets cannot.
+    tests:
+      - fixture: fixtures/pages-project-delete.http
+        expect: irreversible
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.domain-add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/domains" } }
+    class: access
+    resource: { arg: project_name, kind: pages-project }
+    card: "Serve Pages project {project_name} on {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Publishes the project on a custom domain.
+    tests:
+      - fixture: fixtures/pages-project-domain-add.http
+        expect: access
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.domain-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/domains/{domain_name}" } }
+    class: delete
+    resource: { arg: project_name, kind: pages-project }
+    card: "Remove custom domain {domain_name} from Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-project-domain-delete.http
+        expect: delete
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.domain-retry
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/domains/{domain_name}" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Retry validation of domain {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-project-domain-retry.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.build-cache-purge
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/purge_build_cache" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Purge the build cache of Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-project-build-cache-purge.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.source-connect
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/source" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Connect a Git repository to Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-project-source-connect.http
+        expect: write
+        resource: "shop-web"
+
+  - id: cloudflare.pages-project.source-disconnect
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/pages/projects/{project_name}/source" } }
+    class: write
+    resource: { arg: project_name, kind: pages-project }
+    card: "Disconnect the Git repository of Pages project {project_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-project-source-disconnect.http
+        expect: write
+        resource: "shop-web"

@@ -1,0 +1,7 @@
+# description: Replace Gateway rule 2536bcfad5faccb111b47003c79917fa
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/gateway/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Block malware","action":"block","filters":["dns"],"traffic":"any(dns.security_category[*] in {80})","enabled":true}

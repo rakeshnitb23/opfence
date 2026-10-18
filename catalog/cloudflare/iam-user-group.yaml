@@ -1,0 +1,85 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): iam-user-group
+operations:
+  - id: cloudflare.iam-user-group.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/iam/user_groups" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create user group {body.name} in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.iam-user-group.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/iam/user_groups/{user_group_id}" } }
+    class: access
+    resource: { arg: user_group_id, kind: iam-user-group }
+    card: "Change user group {user_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-update.http
+        expect: access
+        resource: "6d7f2f5f5b1d4a0e9081fdc98d432fd2"
+
+  - id: cloudflare.iam-user-group.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/iam/user_groups/{user_group_id}" } }
+    class: access
+    resource: { arg: user_group_id, kind: iam-user-group }
+    card: "Delete user group {user_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-delete.http
+        expect: access
+        resource: "6d7f2f5f5b1d4a0e9081fdc98d432fd2"
+
+  - id: cloudflare.iam-user-group.members-add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/iam/user_groups/{user_group_id}/members" } }
+    class: access
+    resource: { arg: user_group_id, kind: iam-user-group }
+    card: "Add members to user group {user_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-members-add.http
+        expect: access
+        resource: "6d7f2f5f5b1d4a0e9081fdc98d432fd2"
+
+  - id: cloudflare.iam-user-group.members-replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/iam/user_groups/{user_group_id}/members" } }
+    class: access
+    resource: { arg: user_group_id, kind: iam-user-group }
+    card: "Replace the members of user group {user_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-members-replace.http
+        expect: access
+        resource: "6d7f2f5f5b1d4a0e9081fdc98d432fd2"
+
+  - id: cloudflare.iam-user-group.member-remove
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/iam/user_groups/{user_group_id}/members/{member_id}" } }
+    class: access
+    resource: { arg: user_group_id, kind: user-group }
+    card: "Remove member {member_id} from user group {user_group_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/iam-user-group-member-remove.http
+        expect: access
+        resource: "6d7f2f5f5b1d4a0e9081fdc98d432fd2"

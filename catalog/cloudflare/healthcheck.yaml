@@ -1,0 +1,85 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): healthcheck
+operations:
+  - id: cloudflare.healthcheck.create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/healthchecks" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create health check {body.name} in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.healthcheck.update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/healthchecks/{healthcheck_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace health check {healthcheck_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-update.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.healthcheck.patch
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/healthchecks/{healthcheck_id}" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Change health check {healthcheck_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-patch.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.healthcheck.delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/healthchecks/{healthcheck_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete health check {healthcheck_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.healthcheck.preview-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/healthchecks/preview" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a preview health check in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-preview-create.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.healthcheck.preview-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/healthchecks/preview/{healthcheck_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete preview health check {healthcheck_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/healthcheck-preview-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

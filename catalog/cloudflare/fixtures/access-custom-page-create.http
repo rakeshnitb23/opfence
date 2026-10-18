@@ -1,0 +1,7 @@
+# description: Create Access custom page Blocked
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/custom_pages HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Blocked","type":"forbidden","custom_html":"<h1>Blocked</h1>"}

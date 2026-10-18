@@ -1,0 +1,6 @@
+# description: Remove automatic AI Gateway credit top-ups for account 023e105f4ecef8ad9ca31a8372d0c353
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/billing/topup/config HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

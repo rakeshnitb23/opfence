@@ -1,0 +1,7 @@
+# description: Create a version of Worker e1a2b3c4d5e64f708192a3b4c5d6e7f8
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/workers/e1a2b3c4d5e64f708192a3b4c5d6e7f8/versions HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"compatibility_date":"2026-09-01","main_module":"index.js","modules":[{"name":"index.js","content_type":"application/javascript+module","content_base64":"ZXhwb3J0IGRlZmF1bHQge30="}]}

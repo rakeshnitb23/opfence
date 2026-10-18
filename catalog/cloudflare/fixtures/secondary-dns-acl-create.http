@@ -1,0 +1,7 @@
+# description: Allow 192.0.2.53/28 to transfer zones from account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/secondary_dns/acls HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"secondary-ns","ip_range":"192.0.2.53/28"}

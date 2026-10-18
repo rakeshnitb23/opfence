@@ -1,0 +1,268 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): r2-bucket
+operations:
+  - id: cloudflare.r2-bucket.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2/buckets" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create R2 bucket {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-bucket.create-by-name
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Create R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-create-by-name.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Change the storage class of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-update.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}" } }
+    class: delete
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete empty R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare only deletes an empty bucket (no objects, uploads or
+      notification rules), so no object data can be lost; the bucket's
+      configuration can be recreated. Deleting objects is the irreversible step.
+    tests:
+      - fixture: fixtures/r2-bucket-delete.http
+        expect: delete
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.cors-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/cors" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Set the CORS policy of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      CORS decides which websites may read objects from a browser; it does not
+      make a private bucket public.
+    tests:
+      - fixture: fixtures/r2-bucket-cors-set.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.cors-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/cors" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Delete the CORS policy of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-cors-delete.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.lifecycle-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/lifecycle" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Set object lifecycle rules of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Lifecycle rules can delete objects automatically
+      (deleteObjectsTransition), and R2 has no versioning to bring them back.
+    tests:
+      - fixture: fixtures/r2-bucket-lifecycle-set.http
+        expect: irreversible
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.lock-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/lock" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Set bucket lock (retention) rules of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Adding retention protects data. Replacing the rules with fewer is covered
+      by lock-delete's reasoning only when they are removed outright.
+    tests:
+      - fixture: fixtures/r2-bucket-lock-set.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.lock-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/lock" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Remove the bucket lock rules of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing retention rules turns off the safety net that keeps objects from
+      being deleted, so it is as dangerous as deleting them.
+    tests:
+      - fixture: fixtures/r2-bucket-lock-delete.http
+        expect: irreversible
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.custom-domain-attach
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/domains/custom" } }
+    class: access
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Serve R2 bucket {bucket_name} publicly on {body.domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A custom domain makes every object in the bucket readable from the
+      internet.
+    tests:
+      - fixture: fixtures/r2-bucket-custom-domain-attach.http
+        expect: access
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.custom-domain-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/domains/custom/{domain}" } }
+    class: access
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Change public custom domain {domain} of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-custom-domain-update.http
+        expect: access
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.custom-domain-remove
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/domains/custom/{domain}" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Remove public custom domain {domain} from R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing public access loses no data.
+    tests:
+      - fixture: fixtures/r2-bucket-custom-domain-remove.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.managed-domain
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/domains/managed" } }
+    class: access
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Turn public r2.dev access on or off for R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Enabling the r2.dev domain makes every object in the bucket public.
+    tests:
+      - fixture: fixtures/r2-bucket-managed-domain.http
+        expect: access
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.job-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/jobs" } }
+    class: irreversible
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Start a background job on R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The prefixDelete job deletes every object under a prefix (an empty prefix
+      empties the bucket). Other job types only change storage class, but the
+      rule assumes the worse case.
+    tests:
+      - fixture: fixtures/r2-bucket-job-create.http
+        expect: irreversible
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.local-uploads
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/local-uploads" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Change local uploads of R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-local-uploads.http
+        expect: write
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.sippy-enable
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/sippy" } }
+    class: credential
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Enable Sippy migration into R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores access keys for the source storage provider and the R2 destination.
+    tests:
+      - fixture: fixtures/r2-bucket-sippy-enable.http
+        expect: credential
+        resource: "shop-assets"
+
+  - id: cloudflare.r2-bucket.sippy-disable
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/r2/buckets/{bucket_name}/sippy" } }
+    class: write
+    resource: { arg: bucket_name, kind: bucket }
+    card: "Disable Sippy for R2 bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-bucket-sippy-disable.http
+        expect: write
+        resource: "shop-assets"

@@ -1,0 +1,7 @@
+# description: Upload object uploads/invoice-1042.pdf to R2 bucket shop-assets
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2/buckets/shop-assets/objects/uploads%2Finvoice-1042.pdf HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/pdf
+
+%PDF-1.7 example

@@ -1,0 +1,7 @@
+# description: Change token validation configuration 4a7ee8d3-dd63-4ceb-9d5f-c27831854ce7
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/token_validation/config/4a7ee8d3-dd63-4ceb-9d5f-c27831854ce7 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"description":"Long description for Token Validation Configuration","title":"Example Token Validation Configuration","token_sources":["http.request.headers[\"x-auth\"][0]","http.request.cookies[\"Authorization\"][0]"]}

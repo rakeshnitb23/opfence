@@ -1,0 +1,64 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): user-token
+operations:
+  - id: cloudflare.user-token.create
+    match: { rest: { method: POST, path: "/client/v4/user/tokens" } }
+    class: credential
+    card: "Create API token {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare returns the new token value in the response, once.
+    tests:
+      - fixture: fixtures/user-token-create.http
+        expect: credential
+
+  - id: cloudflare.user-token.update
+    match: { rest: { method: PUT, path: "/client/v4/user/tokens/{token_id}" } }
+    class: access
+    resource: { arg: token_id, kind: api-token }
+    card: "Change the permissions or status of API token {token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The body sets the token's policies, so an update can widen what it may do.
+    tests:
+      - fixture: fixtures/user-token-update.http
+        expect: access
+        resource: "ed17574386854bf78a67040be0a770b0"
+
+  - id: cloudflare.user-token.roll
+    match: { rest: { method: PUT, path: "/client/v4/user/tokens/{token_id}/value" } }
+    class: credential
+    resource: { arg: token_id, kind: api-token }
+    card: "Roll API token {token_id} and return the new value"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns the new secret value and invalidates the old one.
+    tests:
+      - fixture: fixtures/user-token-roll.http
+        expect: credential
+        resource: "ed17574386854bf78a67040be0a770b0"
+
+  - id: cloudflare.user-token.delete
+    match: { rest: { method: DELETE, path: "/client/v4/user/tokens/{token_id}" } }
+    class: access
+    resource: { arg: token_id, kind: api-token }
+    card: "Delete API token {token_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Revokes the token; anything using it loses access. Classed like the other
+      catalogs' token deletes.
+    tests:
+      - fixture: fixtures/user-token-delete.http
+        expect: access
+        resource: "ed17574386854bf78a67040be0a770b0"

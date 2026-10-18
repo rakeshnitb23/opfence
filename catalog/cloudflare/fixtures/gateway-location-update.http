@@ -1,0 +1,7 @@
+# description: Change Gateway location ed35569b41ce4d1facfe683550f54086
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/gateway/locations/ed35569b41ce4d1facfe683550f54086 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"Head office"}

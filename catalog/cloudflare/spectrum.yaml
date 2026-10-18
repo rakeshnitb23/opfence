@@ -1,0 +1,45 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): spectrum
+operations:
+  - id: cloudflare.spectrum.app-create
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/spectrum/apps" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Expose {body.protocol} through Spectrum in zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A Spectrum application publishes a TCP or UDP service on the internet.
+    tests:
+      - fixture: fixtures/spectrum-app-create.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.spectrum.app-update
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/spectrum/apps/{app_id}" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Change Spectrum application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/spectrum-app-update.http
+        expect: access
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.spectrum.app-delete
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/spectrum/apps/{app_id}" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete Spectrum application {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/spectrum-app-delete.http
+        expect: delete
+        resource: "9f1839b6152d298aca64c4e906b6d074"

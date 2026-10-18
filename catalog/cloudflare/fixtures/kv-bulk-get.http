@@ -1,0 +1,8 @@
+# description: Read several keys of KV namespace 0f2ac74b498b48028cb68387c421e279
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/storage/kv/namespaces/0f2ac74b498b48028cb68387c421e279/bulk/get HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"keys":["flags:checkout"]}

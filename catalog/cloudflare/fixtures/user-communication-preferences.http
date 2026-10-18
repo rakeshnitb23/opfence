@@ -1,0 +1,7 @@
+# description: Change your email preferences
+PUT /client/v4/user/communication_preferences HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"language-locale":"en-US","preferences":{"marketing":{"subscribed":false},"product_news":{"subscribed":true}}}

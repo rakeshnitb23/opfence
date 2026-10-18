@@ -1,0 +1,7 @@
+# description: Delete a metadata index from shop-embeddings
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/vectorize/v2/indexes/shop-embeddings/metadata_index/delete HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"propertyName":"category"}

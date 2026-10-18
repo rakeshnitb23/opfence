@@ -1,0 +1,5 @@
+# description: Delete Access group aa0a4aab-672b-4bdb-bc33-a59f1130a11f
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/access/groups/aa0a4aab-672b-4bdb-bc33-a59f1130a11f HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Change local uploads of R2 bucket shop-assets
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/r2/buckets/shop-assets/local-uploads HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true}

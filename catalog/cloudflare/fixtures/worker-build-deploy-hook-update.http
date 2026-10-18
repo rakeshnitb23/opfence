@@ -1,0 +1,7 @@
+# description: Change deploy hook 9d8c7b6a-5f4e-4d3c-2b1a-0f9e8d7c6b5a
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/workers/shop-api/deploy_hooks/9d8c7b6a-5f4e-4d3c-2b1a-0f9e8d7c6b5a HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"branch":"main","deploy_hook_name":"Production Deploy Hook"}

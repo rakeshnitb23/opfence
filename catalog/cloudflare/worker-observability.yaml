@@ -1,0 +1,188 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): worker-observability
+operations:
+  - id: cloudflare.worker-observability.query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/telemetry/query" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Query Workers logs and traces in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-query.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.keys
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/telemetry/keys" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List telemetry keys in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-keys.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.values
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/telemetry/values" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "List telemetry values in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-values.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.live-tail
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/telemetry/live-tail" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Start a live tail in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-live-tail.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.live-tail-heartbeat
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/telemetry/live-tail/heartbeat" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    card: "Keep a live tail open in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-live-tail-heartbeat.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.query-save
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/queries" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Save observability query {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-query-save.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.query-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/observability/queries/{queryId}" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Change saved query {queryId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-query-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.query-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/observability/queries/{queryId}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete saved query {queryId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-query-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.query-share
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/shared/query" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a shareable link to a query result in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The link shares log data outside the account's access controls.
+    tests:
+      - fixture: fixtures/worker-observability-query-share.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.destination-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/destinations" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create telemetry destination {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A destination sends telemetry to an outside endpoint and stores the
+      headers (usually an API key) used to reach it.
+    tests:
+      - fixture: fixtures/worker-observability-destination-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.destination-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/workers/observability/destinations/{slug}" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Change telemetry destination {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-destination-update.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.destination-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/workers/observability/destinations/{slug}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete telemetry destination {slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-destination-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.worker-observability.metrics-export
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/observability/metricsexport" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Configure metrics exports in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/worker-observability-metrics-export.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

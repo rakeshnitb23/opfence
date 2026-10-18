@@ -1,0 +1,94 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): r2-migration
+operations:
+  - id: cloudflare.r2-migration.job-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/slurper/jobs" } }
+    class: credential
+    when:
+      - if: { arg: body.overwrite, equals: "true" }
+        class: credential
+      - if: { arg: body.overwrite, equals: "true" }
+        class: irreversible
+    resource: { arg: account_id, kind: account }
+    card: "Start a Super Slurper migration into R2"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Stores access keys for the source and target buckets (credential). With
+      overwrite=true existing R2 objects are replaced; that case also counts as
+      irreversible (both classes apply).
+    tests:
+      - fixture: fixtures/r2-migration-job-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-migration.job-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/slurper/jobs/{job_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete migration job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-migration-job-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-migration.job-abort
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/slurper/jobs/{job_id}/abort" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Abort migration job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-migration-job-abort.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-migration.jobs-abort-all
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/slurper/jobs/abortAll" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Abort all migration jobs in account {account_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-migration-jobs-abort-all.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-migration.job-pause
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/slurper/jobs/{job_id}/pause" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Pause migration job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-migration-job-pause.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.r2-migration.job-resume
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/slurper/jobs/{job_id}/resume" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Resume migration job {job_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/r2-migration-job-resume.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

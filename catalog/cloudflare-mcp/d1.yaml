@@ -1,0 +1,73 @@
+# Cloudflare MCP servers: d1
+operations:
+  - id: cloudflare-mcp.d1.d1-databases-list
+    match: { mcp: { tool: d1_databases_list } }
+    class: read
+    card: "List D1 databases"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
+    tests:
+      - fixture: fixtures/d1-d1-databases-list.http
+        expect: read
+
+  - id: cloudflare-mcp.d1.d1-database-create
+    match: { mcp: { tool: d1_database_create } }
+    class: write
+    card: "Create D1 database {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
+    tests:
+      - fixture: fixtures/d1-d1-database-create.http
+        expect: write
+
+  - id: cloudflare-mcp.d1.d1-database-get
+    match: { mcp: { tool: d1_database_get } }
+    class: read
+    resource: { arg: database_id, kind: database }
+    card: "Show D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
+    tests:
+      - fixture: fixtures/d1-d1-database-get.http
+        expect: read
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare-mcp.d1.d1-database-delete
+    match: { mcp: { tool: d1_database_delete } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Delete D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
+    notes: >-
+      Same judgement as cloudflare.d1.database-delete: Cloudflare documents no
+      retention window for a deleted database, so assume it is gone.
+    tests:
+      - fixture: fixtures/d1-d1-database-delete.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+
+  - id: cloudflare-mcp.d1.d1-database-query
+    match: { mcp: { tool: d1_database_query } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Run SQL on D1 database {database_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
+    notes: >-
+      D1 runs SQLite, which classify.sql does not parse, and the SQL may drop or
+      delete data: fixed irreversible.
+    tests:
+      - fixture: fixtures/d1-d1-database-query.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"

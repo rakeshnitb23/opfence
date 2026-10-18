@@ -1,0 +1,8 @@
+# description: Show the network path of DEX test 4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8 on device e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b
+POST /mcp HTTP/1.1
+Host: dex.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":148,"method":"tools/call","params":{"name":"dex_traceroute_test_network_path","arguments":{"testId":"4f3e2d1c-0b9a-4876-a5b4-c3d2e1f0a9b8","deviceId":"e1d2c3b4-a5f6-4789-8a7b-6c5d4e3f2a1b","from":"2026-10-17T00:00:00Z","to":"2026-10-18T00:00:00Z","interval":"hour"}}}

@@ -1,0 +1,6 @@
+# description: Cancel subscription 506e3185e9c882d175a2d0cb0093d9f2
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/subscriptions/506e3185e9c882d175a2d0cb0093d9f2 HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

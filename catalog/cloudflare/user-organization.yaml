@@ -1,0 +1,15 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): user-organization
+operations:
+  - id: cloudflare.user-organization.leave
+    match: { rest: { method: DELETE, path: "/client/v4/user/organizations/{organization_id}" } }
+    class: access
+    resource: { arg: organization_id, kind: organization }
+    card: "Leave organization {organization_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/user-organization-leave.http
+        expect: access
+        resource: "a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1"

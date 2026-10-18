@@ -1,0 +1,71 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): custom-ns
+operations:
+  - id: cloudflare.custom-ns.account-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/custom_ns" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Add account custom nameserver {body.ns_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-ns-account-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-ns.account-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/custom_ns/{custom_ns_id}" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete account custom nameserver {custom_ns_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-ns-account-delete.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.custom-ns.zone-set
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/custom_ns" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Set custom nameserver metadata of zone {zone_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-ns-zone-set.http
+        expect: write
+        resource: "9f1839b6152d298aca64c4e906b6d074"
+
+  - id: cloudflare.custom-ns.tenant-create
+    match: { rest: { method: POST, path: "/client/v4/tenants/{tenant_tag}/custom_ns" } }
+    class: write
+    resource: { arg: tenant_tag, kind: custom-ns }
+    card: "Add tenant custom nameserver {body.ns_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-ns-tenant-create.http
+        expect: write
+        resource: "shop-tenant"
+
+  - id: cloudflare.custom-ns.tenant-delete
+    match: { rest: { method: DELETE, path: "/client/v4/tenants/{tenant_tag}/custom_ns/{custom_ns_id}" } }
+    class: delete
+    resource: { arg: tenant_tag, kind: tenant }
+    card: "Delete tenant custom nameserver {custom_ns_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/custom-ns-tenant-delete.http
+        expect: delete
+        resource: "shop-tenant"

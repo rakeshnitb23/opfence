@@ -1,0 +1,17 @@
+# description: Deploy Worker shop-api
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/scripts/shop-api HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="metadata"
+Content-Type: application/json
+
+{"main_module": "index.js", "compatibility_date": "2026-09-01"}
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="index.js"; filename="index.js"
+Content-Type: application/javascript+module
+
+export default { fetch() { return new Response('ok') } }
+------opfence7MA4YWxkTrZu0gW--

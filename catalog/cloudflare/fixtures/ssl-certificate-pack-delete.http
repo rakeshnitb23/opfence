@@ -1,0 +1,5 @@
+# description: Delete certificate pack 3822ff90-ea29-44df-9e55-21300bb9419b of zone 9f1839b6152d298aca64c4e906b6d074
+DELETE /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/ssl/certificate_packs/3822ff90-ea29-44df-9e55-21300bb9419b HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

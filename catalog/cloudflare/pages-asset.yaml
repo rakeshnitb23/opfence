@@ -1,0 +1,37 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): pages-asset
+operations:
+  - id: cloudflare.pages-asset.upload
+    match: { rest: { method: POST, path: "/client/v4/pages/assets/upload" } }
+    class: write
+    card: "Upload Pages assets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-asset-upload.http
+        expect: write
+
+  - id: cloudflare.pages-asset.check-missing
+    match: { rest: { method: POST, path: "/client/v4/pages/assets/check-missing" } }
+    class: read
+    card: "Check which Pages assets are missing"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-asset-check-missing.http
+        expect: read
+
+  - id: cloudflare.pages-asset.upsert-hashes
+    match: { rest: { method: POST, path: "/client/v4/pages/assets/upsert-hashes" } }
+    class: write
+    card: "Record uploaded Pages asset hashes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/pages-asset-upsert-hashes.http
+        expect: write

@@ -1,0 +1,7 @@
+# description: Create an IP access rule (account)
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/firewall/access_rules/rules HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"mode":"whitelist","configuration":{"target":"ip","value":"198.51.100.4"},"notes":"office"}

@@ -1,0 +1,7 @@
+# description: Change the profile of account 023e105f4ecef8ad9ca31a8372d0c353
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/profile HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"business_address":"example","business_email":"example","business_name":"example","business_phone":"example","external_metadata":"example"}

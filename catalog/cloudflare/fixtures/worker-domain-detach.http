@@ -1,0 +1,5 @@
+# description: Detach Worker custom domain dbe10b4bc17c295377eabd600e1787fd
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/domains/dbe10b4bc17c295377eabd600e1787fd HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Respond to account invitation 4f5f0c14a2a41d5063dd301b2f829f04
+PATCH /client/v4/user/invites/4f5f0c14a2a41d5063dd301b2f829f04 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"status":"accepted"}

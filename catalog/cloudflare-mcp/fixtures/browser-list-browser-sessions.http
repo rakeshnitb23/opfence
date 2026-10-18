@@ -1,0 +1,8 @@
+# description: List browser sessions
+POST /mcp HTTP/1.1
+Host: browser.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":68,"method":"tools/call","params":{"name":"list_browser_sessions","arguments":{}}}

@@ -1,0 +1,7 @@
+# description: Change auto-renewal of domain shop-example.com
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/registrar/registrations/shop-example.com HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"auto_renew":true}

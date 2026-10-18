@@ -1,0 +1,8 @@
+# description: Point Hyperdrive configuration 7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b at another database host
+POST /mcp HTTP/1.1
+Host: bindings.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":31,"method":"tools/call","params":{"name":"hyperdrive_config_edit","arguments":{"hyperdrive_id":"7b4f8e2a1c3d4e5f9a8b7c6d5e4f3a2b","host":"db2.shop-example.com","port":5432}}}

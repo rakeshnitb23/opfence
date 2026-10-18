@@ -1,0 +1,243 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): vectorize
+operations:
+  - id: cloudflare.vectorize.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Vectorize index {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.vectorize.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}" } }
+    class: irreversible
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Delete Vectorize index {index_name} and its vectors"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The vectors are deleted with the index; Vectorize has no backup.
+    tests:
+      - fixture: fixtures/vectorize-delete.http
+        expect: irreversible
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.insert
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/insert" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Insert vectors into index {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-insert.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.upsert
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/upsert" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Upsert vectors into index {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-upsert.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.delete-by-ids
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/delete_by_ids" } }
+    class: irreversible
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Delete vectors from index {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-delete-by-ids.http
+        expect: irreversible
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.get-by-ids
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/get_by_ids" } }
+    class: read
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Read vectors from index {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-get-by-ids.http
+        expect: read
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/query" } }
+    class: read
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Query index {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-query.http
+        expect: read
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.metadata-index-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/metadata_index/create" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Create a metadata index on {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-metadata-index-create.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.metadata-index-delete
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/v2/indexes/{index_name}/metadata_index/delete" } }
+    class: delete
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Delete a metadata index from {index_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Vectors keep their metadata; the index can be created again.
+    tests:
+      - fixture: fixtures/vectorize-metadata-index-delete.http
+        expect: delete
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.create-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Vectorize index {body.name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-create-v1.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.vectorize.update-v1
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Change Vectorize index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-update-v1.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.delete-v1
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}" } }
+    class: irreversible
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Delete Vectorize index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-delete-v1.http
+        expect: irreversible
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.insert-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}/insert" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Insert vectors into index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-insert-v1.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.upsert-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}/upsert" } }
+    class: write
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Upsert vectors into index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-upsert-v1.http
+        expect: write
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.delete-by-ids-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}/delete-by-ids" } }
+    class: irreversible
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Delete vectors from index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-delete-by-ids-v1.http
+        expect: irreversible
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.get-by-ids-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}/get-by-ids" } }
+    class: read
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Read vectors from index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-get-by-ids-v1.http
+        expect: read
+        resource: "shop-embeddings"
+
+  - id: cloudflare.vectorize.query-v1
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/vectorize/indexes/{index_name}/query" } }
+    class: read
+    resource: { arg: index_name, kind: vectorize-index }
+    card: "Query index {index_name} (deprecated API)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/vectorize-query-v1.http
+        expect: read
+        resource: "shop-embeddings"

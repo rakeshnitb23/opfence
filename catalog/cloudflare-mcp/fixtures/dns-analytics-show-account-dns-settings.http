@@ -1,0 +1,8 @@
+# description: Show account DNS settings
+POST /mcp HTTP/1.1
+Host: dns-analytics.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":48,"method":"tools/call","params":{"name":"show_account_dns_settings","arguments":{}}}

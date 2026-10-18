@@ -1,0 +1,249 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): queue
+operations:
+  - id: cloudflare.queue.create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create queue {body.queue_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.queue.update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/queues/{queue_id}" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Change queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-update.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/queues/{queue_id}" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Change queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-patch.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/queues/{queue_id}" } }
+    class: irreversible
+    resource: { arg: queue_id, kind: queue }
+    card: "Delete queue {queue_id} and its messages"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Messages still in the queue are lost.
+    tests:
+      - fixture: fixtures/queue-delete.http
+        expect: irreversible
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.purge
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/purge" } }
+    class: irreversible
+    resource: { arg: queue_id, kind: queue }
+    card: "Delete every message in queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-purge.http
+        expect: irreversible
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.consumer-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/consumers" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Add a consumer to queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-consumer-create.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.consumer-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/consumers/{consumer_id}" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Change consumer {consumer_id} of queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-consumer-update.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.consumer-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/consumers/{consumer_id}" } }
+    class: delete
+    resource: { arg: queue_id, kind: queue }
+    card: "Remove consumer {consumer_id} from queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Messages stay in the queue; the consumer can be added again.
+    tests:
+      - fixture: fixtures/queue-consumer-delete.http
+        expect: delete
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-send
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Send a message to queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-send.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-send-batch
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/batch" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Send messages to queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-send-batch.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-pull
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/pull" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Pull messages from queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Pulling leases the messages, hiding them from other consumers until
+      acknowledged or the lease ends.
+    tests:
+      - fixture: fixtures/queue-message-pull.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-ack
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/ack" } }
+    class: irreversible
+    resource: { arg: queue_id, kind: queue }
+    card: "Acknowledge or retry messages in queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Acknowledged messages are deleted for good; acknowledging messages that
+      were not processed loses them.
+    tests:
+      - fixture: fixtures/queue-message-ack.http
+        expect: irreversible
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-extend
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/extend" } }
+    class: write
+    resource: { arg: queue_id, kind: queue }
+    card: "Extend message leases in queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-extend.http
+        expect: write
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-peek
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/peek" } }
+    class: read
+    resource: { arg: queue_id, kind: queue }
+    card: "Peek at messages in queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-peek.http
+        expect: read
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-preview
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/preview" } }
+    class: read
+    resource: { arg: queue_id, kind: queue }
+    card: "Preview messages in queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-preview.http
+        expect: read
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-preview-ack
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/preview/ack" } }
+    class: irreversible
+    resource: { arg: queue_id, kind: queue }
+    card: "Delete previewed messages from queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-preview-ack.http
+        expect: irreversible
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"
+
+  - id: cloudflare.queue.message-purge-peeked
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/queues/{queue_id}/messages/purge" } }
+    class: irreversible
+    resource: { arg: queue_id, kind: queue }
+    card: "Delete peeked messages from queue {queue_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/queue-message-purge-peeked.http
+        expect: irreversible
+        resource: "3d6c1b0e8f4a4b2c9d7e5f1a2b3c4d5e"

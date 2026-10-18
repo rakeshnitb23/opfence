@@ -1,0 +1,5 @@
+# description: Create image signing key shop-signing-key
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/images/v1/keys/shop-signing-key HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

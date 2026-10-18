@@ -1,0 +1,12 @@
+# description: Change bindings or settings of Worker shop-api
+PATCH /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workers/scripts/shop-api/settings HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
+
+------opfence7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="settings"
+Content-Type: application/json
+
+{"compatibility_date":"2026-09-01"}
+------opfence7MA4YWxkTrZu0gW--

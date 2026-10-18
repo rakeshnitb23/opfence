@@ -1,0 +1,8 @@
+# description: Search Cloudflare documentation for R2 lifecycle rules
+POST /mcp HTTP/1.1
+Host: docs.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"search_cloudflare_documentation","arguments":{"query":"R2 lifecycle rules"}}}

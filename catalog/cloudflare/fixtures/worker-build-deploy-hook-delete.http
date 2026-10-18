@@ -1,0 +1,6 @@
+# description: Delete deploy hook 9d8c7b6a-5f4e-4d3c-2b1a-0f9e8d7c6b5a
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/workers/shop-api/deploy_hooks/9d8c7b6a-5f4e-4d3c-2b1a-0f9e8d7c6b5a HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+

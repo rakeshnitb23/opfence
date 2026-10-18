@@ -1,0 +1,5 @@
+# description: Remove custom domain app.shop-example.com from AI gateway shop-gateway
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/ai-gateway/gateways/shop-gateway/custom-domains/app.shop-example.com HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

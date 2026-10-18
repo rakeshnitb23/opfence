@@ -1,0 +1,8 @@
+# description: List Cloudflare developer libraries
+POST /mcp HTTP/1.1
+Host: stack.mcp.cloudflare.com
+Authorization: Bearer opf_cloudflare-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":173,"method":"tools/call","params":{"name":"list_libraries","arguments":{}}}

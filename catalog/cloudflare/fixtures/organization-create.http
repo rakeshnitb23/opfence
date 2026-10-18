@@ -1,0 +1,8 @@
+# description: Create organization example
+POST /client/v4/organizations HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"example"}

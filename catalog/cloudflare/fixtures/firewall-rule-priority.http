@@ -1,0 +1,7 @@
+# description: Reorder firewall rule 2536bcfad5faccb111b47003c79917fa (deprecated API)
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/firewall/rules/2536bcfad5faccb111b47003c79917fa HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"priority":1}

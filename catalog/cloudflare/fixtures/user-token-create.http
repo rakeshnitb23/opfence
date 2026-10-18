@@ -1,0 +1,7 @@
+# description: Create API token ci-deploy
+POST /client/v4/user/tokens HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"ci-deploy","policies":[{"effect":"allow","permission_groups":[{"id":"c8fed203ed3043cba015a93ad1616f1f"}],"resources":{"com.cloudflare.api.account.023e105f4ecef8ad9ca31a8372d0c353":"*"}}]}

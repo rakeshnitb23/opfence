@@ -1,0 +1,25 @@
+# Cloudflare MCP servers: stack
+operations:
+  - id: cloudflare-mcp.stack.list-libraries
+    match: { mcp: { tool: list_libraries } }
+    class: read
+    card: "List Cloudflare developer libraries"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/stack-mcp/src/tools/stack.tools.ts
+    tests:
+      - fixture: fixtures/stack-list-libraries.http
+        expect: read
+
+  - id: cloudflare-mcp.stack.search-dev-stack
+    match: { mcp: { tool: search_dev_stack } }
+    class: read
+    card: "Search Cloudflare developer libraries for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/stack-mcp/src/tools/stack.tools.ts
+    tests:
+      - fixture: fixtures/stack-search-dev-stack.http
+        expect: read

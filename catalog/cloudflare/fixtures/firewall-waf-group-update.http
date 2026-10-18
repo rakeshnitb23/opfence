@@ -1,0 +1,8 @@
+# description: Change WAF rule group aa0a4aab-672b-4bdb-bc33-a59f1130a11f (deprecated API)
+PATCH /client/v4/zones/9f1839b6152d298aca64c4e906b6d074/firewall/waf/packages/a25a9a7e9c00afc1fb2e0245519d725b/groups/aa0a4aab-672b-4bdb-bc33-a59f1130a11f HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

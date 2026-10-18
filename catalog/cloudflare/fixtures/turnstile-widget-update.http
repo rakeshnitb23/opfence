@@ -1,0 +1,7 @@
+# description: Change Turnstile widget 0x4AAF00AAAABn0R22HWm-YUc
+PUT /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/challenges/widgets/0x4AAF00AAAABn0R22HWm-YUc HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"checkout","domains":["shop-example.com"],"mode":"managed"}

@@ -1,0 +1,5 @@
+# description: Delete instance 3c4b2a1d-7e6f-4a5b-9c8d-1e2f3a4b5c6d of workflow order-fulfilment
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/workflows/order-fulfilment/instances/3c4b2a1d-7e6f-4a5b-9c8d-1e2f3a4b5c6d HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

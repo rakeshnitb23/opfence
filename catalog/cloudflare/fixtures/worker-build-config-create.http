@@ -1,0 +1,7 @@
+# description: Create a Worker build configuration in account 023e105f4ecef8ad9ca31a8372d0c353
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/builds/workers HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"git_repository":"example","previews_base_config":{"build_command":"npm run build","build_token_uuid":"example","deploy_command":"npx wrangler deploy"},"previews_enabled":false,"production_settings":{"build_command":"npm run build","build_token_uuid":"example","deploy_command":"npx wrangler deploy"},"script_tag":"dd7160bb9cef458093557736f4b9e75b"}

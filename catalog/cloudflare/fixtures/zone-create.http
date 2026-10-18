@@ -1,0 +1,8 @@
+# description: Add zone shop-example.com to Cloudflare
+POST /client/v4/zones HTTP/1.1
+Host: api.cloudflare.com
+X-Auth-Email: ops@shop-example.com
+X-Auth-Key: opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"account":{"id":"023e105f4ecef8ad9ca31a8372d0c353"},"name":"shop-example.com","type":"full"}
