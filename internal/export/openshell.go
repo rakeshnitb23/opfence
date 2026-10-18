@@ -87,11 +87,16 @@ func openShellEndpoints(p *policy.Effective, prov *catalog.Provider, host, env s
 	case slices.Contains(prov.Git, host):
 		out = append(out, gitEndpoint(p, prov, rules, host, env))
 	default:
+		var closed []string // GraphQL paths with nothing to allow
 		for _, path := range prov.GraphQL {
-			out = append(out, graphQLEndpoint(p, prov, rules, host, path, env))
+			if ep := graphQLEndpoint(p, prov, rules, host, path, env); ep != nil {
+				out = append(out, ep)
+			} else {
+				closed = append(closed, path)
+			}
 		}
 		if hasREST(prov, rules) {
-			out = append(out, restEndpoint(p, prov, rules, host, env))
+			out = append(out, restEndpoint(p, prov, rules, host, env, closed))
 		}
 	}
 	return out
@@ -180,17 +185,28 @@ func graphQLEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catal
 			deny.Content = append(deny.Content, rule)
 		}
 	}
+	if len(allow.Content) == 0 {
+		// OpenShell needs allow rules on a GraphQL endpoint; leaving the
+		// endpoint out blocks it all.
+		return nil
+	}
 	addRules(ep, allow, deny)
 	return ep
 }
 
-func restEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catalog.Rule, host, env string) *yaml.Node {
+func restEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catalog.Rule, host, env string, closedGraphQL []string) *yaml.Node {
 	ep := endpointHead(host, "", "rest")
 	allow, deny := seq(), seq()
 	safeDefault := prov.Defaults.RESTSafeMethods != "" && DefaultDecision(p, prov.Defaults.RESTSafeMethods, env) == classes.Allow
 	if safeDefault {
 		for _, m := range []string{"GET", "HEAD", "OPTIONS"} {
 			allow.Content = append(allow.Content, allowRule(pairs("method", scalar(m), "path", scalar("/**"))))
+		}
+		for _, path := range closedGraphQL {
+			// GraphQL also runs queries sent with GET.
+			rule := pairs("method", scalar("GET"), "path", scalar(path))
+			rule.HeadComment = "GraphQL at " + path + " has nothing OpenShell can allow (any query may select a secret field), so\nqueries sent with GET are denied too."
+			deny.Content = append(deny.Content, rule)
 		}
 	}
 	type restRule struct {
