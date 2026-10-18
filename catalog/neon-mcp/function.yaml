@@ -1,0 +1,133 @@
+# Neon MCP server: function
+operations:
+  - id: neon-mcp.function.list
+    match: { mcp: { tool: list_functions } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List functions on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-list.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.get
+    match: { mcp: { tool: get_function } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.update
+    match: { mcp: { tool: update_function } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Change function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-update.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.delete
+    match: { mcp: { tool: delete_function } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      The code can be deployed again from its source.
+    tests:
+      - fixture: fixtures/function-delete.http
+        expect: delete
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.deploy
+    match: { mcp: { tool: deploy_function } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Deploy code to function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-deploy.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.list-custom-domains
+    match: { mcp: { tool: list_functions_custom_domains } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List custom domains on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-list-custom-domains.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.register-custom-domain
+    match: { mcp: { tool: register_functions_custom_domain } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Route custom domain {domain} to function {entity_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Exposes a function on a public host name.
+    tests:
+      - fixture: fixtures/function-register-custom-domain.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.function.delete-custom-domain
+    match: { mcp: { tool: delete_functions_custom_domain } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Remove custom domain {domain} from branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/function-delete-custom-domain.http
+        expect: delete
+        resource: br-shop-main-123456

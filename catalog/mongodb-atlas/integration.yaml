@@ -1,0 +1,49 @@
+# MongoDB Atlas Administration API: integration
+operations:
+  - id: mongodb-atlas.integration.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/integrations/{integrationType}" } }
+    class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create the {integrationType} integration in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Every integration type stores a third-party key, token, password or
+      webhook secret.
+    tests:
+      - fixture: fixtures/integration-create.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.integration.update
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/integrations/{integrationType}" } }
+    class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Replace the {integrationType} integration in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Every integration type stores a third-party key, token, password or
+      webhook secret.
+    tests:
+      - fixture: fixtures/integration-update.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.integration.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/integrations/{integrationType}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete the {integrationType} integration from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/integration-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

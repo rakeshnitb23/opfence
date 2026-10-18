@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: private-endpoint-service
+operations:
+  - id: mongodb-atlas.private-endpoint-service.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/privateEndpoint/endpointService" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.providerName} private endpoint service in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/private-endpoint-service-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.private-endpoint-service.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/privateEndpoint/endpointService/{endpointServiceId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change private endpoint service {endpointServiceId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/private-endpoint-service-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.private-endpoint-service.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/privateEndpoint/{cloudProvider}/endpointService/{endpointServiceId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete {cloudProvider} private endpoint service {endpointServiceId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/private-endpoint-service-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

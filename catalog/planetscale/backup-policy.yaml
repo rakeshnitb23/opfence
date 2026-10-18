@@ -1,0 +1,60 @@
+# PlanetScale API: backup-policy
+operations:
+  - id: planetscale.backup-policy.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/backup-policies" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Create backup policy {body.name} for database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/backup-policy-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.backup-policy.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/backup-policies/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.retention_value, present: true }
+        class: irreversible
+      - if: { arg: body.retention_unit, present: true }
+        class: irreversible
+      - if: { arg: body.target, present: true }
+        class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Change backup policy {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Opfence cannot see the current retention, so any retention change is treated as a shorter
+      one, which expires existing backups early. Changing the target moves the policy off the
+      branches it protected.
+    tests:
+      - fixture: fixtures/backup-policy-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/backup-policy-update-retention.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.backup-policy.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/backup-policies/{id}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete backup policy {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Stops scheduled backups; the API does not say whether the policy's existing backups are
+      kept, so assume they expire with it.
+    tests:
+      - fixture: fixtures/backup-policy-delete.http
+        expect: irreversible
+        resource: shop-db

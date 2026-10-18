@@ -1,0 +1,54 @@
+# MongoDB Atlas Administration API: live-migration
+operations:
+  - id: mongodb-atlas.live-migration.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/liveMigrations" } }
+    class: write
+    when:
+      - if: { arg: body.dropDestinationData, equals: "true" }
+        class: irreversible
+    resource: { arg: groupId, kind: project }
+    card: "Start a live migration into cluster {body.destination.clusterName} of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      dropDestinationData deletes everything on the destination cluster before
+      the migration starts.
+    tests:
+      - fixture: fixtures/live-migration-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/live-migration-create-drop.http
+        expect: irreversible
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.live-migration.validate
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/liveMigrations/validate" } }
+    class: read
+    resource: { arg: groupId, kind: project }
+    card: "Validate a live migration into cluster {body.destination.clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Only checks the request; nothing is migrated.
+    tests:
+      - fixture: fixtures/live-migration-validate.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.live-migration.cutover
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/liveMigrations/{liveMigrationId}/cutover" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Cut over live migration {liveMigrationId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/live-migration-cutover.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8

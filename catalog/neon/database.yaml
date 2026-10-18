@@ -1,0 +1,54 @@
+# Neon API v2: database
+operations:
+  - id: neon.database.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/databases" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create database {body.database.name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.database.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/databases/{database_name}" } }
+    class: write
+    when:
+      - if: { arg: body.database.owner_name, present: true }
+        class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change database {database_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Changing the owner hands full control of the database to another role.
+    tests:
+      - fixture: fixtures/database-update.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/database-update-owner.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.database.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/databases/{database_name}" } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete database {database_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Data is only recoverable through a branch restore within the history
+      window, which the API call itself does not offer.
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456

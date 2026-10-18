@@ -1,0 +1,14 @@
+provider: neon
+title: Neon
+docs: https://neon.com/docs/reference/api
+hosts: [console.neon.tech]
+auth:
+  - header: Authorization          # personal, organization and project-scoped API keys
+    scheme: Bearer
+detect:
+  env: [NEON_API_KEY]
+  prefixes: [napi_]                # API keys as printed by `neon api-keys create` in the docs
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Every path is under /api/v2, the version prefix the spec's server URL
+# (https://console.neon.tech/api/v2) defines.

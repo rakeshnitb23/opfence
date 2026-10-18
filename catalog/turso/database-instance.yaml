@@ -1,0 +1,53 @@
+# Turso Platform API: legacy database instances
+operations:
+  - id: turso.database-instance.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/instances" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Add an instance of Turso database {database} in {body.Location}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/instances.go
+    notes: >-
+      Legacy per-database instances, used by the turso CLI (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/database-instance-create.http
+        expect: write
+        resource: app-db
+
+  - id: turso.database-instance.delete
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/databases/{database}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Destroy instance {instance} of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/instances.go
+    notes: >-
+      Legacy per-database instances, used by the turso CLI. A replica can be rebuilt, but
+      the request does not say whether the instance is the primary, so the worse case
+      applies.
+    tests:
+      - fixture: fixtures/database-instance-delete.http
+        expect: irreversible
+        resource: app-db
+
+  - id: turso.database-instance.delete-unscoped
+    match: { rest: { method: DELETE, path: "/{version}/databases/{database}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Destroy instance {instance} of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/instances.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-instance-delete-unscoped.http
+        expect: irreversible
+        resource: app-db

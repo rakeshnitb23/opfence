@@ -1,10 +1,12 @@
 package catalog
 
 import (
+	"slices"
 	"strings"
 	"testing"
 	"testing/fstest"
 
+	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/decode"
 )
 
@@ -146,5 +148,46 @@ func TestGitRefSpecificity(t *testing.T) {
 	}
 	if !p.Hints("api.acme.dev").Git || p.Hints("other.acme.dev").Git {
 		t.Error("git hint is per host")
+	}
+}
+
+func TestClassifySQLArg(t *testing.T) {
+	for _, tc := range []struct {
+		v    any
+		want []classes.Class
+	}{
+		{"select 1", []classes.Class{classes.Read}},
+		{[]any{"select 1", "drop table t"}, []classes.Class{classes.Read, classes.Irreversible}},
+		// An unterminated quote in one statement cannot swallow the next.
+		{[]any{"select 'x", "drop table t"}, []classes.Class{classes.Unknown, classes.Irreversible}},
+		{[]any{"select 1", 7}, nil},
+		{[]any{}, nil},
+		{map[string]any{"q": "select 1"}, nil},
+		{nil, nil},
+	} {
+		if got := classifySQLArg(tc.v); !slices.Equal(got, tc.want) {
+			t.Errorf("classifySQLArg(%v) = %v, want %v", tc.v, got, tc.want)
+		}
+	}
+}
+
+func TestConditionEmpty(t *testing.T) {
+	c := Condition{Arg: "filter", Empty: true}
+	for _, tc := range []struct {
+		args map[string]any
+		want bool
+	}{
+		{map[string]any{}, true},
+		{map[string]any{"filter": nil}, true},
+		{map[string]any{"filter": ""}, true},
+		{map[string]any{"filter": map[string]any{}}, true},
+		{map[string]any{"filter": []any{}}, true},
+		{map[string]any{"filter": map[string]any{"a": 1.0}}, false},
+		{map[string]any{"filter": "x"}, false},
+		{map[string]any{"filter": false}, false},
+	} {
+		if got := c.Eval(tc.args); got != tc.want {
+			t.Errorf("Eval(%v) = %v, want %v", tc.args, got, tc.want)
+		}
 	}
 }

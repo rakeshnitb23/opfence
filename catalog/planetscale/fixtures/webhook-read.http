@@ -1,0 +1,4 @@
+# description: Read webhook wh_8c4e of database shop-db with its signing secret
+GET /v1/organizations/acme/databases/shop-db/webhooks/wh_8c4e HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

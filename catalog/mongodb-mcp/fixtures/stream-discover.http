@@ -1,0 +1,8 @@
+# description: Inspect Atlas stream processing in project 32b6e34b3d91647abb20e7b8 (list-workspaces)
+POST / HTTP/1.1
+Host: mcp.mongodb.com
+Authorization: Bearer opf_mongodb-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"atlas-streams-discover","arguments":{"projectId":"32b6e34b3d91647abb20e7b8","action":"list-workspaces"}}}

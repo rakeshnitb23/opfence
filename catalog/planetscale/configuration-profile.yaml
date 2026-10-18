@@ -1,0 +1,227 @@
+# PlanetScale API: configuration-profile
+operations:
+  - id: planetscale.configuration-profile.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Create configuration profile {body.name} ({body.cluster_size}) on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A profile sets the billed cluster size of its shards.
+    tests:
+      - fixture: fixtures/configuration-profile-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}" } }
+    class: write
+    when:
+      - if: { arg: body.cluster_size, present: true }
+        class: money
+      - if: { arg: body.replicas, present: true }
+        class: money
+      - if: { arg: body.storage, present: true }
+        class: money
+    resource: { arg: database, kind: database }
+    card: "Change configuration profile {configuration_profile} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cluster size, replicas and storage set what the profile's shards bill.
+    tests:
+      - fixture: fixtures/configuration-profile-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/configuration-profile-update-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete configuration profile {configuration_profile} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The API does not say whether the profile's shards go with it; assume they do.
+    tests:
+      - fixture: fixtures/configuration-profile-delete.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.change-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel change {id} of configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/configuration-profile-change-cancel.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.duplicate
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/duplicate" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Copy configuration profile {configuration_profile} to {body.name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Creating a profile follows the same rules as create.
+    tests:
+      - fixture: fixtures/configuration-profile-duplicate.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.maintenance
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/maintenance" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Run maintenance for configuration profile {configuration_profile} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      May restart the profile's shards.
+    tests:
+      - fixture: fixtures/configuration-profile-maintenance.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.maintenance-many
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/maintenance" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Run maintenance for configuration profiles {body.configuration_profile_names}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      May restart the profiles' shards.
+    tests:
+      - fixture: fixtures/configuration-profile-maintenance-many.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.set-default
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/default-configuration-profile" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Make {body.configuration_profile} the default configuration profile of Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/configuration-profile-set-default.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shard-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Add shard {body.display_name} to configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Each shard runs a billed cluster.
+    tests:
+      - fixture: fixtures/configuration-profile-shard-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shard-bulk-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards/bulk" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Add {body.count} shards to configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Each shard runs a billed cluster.
+    tests:
+      - fixture: fixtures/configuration-profile-shard-bulk-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shards-assign
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Assign shards {body.shard_ids} to configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/configuration-profile-shards-assign.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shards-delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Remove shards {query.shard_ids} from configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The API does not say whether removed shards keep their data; assume it is lost.
+    tests:
+      - fixture: fixtures/configuration-profile-shards-delete.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shard-update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Rename shard {id} of configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/configuration-profile-shard-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.configuration-profile.shard-delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/configuration-profiles/{configuration_profile}/shards/{id}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Remove shard {id} from configuration profile {configuration_profile}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The API does not say whether a removed shard keeps its data; assume it is lost.
+    tests:
+      - fixture: fixtures/configuration-profile-shard-delete.http
+        expect: irreversible
+        resource: shop-db

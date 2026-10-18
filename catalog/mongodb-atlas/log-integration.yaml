@@ -1,0 +1,69 @@
+# MongoDB Atlas Administration API: log-integration
+operations:
+  - id: mongodb-atlas.log-integration.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/logIntegrations" } }
+    class: write
+    when:
+      - if: { arg: body.apiKey, present: true }
+        class: credential
+      - if: { arg: body.hecToken, present: true }
+        class: credential
+      - if: { arg: body.otelSuppliedHeaders, present: true }
+        class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.type} log integration in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Datadog API keys, Splunk HEC tokens and OpenTelemetry headers are
+      credentials Atlas stores to push logs.
+    tests:
+      - fixture: fixtures/log-integration-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/log-integration-create-secret.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.log-integration.update
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/logIntegrations/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.apiKey, present: true }
+        class: credential
+      - if: { arg: body.hecToken, present: true }
+        class: credential
+      - if: { arg: body.otelSuppliedHeaders, present: true }
+        class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Replace log integration {id} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Datadog API keys, Splunk HEC tokens and OpenTelemetry headers are
+      credentials Atlas stores to push logs.
+    tests:
+      - fixture: fixtures/log-integration-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/log-integration-update-secret.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.log-integration.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/logIntegrations/{id}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete log integration {id} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/log-integration-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

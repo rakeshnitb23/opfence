@@ -1,0 +1,29 @@
+# Neon API v2: project-permission
+operations:
+  - id: neon.project-permission.grant
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/permissions" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Share project {project_id} with {body.email}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-permission-grant.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.project-permission.revoke
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/permissions/{permission_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Revoke access {permission_id} to project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-permission-revoke.http
+        expect: access
+        resource: shop-prod-12345678

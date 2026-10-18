@@ -1,0 +1,115 @@
+# PlanetScale API: branch-change
+operations:
+  - id: planetscale.branch-change.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/changes" } }
+    class: write
+    when:
+      - if: { arg: body.cluster_size, present: true }
+        class: money
+      - if: { arg: body.replicas, present: true }
+        class: money
+      - if: { arg: body.storage, present: true }
+        class: money
+    resource: { arg: database, kind: database }
+    card: "Change cluster size, replicas, storage or parameters of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cluster size, replica count and storage set what the branch bills.
+    tests:
+      - fixture: fixtures/branch-change-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/branch-change-update-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.branch-change.cluster-update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/cluster" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Resize branch {branch} of database {database} to {body.cluster_size}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cluster size sets what the branch bills.
+    tests:
+      - fixture: fixtures/branch-change-cluster-update.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.branch-change.resize
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/resizes" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Resize the VTGates of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      VTGate size and count set what the branch bills.
+    tests:
+      - fixture: fixtures/branch-change-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.branch-change.resize-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/resizes" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel the pending change to branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-change-resize-cancel.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch-change.config-change-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/config-changes" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Draft a VTGate parameter change for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-change-config-change-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch-change.config-change-submit
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/config-changes/submit" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Apply drafted parameter changes {body.ids} to branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-change-config-change-submit.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch-change.config-change-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/config-changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel parameter change {id} of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-change-config-change-cancel.http
+        expect: write
+        resource: shop-db

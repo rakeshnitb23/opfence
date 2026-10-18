@@ -1,0 +1,69 @@
+# PlanetScale API: vdiff
+operations:
+  - id: planetscale.vdiff.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start a VDiff of workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_vdiff.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vdiff-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vdiff.stop
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}/stop" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Stop VDiff {uuid} of workflow {workflow}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_vdiff.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vdiff-stop.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vdiff.resume
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}/resume" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Resume VDiff {uuid} of workflow {workflow}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_vdiff.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vdiff-resume.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vdiff.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete VDiff {uuid} of workflow {workflow}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_vdiff.go
+    notes: >-
+      Deletes a comparison result; the diff can be run again. Not in the public OpenAPI spec;
+      the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/vdiff-delete.http
+        expect: delete
+        resource: shop-db

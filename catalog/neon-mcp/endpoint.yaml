@@ -1,0 +1,168 @@
+# Neon MCP server: endpoint
+operations:
+  - id: neon-mcp.endpoint.list
+    match: { mcp: { tool: list_postgres_endpoints } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List computes of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-list.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.endpoint.list-by-branch
+    match: { mcp: { tool: list_branch_computes } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List computes of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-list-by-branch.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.endpoint.get
+    match: { mcp: { tool: get_postgres_endpoint } }
+    class: read
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Show compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-get.http
+        expect: read
+        resource: ep-shop-main-123456
+
+  - id: neon-mcp.endpoint.create
+    match: { mcp: { tool: create_postgres_endpoint } }
+    class: money
+    resource: { arg: branch_id, kind: branch }
+    card: "Create a compute on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Computes are billed by compute-unit hours.
+    tests:
+      - fixture: fixtures/endpoint-create.http
+        expect: money
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.endpoint.update
+    match: { mcp: { tool: update_postgres_endpoint } }
+    class: write
+    when:
+      - if: { arg: autoscaling_limit_max_cu, present: true }
+        class: money
+      - if: { arg: autoscaling_limit_min_cu, present: true }
+        class: money
+      - if: { arg: suspend_timeout_seconds, present: true }
+        class: money
+      - if: { arg: passwordless_access, present: true }
+        class: access
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Change compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Same judgement as neon.endpoint.update: autoscaling limits and the
+      suspend timeout decide billed compute hours.
+    tests:
+      - fixture: fixtures/endpoint-update.http
+        expect: write
+        resource: ep-shop-main-123456
+      - fixture: fixtures/endpoint-update-autoscaling.http
+        expect: money
+        resource: ep-shop-main-123456
+      - fixture: fixtures/endpoint-update-passwordless.http
+        expect: access
+        resource: ep-shop-main-123456
+
+  - id: neon-mcp.endpoint.delete
+    match: { mcp: { tool: delete_postgres_endpoint } }
+    class: delete
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Delete compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      A compute holds no data and can be recreated; connections drop and the
+      host changes.
+    tests:
+      - fixture: fixtures/endpoint-delete.http
+        expect: delete
+        resource: ep-shop-main-123456
+
+  - id: neon-mcp.endpoint.start
+    match: { mcp: { tool: start_postgres_endpoint } }
+    class: write
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Start compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-start.http
+        expect: write
+        resource: ep-shop-main-123456
+
+  - id: neon-mcp.endpoint.suspend
+    match: { mcp: { tool: suspend_postgres_endpoint } }
+    class: write
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Suspend compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-suspend.http
+        expect: write
+        resource: ep-shop-main-123456
+
+  - id: neon-mcp.endpoint.restart
+    match: { mcp: { tool: restart_postgres_endpoint } }
+    class: write
+    resource: { arg: endpoint_id, kind: endpoint }
+    card: "Restart compute {endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/endpoint-restart.http
+        expect: write
+        resource: ep-shop-main-123456

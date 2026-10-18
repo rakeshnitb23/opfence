@@ -1,0 +1,15 @@
+# PlanetScale API: neki-change
+operations:
+  - id: planetscale.neki-change.cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/neki-changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel change {id} of Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/neki-change-cancel.http
+        expect: write
+        resource: shop-db

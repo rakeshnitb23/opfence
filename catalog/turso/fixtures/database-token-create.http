@@ -1,0 +1,5 @@
+# description: Create an auth token for Turso database app-db
+POST /v1/organizations/acme/databases/app-db/auth/tokens?expiration=2w&authorization=full-access HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

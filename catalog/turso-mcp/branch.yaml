@@ -1,0 +1,34 @@
+# Turso MCP server: branches
+operations:
+  - id: turso-mcp.branch.create
+    match: { mcp: { tool: create_branch } }
+    class: write
+    card: "Branch a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      A branch is a new database forked from another, optionally at a point in time; the
+      source is unchanged. Turso's hosted server (mcp.turso.ai) is closed source; Turso
+      publishes the tool names and what each does but not their arguments, so the rule
+      matches the tool alone and names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: write
+
+  - id: turso-mcp.branch.list
+    match: { mcp: { tool: list_branches } }
+    class: read
+    card: "List branches of a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes the tool names
+      and what each does but not their arguments, so the rule matches the tool alone and
+      names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/branch-list.http
+        expect: read

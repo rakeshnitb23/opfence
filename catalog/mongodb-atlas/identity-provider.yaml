@@ -1,0 +1,57 @@
+# MongoDB Atlas Administration API: identity-provider
+operations:
+  - id: mongodb-atlas.identity-provider.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/identityProviders" } }
+    class: access
+    resource: { arg: federationSettingsId, kind: federation }
+    card: "Create identity provider {body.displayName} in federation {federationSettingsId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/identity-provider-create.http
+        expect: access
+        resource: 55fa922fb343282757d9554e
+
+  - id: mongodb-atlas.identity-provider.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/identityProviders/{identityProviderId}" } }
+    class: access
+    resource: { arg: federationSettingsId, kind: federation }
+    card: "Change identity provider {identityProviderId} in federation {federationSettingsId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/identity-provider-update.http
+        expect: access
+        resource: 55fa922fb343282757d9554e
+
+  - id: mongodb-atlas.identity-provider.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/identityProviders/{identityProviderId}" } }
+    class: access
+    resource: { arg: federationSettingsId, kind: federation }
+    card: "Delete identity provider {identityProviderId} from federation {federationSettingsId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/identity-provider-delete.http
+        expect: access
+        resource: 55fa922fb343282757d9554e
+
+  - id: mongodb-atlas.identity-provider.revoke-jwks
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/identityProviders/{identityProviderId}/jwks" } }
+    class: access
+    resource: { arg: federationSettingsId, kind: federation }
+    card: "Revoke the JWKS of identity provider {identityProviderId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/identity-provider-revoke-jwks.http
+        expect: access
+        resource: 55fa922fb343282757d9554e

@@ -1,0 +1,7 @@
+# description: Start a multipart upload of a SQLite file to a Turso database
+PUT /v2/upload/start HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"size":1048576}

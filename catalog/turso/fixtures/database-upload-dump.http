@@ -1,0 +1,12 @@
+# description: Upload a SQL dump to seed a new Turso database
+POST /v1/organizations/acme/databases/dumps HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: multipart/form-data; boundary=opfence-EXAMPLE
+
+--opfence-EXAMPLE
+Content-Disposition: form-data; name="file"; filename="app.db"
+Content-Type: application/octet-stream
+
+SQLite format 3
+--opfence-EXAMPLE--

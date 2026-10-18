@@ -1,0 +1,7 @@
+# description: Change webhook wh_8c4e of database shop-db
+PATCH /v1/organizations/acme/databases/shop-db/webhooks/wh_8c4e HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"enabled":false}

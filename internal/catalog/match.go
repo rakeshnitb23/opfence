@@ -184,14 +184,38 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		return hit, label + strings.Join(why, ", ")
 	}
 	if r.Classify != nil && r.Classify.SQL != "" {
-		v, ok := Lookup(args, r.Classify.SQL)
-		s, isStr := v.(string)
-		if !ok || !isStr {
-			return []classes.Class{r.Class}, "rule class (no SQL in " + r.Classify.SQL + ")"
+		v, _ := Lookup(args, r.Classify.SQL)
+		if out := classifySQLArg(v); out != nil {
+			return out, "SQL in " + r.Classify.SQL
 		}
-		return decode.ClassifySQL(s), "SQL in " + r.Classify.SQL
+		return []classes.Class{r.Class}, "rule class (no SQL in " + r.Classify.SQL + ")"
 	}
 	return []classes.Class{r.Class}, "rule class"
+}
+
+// classifySQLArg classifies an argument holding SQL: one string, or a list
+// of strings (a transaction's statements), each classified on its own so an
+// unterminated quote in one cannot hide the next. Anything else returns nil.
+func classifySQLArg(v any) []classes.Class {
+	switch t := v.(type) {
+	case string:
+		return decode.ClassifySQL(t)
+	case []any:
+		var out []classes.Class
+		for _, el := range t {
+			s, ok := el.(string)
+			if !ok {
+				return nil
+			}
+			for _, c := range decode.ClassifySQL(s) {
+				if !slices.Contains(out, c) {
+					out = append(out, c)
+				}
+			}
+		}
+		return out
+	}
+	return nil
 }
 
 func (r *Rule) readsBody() bool {
@@ -289,11 +313,30 @@ func (c *Condition) Eval(args map[string]any) bool {
 		return present
 	case c.Absent:
 		return !present
+	case c.Empty:
+		return isEmpty(v)
 	}
 	for _, el := range vals {
 		if s, isScalar := Scalar(el); isScalar && c.match(s) {
 			return true
 		}
+	}
+	return false
+}
+
+// isEmpty reports whether v selects or sets nothing: a missing value, null,
+// "", {} or []. An empty filter matches every document, so "filter": {} is
+// as bad as no filter.
+func isEmpty(v any) bool {
+	switch t := v.(type) {
+	case nil:
+		return true
+	case string:
+		return t == ""
+	case map[string]any:
+		return len(t) == 0
+	case []any:
+		return len(t) == 0
 	}
 	return false
 }
@@ -322,6 +365,8 @@ func (c *Condition) String() string {
 		return c.Arg + " is present"
 	case c.Absent:
 		return c.Arg + " is absent"
+	case c.Empty:
+		return c.Arg + " is empty"
 	case c.Equals != nil:
 		return fmt.Sprintf("%s = %q", c.Arg, *c.Equals)
 	case c.In != nil:

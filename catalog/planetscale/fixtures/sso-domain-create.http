@@ -1,0 +1,4 @@
+# description: Start SSO domain verification for organization acme
+POST /v1/organizations/acme/sso/domains HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

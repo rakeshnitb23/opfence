@@ -1,0 +1,29 @@
+# MongoDB Atlas Administration API: org-api-key-access-list
+operations:
+  - id: mongodb-atlas.org-api-key-access-list.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/apiKeys/{apiUserId}/accessList" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Allow API key {apiUserId} to be used from new addresses"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-api-key-access-list-create.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-api-key-access-list.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/apiKeys/{apiUserId}/accessList/{ipAddress}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Stop API key {apiUserId} being used from {ipAddress}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-api-key-access-list-delete.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

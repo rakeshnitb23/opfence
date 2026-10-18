@@ -1,0 +1,5 @@
+# description: Invalidate every auth token of Turso database app-db
+POST /v1/databases/app-db/auth/rotate HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

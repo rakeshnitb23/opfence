@@ -1,0 +1,56 @@
+# MongoDB Atlas Administration API: database-user
+operations:
+  - id: mongodb-atlas.database-user.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/databaseUsers" } }
+    class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create database user {body.username} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Creates a login to the clusters and sets its password.
+    tests:
+      - fixture: fixtures/database-user-create.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.database-user.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/databaseUsers/{databaseName}/{username}" } }
+    class: access
+    when:
+      - if: { arg: body.password, present: true }
+        class: credential
+    resource: { arg: username, kind: database-user }
+    card: "Change database user {username} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Roles and scopes are access; setting the password is credential.
+    tests:
+      - fixture: fixtures/database-user-update.http
+        expect: access
+        resource: app-backend
+      - fixture: fixtures/database-user-update-password.http
+        expect: credential
+        resource: app-backend
+
+  - id: mongodb-atlas.database-user.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/databaseUsers/{databaseName}/{username}" } }
+    class: access
+    resource: { arg: username, kind: database-user }
+    card: "Delete database user {username} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Applications that log in as this user stop working; like other credential
+      removals in the catalog this is access.
+    tests:
+      - fixture: fixtures/database-user-delete.http
+        expect: access
+        resource: app-backend

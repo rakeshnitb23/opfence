@@ -1,0 +1,4 @@
+# description: Cancel invitation inv_3d8s to organization acme
+DELETE /v1/organizations/acme/invitations/inv_3d8s HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

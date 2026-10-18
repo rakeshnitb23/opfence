@@ -1,0 +1,29 @@
+# PlanetScale API: organization
+operations:
+  - id: planetscale.organization.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}" } }
+    class: write
+    when:
+      - if: { arg: body.idp_managed_roles, present: true }
+        class: access
+      - if: { arg: body.mcp_access_level, present: true }
+        class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change settings of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Letting the identity provider manage roles, or changing the query access MCP clients may
+      be granted (none, read_only, read_write), changes who can do what in the organization.
+    tests:
+      - fixture: fixtures/organization-update.http
+        expect: write
+        resource: acme
+      - fixture: fixtures/organization-update-mcp-access.http
+        expect: access
+        resource: acme
+      - fixture: fixtures/organization-update-idp-roles.http
+        expect: access
+        resource: acme

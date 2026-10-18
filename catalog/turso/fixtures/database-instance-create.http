@@ -1,0 +1,7 @@
+# description: Add an instance of Turso database app-db in lhr
+POST /v1/organizations/acme/databases/app-db/instances HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"Location":"lhr"}

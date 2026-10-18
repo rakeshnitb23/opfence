@@ -1,0 +1,7 @@
+# description: Add OAuth provider google to Neon Auth on branch br-shop-main-123456
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/auth/oauth_providers HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"id":"google","client_id":"shop.apps.example","client_secret":"opf_oauth_EXAMPLE"}

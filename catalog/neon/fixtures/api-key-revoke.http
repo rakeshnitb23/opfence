@@ -1,0 +1,4 @@
+# description: Revoke Neon API key 3225999
+DELETE /api/v2/api_keys/3225999 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

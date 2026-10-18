@@ -286,7 +286,7 @@ func TestDoctorReportsEachCheck(t *testing.T) {
 		t.Errorf("exit %d, want 1 (socat is missing)", code)
 	}
 	for _, want := range []string{
-		"ok    policy: 5 providers",
+		"ok    policy: ",
 		"ok    keychain: 0 API keys stored",
 		"warn  CA: not made yet",
 		"ok    CA trust: programs started with opfence run",

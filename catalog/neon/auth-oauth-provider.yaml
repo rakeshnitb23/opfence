@@ -1,0 +1,67 @@
+# Neon API v2: auth-oauth-provider
+operations:
+  - id: neon.auth-oauth-provider.list
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/oauth_providers" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "List Neon Auth OAuth providers (with client secrets) of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Each provider carries client_secret (x-sensitive).
+    tests:
+      - fixture: fixtures/auth-oauth-provider-list.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth-oauth-provider.add
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/oauth_providers" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Add OAuth provider {body.id} to Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Stores an OAuth client secret.
+    tests:
+      - fixture: fixtures/auth-oauth-provider-add.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth-oauth-provider.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/oauth_providers/{oauth_provider_id}" } }
+    class: access
+    when:
+      - if: { arg: body.client_secret, present: true }
+        class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Change OAuth provider {oauth_provider_id} of Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-oauth-provider-update.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/auth-oauth-provider-update-secret.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth-oauth-provider.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/oauth_providers/{oauth_provider_id}" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Remove OAuth provider {oauth_provider_id} from Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-oauth-provider-delete.http
+        expect: access
+        resource: br-shop-main-123456

@@ -1,0 +1,8 @@
+# description: Connect to MongoDB (connection name conn-orders)
+POST / HTTP/1.1
+Host: mcp.mongodb.com
+Authorization: Bearer opf_mongodb-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"connect","arguments":{"connectionString":"mongodb://localhost:27017/shop","connectionName":"conn-orders"}}}

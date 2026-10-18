@@ -1,0 +1,7 @@
+# description: Create Turso database app-db
+POST /v3/organizations/0a28102d-6906-11ee-8553-eaa7715aeaf2/databases HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"name":"app-db","group_id":"f1dec998-8f7f-11ee-907d-a2a821fd08b9"}

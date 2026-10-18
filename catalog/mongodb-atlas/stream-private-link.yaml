@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: stream-private-link
+operations:
+  - id: mongodb-atlas.stream-private-link.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/privateLinkConnections" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create a {body.provider} private link connection for stream processing in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-private-link-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-private-link.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/streams/privateLinkConnections/{connectionId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change stream private link connection {connectionId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-private-link-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-private-link.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/streams/privateLinkConnections/{connectionId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Delete stream private link connection {connectionId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-private-link-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

@@ -1,0 +1,31 @@
+# PlanetScale API: query-patterns
+operations:
+  - id: planetscale.query-patterns.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/query-patterns" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Generate a query patterns report for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/query-patterns-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.query-patterns.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/query-patterns/{id}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete query patterns report {id} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A report can be generated again.
+    tests:
+      - fixture: fixtures/query-patterns-delete.http
+        expect: delete
+        resource: shop-db

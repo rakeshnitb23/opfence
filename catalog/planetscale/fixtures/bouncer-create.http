@@ -1,0 +1,7 @@
+# description: Create PgBouncer pgb-main for branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/bouncers HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"pgb-main","bouncer_size":"PGB_5"}

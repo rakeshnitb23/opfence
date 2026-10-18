@@ -1,0 +1,7 @@
+# description: Draft a vttablet parameter change for keyspace commerce
+POST /v1/organizations/acme/databases/shop-db/branches/main/keyspaces/commerce/config-changes HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"change_type":"vttablet","options":{"queryserver-config-max-result-size":"20000"}}

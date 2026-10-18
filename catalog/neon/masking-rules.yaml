@@ -1,0 +1,15 @@
+# Neon API v2: masking-rules
+operations:
+  - id: neon.masking-rules.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/masking_rules" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Change masking rules of anonymized branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/masking-rules-update.http
+        expect: write
+        resource: br-shop-main-123456

@@ -1,0 +1,51 @@
+# PlanetScale API: backup
+operations:
+  - id: planetscale.backup.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/backups" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Back up branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/backup-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.backup.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/backups/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.protected, present: true }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Change backup {id} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      protected guards the backup against deletion; changing it is access.
+    tests:
+      - fixture: fixtures/backup-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/backup-update-unprotect.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.backup.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/backups/{id}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete backup {id} of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/backup-delete.http
+        expect: irreversible
+        resource: shop-db

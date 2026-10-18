@@ -1,0 +1,308 @@
+# MongoDB Atlas Administration API: cluster
+operations:
+  - id: mongodb-atlas.cluster.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Create cluster {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Dedicated clusters are billed by the hour.
+    tests:
+      - fixture: fixtures/cluster-create.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.cluster.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}" } }
+    class: write
+    when:
+      - if: { arg: body.backupEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.providerBackupEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.pitEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.terminationProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.deleteAfterCreationHours, present: true }
+        class: irreversible
+      - if: { arg: body.acceptDataRisksAndForceReplicaSetReconfig, present: true }
+        class: irreversible
+      - if: { arg: body.replicationSpecs, present: true }
+        class: money
+      - if: { arg: body.replicationSpec, present: true }
+        class: money
+      - if: { arg: body.providerSettings, present: true }
+        class: money
+      - if: { arg: body.diskSizeGB, present: true }
+        class: money
+      - if: { arg: body.numShards, present: true }
+        class: money
+      - if: { arg: body.clusterType, present: true }
+        class: money
+      - if: { arg: body.replicationFactor, present: true }
+        class: money
+      - if: { arg: body.autoScaling, present: true }
+        class: money
+      - if: { arg: body.advancedConfiguration.minimumEnabledTlsProtocol, present: true }
+        class: access
+      - if: { arg: body.advancedConfiguration.tlsCipherConfigMode, present: true }
+        class: access
+      - if: { arg: body.advancedConfiguration.customOpensslCipherConfigTls12, present: true }
+        class: access
+      - if: { arg: body.advancedConfiguration.customOpensslCipherConfigTls13, present: true }
+        class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Turning backups or point-in-time recovery off deletes existing snapshots
+      or history, and turning termination protection off removes the guard
+      against deletion (a safety net is as dangerous as what it protects);
+      deleteAfterCreationHours schedules the cluster's deletion;
+      acceptDataRisksAndForceReplicaSetReconfig can lose writes. Changing
+      instance size, disk, shards or topology changes the bill. TLS settings
+      change who can connect.
+    tests:
+      - fixture: fixtures/cluster-update.http
+        expect: write
+        resource: orders-prod
+      - fixture: fixtures/cluster-update-backup-off.http
+        expect: irreversible
+        resource: orders-prod
+      - fixture: fixtures/cluster-update-protection-off.http
+        expect: irreversible
+        resource: orders-prod
+      - fixture: fixtures/cluster-update-scale.http
+        expect: money
+        resource: orders-prod
+      - fixture: fixtures/cluster-update-tls.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}" } }
+    class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete cluster {clusterName} and its data in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      retainBackups=true keeps the snapshots, but a condition cannot safely
+      lower the class (a repeated query parameter can say both), so the rule
+      stays irreversible.
+    tests:
+      - fixture: fixtures/cluster-delete.http
+        expect: irreversible
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.tenant-upgrade
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/tenantUpgrade" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Upgrade shared-tier cluster {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-tenant-upgrade.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.cluster.tenant-upgrade-serverless
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/tenantUpgradeToServerless" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Upgrade shared-tier cluster {body.name} to a serverless instance in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-tenant-upgrade-serverless.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.cluster.update-adaptive-settings
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/adaptiveSettings" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change adaptive settings of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-update-adaptive-settings.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.update-auto-embedding
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/autoEmbeddingInference" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change the auto-embedding inference scope of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-update-auto-embedding.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.reset-auto-embedding
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/autoEmbeddingInference:reset" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Reset the auto-embedding inference scope of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-reset-auto-embedding.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.update-process-args
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/processArgs" } }
+    class: write
+    when:
+      - if: { arg: body.minimumEnabledTlsProtocol, present: true }
+        class: access
+      - if: { arg: body.tlsCipherConfigMode, present: true }
+        class: access
+      - if: { arg: body.customOpensslCipherConfigTls12, present: true }
+        class: access
+      - if: { arg: body.customOpensslCipherConfigTls13, present: true }
+        class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change advanced configuration of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      TLS protocol and cipher settings decide which clients can connect.
+    tests:
+      - fixture: fixtures/cluster-update-process-args.http
+        expect: write
+        resource: orders-prod
+      - fixture: fixtures/cluster-update-process-args-tls.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.test-failover
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/restartPrimaries" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Fail over the primaries of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Steps down the primaries; drivers reconnect to the new primary.
+    tests:
+      - fixture: fixtures/cluster-test-failover.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.update-sql-interface
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/sqlInterface" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Turn the SQL interface of cluster {clusterName} {body.status}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-update-sql-interface.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.grant-mongodb-employee-access
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:grantMongoDBEmployeeAccess" } }
+    class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Grant MongoDB support staff access to cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-grant-mongodb-employee-access.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.revoke-mongodb-employee-access
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:revokeMongoDBEmployeeAccess" } }
+    class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Revoke MongoDB support staff access to cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-revoke-mongodb-employee-access.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.pin-feature-compatibility-version
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:pinFeatureCompatibilityVersion" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Pin the feature compatibility version of cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-pin-feature-compatibility-version.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.unpin-feature-compatibility-version
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:unpinFeatureCompatibilityVersion" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Unpin the feature compatibility version of cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-unpin-feature-compatibility-version.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterAction}" } }
+    class: unknown
+    resource: { arg: clusterAction, kind: cluster-action }
+    card: "Run {clusterAction} on a cluster of project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
+    tests:
+      - fixture: fixtures/cluster-custom-action-other.http
+        expect: unknown
+        resource: orders-prod:somethingNew

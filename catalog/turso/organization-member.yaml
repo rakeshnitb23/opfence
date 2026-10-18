@@ -1,0 +1,45 @@
+# Turso Platform API: organization members
+operations:
+  - id: turso.organization-member.add
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/members" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Add {body.username} to Turso organization {organization} as {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    tests:
+      - fixture: fixtures/organization-member-add.http
+        expect: access
+        resource: acme
+
+  - id: turso.organization-member.update
+    match: { rest: { method: PATCH, path: "/{version}/organizations/{organization}/members/{username}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change the role of {username} in Turso organization {organization} to {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+    tests:
+      - fixture: fixtures/organization-member-update.http
+        expect: access
+        resource: acme
+
+  - id: turso.organization-member.remove
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/members/{username}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Remove {username} from Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    tests:
+      - fixture: fixtures/organization-member-remove.http
+        expect: access
+        resource: acme

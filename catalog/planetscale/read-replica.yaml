@@ -1,0 +1,59 @@
+# PlanetScale API: read-replica
+operations:
+  - id: planetscale.read-replica.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/dedicated-read-replicas" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Create read replica {body.name} of branch {branch} in {body.region}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Dedicated read replicas run billed clusters.
+    tests:
+      - fixture: fixtures/read-replica-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.read-replica.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/dedicated-read-replicas/{dedicated_read_replica}" } }
+    class: write
+    when:
+      - if: { arg: body.cluster_size, present: true }
+        class: money
+      - if: { arg: body.replicas, present: true }
+        class: money
+      - if: { arg: body.storage, present: true }
+        class: money
+    resource: { arg: database, kind: database }
+    card: "Change read replica {dedicated_read_replica} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cluster size, replica count and storage set what the replica bills.
+    tests:
+      - fixture: fixtures/read-replica-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/read-replica-update-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.read-replica.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/dedicated-read-replicas/{dedicated_read_replica}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete read replica {dedicated_read_replica} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A replica copies the primary and can be rebuilt from it.
+    tests:
+      - fixture: fixtures/read-replica-delete.http
+        expect: delete
+        resource: shop-db

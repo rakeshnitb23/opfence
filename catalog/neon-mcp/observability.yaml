@@ -1,0 +1,65 @@
+# Neon MCP server: observability
+operations:
+  - id: neon-mcp.observability.query-logs
+    match: { mcp: { tool: query_logs } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Query logs of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/observability-query-logs.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.observability.list-log-fields
+    match: { mcp: { tool: list_log_fields } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List log fields of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/observability-list-log-fields.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.observability.list-log-field-values
+    match: { mcp: { tool: list_log_field_values } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List values of log field {field_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/observability-list-log-field-values.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.observability.get-ai-gateway
+    match: { mcp: { tool: get_ai_gateway } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show the AI Gateway endpoint of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/observability-get-ai-gateway.http
+        expect: read
+        resource: br-shop-main-123456

@@ -1,0 +1,7 @@
+# description: Give member 4b1f7c2e-8d3a-4e5f-9a6b-1c2d3e4f5a6b the role editor on project shop-prod-12345678
+PUT /api/v2/projects/shop-prod-12345678/members/4b1f7c2e-8d3a-4e5f-9a6b-1c2d3e4f5a6b/role HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"role":"editor"}

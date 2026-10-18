@@ -1,0 +1,4 @@
+# description: Remove OAuth provider google from Neon Auth in project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/auth/oauth_providers/google HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

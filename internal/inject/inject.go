@@ -65,7 +65,9 @@ func Request(prov *catalog.Provider, h http.Header, rawQuery string, set *secret
 
 // swapHeader replaces the token in a header value: "<scheme> <token>" when
 // the provider declares a scheme, otherwise the value's last word (which
-// covers "Bearer x", "token x" and a bare token).
+// covers "Bearer x", "token x" and a bare token). A token that is not a
+// placeholder itself has each colon-separated part swapped, for
+// "<id>:<token>" values such as PlanetScale's service tokens.
 func swapHeader(v, scheme string, swap func(string) (string, bool)) string {
 	prefix, token := "", v
 	if scheme != "" {
@@ -78,6 +80,19 @@ func swapHeader(v, scheme string, swap func(string) (string, bool)) string {
 	}
 	if out, ok := swap(token); ok {
 		return prefix + out
+	}
+	if !strings.Contains(token, ":") {
+		return v
+	}
+	parts := strings.Split(token, ":")
+	swapped := false
+	for i, p := range parts {
+		if out, ok := swap(p); ok {
+			parts[i], swapped = out, true
+		}
+	}
+	if swapped {
+		return prefix + strings.Join(parts, ":")
 	}
 	return v
 }

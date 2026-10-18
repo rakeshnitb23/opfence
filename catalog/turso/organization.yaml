@@ -1,0 +1,71 @@
+# Turso Platform API: organizations
+operations:
+  - id: turso.organization.create
+    match: { rest: { method: POST, path: "/{version}/organizations" } }
+    class: money
+    resource: { arg: body.name, kind: organization }
+    card: "Create Turso organization {body.name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document). A team organization carries its
+      own paid plan (the server answers 402 when the caller must upgrade, and the CLI passes
+      a Stripe customer), so creating one is a billed resource.
+    tests:
+      - fixture: fixtures/organization-create.http
+        expect: money
+        resource: acme-labs
+
+  - id: turso.organization.update
+    match: { rest: { method: PATCH, path: "/{version}/organizations/{organization}" } }
+    class: write
+    when:
+      - if: { arg: body.overages, present: true }
+        class: money
+      - if: { arg: body.require_mfa, present: true }
+        class: access
+      - if: { arg: body.restore_enabled, equals: "false" }
+        class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Change settings of Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      overages lets usage run past the plan and be billed, so it is money. require_mfa is an
+      authentication setting. Turning restore_enabled off disables recovery of deleted
+      databases and groups, a safety net, so it is irreversible.
+    tests:
+      - fixture: fixtures/organization-update-overages.http
+        expect: money
+        resource: acme
+      - fixture: fixtures/organization-update-mfa.http
+        expect: access
+        resource: acme
+      - fixture: fixtures/organization-update-restore-off.http
+        expect: irreversible
+        resource: acme
+      - fixture: fixtures/organization-update-restore-on.http
+        expect: write
+        resource: acme
+
+  - id: turso.organization.delete
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}" } }
+    class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Delete Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document). No source documents a way to
+      restore a deleted organization.
+    tests:
+      - fixture: fixtures/organization-delete.http
+        expect: irreversible
+        resource: acme

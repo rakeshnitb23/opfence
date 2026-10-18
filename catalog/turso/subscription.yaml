@@ -1,0 +1,33 @@
+# Turso Platform API: plans
+operations:
+  - id: turso.subscription.update
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/subscription" } }
+    class: money
+    resource: { arg: organization, kind: organization }
+    card: "Change the plan of Turso organization {organization} to {body.plan}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/plans.go
+    notes: >-
+      Used by turso plan upgrade (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/subscription-update.http
+        expect: money
+        resource: acme
+
+  - id: turso.subscription.update-unscoped
+    match: { rest: { method: POST, path: "/{version}/subscription" } }
+    class: money
+    card: "Change the Turso plan to {body.plan}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/plans.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/subscription-update-unscoped.http
+        expect: money

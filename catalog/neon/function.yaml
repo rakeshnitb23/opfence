@@ -1,0 +1,45 @@
+# Neon API v2: function
+operations:
+  - id: neon.function.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/functions/{slug}" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Change function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/function-update.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.function.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/functions/{slug}" } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The code can be deployed again from its source.
+    tests:
+      - fixture: fixtures/function-delete.http
+        expect: delete
+        resource: br-shop-main-123456
+
+  - id: neon.function.deploy
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/functions/{slug}/deployments" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Deploy code to function {slug} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/function-deploy.http
+        expect: write
+        resource: br-shop-main-123456

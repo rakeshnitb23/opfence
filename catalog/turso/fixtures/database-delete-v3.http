@@ -1,0 +1,5 @@
+# description: Delete Turso database 0eb771dd-6906-11ee-8553-eaa7715aeaf2 and all its data
+DELETE /v3/organizations/0a28102d-6906-11ee-8553-eaa7715aeaf2/databases/0eb771dd-6906-11ee-8553-eaa7715aeaf2 HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

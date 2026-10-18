@@ -1,0 +1,7 @@
+# description: Create Neon API key ci-deploy
+POST /api/v2/api_keys HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"key_name":"ci-deploy"}

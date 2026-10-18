@@ -1,0 +1,7 @@
+# description: Set the monthly spending limit of organization org-shop-12345678 to 50000 cents
+PUT /api/v2/organizations/org-shop-12345678/billing/spending_limit HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"spending_limit_cents":50000}

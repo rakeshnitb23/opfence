@@ -1,0 +1,5 @@
+# description: Unarchive Turso database app-db
+POST /v1/organizations/acme/databases/app-db/wakeup HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

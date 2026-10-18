@@ -1,0 +1,61 @@
+# Turso database HTTP API: database file uploads on database hosts (*.turso.io)
+operations:
+  - id: turso.database-file.upload
+    match: { rest: { method: POST, path: "/v1/upload" } }
+    class: irreversible
+    card: "Upload a SQLite file as the contents of a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/databases/upload.mdx
+    notes: >-
+      Sent to the database host with a database token. Turso documents it for databases
+      created with seed.type database_upload; Opfence cannot see whether the target database
+      is empty, so it assumes the upload replaces data.
+    tests:
+      - fixture: fixtures/database-file-upload.http
+        expect: irreversible
+
+  - id: turso.database-file.upload-start
+    match: { rest: { method: PUT, path: "/v2/upload/start" } }
+    class: write
+    card: "Start a multipart upload of a SQLite file to a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/tursoServer.go
+    notes: >-
+      Used by turso db create --from-file on the database host (not in the OpenAPI
+      document). Starting and sending chunks only stages the file; finalize applies it.
+    tests:
+      - fixture: fixtures/database-file-upload-start.http
+        expect: write
+
+  - id: turso.database-file.upload-chunk
+    match: { rest: { method: PUT, path: "/v2/upload/{uploadId}/chunk/{chunk}" } }
+    class: write
+    card: "Upload chunk {chunk} of a SQLite file to a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/tursoServer.go
+    notes: >-
+      Used by turso db create --from-file on the database host; stages data only.
+    tests:
+      - fixture: fixtures/database-file-upload-chunk.http
+        expect: write
+
+  - id: turso.database-file.upload-finalize
+    match: { rest: { method: PUT, path: "/v2/upload/{uploadId}/finalize" } }
+    class: irreversible
+    card: "Apply an uploaded SQLite file as the contents of a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/tursoServer.go
+    notes: >-
+      Used by turso db create --from-file on the database host. Like /v1/upload, Opfence
+      cannot see whether the target database is empty, so it assumes data is replaced.
+    tests:
+      - fixture: fixtures/database-file-upload-finalize.http
+        expect: irreversible

@@ -1,0 +1,200 @@
+# PlanetScale API: branch
+operations:
+  - id: planetscale.branch.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Create branch {body.name} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Postgres and Neki branches each run a billed cluster, and a branch restored from a backup
+      takes a cluster size. create_database_if_missing can also create the database.
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: money
+        resource: shop-db
+      - fixture: fixtures/branch-create-from-backup.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.branch.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}" } }
+    class: write
+    when:
+      - if: { arg: body.deletion_protected, present: true }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Change settings of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Changing deletion protection is access, as with GitHub branch protection.
+    tests:
+      - fixture: fixtures/branch-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/branch-update-deletion-protection-off.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.branch.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete branch {branch} of database {database} and its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Opfence cannot tell a production branch from a development one, and the API documents no
+      undelete, so a branch delete is treated as losing its data. delete_descendants=true also
+      deletes every branch made from it.
+    tests:
+      - fixture: fixtures/branch-delete.http
+        expect: irreversible
+        resource: shop-db
+      - fixture: fixtures/branch-delete-descendants.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.branch.demote
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/demote" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Demote production branch {branch} of database {database} to development"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Production branches carry protections (safe migrations, restricted deletion,
+      production-only permissions); demoting removes them.
+    tests:
+      - fixture: fixtures/branch-demote.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.branch.promote
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/promote" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Promote branch {branch} of database {database} to production"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-promote.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch.safe-migrations-enable
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/safe-migrations" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Turn on safe migrations for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/branch-safe-migrations-enable.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch.safe-migrations-update
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/safe-migrations" } }
+    class: write
+    when:
+      - if: { arg: body.safe_migrations, present: true }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Change safe migrations for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Safe migrations block direct DDL on the branch and make deploys revertible; changing the
+      setting is access.
+    tests:
+      - fixture: fixtures/branch-safe-migrations-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/branch-safe-migrations-update-off.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.branch.safe-migrations-disable
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/safe-migrations" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Turn off safe migrations for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Allows direct DDL (DROP TABLE included) on the branch without a revertible deploy
+      request.
+    tests:
+      - fixture: fixtures/branch-safe-migrations-disable.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.branch.maintenance
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/maintenance" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Run maintenance on branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      May restart the cluster and upgrade the Postgres minor version.
+    tests:
+      - fixture: fixtures/branch-maintenance.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch.refresh-schema
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/refresh-schema" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Refresh the schema snapshot of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/branches.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/branch-refresh-schema.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.branch.routing-rules-update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routing-rules" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change the Vitess routing rules of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/branches.go
+    notes: >-
+      Routing rules decide which keyspace serves each table; a wrong rule sends queries to the
+      wrong place but can be changed back. Not in the public OpenAPI spec; the endpoint is
+      called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/branch-routing-rules-update.http
+        expect: write
+        resource: shop-db

@@ -1,0 +1,48 @@
+# Neon MCP server: schema
+operations:
+  - id: neon-mcp.schema.get-tables
+    match: { mcp: { tool: get_database_tables } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List tables of database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/schema-get-tables.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.schema.describe-table
+    match: { mcp: { tool: describe_table_schema } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Describe table {table_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/schema-describe-table.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.schema.compare
+    match: { mcp: { tool: compare_database_schema } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Compare the schema of database {database_name} on branch {branch_id} with its parent"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+    tests:
+      - fixture: fixtures/schema-compare.http
+        expect: read
+        resource: br-shop-main-123456

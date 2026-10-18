@@ -1,0 +1,16 @@
+# Neon MCP server: feedback
+operations:
+  - id: neon-mcp.feedback.send
+    match: { mcp: { tool: send_feedback } }
+    class: write
+    card: "Send feedback to Neon"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    notes: >-
+      Sends the text to Neon; it changes no resource.
+    tests:
+      - fixture: fixtures/feedback-send.http
+        expect: write

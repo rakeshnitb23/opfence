@@ -1,0 +1,7 @@
+# description: Run SQL on a Turso database over HTTP
+POST /v3/pipeline HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"baton":null,"requests":[{"type":"execute","stmt":{"sql":"SELECT * FROM users"}},{"type":"close"}]}

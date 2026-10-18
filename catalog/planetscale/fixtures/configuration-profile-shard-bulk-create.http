@@ -1,0 +1,7 @@
+# description: Add 4 shards to configuration profile default
+POST /v1/organizations/acme/databases/shop-db/branches/main/configuration-profiles/default/shards/bulk HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"count":4}

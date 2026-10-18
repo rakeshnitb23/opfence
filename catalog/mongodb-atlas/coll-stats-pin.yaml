@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: coll-stats-pin
+operations:
+  - id: mongodb-atlas.coll-stats-pin.add
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/collStats/pinned" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Pin namespaces for collection metrics on cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/coll-stats-pin-add.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.coll-stats-pin.set
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/collStats/pinned" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Set the pinned namespaces for collection metrics on cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/coll-stats-pin-set.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.coll-stats-pin.remove
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/collStats/unpin" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Unpin namespaces for collection metrics on cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/coll-stats-pin-remove.http
+        expect: write
+        resource: orders-prod

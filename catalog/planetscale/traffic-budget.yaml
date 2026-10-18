@@ -1,0 +1,75 @@
+# PlanetScale API: traffic-budget
+operations:
+  - id: planetscale.traffic-budget.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/traffic/budgets" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Create traffic budget {body.name} on branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      An enforced budget throttles or rejects matching queries.
+    tests:
+      - fixture: fixtures/traffic-budget-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.traffic-budget.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/traffic/budgets/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change traffic budget {id} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/traffic-budget-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.traffic-budget.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/traffic/budgets/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Delete traffic budget {id} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Removes a query limit; the budget holds no data and can be recreated.
+    tests:
+      - fixture: fixtures/traffic-budget-delete.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.traffic-budget.rule-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/traffic/budgets/{budget_id}/rules" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Add a traffic rule to budget {budget_id} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/traffic-budget-rule-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.traffic-budget.rule-delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/traffic/budgets/{budget_id}/rules/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Delete traffic rule {id} from budget {budget_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/traffic-budget-rule-delete.http
+        expect: write
+        resource: shop-db

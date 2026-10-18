@@ -1,0 +1,123 @@
+# PlanetScale API: role
+operations:
+  - id: planetscale.role.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Create Postgres role {body.name} on branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The response holds the plain-text password.
+    tests:
+      - fixture: fixtures/role-create.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.role.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.require_where_on_delete, present: true }
+        class: access
+      - if: { arg: body.require_where_on_update, present: true }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Change Postgres role {id} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      require_where_on_delete and require_where_on_update block DELETE and UPDATE without WHERE
+      for the role; changing them is access.
+    tests:
+      - fixture: fixtures/role-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/role-update-require-where-off.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.role.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/{id}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Drop Postgres role {id} of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Drops the role and its password; without successor the API does not say what happens to
+      objects the role owns.
+    tests:
+      - fixture: fixtures/role-delete.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.role.reassign
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/{id}/reassign" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Give objects owned by role {id} to {body.successor}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Changes which role owns, and so controls, the tables.
+    tests:
+      - fixture: fixtures/role-reassign.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.role.renew
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/{id}/renew" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Extend Postgres role {id} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Keeps a database credential alive past the expiry it was created with.
+    tests:
+      - fixture: fixtures/role-renew.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.role.reset
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/{id}/reset" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Reset the password of Postgres role {id} of branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Sets a new password and returns it in plain text; the old one stops working.
+    tests:
+      - fixture: fixtures/role-reset.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.role.reset-default
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/roles/reset-default" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Reset the default postgres role password of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Sets a new password for the default role and returns it in plain text.
+    tests:
+      - fixture: fixtures/role-reset-default.http
+        expect: credential
+        resource: shop-db

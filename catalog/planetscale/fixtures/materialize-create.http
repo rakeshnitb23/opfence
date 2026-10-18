@@ -1,0 +1,7 @@
+# description: Start a Materialize workflow into keyspace reports on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/materialize/workflows HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"workflow":"orders_by_user","source_keyspace":"commerce","target_keyspace":"reports"}

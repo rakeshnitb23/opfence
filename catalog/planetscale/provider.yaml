@@ -1,0 +1,17 @@
+provider: planetscale
+title: PlanetScale
+docs: https://planetscale.com/docs/api/reference/getting-started-with-planetscale-api
+hosts: [api.planetscale.com]
+auth:
+  - header: Authorization          # "Bearer <OAuth token>" or a service token as "<id>:<token>"
+detect:
+  env: [PLANETSCALE_SERVICE_TOKEN]
+  prefixes: [pscale_tkn_]
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Paths follow the OpenAPI spec's server URL, https://api.planetscale.com/v1.
+# Endpoints the official planetscale-go SDK calls that the public spec leaves
+# out are listed too, with the SDK file as their source.
+# Boolean flags that make a call worse (instant_ddl, auto_delete_branch,
+# delete_passwords, ...) are matched with one regex that accepts every value
+# Rails reads as true: anything except false, 0, f and off (any case) or empty.

@@ -1,0 +1,7 @@
+# description: Create branch restore-0612 of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"restore-0612","backup_id":"bk_9d2f","cluster_size":"PS_20"}

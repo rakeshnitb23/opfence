@@ -1,0 +1,7 @@
+# description: Change the throttler of deploy request 42
+PATCH /v1/organizations/acme/databases/shop-db/deploy-requests/42/throttler HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"ratio":20}

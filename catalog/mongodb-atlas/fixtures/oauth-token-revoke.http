@@ -1,0 +1,8 @@
+# description: Revoke an Atlas access token
+POST /api/oauth/revoke HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Basic bWRiX3NhX2lkX2V4YW1wbGU6b3BmX21vbmdvZGItYXRsYXNfRVhBTVBMRQ==
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+token=opf_mongodb-atlas_EXAMPLE&token_type_hint=access_token

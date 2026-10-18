@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: sandbox-config
+operations:
+  - id: mongodb-atlas.sandbox-config.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/sandboxConfig" } }
+    class: write
+    resource: { arg: orgId, kind: organization }
+    card: "Create a sandbox configuration for organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/sandbox-config-create.http
+        expect: write
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.sandbox-config.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/sandboxConfig/{sandboxConfigId}" } }
+    class: write
+    resource: { arg: orgId, kind: organization }
+    card: "Change sandbox configuration {sandboxConfigId} of organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/sandbox-config-update.http
+        expect: write
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.sandbox-config.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/sandboxConfig/{sandboxConfigId}" } }
+    class: delete
+    resource: { arg: orgId, kind: organization }
+    card: "Delete sandbox configuration {sandboxConfigId} and turn off sandboxes in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/sandbox-config-delete.http
+        expect: delete
+        resource: 4888442a3354817a7320eb61

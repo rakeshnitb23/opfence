@@ -1,0 +1,7 @@
+# description: Change the role of member usr_6w1q in organization acme to admin
+PATCH /v1/organizations/acme/members/usr_6w1q HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"role":"admin"}

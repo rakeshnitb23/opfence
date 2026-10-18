@@ -1,0 +1,7 @@
+# description: Change configuration of Turso database app-db
+PATCH /v1/databases/app-db/configuration HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"delete_protection":false}

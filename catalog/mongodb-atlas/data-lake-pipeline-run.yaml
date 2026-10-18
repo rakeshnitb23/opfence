@@ -1,0 +1,18 @@
+# MongoDB Atlas Administration API: data-lake-pipeline-run
+operations:
+  - id: mongodb-atlas.data-lake-pipeline-run.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/runs/{pipelineRunId}" } }
+    class: irreversible
+    resource: { arg: pipelineName, kind: pipeline }
+    card: "Delete the dataset of pipeline run {pipelineRunId} of {pipelineName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Deletes the data the run produced. Removed from the current spec but
+      documented in the SDK spec it was removed from.
+    tests:
+      - fixture: fixtures/data-lake-pipeline-run-delete.http
+        expect: irreversible
+        resource: orders-pipeline

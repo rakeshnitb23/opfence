@@ -1,0 +1,7 @@
+# description: Rename or describe team platform in organization acme
+PATCH /v1/organizations/acme/teams/platform HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"description":"Platform engineers"}

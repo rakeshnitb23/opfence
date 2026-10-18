@@ -1,0 +1,7 @@
+# description: Create traffic budget reports on branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/traffic/budgets HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"reports","mode":"enforce","rate":20}

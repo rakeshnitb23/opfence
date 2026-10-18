@@ -1,0 +1,7 @@
+# description: Generate a JWKS claims template for Turso organization acme
+POST /v2/organizations/acme/jwks-template HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"database":"app-db","group":null,"scope":"database","permissions":[]}

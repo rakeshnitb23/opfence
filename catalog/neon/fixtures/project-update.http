@@ -1,0 +1,7 @@
+# description: Change settings of Neon project shop-prod-12345678
+PATCH /api/v2/projects/shop-prod-12345678 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"project":{"name":"shop-prod"}}

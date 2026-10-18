@@ -1,0 +1,7 @@
+# description: Create lookup vindex orders_lookup on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/lookup-vindex/vindexes HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"orders_lookup","keyspace":"commerce","table_keyspace":"commerce"}

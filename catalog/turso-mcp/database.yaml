@@ -1,0 +1,107 @@
+# Turso MCP server: databases
+operations:
+  - id: turso-mcp.database.list
+    match: { mcp: { tool: list_databases } }
+    class: read
+    card: "List Turso databases"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes the tool names
+      and what each does but not their arguments, so the rule matches the tool alone and
+      names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/database-list.http
+        expect: read
+
+  - id: turso-mcp.database.get
+    match: { mcp: { tool: get_database } }
+    class: read
+    card: "Show a Turso database's hostname, engine and configuration"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      Returns the hostname, engine, delete protection and allow rules; no token. Turso's
+      hosted server (mcp.turso.ai) is closed source; Turso publishes the tool names and what
+      each does but not their arguments, so the rule matches the tool alone and names no
+      resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/database-get.http
+        expect: read
+
+  - id: turso-mcp.database.configure
+    match: { mcp: { tool: set_database_config } }
+    class: irreversible
+    card: "Change a Turso database's delete protection, allow rules or size limit"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+      - https://github.com/tursodatabase/turso-docs/blob/main/integrations/mcp.mdx
+    notes: >-
+      The tool sets delete protection, IP/VPC allow rules and the size limit. Without
+      published argument names Opfence cannot tell which, so it takes the worst: turning
+      delete protection off (irreversible, safety-net convention; allow rules alone would be
+      access). Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes the
+      tool names and what each does but not their arguments, so the rule matches the tool
+      alone and names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/database-configure.http
+        expect: irreversible
+
+  - id: turso-mcp.database.create
+    match: { mcp: { tool: create_database } }
+    class: write
+    card: "Create a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      use_tursodb is the one argument Turso documents. Turso's hosted server (mcp.turso.ai)
+      is closed source; Turso publishes the tool names and what each does but not their
+      arguments, so the rule matches the tool alone and names no resource. Fixture arguments
+      are illustrative.
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: write
+
+  - id: turso-mcp.database.delete
+    match: { mcp: { tool: delete_database } }
+    class: irreversible
+    card: "Delete a Turso database or branch and all its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+      - https://github.com/tursodatabase/turso-docs/blob/main/features/recover-deleted-databases.mdx
+    notes: >-
+      Turso keeps a deleted database restorable for five days, but only on a paid plan, for
+      an admin or owner, and only while the organization's recovery setting is on. Opfence
+      cannot see the plan or that setting, so the delete is irreversible. Turso's hosted
+      server (mcp.turso.ai) is closed source; Turso publishes the tool names and what each
+      does but not their arguments, so the rule matches the tool alone and names no
+      resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+
+  - id: turso-mcp.database.analytics
+    match: { mcp: { tool: database_analytics } }
+    class: read
+    card: "Show top queries of a Turso database"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
+    notes: >-
+      Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes the tool names
+      and what each does but not their arguments, so the rule matches the tool alone and
+      names no resource. Fixture arguments are illustrative.
+    tests:
+      - fixture: fixtures/database-analytics.http
+        expect: read

@@ -1,0 +1,4 @@
+# description: List webhooks of database shop-db with their signing secrets
+GET /v1/organizations/acme/databases/shop-db/webhooks HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

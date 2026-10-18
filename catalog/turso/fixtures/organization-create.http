@@ -1,0 +1,7 @@
+# description: Create Turso organization acme-labs
+POST /v1/organizations?dry_run=false HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"name":"acme-labs","stripe_id":"cus_EXAMPLE"}

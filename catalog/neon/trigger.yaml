@@ -1,0 +1,43 @@
+# Neon API v2: trigger
+operations:
+  - id: neon.trigger.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/triggers" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create a trigger on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/trigger-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.trigger.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/triggers/{trigger_id}" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Change trigger {trigger_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/trigger-update.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.trigger.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/triggers/{trigger_id}" } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete trigger {trigger_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/trigger-delete.http
+        expect: delete
+        resource: br-shop-main-123456

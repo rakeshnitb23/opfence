@@ -1,0 +1,7 @@
+# description: Start transferring project shop-prod-12345678 to another account
+POST /api/v2/projects/shop-prod-12345678/transfer_requests HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"ttl_seconds":86400}

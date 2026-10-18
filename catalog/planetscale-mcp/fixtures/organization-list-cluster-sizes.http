@@ -1,0 +1,8 @@
+# description: List cluster sizes for postgresql databases in organization acme
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"planetscale_list_cluster_sizes","arguments":{"organization":"acme","engine":"postgresql"}}}

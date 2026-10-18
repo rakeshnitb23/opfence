@@ -1,0 +1,33 @@
+# MongoDB Atlas Administration API: invoice
+operations:
+  - id: mongodb-atlas.invoice.generate-and-download-report
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/invoices/{invoiceId}:generateAndDownloadReport" } }
+    class: read
+    resource: { arg: orgId, kind: organization }
+    card: "Generate a report for invoice {invoiceId} of organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/invoice-generate-and-download-report.http
+        expect: read
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.invoice.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/invoices/{invoiceAction}" } }
+    class: unknown
+    resource: { arg: orgId, kind: organization }
+    card: "Run {invoiceAction} on an invoice of organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
+    tests:
+      - fixture: fixtures/invoice-custom-action-other.http
+        expect: unknown
+        resource: 4888442a3354817a7320eb61

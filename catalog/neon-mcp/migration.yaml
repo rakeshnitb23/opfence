@@ -1,0 +1,58 @@
+# Neon MCP server: migration
+operations:
+  - id: neon-mcp.migration.prepare
+    match: { mcp: { tool: prepare_database_migration } }
+    class: unknown
+    classify: { sql: migration_sql }
+    resource: { arg: project_id, kind: project }
+    card: "Try migration SQL on a temporary branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      Runs the SQL on a new temporary branch, so the effect is milder than its
+      class; the SQL is still classified because the branch holds a copy of
+      the parent's data and the same SQL is what complete_database_migration
+      applies. The class comes from the SQL: SELECT is read, INSERT and UPDATE
+      ... WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and
+      UPDATE or DELETE without WHERE are irreversible, GRANT, REVOKE and role
+      changes are access, and anything the classifier cannot read is unknown.
+      A request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/migration-prepare.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/migration-prepare-drop.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.migration.complete
+    match: { mcp: { tool: complete_database_migration } }
+    class: unknown
+    classify: { sql: migration_sql }
+    resource: { arg: parent_branch_id, kind: branch }
+    card: "Apply migration {migration_id} to branch {parent_branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      apply_changes defaults to true: the SQL runs on the parent branch, then
+      the temporary branch is deleted. The class comes from the SQL: SELECT is
+      read, INSERT and UPDATE ... WHERE are write, DELETE ... WHERE is delete,
+      DROP, TRUNCATE and UPDATE or DELETE without WHERE are irreversible,
+      GRANT, REVOKE and role changes are access, and anything the classifier
+      cannot read is unknown. A request with several statements gets every
+      class they have.
+    tests:
+      - fixture: fixtures/migration-complete.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/migration-complete-drop.http
+        expect: irreversible
+        resource: br-shop-main-123456

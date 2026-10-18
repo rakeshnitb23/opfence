@@ -1,0 +1,63 @@
+# PlanetScale API: bouncer
+operations:
+  - id: planetscale.bouncer.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/bouncers" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Create PgBouncer {body.name} for branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Bouncers are billed by size.
+    tests:
+      - fixture: fixtures/bouncer-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.bouncer.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/bouncers/{bouncer}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete PgBouncer {bouncer} of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A bouncer holds no data and can be recreated, but connections through it fail until then.
+    tests:
+      - fixture: fixtures/bouncer-delete.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.bouncer.resize
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/bouncers/{bouncer}/resizes" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Resize PgBouncer {bouncer} of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Size and replica count set what the bouncer bills.
+    tests:
+      - fixture: fixtures/bouncer-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.bouncer.resize-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/bouncers/{bouncer}/resizes" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel the pending resize of PgBouncer {bouncer}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/bouncer-resize-cancel.http
+        expect: write
+        resource: shop-db

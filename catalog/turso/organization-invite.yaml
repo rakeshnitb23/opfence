@@ -1,0 +1,46 @@
+# Turso Platform API: organization invites
+operations:
+  - id: turso.organization-invite.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/invites" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Invite {body.email} to Turso organization {organization} as {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+    tests:
+      - fixture: fixtures/organization-invite-create.http
+        expect: access
+        resource: acme
+
+  - id: turso.organization-invite.create-legacy
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/invite" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Invite {body.email} to Turso organization {organization} as {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      The older singular /invite route the turso CLI still calls.
+    tests:
+      - fixture: fixtures/organization-invite-create-legacy.http
+        expect: access
+        resource: acme
+
+  - id: turso.organization-invite.delete
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/invites/{email}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Delete the invite for {email} to Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    tests:
+      - fixture: fixtures/organization-invite-delete.http
+        expect: access
+        resource: acme

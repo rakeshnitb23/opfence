@@ -1,0 +1,59 @@
+# MongoDB MCP server: local-deployment
+operations:
+  - id: mongodb-mcp.local-deployment.list
+    match: { mcp: { tool: atlas-local-list-deployments } }
+    class: read
+    card: "List local Atlas deployments"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas-local/src/tools/read/listDeployments.ts
+    tests:
+      - fixture: fixtures/local-deployment-list.http
+        expect: read
+
+  - id: mongodb-mcp.local-deployment.create
+    match: { mcp: { tool: atlas-local-create-deployment } }
+    class: write
+    resource: { arg: deploymentName, kind: deployment }
+    card: "Create local Atlas deployment {deploymentName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas-local/src/tools/create/createDeployment.ts
+    notes: >-
+      Starts a MongoDB Atlas container with Docker on the MCP server's machine.
+    tests:
+      - fixture: fixtures/local-deployment-create.http
+        expect: write
+        resource: local-orders
+
+  - id: mongodb-mcp.local-deployment.connect
+    match: { mcp: { tool: atlas-local-connect-deployment } }
+    class: read
+    resource: { arg: deploymentName, kind: deployment }
+    card: "Connect to local Atlas deployment {deploymentName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas-local/src/tools/connect/connectDeployment.ts
+    tests:
+      - fixture: fixtures/local-deployment-connect.http
+        expect: read
+        resource: local-orders
+
+  - id: mongodb-mcp.local-deployment.delete
+    match: { mcp: { tool: atlas-local-delete-deployment } }
+    class: irreversible
+    resource: { arg: deploymentName, kind: deployment }
+    card: "Delete local Atlas deployment {deploymentName} and its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas-local/src/tools/delete/deleteDeployment.ts
+    notes: >-
+      Removes the container and the data in it.
+    tests:
+      - fixture: fixtures/local-deployment-delete.http
+        expect: irreversible
+        resource: local-orders

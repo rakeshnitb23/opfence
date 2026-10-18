@@ -1,0 +1,264 @@
+# PlanetScale API: deploy-request
+operations:
+  - id: planetscale.deploy-request.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests" } }
+    class: write
+    when:
+      - if: { arg: body.auto_delete_branch, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: delete
+    resource: { arg: database, kind: database }
+    card: "Open a deploy request from {body.branch} to {body.into_branch} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Opening a request changes nothing; auto_delete_branch deletes the source branch once the
+      deploy completes (its schema is then in the target).
+    tests:
+      - fixture: fixtures/deploy-request-create.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/deploy-request-create-auto-delete.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.close
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Close deploy request {number} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/deploy-request-close.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.deploy-request.deploy
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/deploy" } }
+    class: delete
+    when:
+      - if: { arg: body.instant_ddl, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Deploy the schema changes of deploy request {number} to database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Opfence cannot see the schema diff, so assume it drops tables or columns. PlanetScale
+      lets a deploy be reverted, with data, for 30 minutes (delete); instant deploys cannot be
+      reverted (irreversible). The SDK always sends instant_ddl.
+    tests:
+      - fixture: fixtures/deploy-request-deploy.http
+        expect: delete
+        resource: shop-db
+      - fixture: fixtures/deploy-request-deploy-instant.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.deploy-request.apply
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/apply-deploy" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Apply the gated deploy of request {number} to database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cuts over to the new schema; revertible for 30 minutes.
+    tests:
+      - fixture: fixtures/deploy-request-apply.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.force-cutover
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/force-cutover" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Force the cutover of deploy request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Cuts over to the new schema; revertible for 30 minutes.
+    tests:
+      - fixture: fixtures/deploy-request-force-cutover.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.complete-errored
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/complete-deploy" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Finish errored deploy request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Completes the remaining schema changes; revertible for 30 minutes.
+    tests:
+      - fixture: fixtures/deploy-request-complete-errored.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.retry
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/retry-failed-operations" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Retry failed operations of deploy request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/deploy_requests.go
+    notes: >-
+      Runs the remaining schema changes, which may drop tables or columns. Not in the public
+      OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/deploy-request-retry.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.cancel
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/cancel" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel queued deploy request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/deploy-request-cancel.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.deploy-request.revert
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/revert" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Revert the deployed schema of request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Restores the old schema with data written meanwhile, but columns and tables the deploy
+      added lose their data (PlanetScale deploy request docs).
+    tests:
+      - fixture: fixtures/deploy-request-revert.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.deploy-request.skip-revert
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/skip-revert" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Skip the revert window of deploy request {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Makes the deploy permanent at once; dropped tables and columns can no longer be brought
+      back.
+    tests:
+      - fixture: fixtures/deploy-request-skip-revert.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.deploy-request.auto-apply
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/auto-apply" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Turn auto-apply on or off for deploy request {number}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/deploy-request-auto-apply.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.deploy-request.auto-delete-branch
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/auto-delete-branch" } }
+    class: write
+    when:
+      - if: { arg: body.enable, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: delete
+    resource: { arg: database, kind: database }
+    card: "Turn auto-delete of the source branch on or off for deploy request {number}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Enabling deletes the source branch once the deploy completes.
+    tests:
+      - fixture: fixtures/deploy-request-auto-delete-branch.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/deploy-request-auto-delete-branch-on.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.deploy-request.aggressive-cutover
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/aggressive-cutover" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Turn aggressive cutover on or off for deploy request {number}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Aggressive cutover kills blocking queries and transactions at cutover.
+    tests:
+      - fixture: fixtures/deploy-request-aggressive-cutover.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.deploy-request.review
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/reviews" } }
+    class: write
+    when:
+      - if: { arg: body.state, equals: approved }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Review deploy request {number} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      An approval satisfies the database's required-review gate, so an agent approving is
+      access.
+    tests:
+      - fixture: fixtures/deploy-request-review.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/deploy-request-review-approve.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.deploy-request.throttler-update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/throttler" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change the throttler of deploy request {number}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/deploy-request-throttler-update.http
+        expect: write
+        resource: shop-db

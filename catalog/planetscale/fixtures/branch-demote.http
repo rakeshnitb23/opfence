@@ -1,0 +1,4 @@
+# description: Demote production branch main of database shop-db to development
+POST /v1/organizations/acme/databases/shop-db/branches/main/demote HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

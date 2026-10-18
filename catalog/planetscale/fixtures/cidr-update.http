@@ -1,0 +1,7 @@
+# description: Change IP restriction cidr_5n1v of database shop-db
+PATCH /v1/organizations/acme/databases/shop-db/cidrs/cidr_5n1v HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"cidrs":["0.0.0.0/0"]}

@@ -139,6 +139,7 @@
         "in": { "type": "array", "minItems": 1, "items": { "type": "string" } },
         "present": { "const": true },
         "absent": { "const": true },
+        "empty": { "const": true },
         "matches": { "type": "string" }
       }
     }

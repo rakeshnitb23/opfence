@@ -1,0 +1,4 @@
+# description: Extend Postgres role role_8kd2 of branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/roles/role_8kd2/renew HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

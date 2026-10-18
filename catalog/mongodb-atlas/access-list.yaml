@@ -1,0 +1,31 @@
+# MongoDB Atlas Administration API: access-list
+operations:
+  - id: mongodb-atlas.access-list.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/accessList" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Allow new addresses to reach the clusters of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      0.0.0.0/0 opens every cluster in the project to the internet.
+    tests:
+      - fixture: fixtures/access-list-create.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.access-list.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/accessList/{entryValue}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove {entryValue} from the IP access list of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/access-list-delete.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

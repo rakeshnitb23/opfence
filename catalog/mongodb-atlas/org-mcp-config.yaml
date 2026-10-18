@@ -1,0 +1,49 @@
+# MongoDB Atlas Administration API: org-mcp-config
+operations:
+  - id: mongodb-atlas.org-mcp-config.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/mcpConfigs" } }
+    class: credential
+    resource: { arg: orgId, kind: organization }
+    card: "Create remote MCP configuration {body.mcpConfigName} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Provisions a service account for the Atlas Remote MCP server and returns
+      its client id and secret.
+    tests:
+      - fixture: fixtures/org-mcp-config-create.http
+        expect: credential
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-mcp-config.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/mcpConfigs/{mcpConfigId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change remote MCP configuration {mcpConfigId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Changes the roles and IP access list of the configuration's service
+      account.
+    tests:
+      - fixture: fixtures/org-mcp-config-update.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-mcp-config.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/mcpConfigs/{mcpConfigId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Delete remote MCP configuration {mcpConfigId} from organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-mcp-config-delete.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

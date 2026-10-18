@@ -1,0 +1,7 @@
+# description: Add member usr_6w1q to team platform
+POST /v1/organizations/acme/teams/platform/members HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"user_id":"usr_6w1q"}

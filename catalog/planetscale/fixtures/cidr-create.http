@@ -1,0 +1,7 @@
+# description: Add an IP restriction 203.0.113.0/24 to database shop-db
+POST /v1/organizations/acme/databases/shop-db/cidrs HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"cidrs":["203.0.113.0/24"],"description":"office"}

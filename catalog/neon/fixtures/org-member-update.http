@@ -1,0 +1,7 @@
+# description: Change the role of member 4b1f7c2e-8d3a-4e5f-9a6b-1c2d3e4f5a6b in organization org-shop-12345678 to admin
+PATCH /api/v2/organizations/org-shop-12345678/members/4b1f7c2e-8d3a-4e5f-9a6b-1c2d3e4f5a6b HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"role":"admin"}

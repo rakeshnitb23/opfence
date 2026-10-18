@@ -1,0 +1,7 @@
+# description: Create keyspace commerce on branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/keyspaces HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"commerce","cluster_size":"PS_20","shards":2}

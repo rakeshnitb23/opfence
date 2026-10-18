@@ -1,0 +1,7 @@
+# description: Exchange a grant for an OAuth token of application oapp_7h2k
+POST /v1/organizations/acme/oauth-applications/oapp_7h2k/token HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"client_id":"example-client","client_secret":"opf_planetscale_EXAMPLE","grant_type":"refresh_token","refresh_token":"opf_planetscale_EXAMPLE"}

@@ -1,0 +1,27 @@
+# Neon MCP server: docs
+operations:
+  - id: neon-mcp.docs.list
+    match: { mcp: { tool: list_docs_resources } }
+    class: read
+    card: "List Neon documentation pages"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/docs-list.http
+        expect: read
+
+  - id: neon-mcp.docs.get
+    match: { mcp: { tool: get_doc_resource } }
+    class: read
+    card: "Read Neon documentation page {slug}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/docs-get.http
+        expect: read

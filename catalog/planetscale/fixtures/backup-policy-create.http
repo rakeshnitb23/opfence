@@ -1,0 +1,7 @@
+# description: Create backup policy nightly for database shop-db
+POST /v1/organizations/acme/databases/shop-db/backup-policies HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"nightly","target":"production","retention_value":30,"retention_unit":"day","frequency_value":1,"frequency_unit":"day"}

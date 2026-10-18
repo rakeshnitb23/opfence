@@ -1,0 +1,239 @@
+# Neon API v2: auth
+operations:
+  - id: neon.auth.enable
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Enable Neon Auth on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The response returns secret_server_key.
+    tests:
+      - fixture: fixtures/auth-enable.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth.disable
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth" } }
+    class: access
+    when:
+      - if: { arg: body.delete_data, equals: "true" }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Disable Neon Auth on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Disabling stops sign-in for the app; delete_data also drops the
+      neon_auth schema with its users.
+    tests:
+      - fixture: fixtures/auth-disable.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/auth-disable-delete-data.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon.auth.allow-localhost
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/allow_localhost" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change whether localhost may use Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-allow-localhost.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-config
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/config" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change Neon Auth settings on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-config.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-email-and-password
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/email_and_password" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change email and password sign-in settings on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-email-and-password.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.email-provider
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/email_provider" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read the Neon Auth email provider settings of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Callers with credential read permission get the stored SMTP password.
+    tests:
+      - fixture: fixtures/auth-email-provider.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-email-provider
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/email_provider" } }
+    class: access
+    when:
+      - if: { arg: body.password, present: true }
+        class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Auth email provider of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Setting the SMTP password stores a secret.
+    tests:
+      - fixture: fixtures/auth-update-email-provider.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/auth-update-email-provider-password.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth.test-email-provider
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/email_provider/test" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Send a test email through the Neon Auth email provider of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-test-email-provider.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.auth.send-test-email
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/send_test_email" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Send a Neon Auth test email from branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-send-test-email.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.auth.plugins
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/plugins" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read the Neon Auth plugin settings of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Aggregates the email provider (SMTP password for privileged callers) and
+      OAuth providers with client_secret.
+    tests:
+      - fixture: fixtures/auth-plugins.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-magic-link-plugin
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/plugins/magic-link" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Auth magic link plugin on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-magic-link-plugin.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-oauth-provider-plugin
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/plugins/oauth-provider" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Auth oauth provider plugin on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-oauth-provider-plugin.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-organization-plugin
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/plugins/organization" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Auth organization plugin on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-organization-plugin.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-phone-number-plugin
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/plugins/phone-number" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Auth phone number plugin on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-update-phone-number-plugin.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.auth.update-webhooks
+    match: { rest: { method: PUT, path: "/api/v2/projects/{project_id}/branches/{branch_id}/auth/webhooks" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change Neon Auth webhooks of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Webhooks send user events to the given URL.
+    tests:
+      - fixture: fixtures/auth-update-webhooks.http
+        expect: access
+        resource: br-shop-main-123456

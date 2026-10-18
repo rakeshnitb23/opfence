@@ -1,0 +1,4 @@
+# description: Remove JWKS jwks-12345678 from project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/jwks/jwks-12345678 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

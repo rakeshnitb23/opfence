@@ -1,0 +1,8 @@
+# description: List failed executions of error a1b2c3d4 on branch main
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":26,"method":"tools/call","params":{"name":"planetscale_list_query_error_executions","arguments":{"organization":"acme","database":"shop-db","branch":"main","error_fingerprint":"a1b2c3d4"}}}

@@ -1,0 +1,51 @@
+# Turso Platform API: organization JWKS (external token issuers)
+operations:
+  - id: turso.organization-jwks.template
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/jwks-template" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    card: "Generate a JWKS claims template for Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document): returns a template for the claims
+      an external identity provider should put in its tokens and changes nothing.
+    tests:
+      - fixture: fixtures/organization-jwks-template.http
+        expect: read
+        resource: acme
+
+  - id: turso.organization-jwks.save
+    match: { rest: { method: PUT, path: "/{version}/organizations/{organization}/jwks/{name}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Trust JWKS {name} ({body.jwks_url}) for Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document). Tokens signed by keys at that URL
+      are accepted by the organization's databases, so it decides who can connect.
+    tests:
+      - fixture: fixtures/organization-jwks-save.http
+        expect: access
+        resource: acme
+
+  - id: turso.organization-jwks.remove
+    match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/jwks/{name}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Stop trusting JWKS {name} for Turso organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/organizations.go
+    notes: >-
+      Used by the turso CLI (not in the OpenAPI document).
+    tests:
+      - fixture: fixtures/organization-jwks-remove.http
+        expect: access
+        resource: acme

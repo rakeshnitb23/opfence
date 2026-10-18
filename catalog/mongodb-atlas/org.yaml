@@ -1,0 +1,54 @@
+# MongoDB Atlas Administration API: org
+operations:
+  - id: mongodb-atlas.org.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs" } }
+    class: write
+    when:
+      - if: { arg: body.apiKey, present: true }
+        class: credential
+      - if: { arg: body.serviceAccount, present: true }
+        class: credential
+    card: "Create organization {body.name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      With apiKey or serviceAccount the response holds a new key or service
+      account secret.
+    tests:
+      - fixture: fixtures/org-create.http
+        expect: write
+      - fixture: fixtures/org-create-with-key.http
+        expect: credential
+
+  - id: mongodb-atlas.org.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}" } }
+    class: write
+    resource: { arg: orgId, kind: organization }
+    card: "Rename organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-update.http
+        expect: write
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}" } }
+    class: irreversible
+    resource: { arg: orgId, kind: organization }
+    card: "Delete organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Removes the organization with its settings, teams, keys and billing
+      history.
+    tests:
+      - fixture: fixtures/org-delete.http
+        expect: irreversible
+        resource: 4888442a3354817a7320eb61

@@ -1,0 +1,4 @@
+# description: Delete router group analytics on Neki branch main
+DELETE /v1/organizations/acme/databases/shop-db/branches/main/routers/analytics HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

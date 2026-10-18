@@ -1,0 +1,7 @@
+# description: Trust JWKS URL https://auth.shop.example/.well-known/jwks.json for project shop-prod-12345678
+POST /api/v2/projects/shop-prod-12345678/jwks HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"jwks_url":"https://auth.shop.example/.well-known/jwks.json","provider_name":"Clerk"}

@@ -1,0 +1,89 @@
+# MongoDB Atlas Administration API: project-user
+operations:
+  - id: mongodb-atlas.project-user.add
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/users" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Add user {body.username} to project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-user-add.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-user.remove
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/users/{userId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove user {userId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-user-remove.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-user.add-role
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/users/{userId}:addRole" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Add a role to user {userId} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-user-add-role.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-user.remove-role
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/users/{userId}:removeRole" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove a role from user {userId} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-user-remove-role.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-user.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/users/{userAction}" } }
+    class: unknown
+    resource: { arg: groupId, kind: project }
+    card: "Run {userAction} on a user of project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
+    tests:
+      - fixture: fixtures/project-user-custom-action-other.http
+        expect: unknown
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-user.set-roles
+    match: { rest: { method: PUT, path: "/api/atlas/v2/groups/{groupId}/users/{userId}/roles" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Set the roles of user {userId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-user-set-roles.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

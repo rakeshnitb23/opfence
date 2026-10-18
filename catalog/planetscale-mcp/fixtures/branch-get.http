@@ -1,0 +1,8 @@
+# description: Show a database branch
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":15,"method":"tools/call","params":{"name":"planetscale_get_branch","arguments":{"organization":"acme"}}}

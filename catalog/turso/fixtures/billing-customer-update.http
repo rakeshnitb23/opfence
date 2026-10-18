@@ -1,0 +1,7 @@
+# description: Change billing details of Turso organization acme
+PUT /v1/organizations/acme/billing/customer HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"name":"Acme","email":"billing@example.com","tax_id":{"value":"","country":""},"billing_address":{"line1":"1 Main St","line2":"","city":"Springfield","state":"","postal_code":"00000","country":"US"}}

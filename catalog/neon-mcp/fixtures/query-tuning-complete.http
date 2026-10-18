@@ -1,0 +1,8 @@
+# description: Finish query tuning tune-5a6b7c8d on project shop-prod-12345678
+POST /mcp HTTP/1.1
+Host: mcp.neon.tech
+Authorization: Bearer opf_neon-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"complete_query_tuning","arguments":{"project_id":"shop-prod-12345678","database_name":"shop","tuning_id":"tune-5a6b7c8d","temporary_branch_id":"br-tuning-tmp-123456","apply_changes":true,"suggested_sql_statements":["create index orders_user_id_idx on orders (user_id)"]}}}

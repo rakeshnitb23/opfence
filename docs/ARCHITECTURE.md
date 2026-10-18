@@ -255,7 +255,7 @@ Matchers, exactly one per rule:
 
 | Matcher | Fields | Notes |
 | --- | --- | --- |
-| `rest` | `method`, `path` | Path template with `{name}` segments (captured into args) and a trailing `{name*}` for the rest of the path. Matching is on the raw path, segment by segment, case-sensitive. Most specific template wins (fewest wildcards, then longest) |
+| `rest` | `method`, `path` | Path template with `{name}` segments (captured into args), a trailing `{name*}` for the rest of the path, and `{name}:verb` for custom methods (`/clusters/{name}:pin`, as MongoDB Atlas and Google APIs use; it counts as a literal when ranking, and the OpenShell export widens it to `*` in deny rules). Matching is on the raw path, segment by segment, case-sensitive. Most specific template wins (fewest wildcards, then longest) |
 | `graphql` | `type`, `field` | Root field name; aliases are resolved to the field |
 | `mcp` | `tool` | Server is the provider |
 | `aws` | `service` plus either `action`, or `method` and `path` | `service` is the SigV4 signing name (`rds`, `s3`, `iam`). `action` for Query/JSON services and S3; `method` + `path` template for REST-JSON services such as Lambda |
@@ -281,7 +281,7 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
     classify: { sql: query }        # derive the class from args.query
 ```
 
-Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `matches` (RE2). `classify.sql` hands an argument to the SQL classifier. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
+Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `empty` (absent, null, `""`, `{}` or `[]`, for filters where an empty one selects everything), `matches` (RE2). `classify.sql` hands an argument to the Postgres SQL classifier: a string, or a list of strings classified one by one (a transaction). Any other value leaves the rule's own class. Only Postgres dialects use it: SQLite and MySQL quote and comment differently, so their SQL tools get a fixed class. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
 
 ### 4.5 Classification conventions
 

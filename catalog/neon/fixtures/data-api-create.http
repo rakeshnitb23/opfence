@@ -1,0 +1,7 @@
+# description: Expose database shop on branch br-shop-main-123456 through the Neon Data API
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/data-api/shop HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"auth_provider":"neon_auth"}

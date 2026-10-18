@@ -1,0 +1,7 @@
+# description: Send a test email through the Neon Auth email provider of branch br-shop-main-123456
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/auth/email_provider/test HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"recipient_email":"dev@shop.example"}

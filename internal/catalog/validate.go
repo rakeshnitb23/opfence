@@ -400,6 +400,9 @@ func (l *loader) validateCondition(r *Rule, i int, c *Condition) {
 	if c.Absent {
 		n++
 	}
+	if c.Empty {
+		n++
+	}
 	if c.Matches != "" {
 		n++
 		re, err := regexp.Compile(c.Matches)
@@ -409,7 +412,7 @@ func (l *loader) validateCondition(r *Rule, i int, c *Condition) {
 		c.re = re
 	}
 	if n != 1 {
-		l.addf(f, ln, "%s: when[%d]: set exactly one of equals, in, present, absent or matches", r.ID, i)
+		l.addf(f, ln, "%s: when[%d]: set exactly one of equals, in, present, absent, empty or matches", r.ID, i)
 	}
 }
 

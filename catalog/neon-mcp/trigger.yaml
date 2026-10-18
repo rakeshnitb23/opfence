@@ -1,0 +1,81 @@
+# Neon MCP server: trigger
+operations:
+  - id: neon-mcp.trigger.list
+    match: { mcp: { tool: list_triggers } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List triggers on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/trigger-list.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.trigger.get
+    match: { mcp: { tool: get_trigger } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show trigger {trigger_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/trigger-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.trigger.create
+    match: { mcp: { tool: create_trigger } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create a trigger on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/trigger-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.trigger.update
+    match: { mcp: { tool: update_trigger } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Change trigger {trigger_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/trigger-update.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.trigger.delete
+    match: { mcp: { tool: delete_trigger } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete trigger {trigger_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/trigger-delete.http
+        expect: delete
+        resource: br-shop-main-123456

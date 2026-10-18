@@ -1,0 +1,112 @@
+# MongoDB MCP server: collection
+operations:
+  - id: mongodb-mcp.collection.list
+    match: { mcp: { tool: list-collections } }
+    class: read
+    resource: { arg: database, kind: database }
+    card: "List collections in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/listCollections.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/collection-list.http
+        expect: read
+        resource: shop
+
+  - id: mongodb-mcp.collection.schema
+    match: { mcp: { tool: collection-schema } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Infer the schema of collection {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/collectionSchema.ts
+    notes: >-
+      Samples documents to describe their fields. The tool talks to MongoDB over
+      the wire protocol, not HTTP, so only the agent hook sees it; the proxy
+      never does.
+    tests:
+      - fixture: fixtures/collection-schema.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.collection.storage-size
+    match: { mcp: { tool: collection-storage-size } }
+    class: read
+    resource: { arg: collection, kind: collection }
+    card: "Show the storage size of collection {collection} in {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/collectionStorageSize.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/collection-storage-size.http
+        expect: read
+        resource: orders
+
+  - id: mongodb-mcp.collection.create
+    match: { mcp: { tool: create-collection } }
+    class: write
+    resource: { arg: collection, kind: collection }
+    card: "Create collection {collection} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/create/createCollection.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/collection-create.http
+        expect: write
+        resource: orders
+
+  - id: mongodb-mcp.collection.rename
+    match: { mcp: { tool: rename-collection } }
+    class: write
+    when:
+      - if: { arg: dropTarget, equals: "true" }
+        class: irreversible
+    resource: { arg: collection, kind: collection }
+    card: "Rename collection {collection} in {database} to {newName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/update/renameCollection.ts
+    notes: >-
+      With dropTarget the existing collection named newName is dropped first.
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/collection-rename.http
+        expect: write
+        resource: orders_staging
+      - fixture: fixtures/collection-rename-drop-target.http
+        expect: irreversible
+        resource: orders_staging
+
+  - id: mongodb-mcp.collection.drop
+    match: { mcp: { tool: drop-collection } }
+    class: irreversible
+    resource: { arg: collection, kind: collection }
+    card: "Drop collection {collection} from database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/delete/dropCollection.ts
+    notes: >-
+      Removes the collection with its documents and indexes; only a backup
+      brings it back. The tool talks to MongoDB over the wire protocol, not
+      HTTP, so only the agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/collection-drop.http
+        expect: irreversible
+        resource: orders

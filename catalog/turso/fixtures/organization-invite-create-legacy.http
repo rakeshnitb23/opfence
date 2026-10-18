@@ -1,0 +1,7 @@
+# description: Invite iku@example.com to Turso organization acme as member
+POST /v1/organizations/acme/invite HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"email":"iku@example.com","role":"member"}

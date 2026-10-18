@@ -1,0 +1,16 @@
+# Turso Platform API: CLI sessions
+operations:
+  - id: turso.user-session.invalidate
+    match: { rest: { method: POST, path: "/{version}/auth/invalidate" } }
+    class: access
+    card: "Invalidate every Turso CLI session of the current user"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/token.go
+    notes: >-
+      Used by turso auth logout --all (not in the OpenAPI document): every existing session
+      token stops working.
+    tests:
+      - fixture: fixtures/user-session-invalidate.http
+        expect: access

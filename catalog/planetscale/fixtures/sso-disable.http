@@ -1,0 +1,4 @@
+# description: Disable SSO and directory sync for organization acme
+DELETE /v1/organizations/acme/sso HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

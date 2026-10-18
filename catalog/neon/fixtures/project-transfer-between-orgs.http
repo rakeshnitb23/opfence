@@ -1,0 +1,7 @@
+# description: Transfer projects ["shop-prod-12345678"] out of organization org-shop-12345678
+POST /api/v2/organizations/org-shop-12345678/projects/transfer HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"destination_org_id":"org-other-87654321","project_ids":["shop-prod-12345678"]}

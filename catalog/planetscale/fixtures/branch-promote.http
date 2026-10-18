@@ -1,0 +1,4 @@
+# description: Promote branch main of database shop-db to production
+POST /v1/organizations/acme/databases/shop-db/branches/main/promote HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

@@ -1,0 +1,15 @@
+# Neon API v2: org-invitation
+operations:
+  - id: neon.org-invitation.create
+    match: { rest: { method: POST, path: "/api/v2/organizations/{org_id}/invitations" } }
+    class: access
+    resource: { arg: org_id, kind: organization }
+    card: "Invite people to organization {org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/org-invitation-create.http
+        expect: access
+        resource: org-shop-12345678

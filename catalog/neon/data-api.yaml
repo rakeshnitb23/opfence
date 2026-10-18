@@ -1,0 +1,51 @@
+# Neon API v2: data-api
+operations:
+  - id: neon.data-api.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/data-api/{database_name}" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Expose database {database_name} on branch {branch_id} through the Neon Data API"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Publishes a REST interface over the database.
+    tests:
+      - fixture: fixtures/data-api-create.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.data-api.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}/data-api/{database_name}" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Data API of database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Settings choose the exposed schemas, the anonymous role and CORS
+      origins.
+    tests:
+      - fixture: fixtures/data-api-update.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.data-api.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/data-api/{database_name}" } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete the Neon Data API of database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Removes the API endpoint and its configuration; the database is
+      untouched and the API can be created again.
+    tests:
+      - fixture: fixtures/data-api-delete.http
+        expect: delete
+        resource: br-shop-main-123456

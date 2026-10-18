@@ -1,0 +1,7 @@
+# description: Change snapshot snap-nightly-123456 of project shop-prod-12345678
+PATCH /api/v2/projects/shop-prod-12345678/snapshots/snap-nightly-123456 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"snapshot":{"name":"before-migration"}}

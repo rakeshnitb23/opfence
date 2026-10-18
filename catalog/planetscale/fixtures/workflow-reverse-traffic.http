@@ -1,0 +1,4 @@
+# description: Send traffic of workflow 42 back to the source keyspace
+PATCH /v1/organizations/acme/databases/shop-db/workflows/42/reverse-traffic HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

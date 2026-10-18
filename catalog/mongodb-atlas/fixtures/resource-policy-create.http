@@ -1,0 +1,8 @@
+# description: Create resource policy no-public-access in organization 4888442a3354817a7320eb61
+POST /api/atlas/v2/orgs/4888442a3354817a7320eb61/resourcePolicies HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"name":"no-public-access","description":"Block 0.0.0.0/0","policies":[{"body":"forbid (principal, action == cloud::Action::\"project.ipAccessList.modify\", resource) when { context.project.ipAccessList.contains(ip(\"0.0.0.0/0\")) };"}]}

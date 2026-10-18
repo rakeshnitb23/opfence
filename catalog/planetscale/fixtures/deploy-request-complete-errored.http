@@ -1,0 +1,4 @@
+# description: Finish errored deploy request 42 in database shop-db
+POST /v1/organizations/acme/databases/shop-db/deploy-requests/42/complete-deploy HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

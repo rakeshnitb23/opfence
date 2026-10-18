@@ -1,0 +1,4 @@
+# description: Delete the payment method of organization acme
+DELETE /v1/organizations/acme/billing/payment-method HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

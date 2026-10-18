@@ -1,0 +1,7 @@
+# description: Accept transfer tr-7f3e2d1c of project shop-prod-12345678
+PUT /api/v2/projects/shop-prod-12345678/transfer_requests/tr-7f3e2d1c HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"org_id":"org-shop-12345678"}

@@ -1,0 +1,7 @@
+# description: Add iku to Turso organization acme as member
+POST /v1/organizations/acme/members HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"username":"iku","role":"member"}

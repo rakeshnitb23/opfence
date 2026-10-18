@@ -1,0 +1,7 @@
+# description: Change backup policy bp_7m3q of database shop-db
+PATCH /v1/organizations/acme/databases/shop-db/backup-policies/bp_7m3q HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"retention_value":1,"retention_unit":"day"}

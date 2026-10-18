@@ -1,0 +1,76 @@
+# Turso Platform API: database auth tokens
+operations:
+  - id: turso.database-token.create
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/auth/tokens" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Create an auth token for Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases_v3.go
+    notes: >-
+      Returns a new database JWT; read-only tokens are still secrets.
+    tests:
+      - fixture: fixtures/database-token-create.http
+        expect: credential
+        resource: app-db
+      - fixture: fixtures/database-token-create-v3.http
+        expect: credential
+        resource: 0eb771dd-6906-11ee-8553-eaa7715aeaf2
+
+  - id: turso.database-token.invalidate
+    match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/auth/rotate" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Invalidate every auth token of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-docs/blob/main/api-reference/openapi.json
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      Every client using an existing token loses access at once; it reveals nothing, so it
+      is access like a token revoke.
+    tests:
+      - fixture: fixtures/database-token-invalidate.http
+        expect: access
+        resource: app-db
+
+  - id: turso.database-token.create-unscoped
+    match: { rest: { method: POST, path: "/{version}/databases/{database}/auth/tokens" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Create an auth token for Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-token-create-unscoped.http
+        expect: credential
+        resource: app-db
+
+  - id: turso.database-token.invalidate-unscoped
+    match: { rest: { method: POST, path: "/{version}/databases/{database}/auth/rotate" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Invalidate every auth token of Turso database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/tursodatabase/turso-cli/blob/main/internal/turso/databases.go
+    notes: >-
+      The turso CLI calls this path without /organizations/{org} when no organization is
+      selected (a personal account). Only the unscoped variants stricter than write are
+      listed: any unlisted non-GET is already unknown.
+    tests:
+      - fixture: fixtures/database-token-invalidate-unscoped.http
+        expect: access
+        resource: app-db

@@ -1,0 +1,4 @@
+# description: Send primary traffic of workflow 42 to the target keyspace
+PATCH /v1/organizations/acme/databases/shop-db/workflows/42/switch-primaries HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

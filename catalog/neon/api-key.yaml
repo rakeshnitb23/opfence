@@ -1,0 +1,30 @@
+# Neon API v2: api-key
+operations:
+  - id: neon.api-key.create
+    match: { rest: { method: POST, path: "/api/v2/api_keys" } }
+    class: credential
+    card: "Create Neon API key {body.key_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/api-keys.md
+    tests:
+      - fixture: fixtures/api-key-create.http
+        expect: credential
+
+  - id: neon.api-key.revoke
+    match: { rest: { method: DELETE, path: "/api/v2/api_keys/{key_id}" } }
+    class: access
+    card: "Revoke Neon API key {key_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/api-keys.md
+    notes: >-
+      Revocation is immediate and permanent; anything still using the key
+      loses access.
+    tests:
+      - fixture: fixtures/api-key-revoke.http
+        expect: access

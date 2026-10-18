@@ -1,0 +1,7 @@
+# description: Start copying tables into keyspace orders on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/move-tables/workflows HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"workflow":"move-orders","source_keyspace":"commerce","target_keyspace":"orders","tables":["orders"]}

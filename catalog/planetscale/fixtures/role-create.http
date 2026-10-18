@@ -1,0 +1,7 @@
+# description: Create Postgres role app on branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/roles HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"app","inherited_roles":["pg_read_all_data"]}

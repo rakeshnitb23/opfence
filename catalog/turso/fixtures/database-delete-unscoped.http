@@ -1,0 +1,5 @@
+# description: Delete Turso database app-db and all its data
+DELETE /v1/databases/app-db HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+

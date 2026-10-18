@@ -1,0 +1,4 @@
+# description: Read a connection string (with password) for project shop-prod-12345678
+GET /api/v2/projects/shop-prod-12345678/connection_uri?database_name=shop&role_name=shop_owner HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

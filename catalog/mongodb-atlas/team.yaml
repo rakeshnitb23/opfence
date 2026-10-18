@@ -1,0 +1,45 @@
+# MongoDB Atlas Administration API: team
+operations:
+  - id: mongodb-atlas.team.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/teams" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Create team {body.name} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/team-create.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.team.rename
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/teams/{teamId}" } }
+    class: write
+    resource: { arg: orgId, kind: organization }
+    card: "Rename team {teamId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/team-rename.http
+        expect: write
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.team.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/teams/{teamId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Delete team {teamId} from organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Members lose the project roles the team gave them.
+    tests:
+      - fixture: fixtures/team-delete.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

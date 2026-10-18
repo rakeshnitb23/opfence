@@ -1,0 +1,7 @@
+# description: Back up branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/backups HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"before-migration","retention_value":7,"retention_unit":"day"}

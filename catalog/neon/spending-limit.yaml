@@ -1,0 +1,33 @@
+# Neon API v2: spending-limit
+operations:
+  - id: neon.spending-limit.set
+    match: { rest: { method: PUT, path: "/api/v2/organizations/{org_id}/billing/spending_limit" } }
+    class: money
+    resource: { arg: org_id, kind: organization }
+    card: "Set the monthly spending limit of organization {org_id} to {body.spending_limit_cents} cents"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Raising or setting the cap decides how much Neon may bill.
+    tests:
+      - fixture: fixtures/spending-limit-set.http
+        expect: money
+        resource: org-shop-12345678
+
+  - id: neon.spending-limit.remove
+    match: { rest: { method: DELETE, path: "/api/v2/organizations/{org_id}/billing/spending_limit" } }
+    class: money
+    resource: { arg: org_id, kind: organization }
+    card: "Remove the spending limit of organization {org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Without a cap, usage is billed without limit.
+    tests:
+      - fixture: fixtures/spending-limit-remove.http
+        expect: money
+        resource: org-shop-12345678

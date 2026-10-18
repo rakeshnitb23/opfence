@@ -1,0 +1,7 @@
+# description: Upload a SQLite file as the contents of a Turso database
+POST /v1/upload HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/octet-stream
+
+SQLite format 3

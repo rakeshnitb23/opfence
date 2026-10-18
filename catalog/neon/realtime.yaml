@@ -1,0 +1,62 @@
+# Neon API v2: realtime
+operations:
+  - id: neon.realtime.enable
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/realtime" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Enable Realtime on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Lets browsers connect to the branch's Realtime service; an empty
+      allowed_origins list allows any origin.
+    tests:
+      - fixture: fixtures/realtime-enable.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.realtime.disable
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/realtime" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Disable Realtime on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Discards the shared secret; enabling again provisions a new one.
+    tests:
+      - fixture: fixtures/realtime-disable.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.realtime.secret
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/realtime/secret" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read the Realtime shared secret of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/realtime-secret.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.realtime.rotate-secret
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/realtime/rotate_secret" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Rotate the Realtime shared secret of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/realtime-rotate-secret.http
+        expect: credential
+        resource: br-shop-main-123456

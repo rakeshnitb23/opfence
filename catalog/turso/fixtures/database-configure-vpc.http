@@ -1,0 +1,7 @@
+# description: Change configuration of Turso database app-db
+PATCH /v1/organizations/acme/databases/app-db/configuration HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"allowed_aws_vpc_ids":["vpce-0fe6c8807461bba49"]}

@@ -1,0 +1,4 @@
+# description: Suspend compute ep-shop-main-123456 of project shop-prod-12345678
+POST /api/v2/projects/shop-prod-12345678/endpoints/ep-shop-main-123456/suspend HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

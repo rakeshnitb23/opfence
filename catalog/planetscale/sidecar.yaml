@@ -1,0 +1,29 @@
+# PlanetScale API: sidecar
+operations:
+  - id: planetscale.sidecar.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/sidecars/{sidecar}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change sidecar {sidecar} parameters on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/sidecar-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.sidecar.change-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/sidecars/{sidecar}/changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel change {id} of sidecar {sidecar}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/sidecar-change-cancel.http
+        expect: write
+        resource: shop-db

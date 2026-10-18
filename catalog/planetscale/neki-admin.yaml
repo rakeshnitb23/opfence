@@ -1,0 +1,37 @@
+# PlanetScale API: neki-admin
+operations:
+  - id: planetscale.neki-admin.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/admin" } }
+    class: write
+    when:
+      - if: { arg: body.admin_size, present: true }
+        class: money
+    resource: { arg: database, kind: database }
+    card: "Change the admin of Neki branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      admin_size sets what the admin bills.
+    tests:
+      - fixture: fixtures/neki-admin-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/neki-admin-update-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.neki-admin.change-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/admin/changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel admin change {id} of Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/neki-admin-change-cancel.http
+        expect: write
+        resource: shop-db

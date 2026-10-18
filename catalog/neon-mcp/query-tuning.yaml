@@ -1,0 +1,47 @@
+# Neon MCP server: query-tuning
+operations:
+  - id: neon-mcp.query-tuning.prepare
+    match: { mcp: { tool: prepare_query_tuning } }
+    class: unknown
+    classify: { sql: sql }
+    resource: { arg: project_id, kind: project }
+    card: "Analyze a query on a temporary branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      Runs EXPLAIN ANALYZE of the SQL (which executes it) on a temporary
+      branch. The class comes from the SQL: SELECT is read, INSERT and UPDATE
+      ... WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and
+      UPDATE or DELETE without WHERE are irreversible, GRANT, REVOKE and role
+      changes are access, and anything the classifier cannot read is unknown.
+      A request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/query-tuning-prepare.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.query-tuning.complete
+    match: { mcp: { tool: complete_query_tuning } }
+    class: unknown
+    classify: { sql: suggested_sql_statements }
+    resource: { arg: project_id, kind: project }
+    card: "Finish query tuning {tuning_id} on project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      With apply_changes true the suggested statements run on the target
+      branch. They arrive as a list, each classified on its own; they are
+      classified whatever apply_changes says, which is stricter than the
+      effect when it is false.
+    tests:
+      - fixture: fixtures/query-tuning-complete.http
+        expect: write
+        resource: shop-prod-12345678

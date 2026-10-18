@@ -1,0 +1,5 @@
+# description: Revoke Turso API token ci
+DELETE /v1/auth/api-tokens/ci HTTP/1.1
+Host: api.turso.tech
+Authorization: Bearer opf_turso_EXAMPLE
+
