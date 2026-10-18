@@ -1,0 +1,5 @@
+# description: Terminate sandbox sbx-agent01
+POST /v1/sandboxes/sbx-agent01/terminate HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Attach a 10 GB disk to service srv-shopweb01
+POST /v1/disks HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"data","mountPath":"/var/data","serviceId":"srv-shopweb01","sizeGB":10}

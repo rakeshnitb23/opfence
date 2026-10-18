@@ -1,0 +1,60 @@
+# Render REST API: auth
+operations:
+  - id: render.auth.device-grant
+    match: { rest: { method: POST, path: /v1/device-grant } }
+    class: credential
+    card: "Start a Render CLI login (device grant)"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/oauth/oauth.go
+    notes: >-
+      First step of the CLI's OAuth device flow; finishing it mints an API
+      token for the account. Not in the OpenAPI schema; the paths come from
+      the CLI's OAuth client, which posts to the API host.
+    tests:
+      - fixture: fixtures/auth-device-grant.http
+        expect: credential
+
+  - id: render.auth.device-token
+    match: { rest: { method: POST, path: /v1/device-token } }
+    class: credential
+    card: "Exchange a device code for a Render API token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/oauth/oauth.go
+    notes: >-
+      Returns a new access token and refresh token.
+    tests:
+      - fixture: fixtures/auth-device-token.http
+        expect: credential
+
+  - id: render.auth.token-refresh
+    match: { rest: { method: POST, path: /v1/token/refresh } }
+    class: credential
+    card: "Refresh a Render API token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/oauth/oauth.go
+    notes: >-
+      Returns a new access token. The CLI calls /token/refresh/ with a
+      trailing slash; Opfence matches both.
+    tests:
+      - fixture: fixtures/auth-token-refresh.http
+        expect: credential
+
+  - id: render.auth.token-revoke
+    match: { rest: { method: POST, path: /v1/oauth/revoke } }
+    class: access
+    card: "Revoke the Render API token used for this call"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/oauth/oauth.go
+    notes: >-
+      Logs the token out; anything else using it stops working.
+    tests:
+      - fixture: fixtures/auth-token-revoke.http
+        expect: access

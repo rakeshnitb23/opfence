@@ -1,0 +1,7 @@
+# description: Start a Render CLI login (device grant)
+POST /v1/device-grant HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"client_id":"render-cli"}

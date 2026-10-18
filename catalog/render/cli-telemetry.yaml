@@ -1,0 +1,16 @@
+# Render REST API: cli-telemetry
+operations:
+  - id: render.cli-telemetry.create
+    match: { rest: { method: POST, path: /v1/cli-telemetry-events } }
+    class: write
+    card: "Send a Render CLI telemetry event"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/clitelemetry/clitelemetry_gen.go
+    notes: >-
+      Usage analytics from the CLI; changes nothing in the workspace.
+    tests:
+      - fixture: fixtures/cli-telemetry-create.http
+        expect: write

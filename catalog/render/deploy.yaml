@@ -1,0 +1,46 @@
+# Render REST API: deploy
+operations:
+  - id: render.deploy.create
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/deploys" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Deploy service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/deploy-create.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.deploy.cancel
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/deploys/{deployId}/cancel" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Cancel deploy {deployId} of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/deploy-cancel.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.deploy.rollback
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/rollback" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Roll service {serviceId} back to deploy {body.deployId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/deploy-rollback.http
+        expect: write
+        resource: srv-shopweb01

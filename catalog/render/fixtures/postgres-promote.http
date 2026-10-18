@@ -1,0 +1,5 @@
+# description: Promote read replica dpg-shopdb01 to a standalone primary
+POST /v1/postgres/dpg-shopdb01/promote HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

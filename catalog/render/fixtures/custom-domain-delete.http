@@ -1,0 +1,5 @@
+# description: Remove domain www.example.com from service srv-shopweb01
+DELETE /v1/services/srv-shopweb01/custom-domains/www.example.com HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

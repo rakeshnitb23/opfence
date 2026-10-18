@@ -1,0 +1,5 @@
+# description: Give build source bsr-shared01 the secrets in env group evg-shared01
+POST /v1/build-sources/bsr-shared01/env-groups/evg-shared01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

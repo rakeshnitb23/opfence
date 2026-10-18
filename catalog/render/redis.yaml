@@ -1,0 +1,130 @@
+# Render REST API: redis
+operations:
+  - id: render.redis.connection-info
+    match: { rest: { method: GET, path: "/v1/redis/{redisId}/connection-info" } }
+    class: credential
+    resource: { arg: redisId, kind: redis }
+    card: "Read the connection strings of redis {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The connection strings carry the instance's password. The Redis
+      endpoints are deprecated aliases of the Key Value API.
+    tests:
+      - fixture: fixtures/redis-connection-info.http
+        expect: credential
+        resource: red-cache01
+
+  - id: render.redis.create
+    match: { rest: { method: POST, path: /v1/redis } }
+    class: write
+    when:
+      - if: { arg: body.plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+    resource: { arg: body.name, kind: redis }
+    card: "Create redis {body.name} on plan {body.plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Any plan but free is billed. ipAllowList decides who can connect from
+      outside Render. The Redis endpoints are deprecated aliases of the Key
+      Value API.
+    tests:
+      - fixture: fixtures/redis-create.http
+        expect: write
+        resource: cache
+      - fixture: fixtures/redis-create-paid.http
+        expect: money
+        resource: cache
+      - fixture: fixtures/redis-create-open.http
+        expect: access
+        resource: cache
+
+  - id: render.redis.delete
+    match: { rest: { method: DELETE, path: "/v1/redis/{redisId}" } }
+    class: irreversible
+    resource: { arg: redisId, kind: redis }
+    card: "Delete redis {redisId} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render documents no way to recover a deleted instance. The Redis
+      endpoints are deprecated aliases of the Key Value API.
+    tests:
+      - fixture: fixtures/redis-delete.http
+        expect: irreversible
+        resource: red-cache01
+
+  - id: render.redis.update
+    match: { rest: { method: PATCH, path: "/v1/redis/{redisId}" } }
+    class: write
+    when:
+      - if: { arg: body.plan, present: true }
+        class: money
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.persistenceMode, equals: "off" }
+        class: irreversible
+    resource: { arg: redisId, kind: redis }
+    card: "Change redis {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Changing the plan, eviction policy or persistence mode restarts the
+      instance; with persistence off there is nothing to reload, so the data
+      can be lost (a safety net turned off). The Redis endpoints are
+      deprecated aliases of the Key Value API.
+    tests:
+      - fixture: fixtures/redis-update.http
+        expect: write
+        resource: red-cache01
+      - fixture: fixtures/redis-update-plan.http
+        expect: money
+        resource: red-cache01
+      - fixture: fixtures/redis-update-no-persistence.http
+        expect: irreversible
+        resource: red-cache01
+
+  - id: render.redis.suspend
+    match: { rest: { method: POST, path: "/v1/redis/{redisId}/suspend" } }
+    class: write
+    resource: { arg: redisId, kind: redis }
+    card: "Suspend redis {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/redis-suspend.http
+        expect: write
+        resource: red-cache01
+
+  - id: render.redis.resume
+    match: { rest: { method: POST, path: "/v1/redis/{redisId}/resume" } }
+    class: write
+    resource: { arg: redisId, kind: redis }
+    card: "Resume redis {redisId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/redis-resume.http
+        expect: write
+        resource: red-cache01

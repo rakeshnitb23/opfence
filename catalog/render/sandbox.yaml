@@ -1,0 +1,119 @@
+# Render REST API: sandbox
+operations:
+  - id: render.sandbox.create
+    match: { rest: { method: POST, path: /v1/sandboxes } }
+    class: money
+    card: "Create a sandbox"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Sandboxes are billed compute.
+    tests:
+      - fixture: fixtures/sandbox-create.http
+        expect: money
+
+  - id: render.sandbox.terminate
+    match: { rest: { method: POST, path: "/v1/sandboxes/{sandboxId}/terminate" } }
+    class: irreversible
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Terminate sandbox {sandboxId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Anything in the sandbox that was not snapshotted is gone.
+    tests:
+      - fixture: fixtures/sandbox-terminate.http
+        expect: irreversible
+        resource: sbx-agent01
+
+  - id: render.sandbox.snapshot-create
+    match: { rest: { method: POST, path: "/v1/sandboxes/{sandboxId}/snapshots" } }
+    class: write
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Snapshot sandbox {sandboxId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/sandbox-snapshot-create.http
+        expect: write
+        resource: sbx-agent01
+
+  - id: render.sandbox.snapshot-delete
+    match: { rest: { method: DELETE, path: "/v1/sandbox-groups/{sandboxGroupId}/snapshots/{snapshotId}" } }
+    class: irreversible
+    resource: { arg: snapshotId, kind: sandbox-snapshot }
+    card: "Delete sandbox snapshot {snapshotId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/sandbox-snapshot-delete.http
+        expect: irreversible
+        resource: snp-base01
+
+  - id: render.sandbox.run-token
+    match: { rest: { method: POST, path: "/v1/sandboxes/{sandboxId}/runs/{operation}/token" } }
+    class: credential
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Mint a token to run a command in sandbox {sandboxId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns a bearer token that authorizes running a command in the sandbox.
+    tests:
+      - fixture: fixtures/sandbox-run-token.http
+        expect: credential
+        resource: sbx-agent01
+
+  - id: render.sandbox.files-token
+    match: { rest: { method: POST, path: "/v1/sandboxes/{sandboxId}/files/{operation}/token" } }
+    class: credential
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Mint a token to transfer files with sandbox {sandboxId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns a bearer token for one file upload or download.
+    tests:
+      - fixture: fixtures/sandbox-files-token.http
+        expect: credential
+        resource: sbx-agent01
+
+  - id: render.sandbox.exec-status
+    match: { rest: { method: POST, path: "/v1/sandboxes/{sandboxId}/execs/{execId}/status" } }
+    class: write
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Record the exit code of execution {execId} in sandbox {sandboxId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/sandboxes/sandboxes_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/sandbox-exec-status.http
+        expect: write
+        resource: sbx-agent01

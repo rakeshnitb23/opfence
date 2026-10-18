@@ -1,0 +1,7 @@
+# description: Serve service srv-shopweb01 on shop.example.com
+POST /v1/services/srv-shopweb01/custom-domains HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop.example.com"}

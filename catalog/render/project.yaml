@@ -1,0 +1,49 @@
+# Render REST API: project
+operations:
+  - id: render.project.create
+    match: { rest: { method: POST, path: /v1/projects } }
+    class: write
+    resource: { arg: body.name, kind: project }
+    card: "Create project {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+        resource: shop
+
+  - id: render.project.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{projectId}" } }
+    class: delete
+    resource: { arg: projectId, kind: project }
+    card: "Delete project {projectId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The API only deletes a project whose environments are all empty (409
+      otherwise).
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: delete
+        resource: prj-shop01
+
+  - id: render.project.update
+    match: { rest: { method: PATCH, path: "/v1/projects/{projectId}" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Rename project {projectId} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: prj-shop01

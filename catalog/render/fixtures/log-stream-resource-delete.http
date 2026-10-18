@@ -1,0 +1,5 @@
+# description: Remove the log stream override of resource srv-shopweb01
+DELETE /v1/logs/streams/resource/srv-shopweb01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

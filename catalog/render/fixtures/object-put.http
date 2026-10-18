@@ -1,0 +1,7 @@
+# description: Get an upload URL for object reports/2026-10.json
+PUT /v1/objects/tea-acme01/oregon/reports/2026-10.json HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"sizeBytes":1048576}

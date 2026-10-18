@@ -1,0 +1,90 @@
+# Render REST API: webhook
+operations:
+  - id: render.webhook.list
+    match: { rest: { method: GET, path: /v1/webhooks } }
+    class: credential
+    card: "List webhooks with their signing secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/webhooks/webhooks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Each webhook in the response carries its signing secret.
+    tests:
+      - fixture: fixtures/webhook-list.http
+        expect: credential
+
+  - id: render.webhook.read
+    match: { rest: { method: GET, path: "/v1/webhooks/{webhookId}" } }
+    class: credential
+    resource: { arg: webhookId, kind: webhook }
+    card: "Read webhook {webhookId} with its signing secret"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/webhooks/webhooks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/webhook-read.http
+        expect: credential
+        resource: whk-alerts01
+
+  - id: render.webhook.create
+    match: { rest: { method: POST, path: /v1/webhooks } }
+    class: credential
+    card: "Send workspace events to {body.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/webhooks/webhooks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Sends workspace events to an outside URL and returns the new signing
+      secret.
+    tests:
+      - fixture: fixtures/webhook-create.http
+        expect: credential
+
+  - id: render.webhook.update
+    match: { rest: { method: PATCH, path: "/v1/webhooks/{webhookId}" } }
+    class: write
+    when:
+      - if: { arg: body.url, present: true }
+        class: access
+    resource: { arg: webhookId, kind: webhook }
+    card: "Change webhook {webhookId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/webhooks/webhooks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Changing the URL sends workspace events somewhere new.
+    tests:
+      - fixture: fixtures/webhook-update.http
+        expect: write
+        resource: whk-alerts01
+      - fixture: fixtures/webhook-update-url.http
+        expect: access
+        resource: whk-alerts01
+
+  - id: render.webhook.delete
+    match: { rest: { method: DELETE, path: "/v1/webhooks/{webhookId}" } }
+    class: delete
+    resource: { arg: webhookId, kind: webhook }
+    card: "Delete webhook {webhookId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/webhooks/webhooks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/webhook-delete.http
+        expect: delete
+        resource: whk-alerts01

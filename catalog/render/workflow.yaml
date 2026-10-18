@@ -1,0 +1,70 @@
+# Render REST API: workflow
+operations:
+  - id: render.workflow.create
+    match: { rest: { method: POST, path: /v1/workflows } }
+    class: write
+    resource: { arg: body.name, kind: workflow }
+    card: "Create workflow {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Workflows are billed by the compute their task runs use, not on
+      creation.
+    tests:
+      - fixture: fixtures/workflow-create.http
+        expect: write
+        resource: etl
+
+  - id: render.workflow.delete
+    match: { rest: { method: DELETE, path: "/v1/workflows/{workflowId}" } }
+    class: irreversible
+    resource: { arg: workflowId, kind: workflow }
+    card: "Delete workflow {workflowId} with its variables"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Like a service, the workflow's env vars go with it.
+    tests:
+      - fixture: fixtures/workflow-delete.http
+        expect: irreversible
+        resource: wfl-etl01
+
+  - id: render.workflow.update
+    match: { rest: { method: PATCH, path: "/v1/workflows/{workflowId}" } }
+    class: write
+    resource: { arg: workflowId, kind: workflow }
+    card: "Change workflow {workflowId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/workflow-update.http
+        expect: write
+        resource: wfl-etl01
+
+  - id: render.workflow.version-create
+    match: { rest: { method: POST, path: /v1/workflowversions } }
+    class: write
+    resource: { arg: body.workflowId, kind: workflow }
+    card: "Deploy a new version of workflow {body.workflowId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/workflow-version-create.http
+        expect: write
+        resource: wfl-etl01

@@ -1,0 +1,7 @@
+# description: Change redis red-cache01
+PATCH /v1/redis/red-cache01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"persistenceMode":"off"}

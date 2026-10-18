@@ -1,0 +1,5 @@
+# description: Fail Postgres dpg-shopdb01 over to its standby
+POST /v1/postgres/dpg-shopdb01/failover HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

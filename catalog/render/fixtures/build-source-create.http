@@ -1,0 +1,7 @@
+# description: Create build source shop-build
+POST /v1/build-sources HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-build","ownerId":"tea-acme01","git":{"repo":"https://github.com/acme/shop","branch":"main"},"envVars":[{"key":"NODE_ENV","value":"production"}]}

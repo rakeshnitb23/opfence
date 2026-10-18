@@ -1,0 +1,44 @@
+# Render REST API: metrics-stream
+operations:
+  - id: render.metrics-stream.upsert
+    match: { rest: { method: PUT, path: "/v1/metrics-stream/{ownerId}" } }
+    class: access
+    when:
+      - if: { arg: body.token, present: true }
+        class: credential
+      - if: { arg: body.token, present: true }
+        class: access
+    resource: { arg: ownerId, kind: workspace }
+    card: "Send the metrics of workspace {ownerId} to {body.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/metrics/metrics_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Sends workspace data to an outside endpoint; the token is a secret for
+      it.
+    tests:
+      - fixture: fixtures/metrics-stream-upsert.http
+        expect: access
+        resource: tea-acme01
+      - fixture: fixtures/metrics-stream-upsert-token.http
+        expect: credential
+        resource: tea-acme01
+
+  - id: render.metrics-stream.delete
+    match: { rest: { method: DELETE, path: "/v1/metrics-stream/{ownerId}" } }
+    class: delete
+    resource: { arg: ownerId, kind: workspace }
+    card: "Remove the metrics stream of workspace {ownerId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/metrics/metrics_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/metrics-stream-delete.http
+        expect: delete
+        resource: tea-acme01

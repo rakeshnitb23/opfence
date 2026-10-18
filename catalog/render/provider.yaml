@@ -1,0 +1,17 @@
+provider: render
+title: Render
+docs: https://api-docs.render.com/reference/introduction
+hosts: [api.render.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  env: [RENDER_API_KEY]
+  prefixes: [rnd_]                 # shown as "rnd_..." in render-oss/sdk's README
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Every path carries the /v1 prefix of the API's server URL
+# (https://api.render.com/v1). Render does not publish its OpenAPI file in a
+# public repo; the operations come from the clients Render generates from it:
+# render-oss/cli pkg/client (Go, oapi-codegen) and @renderinc/sdk
+# dist/generated/schema.d.ts (openapi-typescript, with the descriptions).

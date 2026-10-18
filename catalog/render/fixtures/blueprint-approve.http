@@ -1,0 +1,7 @@
+# description: Apply the pending sync of Blueprint exs-infra01
+POST /v1/blueprints/exs-infra01/approve HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"manualEnvVars":[{"key":"STRIPE_KEY","value":"opf_render_EXAMPLE"}]}

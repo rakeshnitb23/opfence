@@ -1,0 +1,7 @@
+# description: Create workflow etl
+POST /v1/workflows HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"etl","ownerId":"tea-acme01","region":"oregon","runCommand":"python main.py","buildConfig":{"repo":"https://github.com/acme/etl","buildCommand":"pip install -r requirements.txt","runtime":"python"}}

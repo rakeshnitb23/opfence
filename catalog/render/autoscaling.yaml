@@ -1,0 +1,34 @@
+# Render REST API: autoscaling
+operations:
+  - id: render.autoscaling.set
+    match: { rest: { method: PUT, path: "/v1/services/{serviceId}/autoscaling" } }
+    class: money
+    resource: { arg: serviceId, kind: service }
+    card: "Autoscale service {serviceId} between {body.min} and {body.max} instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/autoscaling/autoscaling_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Each instance is billed.
+    tests:
+      - fixture: fixtures/autoscaling-set.http
+        expect: money
+        resource: srv-shopweb01
+
+  - id: render.autoscaling.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}/autoscaling" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Turn off autoscaling for service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/autoscaling-delete.http
+        expect: write
+        resource: srv-shopweb01

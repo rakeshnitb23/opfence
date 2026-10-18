@@ -1,0 +1,109 @@
+# Render REST API: environment
+operations:
+  - id: render.environment.create
+    match: { rest: { method: POST, path: /v1/environments } }
+    class: write
+    when:
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.networkIsolationEnabled, present: true }
+        class: access
+      - if: { arg: body.protectedStatus, present: true }
+        class: access
+    resource: { arg: body.projectId, kind: project }
+    card: "Create environment {body.name} in project {body.projectId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      ipAllowList, networkIsolationEnabled and protectedStatus decide who can
+      reach the environment's resources and who can change them, so setting
+      any of them is access.
+    tests:
+      - fixture: fixtures/environment-create.http
+        expect: write
+        resource: prj-shop01
+      - fixture: fixtures/environment-create-open.http
+        expect: access
+        resource: prj-shop01
+
+  - id: render.environment.delete
+    match: { rest: { method: DELETE, path: "/v1/environments/{environmentId}" } }
+    class: delete
+    resource: { arg: environmentId, kind: environment }
+    card: "Delete environment {environmentId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The API only deletes an empty environment (409 otherwise), so only its
+      settings are lost.
+    tests:
+      - fixture: fixtures/environment-delete.http
+        expect: delete
+        resource: evm-prod01
+
+  - id: render.environment.update
+    match: { rest: { method: PATCH, path: "/v1/environments/{environmentId}" } }
+    class: write
+    when:
+      - if: { arg: body.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.networkIsolationEnabled, present: true }
+        class: access
+      - if: { arg: body.protectedStatus, present: true }
+        class: access
+    resource: { arg: environmentId, kind: environment }
+    card: "Change environment {environmentId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      ipAllowList, networkIsolationEnabled and protectedStatus decide who can
+      reach the environment's resources and who can change them, so setting
+      any of them is access.
+    tests:
+      - fixture: fixtures/environment-update.http
+        expect: write
+        resource: evm-prod01
+      - fixture: fixtures/environment-update-unprotect.http
+        expect: access
+        resource: evm-prod01
+
+  - id: render.environment.add-resources
+    match: { rest: { method: POST, path: "/v1/environments/{environmentId}/resources" } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Move resources into environment {environmentId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/environment-add-resources.http
+        expect: write
+        resource: evm-prod01
+
+  - id: render.environment.remove-resources
+    match: { rest: { method: DELETE, path: "/v1/environments/{environmentId}/resources" } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Take resources out of environment {environmentId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The resources stay; they only leave the environment.
+    tests:
+      - fixture: fixtures/environment-remove-resources.http
+        expect: write
+        resource: evm-prod01

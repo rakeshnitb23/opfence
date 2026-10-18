@@ -1,0 +1,5 @@
+# description: Sync Blueprint exs-infra01 from its render.yaml
+POST /v1/blueprints/exs-infra01/syncs HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

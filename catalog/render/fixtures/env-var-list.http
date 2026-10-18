@@ -1,0 +1,5 @@
+# description: Read every environment variable value of service srv-shopweb01
+GET /v1/services/srv-shopweb01/env-vars HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

@@ -1,0 +1,5 @@
+# description: Read the password and connection strings of Postgres dpg-shopdb01
+GET /v1/postgres/dpg-shopdb01/connection-info HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

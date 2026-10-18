@@ -1,0 +1,31 @@
+# Render REST API: task-run
+operations:
+  - id: render.task-run.create
+    match: { rest: { method: POST, path: /v1/task-runs } }
+    class: write
+    card: "Run workflow task {body.task}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Runs a task the workflow's own code defines.
+    tests:
+      - fixture: fixtures/task-run-create.http
+        expect: write
+
+  - id: render.task-run.cancel
+    match: { rest: { method: DELETE, path: "/v1/task-runs/{taskRunId}" } }
+    class: write
+    card: "Cancel task run {taskRunId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/workflows/workflows_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/task-run-cancel.http
+        expect: write

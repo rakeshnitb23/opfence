@@ -1,0 +1,5 @@
+# description: Remove the log stream of workspace tea-acme01
+DELETE /v1/logs/streams/owner/tea-acme01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

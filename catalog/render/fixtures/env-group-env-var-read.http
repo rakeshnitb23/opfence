@@ -1,0 +1,5 @@
+# description: Read the value of DATABASE_URL in env group evg-shared01
+GET /v1/env-groups/evg-shared01/env-vars/DATABASE_URL HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

@@ -1,0 +1,5 @@
+# description: Turn off autoscaling for service srv-shopweb01
+DELETE /v1/services/srv-shopweb01/autoscaling HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

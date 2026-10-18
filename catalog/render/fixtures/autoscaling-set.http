@@ -1,0 +1,7 @@
+# description: Autoscale service srv-shopweb01 between 1 and 5 instances
+PUT /v1/services/srv-shopweb01/autoscaling HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true,"min":1,"max":5,"criteria":{"cpu":{"enabled":true,"percentage":70}}}

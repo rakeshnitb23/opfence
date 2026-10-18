@@ -1,0 +1,107 @@
+# Render REST API: build-source
+operations:
+  - id: render.build-source.create
+    match: { rest: { method: POST, path: /v1/build-sources } }
+    class: write
+    when:
+      - if: { arg: body.secretFiles, present: true }
+        class: credential
+    resource: { arg: body.name, kind: build-source }
+    card: "Create build source {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Secret files are Render's store for secrets, so setting one is
+      credential; env vars are generic variables.
+    tests:
+      - fixture: fixtures/build-source-create.http
+        expect: write
+        resource: shop-build
+      - fixture: fixtures/build-source-create-secret-files.http
+        expect: credential
+        resource: shop-build
+
+  - id: render.build-source.delete
+    match: { rest: { method: DELETE, path: "/v1/build-sources/{buildSourceId}" } }
+    class: irreversible
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Delete build source {buildSourceId} with its build-time variables and secret files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The build source's env vars and secret files go with it, and no API
+      returns them afterwards.
+    tests:
+      - fixture: fixtures/build-source-delete.http
+        expect: irreversible
+        resource: bsr-shared01
+
+  - id: render.build-source.update
+    match: { rest: { method: PATCH, path: "/v1/build-sources/{buildSourceId}" } }
+    class: write
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Change build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/build-source-update.http
+        expect: write
+        resource: bsr-shared01
+
+  - id: render.build-source.build
+    match: { rest: { method: POST, path: "/v1/build-sources/{buildSourceId}/builds" } }
+    class: write
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Build {buildSourceId} and deploy linked services"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Linked services with autodeploy are deployed with the result.
+    tests:
+      - fixture: fixtures/build-source-build.http
+        expect: write
+        resource: bsr-shared01
+
+  - id: render.build-source.link-env-group
+    match: { rest: { method: POST, path: "/v1/build-sources/{buildSourceId}/env-groups/{envGroupId}" } }
+    class: access
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Give build source {buildSourceId} the secrets in env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The build gets every variable and secret file in the group.
+    tests:
+      - fixture: fixtures/build-source-link-env-group.http
+        expect: access
+        resource: bsr-shared01
+
+  - id: render.build-source.unlink-env-group
+    match: { rest: { method: DELETE, path: "/v1/build-sources/{buildSourceId}/env-groups/{envGroupId}" } }
+    class: write
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Unlink env group {envGroupId} from build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/build-source-unlink-env-group.http
+        expect: write
+        resource: bsr-shared01

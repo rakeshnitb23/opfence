@@ -1,0 +1,7 @@
+# description: Snapshot sandbox sbx-agent01
+POST /v1/sandboxes/sbx-agent01/snapshots HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"base"}

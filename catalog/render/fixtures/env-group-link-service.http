@@ -1,0 +1,5 @@
+# description: Give service srv-shopweb01 the variables and secret files of env group evg-shared01
+POST /v1/env-groups/evg-shared01/services/srv-shopweb01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

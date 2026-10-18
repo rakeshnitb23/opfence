@@ -1,0 +1,5 @@
+# description: Restart service srv-shopweb01
+POST /v1/services/srv-shopweb01/restart HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

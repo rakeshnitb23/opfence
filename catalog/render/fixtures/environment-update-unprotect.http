@@ -1,0 +1,7 @@
+# description: Change environment evm-prod01
+PATCH /v1/environments/evm-prod01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"protectedStatus":"unprotected"}
