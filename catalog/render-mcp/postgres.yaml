@@ -6,6 +6,8 @@ operations:
     when:
       - if: { arg: sql, matches: "(?i)dblink" }
         class: irreversible
+      - if: { arg: sql, matches: "(?i)pg_(terminate|cancel)_backend" }
+        class: write
     resource: { arg: postgresId, kind: postgres }
     card: "Run a read-only SQL query on Postgres {postgresId}"
     status: verified
@@ -18,7 +20,10 @@ operations:
       extended protocol (which rejects several statements) and always rolls
       back, so Postgres itself refuses writes and DDL. dblink is the
       exception: dblink_exec runs on a second connection outside that
-      transaction, so any mention of dblink is irreversible. The tool reads
+      transaction, so any mention of dblink is irreversible. Ending other
+      sessions (pg_terminate_backend, pg_cancel_backend) works in a read-only
+      transaction and is a write. A function created earlier that calls
+      dblink is not caught (docs/LIMITS.md). The tool reads
       the database password internally but does not return it.
     tests:
       - fixture: fixtures/postgres-query.http
@@ -26,6 +31,9 @@ operations:
         resource: dpg-shopdb01
       - fixture: fixtures/postgres-query-drop.http
         expect: read
+        resource: dpg-shopdb01
+      - fixture: fixtures/postgres-query-terminate.http
+        expect: write
         resource: dpg-shopdb01
       - fixture: fixtures/postgres-query-dblink.http
         expect: irreversible
