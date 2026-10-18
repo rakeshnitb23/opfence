@@ -1,0 +1,7 @@
+# description: Create environment staging in project prj-shop01
+POST /v1/environments HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"staging","projectId":"prj-shop01"}

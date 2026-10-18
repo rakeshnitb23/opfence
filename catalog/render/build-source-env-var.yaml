@@ -1,0 +1,102 @@
+# Render REST API: build-source-env-var
+operations:
+  - id: render.build-source-env-var.list
+    match: { rest: { method: GET, path: "/v1/build-sources/{buildSourceId}/env-vars" } }
+    class: credential
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Read every environment variable value of build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns each variable's value in plain text.
+    tests:
+      - fixture: fixtures/build-source-env-var-list.http
+        expect: credential
+        resource: bsr-shared01
+
+  - id: render.build-source-env-var.read
+    match: { rest: { method: GET, path: "/v1/build-sources/{buildSourceId}/env-vars/{envVarKey}" } }
+    class: credential
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Read the value of {envVarKey} on build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/build-source-env-var-read.http
+        expect: credential
+        resource: bsr-shared01
+
+  - id: render.build-source-env-var.replace
+    match: { rest: { method: PUT, path: "/v1/build-sources/{buildSourceId}/env-vars" } }
+    class: irreversible
+    when:
+      - if: { arg: body.generateValue, equals: "true" }
+        class: credential
+      - if: { arg: body.generateValue, equals: "true" }
+        class: irreversible
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Replace every environment variable of build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Variables left out of the list are deleted and Render keeps no copy.
+      generateValue makes Render invent a secret and return it, so it is
+      credential as well (the second condition keeps irreversible).
+    tests:
+      - fixture: fixtures/build-source-env-var-replace.http
+        expect: irreversible
+        resource: bsr-shared01
+      - fixture: fixtures/build-source-env-var-replace-generate.http
+        expect: credential
+        resource: bsr-shared01
+
+  - id: render.build-source-env-var.set
+    match: { rest: { method: PUT, path: "/v1/build-sources/{buildSourceId}/env-vars/{envVarKey}" } }
+    class: write
+    when:
+      - if: { arg: body.generateValue, equals: "true" }
+        class: credential
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Set variable {envVarKey} on build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render env vars are generic variables (no secret flag), so setting one
+      is a write; with generateValue Render creates a random secret and
+      returns it.
+    tests:
+      - fixture: fixtures/build-source-env-var-set.http
+        expect: write
+        resource: bsr-shared01
+      - fixture: fixtures/build-source-env-var-set-generate.http
+        expect: credential
+        resource: bsr-shared01
+
+  - id: render.build-source-env-var.delete
+    match: { rest: { method: DELETE, path: "/v1/build-sources/{buildSourceId}/env-vars/{envVarKey}" } }
+    class: irreversible
+    resource: { arg: buildSourceId, kind: build-source }
+    card: "Delete variable {envVarKey} from build source {buildSourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render keeps no copy of a deleted value.
+    tests:
+      - fixture: fixtures/build-source-env-var-delete.http
+        expect: irreversible
+        resource: bsr-shared01

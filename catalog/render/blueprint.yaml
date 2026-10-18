@@ -1,0 +1,103 @@
+# Render REST API: blueprint
+operations:
+  - id: render.blueprint.create
+    match: { rest: { method: POST, path: /v1/blueprints } }
+    class: money
+    resource: { arg: body.name, kind: blueprint }
+    card: "Create Blueprint {body.name} from {body.source}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Creates or reuses a Blueprint and a Sync for its render.yaml. The
+      resources a Blueprint declares are billed once the Sync is applied, and
+      Opfence cannot see the file, so this assumes the worse case.
+    tests:
+      - fixture: fixtures/blueprint-create.http
+        expect: money
+        resource: infra
+
+  - id: render.blueprint.validate
+    match: { rest: { method: POST, path: /v1/blueprints/validate } }
+    class: read
+    card: "Validate a render.yaml Blueprint file"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Validates a multipart-uploaded file without creating or changing
+      anything (per the schema description).
+    tests:
+      - fixture: fixtures/blueprint-validate.http
+        expect: read
+
+  - id: render.blueprint.disconnect
+    match: { rest: { method: DELETE, path: "/v1/blueprints/{blueprintId}" } }
+    class: delete
+    resource: { arg: blueprintId, kind: blueprint }
+    card: "Disconnect Blueprint {blueprintId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Stops syncing from render.yaml; the services it manages stay. It can be
+      connected again.
+    tests:
+      - fixture: fixtures/blueprint-disconnect.http
+        expect: delete
+        resource: exs-infra01
+
+  - id: render.blueprint.update
+    match: { rest: { method: PATCH, path: "/v1/blueprints/{blueprintId}" } }
+    class: write
+    resource: { arg: blueprintId, kind: blueprint }
+    card: "Change Blueprint {blueprintId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/blueprint-update.http
+        expect: write
+        resource: exs-infra01
+
+  - id: render.blueprint.approve
+    match: { rest: { method: POST, path: "/v1/blueprints/{blueprintId}/approve" } }
+    class: money
+    resource: { arg: blueprintId, kind: blueprint }
+    card: "Apply the pending sync of Blueprint {blueprintId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Applies the Blueprint's planned changes, which can create billed
+      services, databases and disks or change plans.
+    tests:
+      - fixture: fixtures/blueprint-approve.http
+        expect: money
+        resource: exs-infra01
+
+  - id: render.blueprint.sync
+    match: { rest: { method: POST, path: "/v1/blueprints/{blueprintId}/syncs" } }
+    class: money
+    resource: { arg: blueprintId, kind: blueprint }
+    card: "Sync Blueprint {blueprintId} from its render.yaml"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+    notes: >-
+      A sync can create billed resources declared in render.yaml.
+    tests:
+      - fixture: fixtures/blueprint-sync.http
+        expect: money
+        resource: exs-infra01

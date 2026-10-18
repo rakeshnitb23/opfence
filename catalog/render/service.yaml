@@ -1,0 +1,202 @@
+# Render REST API: service
+operations:
+  - id: render.service.create
+    match: { rest: { method: POST, path: /v1/services } }
+    class: money
+    when:
+      - if: { arg: body.secretFiles, present: true }
+        class: credential
+      - if: { arg: body.secretFiles, present: true }
+        class: money
+    resource: { arg: body.name, kind: service }
+    card: "Create {body.type} service {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      When serviceDetails.plan is left out the schema defaults to a paid plan,
+      and workers, private services and cron jobs have no free plan, so
+      creating a service is money (free web services and static sites are
+      over-classified rather than special-cased, because a condition never
+      relaxes a class). Secret files are secrets; the second condition keeps
+      money alongside credential.
+    tests:
+      - fixture: fixtures/service-create.http
+        expect: money
+        resource: shop-web
+      - fixture: fixtures/service-create-secret-files.http
+        expect: credential
+        resource: shop-web
+
+  - id: render.service.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}" } }
+    class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Delete service {serviceId} with its disk, variables and secret files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The service's env vars, secret files and any attached disk go with it.
+    tests:
+      - fixture: fixtures/service-delete.http
+        expect: irreversible
+        resource: srv-shopweb01
+
+  - id: render.service.update
+    match: { rest: { method: PATCH, path: "/v1/services/{serviceId}" } }
+    class: write
+    when:
+      - if: { arg: body.serviceDetails.plan, present: true }
+        class: money
+      - if: { arg: body.serviceDetails.previews, present: true }
+        class: money
+      - if: { arg: body.serviceDetails.pullRequestPreviewsEnabled, present: true }
+        class: money
+      - if: { arg: body.serviceDetails.ipAllowList, present: true }
+        class: access
+      - if: { arg: body.serviceDetails.renderSubdomainPolicy, present: true }
+        class: access
+    resource: { arg: serviceId, kind: service }
+    card: "Change service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/types_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      A plan change or preview instances change the bill; ipAllowList and the
+      onrender.com subdomain policy decide who can reach the service.
+    tests:
+      - fixture: fixtures/service-update.http
+        expect: write
+        resource: srv-shopweb01
+      - fixture: fixtures/service-update-plan.http
+        expect: money
+        resource: srv-shopweb01
+      - fixture: fixtures/service-update-subdomain.http
+        expect: access
+        resource: srv-shopweb01
+
+  - id: render.service.suspend
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/suspend" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Suspend service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Takes the service offline until it is resumed.
+    tests:
+      - fixture: fixtures/service-suspend.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.service.resume
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/resume" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Resume service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/service-resume.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.service.restart
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/restart" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Restart service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/service-restart.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.service.scale
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/scale" } }
+    class: money
+    resource: { arg: serviceId, kind: service }
+    card: "Scale service {serviceId} to {body.numInstances} instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Each instance is billed.
+    tests:
+      - fixture: fixtures/service-scale.http
+        expect: money
+        resource: srv-shopweb01
+
+  - id: render.service.purge-cache
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/cache/purge" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Purge the edge cache of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The cache refills from the service.
+    tests:
+      - fixture: fixtures/service-purge-cache.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.service.preview
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/preview" } }
+    class: money
+    resource: { arg: serviceId, kind: service }
+    card: "Create a preview instance of service {serviceId} from {body.imagePath}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      A preview is a billed instance, on the base service's plan unless one is
+      given.
+    tests:
+      - fixture: fixtures/service-preview.http
+        expect: money
+        resource: srv-shopweb01
+
+  - id: render.service.ephemeral-shell
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/ephemeral-shell" } }
+    class: credential
+    resource: { arg: serviceId, kind: service }
+    card: "Open an SSH-able ephemeral instance of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The instance runs with the service's variables and secret files and
+      accepts SSH, like Railway's shell tokens.
+    tests:
+      - fixture: fixtures/service-ephemeral-shell.http
+        expect: credential
+        resource: srv-shopweb01

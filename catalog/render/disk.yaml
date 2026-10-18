@@ -1,0 +1,78 @@
+# Render REST API: disk
+operations:
+  - id: render.disk.create
+    match: { rest: { method: POST, path: /v1/disks } }
+    class: money
+    resource: { arg: body.serviceId, kind: service }
+    card: "Attach a {body.sizeGB} GB disk to service {body.serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/disks/disks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Disks are billed per GB.
+    tests:
+      - fixture: fixtures/disk-create.http
+        expect: money
+        resource: srv-shopweb01
+
+  - id: render.disk.delete
+    match: { rest: { method: DELETE, path: "/v1/disks/{diskId}" } }
+    class: irreversible
+    resource: { arg: diskId, kind: disk }
+    card: "Delete disk {diskId} and all data on it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The schema says all data on the disk is lost.
+    tests:
+      - fixture: fixtures/disk-delete.http
+        expect: irreversible
+        resource: dsk-data01
+
+  - id: render.disk.update
+    match: { rest: { method: PATCH, path: "/v1/disks/{diskId}" } }
+    class: write
+    when:
+      - if: { arg: body.sizeGB, present: true }
+        class: money
+    resource: { arg: diskId, kind: disk }
+    card: "Change disk {diskId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/disks/disks_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Growing a disk raises its bill, and a disk cannot be shrunk.
+    tests:
+      - fixture: fixtures/disk-update.http
+        expect: write
+        resource: dsk-data01
+      - fixture: fixtures/disk-update-resize.http
+        expect: money
+        resource: dsk-data01
+
+  - id: render.disk.restore-snapshot
+    match: { rest: { method: POST, path: "/v1/disks/{diskId}/snapshots/restore" } }
+    class: irreversible
+    resource: { arg: diskId, kind: disk }
+    card: "Overwrite disk {diskId} with a snapshot"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The schema calls this irreversible: the disk's current data is
+      overwritten.
+    tests:
+      - fixture: fixtures/disk-restore-snapshot.http
+        expect: irreversible
+        resource: dsk-data01

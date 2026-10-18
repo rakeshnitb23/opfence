@@ -1,0 +1,5 @@
+# description: Revoke the Render API token used for this call
+POST /v1/oauth/revoke HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

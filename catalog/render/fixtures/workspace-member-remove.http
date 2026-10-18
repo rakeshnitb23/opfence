@@ -1,0 +1,5 @@
+# description: Remove usr-alice01 from workspace tea-acme01
+DELETE /v1/owners/tea-acme01/members/usr-alice01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

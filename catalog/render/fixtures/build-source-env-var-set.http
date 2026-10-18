@@ -1,0 +1,7 @@
+# description: Set variable DATABASE_URL on build source bsr-shared01
+PUT /v1/build-sources/bsr-shared01/env-vars/DATABASE_URL HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"value":"postgres://shop@db.internal:5432/shop"}

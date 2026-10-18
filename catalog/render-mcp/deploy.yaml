@@ -1,0 +1,43 @@
+# Render MCP server: deploy
+operations:
+  - id: render-mcp.deploy.list
+    match: { mcp: { tool: list_deploys } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "List deploys of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/deploy/tools.go
+    tests:
+      - fixture: fixtures/deploy-list.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.deploy.get
+    match: { mcp: { tool: get_deploy } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "Show deploy {deployId} of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/deploy/tools.go
+    tests:
+      - fixture: fixtures/deploy-get.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.deploy.trigger
+    match: { mcp: { tool: trigger_deploy } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Deploy service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/deploy/tools.go
+    tests:
+      - fixture: fixtures/deploy-trigger.http
+        expect: write
+        resource: srv-shopweb01

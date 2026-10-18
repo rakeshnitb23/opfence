@@ -1,0 +1,8 @@
+# description: Deploy service srv-shopweb01
+POST /mcp HTTP/1.1
+Host: mcp.render.com
+Authorization: Bearer opf_render-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"trigger_deploy","arguments":{"serviceId":"srv-shopweb01","clearCache":true,"workspaceId":"tea-acme01"}}}

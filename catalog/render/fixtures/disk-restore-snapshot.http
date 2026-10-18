@@ -1,0 +1,7 @@
+# description: Overwrite disk dsk-data01 with a snapshot
+POST /v1/disks/dsk-data01/snapshots/restore HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"snapshotKey":"dsk-data01-1760745600"}

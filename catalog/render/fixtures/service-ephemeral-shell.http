@@ -1,0 +1,5 @@
+# description: Open an SSH-able ephemeral instance of service srv-shopweb01
+POST /v1/services/srv-shopweb01/ephemeral-shell HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

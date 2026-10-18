@@ -1,0 +1,25 @@
+# Render REST API: flow-run
+operations:
+  - id: render.flow-run.start
+    match: { rest: { method: POST, path: /v1/flow-runs } }
+    class: write
+    card: "Start flow {body.flow}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+    tests:
+      - fixture: fixtures/flow-run-start.http
+        expect: write
+
+  - id: render.flow-run.cancel
+    match: { rest: { method: DELETE, path: "/v1/flow-runs/{flowRunId}" } }
+    class: write
+    card: "Cancel flow run {flowRunId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+    tests:
+      - fixture: fixtures/flow-run-cancel.http
+        expect: write

@@ -1,0 +1,5 @@
+# description: Read the connection strings of redis red-cache01
+GET /v1/redis/red-cache01/connection-info HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

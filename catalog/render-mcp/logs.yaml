@@ -1,0 +1,28 @@
+# Render MCP server: logs
+operations:
+  - id: render-mcp.logs.list
+    match: { mcp: { tool: list_logs } }
+    class: read
+    card: "List logs of {resource}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/logs/tools.go
+    notes: >-
+      Logs can contain anything an app prints; reading them is a read, as for
+      other providers.
+    tests:
+      - fixture: fixtures/logs-list.http
+        expect: read
+
+  - id: render-mcp.logs.list-label-values
+    match: { mcp: { tool: list_log_label_values } }
+    class: read
+    card: "List values of log label {label}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/logs/tools.go
+    tests:
+      - fixture: fixtures/logs-list-label-values.http
+        expect: read

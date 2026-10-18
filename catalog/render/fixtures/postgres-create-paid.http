@@ -1,0 +1,7 @@
+# description: Create Postgres shop-db on plan basic_1gb
+POST /v1/postgres HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-db","ownerId":"tea-acme01","plan":"basic_1gb","version":"18","diskSizeGB":15}

@@ -1,0 +1,34 @@
+# Render REST API: job
+operations:
+  - id: render.job.create
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/jobs" } }
+    class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Run command {body.startCommand} as a one-off job on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Runs an arbitrary command with the service's image, variables and
+      network access.
+    tests:
+      - fixture: fixtures/job-create.http
+        expect: irreversible
+        resource: srv-shopweb01
+
+  - id: render.job.cancel
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/jobs/{jobId}/cancel" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Cancel job {jobId} on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/job-cancel.http
+        expect: write
+        resource: srv-shopweb01

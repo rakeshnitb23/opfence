@@ -1,0 +1,7 @@
+# description: Create Blueprint infra from {"repo": "https://github.com/acme/shop", "branch": "main"}
+POST /v1/blueprints HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"infra","ownerId":"tea-acme01","source":{"repo":"https://github.com/acme/shop","branch":"main"}}

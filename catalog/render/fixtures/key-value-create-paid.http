@@ -1,0 +1,7 @@
+# description: Create key-value cache on plan standard
+POST /v1/key-value HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"name":"cache","ownerId":"tea-acme01","plan":"standard"}

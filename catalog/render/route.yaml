@@ -1,0 +1,64 @@
+# Render REST API: route
+operations:
+  - id: render.route.add
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/routes" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Add redirect/rewrite rules to service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/route-add.http
+        expect: write
+        resource: srv-shopweb01
+
+  - id: render.route.replace
+    match: { rest: { method: PUT, path: "/v1/services/{serviceId}/routes" } }
+    class: delete
+    resource: { arg: serviceId, kind: service }
+    card: "Replace every redirect/rewrite rule of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Rules left out of the list are deleted; they are configuration that can
+      be written again.
+    tests:
+      - fixture: fixtures/route-replace.http
+        expect: delete
+        resource: srv-shopweb01
+
+  - id: render.route.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}/routes/{routeId}" } }
+    class: delete
+    resource: { arg: serviceId, kind: service }
+    card: "Delete redirect/rewrite rule {routeId} of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/route-delete.http
+        expect: delete
+        resource: srv-shopweb01
+
+  - id: render.route.update
+    match: { rest: { method: PATCH, path: "/v1/services/{serviceId}/routes/{routeId}" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Change the priority of rule {routeId} on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/route-update.http
+        expect: write
+        resource: srv-shopweb01

@@ -1,0 +1,5 @@
+# description: Verify DNS for www.example.com on service srv-shopweb01
+POST /v1/services/srv-shopweb01/custom-domains/www.example.com/verify HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Roll service srv-shopweb01 back to deploy dep-shopweb05
+POST /v1/services/srv-shopweb01/rollback HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"deployId":"dep-shopweb05"}

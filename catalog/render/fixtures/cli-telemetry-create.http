@@ -1,0 +1,7 @@
+# description: Send a Render CLI telemetry event
+POST /v1/cli-telemetry-events HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"command":"services list","cli_version":"2.4.0","os":"linux","arch":"amd64","exit_code":0}

@@ -1,0 +1,102 @@
+# Render REST API: env-var
+operations:
+  - id: render.env-var.list
+    match: { rest: { method: GET, path: "/v1/services/{serviceId}/env-vars" } }
+    class: credential
+    resource: { arg: serviceId, kind: service }
+    card: "Read every environment variable value of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Returns each variable's value in plain text.
+    tests:
+      - fixture: fixtures/env-var-list.http
+        expect: credential
+        resource: srv-shopweb01
+
+  - id: render.env-var.read
+    match: { rest: { method: GET, path: "/v1/services/{serviceId}/env-vars/{envVarKey}" } }
+    class: credential
+    resource: { arg: serviceId, kind: service }
+    card: "Read the value of {envVarKey} on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/env-var-read.http
+        expect: credential
+        resource: srv-shopweb01
+
+  - id: render.env-var.replace
+    match: { rest: { method: PUT, path: "/v1/services/{serviceId}/env-vars" } }
+    class: irreversible
+    when:
+      - if: { arg: body.generateValue, equals: "true" }
+        class: credential
+      - if: { arg: body.generateValue, equals: "true" }
+        class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Replace every environment variable of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Variables left out of the list are deleted and Render keeps no copy.
+      generateValue makes Render invent a secret and return it, so it is
+      credential as well (the second condition keeps irreversible).
+    tests:
+      - fixture: fixtures/env-var-replace.http
+        expect: irreversible
+        resource: srv-shopweb01
+      - fixture: fixtures/env-var-replace-generate.http
+        expect: credential
+        resource: srv-shopweb01
+
+  - id: render.env-var.set
+    match: { rest: { method: PUT, path: "/v1/services/{serviceId}/env-vars/{envVarKey}" } }
+    class: write
+    when:
+      - if: { arg: body.generateValue, equals: "true" }
+        class: credential
+    resource: { arg: serviceId, kind: service }
+    card: "Set variable {envVarKey} on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render env vars are generic variables (no secret flag), so setting one
+      is a write; with generateValue Render creates a random secret and
+      returns it.
+    tests:
+      - fixture: fixtures/env-var-set.http
+        expect: write
+        resource: srv-shopweb01
+      - fixture: fixtures/env-var-set-generate.http
+        expect: credential
+        resource: srv-shopweb01
+
+  - id: render.env-var.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}/env-vars/{envVarKey}" } }
+    class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Delete variable {envVarKey} from service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render keeps no copy of a deleted value.
+    tests:
+      - fixture: fixtures/env-var-delete.http
+        expect: irreversible
+        resource: srv-shopweb01

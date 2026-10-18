@@ -1,0 +1,5 @@
+# description: Cancel job job-migrate01 on service srv-shopweb01
+POST /v1/services/srv-shopweb01/jobs/job-migrate01/cancel HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

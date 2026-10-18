@@ -1,0 +1,29 @@
+# Render REST API: maintenance
+operations:
+  - id: render.maintenance.update
+    match: { rest: { method: PATCH, path: "/v1/maintenance/{maintenanceRunID}" } }
+    class: write
+    card: "Reschedule maintenance run {maintenanceRunID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/maintenance-update.http
+        expect: write
+
+  - id: render.maintenance.trigger
+    match: { rest: { method: POST, path: "/v1/maintenance/{maintenanceRunID}/trigger" } }
+    class: write
+    card: "Start maintenance run {maintenanceRunID} now"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Maintenance can restart the affected service or database.
+    tests:
+      - fixture: fixtures/maintenance-trigger.http
+        expect: write

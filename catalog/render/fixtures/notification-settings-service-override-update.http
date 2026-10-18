@@ -1,0 +1,7 @@
+# description: Change notification settings of service srv-shopweb01
+PATCH /v1/notification-settings/overrides/services/srv-shopweb01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"notificationsToSend":"failure"}

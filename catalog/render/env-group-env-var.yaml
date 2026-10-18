@@ -1,0 +1,57 @@
+# Render REST API: env-group-env-var
+operations:
+  - id: render.env-group-env-var.read
+    match: { rest: { method: GET, path: "/v1/env-groups/{envGroupId}/env-vars/{envVarKey}" } }
+    class: credential
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Read the value of {envVarKey} in env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/env-group-env-var-read.http
+        expect: credential
+        resource: evg-shared01
+
+  - id: render.env-group-env-var.set
+    match: { rest: { method: PUT, path: "/v1/env-groups/{envGroupId}/env-vars/{envVarKey}" } }
+    class: write
+    when:
+      - if: { arg: body.generateValue, equals: "true" }
+        class: credential
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Set variable {envVarKey} in env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render env vars are generic variables, so setting one is a write;
+      generateValue makes Render create a secret and return it.
+    tests:
+      - fixture: fixtures/env-group-env-var-set.http
+        expect: write
+        resource: evg-shared01
+      - fixture: fixtures/env-group-env-var-set-generate.http
+        expect: credential
+        resource: evg-shared01
+
+  - id: render.env-group-env-var.delete
+    match: { rest: { method: DELETE, path: "/v1/env-groups/{envGroupId}/env-vars/{envVarKey}" } }
+    class: irreversible
+    resource: { arg: envGroupId, kind: env-group }
+    card: "Delete variable {envVarKey} from env group {envGroupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Render keeps no copy of a deleted value.
+    tests:
+      - fixture: fixtures/env-group-env-var-delete.http
+        expect: irreversible
+        resource: evg-shared01

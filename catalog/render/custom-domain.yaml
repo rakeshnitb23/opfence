@@ -1,0 +1,50 @@
+# Render REST API: custom-domain
+operations:
+  - id: render.custom-domain.create
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/custom-domains" } }
+    class: access
+    resource: { arg: serviceId, kind: service }
+    card: "Serve service {serviceId} on {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Exposes the service on a public domain.
+    tests:
+      - fixture: fixtures/custom-domain-create.http
+        expect: access
+        resource: srv-shopweb01
+
+  - id: render.custom-domain.delete
+    match: { rest: { method: DELETE, path: "/v1/services/{serviceId}/custom-domains/{customDomainNameOrID}" } }
+    class: delete
+    resource: { arg: serviceId, kind: service }
+    card: "Remove domain {customDomainNameOrID} from service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The domain can be added again, after DNS verification.
+    tests:
+      - fixture: fixtures/custom-domain-delete.http
+        expect: delete
+        resource: srv-shopweb01
+
+  - id: render.custom-domain.verify
+    match: { rest: { method: POST, path: "/v1/services/{serviceId}/custom-domains/{customDomainNameOrID}/verify" } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Verify DNS for {customDomainNameOrID} on service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/custom-domain-verify.http
+        expect: write
+        resource: srv-shopweb01

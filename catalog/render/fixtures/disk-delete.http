@@ -1,0 +1,5 @@
+# description: Delete disk dsk-data01 and all data on it
+DELETE /v1/disks/dsk-data01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+

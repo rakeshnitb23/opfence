@@ -1,0 +1,15 @@
+# Render MCP server: metrics
+operations:
+  - id: render-mcp.metrics.get
+    match: { mcp: { tool: get_metrics } }
+    class: read
+    resource: { arg: resourceId, kind: service }
+    card: "Show metrics of {resourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/metrics/tools.go
+    tests:
+      - fixture: fixtures/metrics-get.http
+        expect: read
+        resource: srv-shopweb01

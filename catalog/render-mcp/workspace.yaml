@@ -1,0 +1,41 @@
+# Render MCP server: workspace
+operations:
+  - id: render-mcp.workspace.list
+    match: { mcp: { tool: list_workspaces } }
+    class: read
+    card: "List Render workspaces"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/owner/tools.go
+    tests:
+      - fixture: fixtures/workspace-list.http
+        expect: read
+
+  - id: render-mcp.workspace.select
+    match: { mcp: { tool: select_workspace } }
+    class: read
+    card: "Use workspace {ownerID} for later calls"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/owner/tools.go
+    notes: >-
+      Only changes which workspace this MCP session targets; nothing changes
+      on Render. Deprecated in favour of the workspaceId argument every
+      resource tool takes.
+    tests:
+      - fixture: fixtures/workspace-select.http
+        expect: read
+
+  - id: render-mcp.workspace.get-selected
+    match: { mcp: { tool: get_selected_workspace } }
+    class: read
+    card: "Show the selected workspace"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/owner/tools.go
+    tests:
+      - fixture: fixtures/workspace-get-selected.http
+        expect: read

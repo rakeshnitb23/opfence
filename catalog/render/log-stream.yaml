@@ -1,0 +1,84 @@
+# Render REST API: log-stream
+operations:
+  - id: render.log-stream.owner-update
+    match: { rest: { method: PUT, path: "/v1/logs/streams/owner/{ownerId}" } }
+    class: access
+    when:
+      - if: { arg: body.token, present: true }
+        class: credential
+      - if: { arg: body.token, present: true }
+        class: access
+    resource: { arg: ownerId, kind: workspace }
+    card: "Send every log of workspace {ownerId} to {body.endpoint}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/logs/logs_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Logs can carry secrets and customer data; pointing them at a new
+      endpoint is access. A token is a secret for the endpoint.
+    tests:
+      - fixture: fixtures/log-stream-owner-update.http
+        expect: access
+        resource: tea-acme01
+      - fixture: fixtures/log-stream-owner-update-token.http
+        expect: credential
+        resource: tea-acme01
+
+  - id: render.log-stream.owner-delete
+    match: { rest: { method: DELETE, path: "/v1/logs/streams/owner/{ownerId}" } }
+    class: delete
+    resource: { arg: ownerId, kind: workspace }
+    card: "Remove the log stream of workspace {ownerId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/logs/logs_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/log-stream-owner-delete.http
+        expect: delete
+        resource: tea-acme01
+
+  - id: render.log-stream.resource-update
+    match: { rest: { method: PUT, path: "/v1/logs/streams/resource/{resourceId}" } }
+    class: access
+    when:
+      - if: { arg: body.token, present: true }
+        class: credential
+      - if: { arg: body.token, present: true }
+        class: access
+    resource: { arg: resourceId, kind: service }
+    card: "Change where resource {resourceId} sends its logs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/logs/logs_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Logs can carry secrets and customer data; pointing them at a new
+      endpoint is access.
+    tests:
+      - fixture: fixtures/log-stream-resource-update.http
+        expect: access
+        resource: srv-shopweb01
+
+  - id: render.log-stream.resource-delete
+    match: { rest: { method: DELETE, path: "/v1/logs/streams/resource/{resourceId}" } }
+    class: delete
+    resource: { arg: resourceId, kind: service }
+    card: "Remove the log stream override of resource {resourceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://github.com/render-oss/cli/blob/main/pkg/client/logs/logs_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    tests:
+      - fixture: fixtures/log-stream-resource-delete.http
+        expect: delete
+        resource: srv-shopweb01

@@ -1,0 +1,7 @@
+# description: Create a preview instance of service srv-shopweb01 from ghcr.io/acme/shop:pr-42
+POST /v1/services/srv-shopweb01/preview HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"imagePath":"ghcr.io/acme/shop:pr-42","name":"shop-pr-42"}

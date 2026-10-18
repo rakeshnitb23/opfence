@@ -1,0 +1,7 @@
+# description: Deploy service srv-shopweb01
+POST /v1/services/srv-shopweb01/deploys HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"clearCache":"do_not_clear"}

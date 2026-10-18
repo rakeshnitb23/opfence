@@ -1,0 +1,7 @@
+# description: Change disk dsk-data01
+PATCH /v1/disks/dsk-data01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"sizeGB":50}

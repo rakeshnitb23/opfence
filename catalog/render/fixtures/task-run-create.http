@@ -1,0 +1,7 @@
+# description: Run workflow task etl/nightly-report
+POST /v1/task-runs HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"task":"etl/nightly-report","input":["2026-10-17"]}

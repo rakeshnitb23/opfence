@@ -1,0 +1,157 @@
+# Render MCP server: service
+operations:
+  - id: render-mcp.service.list
+    match: { mcp: { tool: list_services } }
+    class: read
+    card: "List services"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    tests:
+      - fixture: fixtures/service-list.http
+        expect: read
+
+  - id: render-mcp.service.get
+    match: { mcp: { tool: get_service } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "Show service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    tests:
+      - fixture: fixtures/service-get.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.service.create-web-service
+    match: { mcp: { tool: create_web_service } }
+    class: write
+    when:
+      - if: { arg: plan, matches: "(?i)^(?:$|[^f]|f(?:$|[^r])|fr(?:$|[^e])|fre(?:$|[^e])|free.)" }
+        class: money
+    resource: { arg: name, kind: service }
+    card: "Create web service {name} ({runtime}) on plan {plan}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      The server defaults plan to free; any other plan is billed. envVars are
+      generic variables, so setting them is a write.
+    tests:
+      - fixture: fixtures/service-create-web-service.http
+        expect: write
+        resource: shop-web
+      - fixture: fixtures/service-create-web-service-paid.http
+        expect: money
+        resource: shop-web
+
+  - id: render-mcp.service.create-static-site
+    match: { mcp: { tool: create_static_site } }
+    class: write
+    resource: { arg: name, kind: service }
+    card: "Create static site {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      The tool sends no plan; static sites are free.
+    tests:
+      - fixture: fixtures/service-create-static-site.http
+        expect: write
+        resource: shop-docs
+
+  - id: render-mcp.service.create-cron-job
+    match: { mcp: { tool: create_cron_job } }
+    class: money
+    resource: { arg: name, kind: service }
+    card: "Create cron job {name} running {startCommand} on {schedule}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      The server defaults plan to starter and cron jobs have no free plan.
+    tests:
+      - fixture: fixtures/service-create-cron-job.http
+        expect: money
+        resource: nightly-report
+
+  - id: render-mcp.service.update-web-service
+    match: { mcp: { tool: update_web_service } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "Get the settings link for web service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      Makes no change: the handler only returns a link to the web service's
+      settings in the Render Dashboard.
+    tests:
+      - fixture: fixtures/service-update-web-service.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.service.update-static-site
+    match: { mcp: { tool: update_static_site } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "Get the settings link for static site {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      Makes no change: the handler only returns a link to the static site's
+      settings in the Render Dashboard.
+    tests:
+      - fixture: fixtures/service-update-static-site.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.service.update-cron-job
+    match: { mcp: { tool: update_cron_job } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "Get the settings link for cron job {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      Makes no change: the handler only returns a link to the cron job's
+      settings in the Render Dashboard.
+    tests:
+      - fixture: fixtures/service-update-cron-job.http
+        expect: read
+        resource: srv-shopweb01
+
+  - id: render-mcp.service.update-env-vars
+    match: { mcp: { tool: update_environment_variables } }
+    class: write
+    when:
+      - if: { arg: replace, equals: "true" }
+        class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Set environment variables on service {serviceId} and redeploy it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/service/tools.go
+    notes: >-
+      By default the server merges the given variables into the existing ones
+      (overwriting the same keys) and triggers a deploy. With replace=true
+      every variable not in the list is deleted, and Render keeps no copy.
+    tests:
+      - fixture: fixtures/service-update-env-vars.http
+        expect: write
+        resource: srv-shopweb01
+      - fixture: fixtures/service-update-env-vars-replace.http
+        expect: irreversible
+        resource: srv-shopweb01

@@ -1,0 +1,51 @@
+# Render REST API: dedicated-ip
+operations:
+  - id: render.dedicated-ip.create
+    match: { rest: { method: POST, path: /v1/dedicated-ips } }
+    class: money
+    card: "Create dedicated outbound IP set {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Dedicated outbound IPs are a paid add-on.
+    tests:
+      - fixture: fixtures/dedicated-ip-create.http
+        expect: money
+
+  - id: render.dedicated-ip.delete
+    match: { rest: { method: DELETE, path: "/v1/dedicated-ips/{dedicatedIpId}" } }
+    class: irreversible
+    resource: { arg: dedicatedIpId, kind: dedicated-ip }
+    card: "Delete dedicated IP set {dedicatedIpId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      The addresses are released and cannot be claimed back, so partners'
+      allowlists that name them break.
+    tests:
+      - fixture: fixtures/dedicated-ip-delete.http
+        expect: irreversible
+        resource: dip-egress01
+
+  - id: render.dedicated-ip.update
+    match: { rest: { method: PATCH, path: "/v1/dedicated-ips/{dedicatedIpId}" } }
+    class: write
+    resource: { arg: dedicatedIpId, kind: dedicated-ip }
+    card: "Change dedicated IP set {dedicatedIpId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/cli/blob/main/pkg/client/client_gen.go
+      - https://unpkg.com/@renderinc/sdk@1.2.0/dist/generated/schema.d.ts
+    notes: >-
+      Changes which services send traffic from the set.
+    tests:
+      - fixture: fixtures/dedicated-ip-update.http
+        expect: write
+        resource: dip-egress01

@@ -1,0 +1,7 @@
+# description: Change notification settings of workspace tea-acme01
+PATCH /v1/notification-settings/owners/tea-acme01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"emailEnabled":false}

@@ -1,0 +1,7 @@
+# description: Change the role of usr-alice01 in workspace tea-acme01 to ADMIN
+PATCH /v1/owners/tea-acme01/members/usr-alice01 HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"role":"ADMIN"}

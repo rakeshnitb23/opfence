@@ -1,0 +1,15 @@
+# Render MCP server: event
+operations:
+  - id: render-mcp.event.list
+    match: { mcp: { tool: list_events } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    card: "List events of service {serviceId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/render-oss/render-mcp-server/blob/main/pkg/event/tools.go
+    tests:
+      - fixture: fixtures/event-list.http
+        expect: read
+        resource: srv-shopweb01

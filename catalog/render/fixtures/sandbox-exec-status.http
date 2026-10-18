@@ -1,0 +1,7 @@
+# description: Record the exit code of execution exe-run01 in sandbox sbx-agent01
+POST /v1/sandboxes/sbx-agent01/execs/exe-run01/status HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+Content-Type: application/json
+
+{"exitCode":0}

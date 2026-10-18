@@ -1,0 +1,5 @@
+# description: Validate a render.yaml Blueprint file
+POST /v1/blueprints/validate HTTP/1.1
+Host: api.render.com
+Authorization: Bearer opf_render_EXAMPLE
+
