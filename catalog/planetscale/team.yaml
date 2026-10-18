@@ -1,0 +1,83 @@
+# PlanetScale API: team
+operations:
+  - id: planetscale.team.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/teams" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Create team {body.name} in organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A new team has no members or database access.
+    tests:
+      - fixture: fixtures/team-create.http
+        expect: write
+        resource: acme
+
+  - id: planetscale.team.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/teams/{team}" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Rename or describe team {team} in organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/team-update.http
+        expect: write
+        resource: acme
+
+  - id: planetscale.team.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/teams/{team}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Delete team {team} from organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Members lose the database access the team gave them.
+    tests:
+      - fixture: fixtures/team-delete.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.team.member-add
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/teams/{team}/members" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Add member {body.user_id} to team {team}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/team-member-add.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.team.member-remove
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/teams/{team}/members/{id}" } }
+    class: access
+    when:
+      - if: { arg: query.delete_passwords, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Remove member {id} from team {team}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      delete_passwords also deletes the passwords the member created through the team.
+    tests:
+      - fixture: fixtures/team-member-remove.http
+        expect: access
+        resource: acme
+      - fixture: fixtures/team-member-remove-delete-passwords.http
+        expect: irreversible
+        resource: acme

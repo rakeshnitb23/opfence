@@ -1,0 +1,4 @@
+# description: Delete team platform from organization acme
+DELETE /v1/organizations/acme/teams/platform HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

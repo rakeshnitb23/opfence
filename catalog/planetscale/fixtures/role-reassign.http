@@ -1,0 +1,7 @@
+# description: Give objects owned by role role_8kd2 to postgres
+POST /v1/organizations/acme/databases/shop-db/branches/main/roles/role_8kd2/reassign HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"successor":"postgres"}

@@ -1,0 +1,140 @@
+# Neon MCP server: storage
+operations:
+  - id: neon-mcp.storage.get
+    match: { mcp: { tool: get_storage } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show object storage of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.list-buckets
+    match: { mcp: { tool: list_storage_buckets } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List buckets on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-list-buckets.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.create-bucket
+    match: { mcp: { tool: create_storage_bucket } }
+    class: write
+    when:
+      - if: { arg: access_level, equals: "public_read" }
+        class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Create bucket {name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      public_read lets anyone on the internet read the bucket's objects.
+    tests:
+      - fixture: fixtures/storage-create-bucket.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/storage-create-bucket-public.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.delete-bucket
+    match: { mcp: { tool: delete_storage_bucket } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete bucket {bucket_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-delete-bucket.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.list-objects
+    match: { mcp: { tool: list_storage_objects } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List objects in bucket {bucket_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-list-objects.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.delete-object
+    match: { mcp: { tool: delete_storage_object } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete object {object_key} from bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-delete-object.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.delete-objects-by-prefix
+    match: { mcp: { tool: delete_storage_objects_by_prefix } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete every object under {prefix} in bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/storage-delete-objects-by-prefix.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.storage.presign-object
+    match: { mcp: { tool: presign_storage_object } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Create a presigned {operation} URL for {object_key} in bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      A presigned URL is a bearer credential for the object until it expires
+      (up to 7 days).
+    tests:
+      - fixture: fixtures/storage-presign-object.http
+        expect: credential
+        resource: br-shop-main-123456

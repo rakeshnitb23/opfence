@@ -1,0 +1,4 @@
+# description: Delete snapshot snap-nightly-123456 of project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/snapshots/snap-nightly-123456 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

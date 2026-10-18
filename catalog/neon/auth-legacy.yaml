@@ -1,0 +1,229 @@
+# Neon API v2: auth-legacy
+operations:
+  - id: neon.auth-legacy.create-integration
+    match: { rest: { method: POST, path: "/api/v2/projects/auth/create" } }
+    class: credential
+    card: "Create a Neon Auth integration for project {body.project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed. Returns secret_server_key.
+    tests:
+      - fixture: fixtures/auth-legacy-create-integration.http
+        expect: credential
+
+  - id: neon.auth-legacy.create-sdk-keys
+    match: { rest: { method: POST, path: "/api/v2/projects/auth/keys" } }
+    class: credential
+    card: "Create Neon Auth SDK keys for project {body.project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Returns secret_server_key.
+    tests:
+      - fixture: fixtures/auth-legacy-create-sdk-keys.http
+        expect: credential
+
+  - id: neon.auth-legacy.transfer-ownership
+    match: { rest: { method: POST, path: "/api/v2/projects/auth/transfer_ownership" } }
+    class: access
+    card: "Transfer the Neon-managed auth project of {body.project_id} to your own account"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/auth-legacy-transfer-ownership.http
+        expect: access
+
+  - id: neon.auth-legacy.create-user
+    match: { rest: { method: POST, path: "/api/v2/projects/auth/user" } }
+    class: access
+    card: "Create Neon Auth user {body.email} in project {body.project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-create-user.http
+        expect: access
+
+  - id: neon.auth-legacy.add-domain
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/auth/domains" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Trust redirect domain {body.domain} for Neon Auth in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-add-domain.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.delete-domain
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/auth/domains" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Remove trusted redirect domains from Neon Auth in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-delete-domain.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.email-server
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/auth/email_server" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Read the Neon Auth email server settings of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed. Callers with credential read
+      permission get the stored SMTP password.
+    tests:
+      - fixture: fixtures/auth-legacy-email-server.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.update-email-server
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/auth/email_server" } }
+    class: access
+    when:
+      - if: { arg: body.password, present: true }
+        class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Change the Neon Auth email server of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-update-email-server.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/auth-legacy-update-email-server-password.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.delete-integration
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/auth/integration/{auth_provider}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Delete the {auth_provider} auth integration of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-delete-integration.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.list-oauth-providers
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/auth/oauth_providers" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "List Neon Auth OAuth providers (with client secrets) of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed. Each provider carries
+      client_secret.
+    tests:
+      - fixture: fixtures/auth-legacy-list-oauth-providers.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.add-oauth-provider
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/auth/oauth_providers" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Add OAuth provider {body.id} to Neon Auth in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-add-oauth-provider.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.update-oauth-provider
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/auth/oauth_providers/{oauth_provider_id}" } }
+    class: access
+    when:
+      - if: { arg: body.client_secret, present: true }
+        class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Change OAuth provider {oauth_provider_id} of Neon Auth in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-update-oauth-provider.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/auth-legacy-update-oauth-provider-secret.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.delete-oauth-provider
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/auth/oauth_providers/{oauth_provider_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Remove OAuth provider {oauth_provider_id} from Neon Auth in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-delete-oauth-provider.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.auth-legacy.delete-user
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/auth/users/{auth_user_id}" } }
+    class: irreversible
+    resource: { arg: project_id, kind: project }
+    card: "Delete Neon Auth user {auth_user_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/auth-legacy-delete-user.http
+        expect: irreversible
+        resource: shop-prod-12345678

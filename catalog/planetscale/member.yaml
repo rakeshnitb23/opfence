@@ -1,0 +1,40 @@
+# PlanetScale API: member
+operations:
+  - id: planetscale.member.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/members/{id}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change the role of member {id} in organization {organization} to {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/member-update.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.member.remove
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/members/{id}" } }
+    class: access
+    when:
+      - if: { arg: query.delete_passwords, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: irreversible
+      - if: { arg: query.delete_service_tokens, matches: '^(?is:[^0fo].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+|o|o[^f].*|of|of[^f].*|off.+)$' }
+        class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Remove member {id} from organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      delete_passwords and delete_service_tokens also delete the member's database passwords
+      and service tokens, which cannot be put back.
+    tests:
+      - fixture: fixtures/member-remove.http
+        expect: access
+        resource: acme
+      - fixture: fixtures/member-remove-delete-passwords.http
+        expect: irreversible
+        resource: acme

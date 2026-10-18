@@ -1,0 +1,70 @@
+# PlanetScale API: materialize
+operations:
+  - id: planetscale.materialize.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start a Materialize workflow into keyspace {body.target_keyspace} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_materialize.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/materialize-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.materialize.start
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/start" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start Materialize workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_materialize.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/materialize-start.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.materialize.stop
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/stop" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Stop Materialize workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_materialize.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/materialize-stop.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.materialize.cancel
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/cancel" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Cancel Materialize workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_materialize.go
+    notes: >-
+      Drops the materialized tables unless keep_data is set; they are derived from the source
+      and can be built again. Not in the public OpenAPI spec; the endpoint is called by the
+      official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/materialize-cancel.http
+        expect: delete
+        resource: shop-db

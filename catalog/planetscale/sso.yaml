@@ -1,0 +1,107 @@
+# PlanetScale API: sso
+operations:
+  - id: planetscale.sso.enable
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/sso" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Enable SSO for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Enables the SSO add-on (billed) and starts domain verification.
+    tests:
+      - fixture: fixtures/sso-enable.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.disable
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/sso" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Disable SSO and directory sync for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/sso-disable.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.configure
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/sso/configure" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Open the identity provider setup for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Returns a portal URL that configures how members sign in.
+    tests:
+      - fixture: fixtures/sso-configure.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.directory-enable
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/sso/directory" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Open directory sync setup for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Returns a portal URL that configures member provisioning.
+    tests:
+      - fixture: fixtures/sso-directory-enable.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.directory-disable
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/sso/directory" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Disable directory sync for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Non-admin directory members are removed from the organization.
+    tests:
+      - fixture: fixtures/sso-directory-disable.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.domain-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/sso/domains" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Start SSO domain verification for organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/sso-domain-create.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.sso.domain-delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/sso/domains/{id}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Delete SSO domain {id} of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/sso-domain-delete.http
+        expect: access
+        resource: acme

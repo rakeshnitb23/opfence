@@ -1,0 +1,7 @@
+# description: Change Neon Auth settings on branch br-shop-main-123456 of project shop-prod-12345678
+PATCH /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/auth/config HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"name":"Shop"}

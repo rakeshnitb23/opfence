@@ -1,0 +1,4 @@
+# description: Delete service token stk_4r9h of organization acme
+DELETE /v1/organizations/acme/service-tokens/stk_4r9h HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

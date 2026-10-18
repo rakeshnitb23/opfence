@@ -1,0 +1,33 @@
+# Neon API v2: custom-domain
+operations:
+  - id: neon.custom-domain.register
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/custom-domains" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Route custom domain {body.domain} to {body.entity_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Exposes a function on a public host name.
+    tests:
+      - fixture: fixtures/custom-domain-register.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.custom-domain.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/custom-domains/{domain}" } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Remove custom domain {domain} from branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Stops routing the host name; it can be registered again.
+    tests:
+      - fixture: fixtures/custom-domain-delete.http
+        expect: delete
+        resource: br-shop-main-123456

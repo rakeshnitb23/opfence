@@ -1,0 +1,95 @@
+# Neon API v2: snapshot
+operations:
+  - id: neon.snapshot.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/snapshot" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create snapshot {query.name} of branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/snapshot-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.snapshot.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/snapshots/{snapshot_id}" } }
+    class: write
+    when:
+      - if: { arg: body.snapshot.expires_at, present: true }
+        class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Change snapshot {snapshot_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      expires_at schedules automatic deletion of the snapshot; it can be
+      changed before it fires, so it counts as a delete that can be cancelled.
+    tests:
+      - fixture: fixtures/snapshot-update.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/snapshot-update-expires.http
+        expect: delete
+        resource: shop-prod-12345678
+
+  - id: neon.snapshot.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/snapshots/{snapshot_id}" } }
+    class: irreversible
+    resource: { arg: project_id, kind: project }
+    card: "Delete snapshot {snapshot_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The spec documents no way to restore a deleted snapshot.
+    tests:
+      - fixture: fixtures/snapshot-delete.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon.snapshot.restore
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/snapshots/{snapshot_id}/restore" } }
+    class: money
+    resource: { arg: project_id, kind: project }
+    card: "Restore snapshot {snapshot_id} of project {project_id} into a branch"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Creates a new billed branch from the snapshot (the original branch is
+      renamed, not deleted, when the restore is finalized).
+    tests:
+      - fixture: fixtures/snapshot-restore.http
+        expect: money
+        resource: shop-prod-12345678
+
+  - id: neon.snapshot.set-schedule
+    match: { rest: { method: PUT, path: "/api/v2/projects/{project_id}/branches/{branch_id}/backup_schedule" } }
+    class: write
+    when:
+      - if: { arg: body.schedule.retention_seconds, present: true }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the backup schedule of branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      retention_seconds decides when scheduled snapshots are deleted;
+      shrinking it removes backups, and the rule cannot see the old value, so
+      setting it is the worse case.
+    tests:
+      - fixture: fixtures/snapshot-set-schedule.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/snapshot-set-schedule-retention.http
+        expect: irreversible
+        resource: br-shop-main-123456

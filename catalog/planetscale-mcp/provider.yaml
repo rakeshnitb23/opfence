@@ -1,0 +1,15 @@
+provider: planetscale-mcp
+title: PlanetScale MCP
+docs: https://planetscale.com/docs/connect/mcp
+hosts: [mcp.pscale.dev]             # /mcp/planetscale and /mcp/planetscale-insights-only
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  env: [PLANETSCALE_API_TOKEN]      # the MCP service token docs' variable for a pscale_tkn_ value
+mcp:
+  names: [planetscale]              # hosted only: the source repo's package is private, not on npm
+# PlanetScale hosts the server on Gram. Ten tools come from
+# github.com/planetscale/mcp-server (src/tools); the rest are generated from
+# the PlanetScale OpenAPI spec and named after its operation ids. The hosted
+# server prefixes every tool name with "planetscale_".

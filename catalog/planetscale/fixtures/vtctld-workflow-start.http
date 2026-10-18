@@ -1,0 +1,7 @@
+# description: Start Vitess workflow move-orders on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/vtctld/workflows/move-orders/start HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"keyspace":"orders"}

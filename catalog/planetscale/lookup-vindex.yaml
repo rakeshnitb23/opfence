@@ -1,0 +1,86 @@
+# PlanetScale API: lookup-vindex
+operations:
+  - id: planetscale.lookup-vindex.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Create lookup vindex {body.name} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_lookup_vindex.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/lookup-vindex-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.lookup-vindex.externalize
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/externalize" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Externalize lookup vindex {name} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_lookup_vindex.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/lookup-vindex-externalize.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.lookup-vindex.internalize
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/internalize" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Internalize lookup vindex {name} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_lookup_vindex.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/lookup-vindex-internalize.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.lookup-vindex.cancel
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/cancel" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Cancel lookup vindex {name} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_lookup_vindex.go
+    notes: >-
+      Stops the backfill workflow; the lookup table is derived data and can be rebuilt. Not in
+      the public OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/lookup-vindex-cancel.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.lookup-vindex.complete
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/complete" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Complete lookup vindex {name} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_lookup_vindex.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/lookup-vindex-complete.http
+        expect: write
+        resource: shop-db

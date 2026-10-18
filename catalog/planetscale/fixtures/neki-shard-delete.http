@@ -1,0 +1,4 @@
+# description: Remove shard shd_4 and its data from Neki branch main of database shop-db
+DELETE /v1/organizations/acme/databases/shop-db/branches/main/shards/shd_4 HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

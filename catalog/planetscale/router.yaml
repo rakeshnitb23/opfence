@@ -1,0 +1,75 @@
+# PlanetScale API: router
+operations:
+  - id: planetscale.router.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routers" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Create router group {body.name} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Routers are billed by size and count.
+    tests:
+      - fixture: fixtures/router-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.router.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routers/{router}" } }
+    class: write
+    when:
+      - if: { arg: body.router_size, present: true }
+        class: money
+      - if: { arg: body.replicas_per_cell, present: true }
+        class: money
+      - if: { arg: body.max_replicas_per_cell, present: true }
+        class: money
+      - if: { arg: body.autoscaling, present: true }
+        class: money
+    resource: { arg: database, kind: database }
+    card: "Change router group {router} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Size, count and autoscaling set what the routers bill.
+    tests:
+      - fixture: fixtures/router-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/router-update-resize.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.router.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routers/{router}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete router group {router} on Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Routers hold no data and can be recreated.
+    tests:
+      - fixture: fixtures/router-delete.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.router.change-cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routers/{router}/changes/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cancel change {id} of router group {router}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/router-change-cancel.http
+        expect: write
+        resource: shop-db

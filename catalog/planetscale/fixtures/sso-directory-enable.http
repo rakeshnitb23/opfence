@@ -1,0 +1,4 @@
+# description: Open directory sync setup for organization acme
+POST /v1/organizations/acme/sso/directory HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

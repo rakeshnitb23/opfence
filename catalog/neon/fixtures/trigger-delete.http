@@ -1,0 +1,4 @@
+# description: Delete trigger trg-nightly-report on branch br-shop-main-123456
+DELETE /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/triggers/trg-nightly-report HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

@@ -1,0 +1,7 @@
+# description: Change masking rules of anonymized branch br-shop-main-123456 in project shop-prod-12345678
+PATCH /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/masking_rules HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"masking_rules":[{"database_name":"shop","schema_name":"public","table_name":"users","column_name":"email","masking_function":"anon.fake_email()"}]}

@@ -1,0 +1,4 @@
+# description: Read the Neon Auth email server settings of project shop-prod-12345678
+GET /api/v2/projects/shop-prod-12345678/auth/email_server HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

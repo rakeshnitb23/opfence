@@ -1,0 +1,45 @@
+# PlanetScale API: neki-shard
+operations:
+  - id: planetscale.neki-shard.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/shards" } }
+    class: money
+    resource: { arg: database, kind: database }
+    card: "Add shards to Neki branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Each shard runs a billed cluster.
+    tests:
+      - fixture: fixtures/neki-shard-create.http
+        expect: money
+        resource: shop-db
+
+  - id: planetscale.neki-shard.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/shards/{id}" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change shard {id} of Neki branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/neki-shard-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.neki-shard.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/shards/{id}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Remove shard {id} and its data from Neki branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/neki-shard-delete.http
+        expect: irreversible
+        resource: shop-db

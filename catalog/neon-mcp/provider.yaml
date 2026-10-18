@@ -1,0 +1,17 @@
+provider: neon-mcp
+title: Neon MCP
+docs: https://neon.com/docs/ai/neon-mcp-server
+hosts: [mcp.neon.tech]               # remote server: /mcp (Streamable HTTP) and /sse
+auth:
+  - header: Authorization            # OAuth access token or a Neon API key
+    scheme: Bearer
+# No detect block: the remote server takes the same NEON_API_KEY as the REST
+# API, which catalog/neon detects.
+mcp:
+  names: [neon, Neon, mcp-server-neon]
+  package: "@neondatabase/mcp-server-neon"
+# Tool names and arguments follow the hosted server (mcp-server-neon main),
+# which sends arguments flat. The npm package 0.6.5 (stdio) has the same tool
+# names, plus list_shared_projects, but nests camelCase arguments under
+# `params`; for it, `when` and `classify` see no arguments and rules fall back
+# to their own class (unknown for the SQL tools).

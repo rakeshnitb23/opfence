@@ -1,0 +1,4 @@
+# description: Revoke API key 3225999 of organization org-shop-12345678
+DELETE /api/v2/organizations/org-shop-12345678/api_keys/3225999 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

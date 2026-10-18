@@ -61,6 +61,16 @@ func TestInjectOnlyForItsProvider(t *testing.T) {
 	if Request(gh, h, "", set); h.Get("Authorization") != "token "+vercel.Value {
 		t.Fatalf("schemeless: %v", h)
 	}
+	// "<id>:<token>" (PlanetScale service tokens): the token part is swapped.
+	h = http.Header{"Authorization": {"k3m9x2p7q1w8:" + vercel.Placeholder}}
+	if _, res := Request(gh, h, "", set); h.Get("Authorization") != "k3m9x2p7q1w8:"+vercel.Value || len(res.Injected) != 1 {
+		t.Fatalf("id:token: %v %+v", h, res)
+	}
+	// ... but never another provider's.
+	h = http.Header{"Authorization": {"k3m9x2p7q1w8:" + railway.Placeholder}}
+	if _, res := Request(gh, h, "", set); h.Get("Authorization") != "k3m9x2p7q1w8:"+railway.Placeholder || len(res.Foreign) != 1 {
+		t.Fatalf("foreign id:token: %v %+v", h, res)
+	}
 }
 
 func TestInjectQueryAndBasic(t *testing.T) {

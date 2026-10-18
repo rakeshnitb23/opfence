@@ -1,0 +1,4 @@
+# description: Delete Neon Auth user 9c8b7a6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d in project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/auth/users/9c8b7a6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

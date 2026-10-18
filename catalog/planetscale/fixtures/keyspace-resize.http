@@ -1,0 +1,7 @@
+# description: Resize keyspace commerce on branch main to PS_40
+PUT /v1/organizations/acme/databases/shop-db/branches/main/keyspaces/commerce/resizes HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"cluster_size":"PS_40","extra_replicas":1}

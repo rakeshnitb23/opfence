@@ -1,0 +1,7 @@
+# description: Stop VDiff 1b4e28ba-2fa1-11d2-883f-0016d3cca427 of workflow move-orders
+POST /v1/organizations/acme/databases/shop-db/branches/main/vdiff/workflows/move-orders/vdiffs/1b4e28ba-2fa1-11d2-883f-0016d3cca427/stop HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"target_keyspace":"orders"}

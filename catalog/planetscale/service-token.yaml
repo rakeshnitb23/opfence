@@ -1,0 +1,67 @@
+# PlanetScale API: service-token
+operations:
+  - id: planetscale.service-token.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/service-tokens" } }
+    class: credential
+    resource: { arg: organization, kind: organization }
+    card: "Create service token {body.name} in organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The response holds the plain-text token.
+    tests:
+      - fixture: fixtures/service-token-create.http
+        expect: credential
+        resource: acme
+
+  - id: planetscale.service-token.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/service-tokens/{id}" } }
+    class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Delete service token {id} of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A deleted token cannot be put back; anything using it stops working.
+    tests:
+      - fixture: fixtures/service-token-delete.http
+        expect: irreversible
+        resource: acme
+
+  - id: planetscale.service-token.access-grant
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/service-tokens/{id}/access" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Grant service token {id} access {body.access} on {body.database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/service_tokens.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/service-token-access-grant.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.service-token.access-revoke
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/service-tokens/{id}/access" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Revoke access {body.access} of service token {id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/service_tokens.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/service-token-access-revoke.http
+        expect: access
+        resource: acme

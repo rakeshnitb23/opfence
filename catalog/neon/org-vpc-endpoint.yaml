@@ -1,0 +1,32 @@
+# Neon API v2: org-vpc-endpoint
+operations:
+  - id: neon.org-vpc-endpoint.assign
+    match: { rest: { method: POST, path: "/api/v2/organizations/{org_id}/vpc/region/{region_id}/vpc_endpoints/{vpc_endpoint_id}" } }
+    class: access
+    resource: { arg: org_id, kind: organization }
+    card: "Assign VPC endpoint {vpc_endpoint_id} to organization {org_id} in {region_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Opens a private network path into every project of the organization in
+      that region.
+    tests:
+      - fixture: fixtures/org-vpc-endpoint-assign.http
+        expect: access
+        resource: org-shop-12345678
+
+  - id: neon.org-vpc-endpoint.delete
+    match: { rest: { method: DELETE, path: "/api/v2/organizations/{org_id}/vpc/region/{region_id}/vpc_endpoints/{vpc_endpoint_id}" } }
+    class: access
+    resource: { arg: org_id, kind: organization }
+    card: "Delete VPC endpoint {vpc_endpoint_id} of organization {org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/org-vpc-endpoint-delete.http
+        expect: access
+        resource: org-shop-12345678

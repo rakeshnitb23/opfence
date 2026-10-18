@@ -1,0 +1,8 @@
+# description: Change the role of Neon Auth user 9c8b7a6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d on branch br-shop-main-123456
+POST /mcp HTTP/1.1
+Host: mcp.neon.tech
+Authorization: Bearer opf_neon-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"update_auth_user_role","arguments":{"project_id":"shop-prod-12345678","branch_id":"br-shop-main-123456","auth_user_id":"9c8b7a6d-5e4f-4a3b-2c1d-0e9f8a7b6c5d","roles":["admin"]}}}

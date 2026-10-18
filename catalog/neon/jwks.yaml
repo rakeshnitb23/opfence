@@ -1,0 +1,32 @@
+# Neon API v2: jwks
+operations:
+  - id: neon.jwks.add
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/jwks" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Trust JWKS URL {body.jwks_url} for project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      A trusted JWKS decides which JWTs may log in to the database (Neon RLS /
+      Authorize).
+    tests:
+      - fixture: fixtures/jwks-add.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.jwks.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/jwks/{jwks_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Remove JWKS {jwks_id} from project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/jwks-delete.http
+        expect: access
+        resource: shop-prod-12345678

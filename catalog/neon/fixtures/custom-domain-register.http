@@ -1,0 +1,7 @@
+# description: Route custom domain api.shop.example to send-receipt on branch br-shop-main-123456
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/custom-domains HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"domain":"api.shop.example","entity_type":"function","entity_id":"send-receipt"}

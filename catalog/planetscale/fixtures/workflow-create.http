@@ -1,0 +1,7 @@
+# description: Create workflow shard-orders moving tables to keyspace orders in database shop-db
+POST /v1/organizations/acme/databases/shop-db/workflows HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"shard-orders","branch_name":"main","source_keyspace":"commerce","target_keyspace":"orders","tables":["orders"]}

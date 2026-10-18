@@ -1,0 +1,29 @@
+# Neon API v2: project-member
+operations:
+  - id: neon.project-member.set-role
+    match: { rest: { method: PUT, path: "/api/v2/projects/{project_id}/members/{member_id}/role" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Give member {member_id} the role {body.role} on project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-member-set-role.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.project-member.remove-role
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/members/{member_id}/role" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Remove the project role of member {member_id} on project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-member-remove-role.http
+        expect: access
+        resource: shop-prod-12345678

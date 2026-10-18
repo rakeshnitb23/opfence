@@ -1,0 +1,7 @@
+# description: Check the tablet throttler on branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/vtctld/throttler/check HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"tablet_alias":"zone1-0000000101"}

@@ -1,0 +1,7 @@
+# description: Deploy the schema changes of deploy request 42 to database shop-db
+POST /v1/organizations/acme/databases/shop-db/deploy-requests/42/deploy HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"instant_ddl":true}

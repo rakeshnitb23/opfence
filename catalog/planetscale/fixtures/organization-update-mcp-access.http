@@ -1,0 +1,7 @@
+# description: Change settings of organization acme
+PATCH /v1/organizations/acme HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"mcp_access_level":"read_write"}

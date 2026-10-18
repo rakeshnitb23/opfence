@@ -1,0 +1,7 @@
+# description: Change the backup schedule of branch br-shop-main-123456 in project shop-prod-12345678
+PUT /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/backup_schedule HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"schedule":[{"frequency":"daily","hour":3,"retention_seconds":86400}]}

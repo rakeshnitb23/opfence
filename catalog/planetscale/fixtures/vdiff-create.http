@@ -1,0 +1,7 @@
+# description: Start a VDiff of workflow move-orders on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/vdiff/workflows/move-orders/vdiffs HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"target_keyspace":"orders"}

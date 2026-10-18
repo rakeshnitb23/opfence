@@ -1,0 +1,107 @@
+# PlanetScale API: move-tables
+operations:
+  - id: planetscale.move-tables.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start copying tables into keyspace {body.target_keyspace} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/move-tables-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.move-tables.start
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/start" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start MoveTables workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/move-tables-start.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.move-tables.stop
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/stop" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Stop MoveTables workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/move-tables-stop.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.move-tables.switch-traffic
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/switch-traffic" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send traffic for MoveTables workflow {workflow} to the target keyspace"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Can be undone with reverse-traffic until the workflow is completed.
+    tests:
+      - fixture: fixtures/move-tables-switch-traffic.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.move-tables.reverse-traffic
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/reverse-traffic" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send traffic for MoveTables workflow {workflow} back to the source keyspace"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/move-tables-reverse-traffic.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.move-tables.cancel
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/cancel" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Cancel MoveTables workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Drops the copied tables in the target keyspace unless keep_data is set; the source tables
+      are untouched, so the copy can be made again.
+    tests:
+      - fixture: fixtures/move-tables-cancel.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.move-tables.complete
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/move-tables/workflows/{workflow}/complete" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Complete MoveTables workflow {workflow} and drop the source tables"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Completing drops the moved tables from the source keyspace unless keep_data is true
+      (planetscale-go MoveTablesCompleteRequest); not revertible.
+    tests:
+      - fixture: fixtures/move-tables-complete.http
+        expect: irreversible
+        resource: shop-db

@@ -1,0 +1,7 @@
+# description: Assign VPC endpoint vpce-0123456789abcdef0 to organization org-shop-12345678 in aws-us-east-2
+POST /api/v2/organizations/org-shop-12345678/vpc/region/aws-us-east-2/vpc_endpoints/vpce-0123456789abcdef0 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"label":"shop-vpc"}

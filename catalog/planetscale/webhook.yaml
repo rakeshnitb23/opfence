@@ -1,0 +1,96 @@
+# PlanetScale API: webhook
+operations:
+  - id: planetscale.webhook.list
+    match: { rest: { method: GET, path: "/v1/organizations/{organization}/databases/{database}/webhooks" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "List webhooks of database {database} with their signing secrets"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Each webhook in the response includes its signing secret.
+    tests:
+      - fixture: fixtures/webhook-list.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.webhook.read
+    match: { rest: { method: GET, path: "/v1/organizations/{organization}/databases/{database}/webhooks/{id}" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Read webhook {id} of database {database} with its signing secret"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The response includes the signing secret.
+    tests:
+      - fixture: fixtures/webhook-read.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.webhook.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/webhooks" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Send events of database {database} to {body.url}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The response includes the new signing secret, and authorization_header stores a secret;
+      the webhook also sends database events to an outside URL.
+    tests:
+      - fixture: fixtures/webhook-create.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.webhook.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/webhooks/{id}" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Change webhook {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The response includes the signing secret, and authorization_header stores a secret.
+    tests:
+      - fixture: fixtures/webhook-update.http
+        expect: credential
+        resource: shop-db
+
+  - id: planetscale.webhook.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/webhooks/{id}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Delete webhook {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Same as GitHub and Vercel webhooks: it can be recreated (with a new secret).
+    tests:
+      - fixture: fixtures/webhook-delete.http
+        expect: delete
+        resource: shop-db
+
+  - id: planetscale.webhook.test
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/webhooks/{id}/test" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send a test event to webhook {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/webhook-test.http
+        expect: write
+        resource: shop-db

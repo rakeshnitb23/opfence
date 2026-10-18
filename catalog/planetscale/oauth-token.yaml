@@ -1,0 +1,33 @@
+# PlanetScale API: oauth-token
+operations:
+  - id: planetscale.oauth-token.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/oauth-applications/{id}/token" } }
+    class: credential
+    resource: { arg: organization, kind: organization }
+    card: "Exchange a grant for an OAuth token of application {id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Returns a new access token and refresh token in plain text.
+    tests:
+      - fixture: fixtures/oauth-token-create.http
+        expect: credential
+        resource: acme
+
+  - id: planetscale.oauth-token.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/oauth-applications/{application_id}/tokens/{token_id}" } }
+    class: irreversible
+    resource: { arg: organization, kind: organization }
+    card: "Revoke OAuth token {token_id} of application {application_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A revoked token cannot be put back.
+    tests:
+      - fixture: fixtures/oauth-token-delete.http
+        expect: irreversible
+        resource: acme

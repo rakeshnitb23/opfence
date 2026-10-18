@@ -1,0 +1,7 @@
+# description: Create read replica replica-eu of branch main in eu-west
+POST /v1/organizations/acme/databases/shop-db/branches/main/dedicated-read-replicas HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"replica-eu","region":"eu-west","cluster_size":"PS_20"}

@@ -1,0 +1,4 @@
+# description: Delete Neon project shop-prod-12345678 with all its branches, databases and computes
+DELETE /api/v2/projects/shop-prod-12345678 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

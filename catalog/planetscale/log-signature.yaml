@@ -1,0 +1,17 @@
+# PlanetScale API: log-signature
+operations:
+  - id: planetscale.log-signature.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/logs/signatures" } }
+    class: credential
+    resource: { arg: database, kind: database }
+    card: "Create a signed token to read logs of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Returns a signed URL that grants access to the branch's logs to whoever holds it.
+    tests:
+      - fixture: fixtures/log-signature-create.http
+        expect: credential
+        resource: shop-db

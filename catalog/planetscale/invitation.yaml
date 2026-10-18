@@ -1,0 +1,29 @@
+# PlanetScale API: invitation
+operations:
+  - id: planetscale.invitation.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/invitations" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Invite {body.email} to organization {organization} as {body.role}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/invitation-create.http
+        expect: access
+        resource: acme
+
+  - id: planetscale.invitation.cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/invitations/{id}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Cancel invitation {id} to organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/invitation-cancel.http
+        expect: access
+        resource: acme

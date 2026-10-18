@@ -1,0 +1,137 @@
+# PlanetScale API: vtctld
+operations:
+  - id: planetscale.vtctld.keyspace-routing-rules-update
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/keyspace-routing-rules" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Replace the keyspace routing rules of branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Routes whole keyspaces elsewhere; can be changed back. Not in the public OpenAPI spec;
+      the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/vtctld-keyspace-routing-rules-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.tablet-control-update
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/shard/tablet-control" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change tablet control for shard {body.shard} of keyspace {body.keyspace}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Can deny tables or disable the query service on a shard until changed back. Not in the
+      public OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/vtctld-tablet-control-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.refresh-state
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/shard/refresh-state" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Refresh tablet state for shard {body.shard} of keyspace {body.keyspace}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vtctld-refresh-state.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.throttler-check
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/throttler/check" } }
+    class: read
+    resource: { arg: database, kind: database }
+    card: "Check the tablet throttler on branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Only reports throttler status. Not in the public OpenAPI spec; the endpoint is called by
+      the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/vtctld-throttler-check.http
+        expect: read
+        resource: shop-db
+
+  - id: planetscale.vtctld.throttler-config-update
+    match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/throttler/config" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change the tablet throttler config on branch {branch} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vtctld-throttler-config-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.workflow-start
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/workflows/{workflow}/start" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Start Vitess workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vtctld-workflow-start.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.workflow-stop
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/workflows/{workflow}/stop" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Stop Vitess workflow {workflow} on branch {branch}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_general.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/vtctld-workflow-stop.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.vtctld.planned-reparent
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/planned-reparent" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Make {body.new_primary} the primary of shard {body.shard} of keyspace {body.keyspace}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/vtctld_planned_reparent.go
+    notes: >-
+      A planned failover; brief write unavailability on the shard. Not in the public OpenAPI
+      spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/vtctld-planned-reparent.http
+        expect: write
+        resource: shop-db

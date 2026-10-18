@@ -1,0 +1,4 @@
+# description: Make branch br-shop-main-123456 the default branch of project shop-prod-12345678
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/set_as_default HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

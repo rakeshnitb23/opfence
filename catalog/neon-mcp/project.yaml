@@ -1,0 +1,222 @@
+# Neon MCP server: project
+operations:
+  - id: neon-mcp.project.list
+    match: { mcp: { tool: list_projects } }
+    class: read
+    card: "List Neon projects"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: neon-mcp.project.list-shared
+    match: { mcp: { tool: list_shared_projects } }
+    class: read
+    card: "List Neon projects shared with you"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://unpkg.com/@neondatabase/mcp-server-neon@0.6.5/dist/tools/definitions.js
+    notes: >-
+      Only in the npm package 0.6.5 (stdio), which nests arguments under
+      params.
+    tests:
+      - fixture: fixtures/project-list-shared.http
+        expect: read
+
+  - id: neon-mcp.project.describe
+    match: { mcp: { tool: describe_project } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show Neon project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-describe.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: credential
+    card: "Create Neon project {name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+      - https://unpkg.com/@neondatabase/mcp-server-neon@0.6.5/dist/tools/tools.js
+    notes: >-
+      Creates a billed project (money). The hosted server withholds the
+      connection string, but the npm package 0.6.5 prints the new project's
+      connection URI with its password, and a hook cannot tell the two apart,
+      so the rule takes the stricter credential class.
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: credential
+
+  - id: neon-mcp.project.update
+    match: { mcp: { tool: update_project } }
+    class: write
+    when:
+      - if: { arg: settings.allowed_ips, present: true }
+        class: access
+      - if: { arg: settings.block_public_connections, present: true }
+        class: access
+      - if: { arg: settings.block_vpc_connections, present: true }
+        class: access
+      - if: { arg: settings.quota, present: true }
+        class: money
+      - if: { arg: history_retention_seconds, present: true }
+        class: irreversible
+    resource: { arg: project_id, kind: project }
+    card: "Change settings of Neon project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Same judgement as neon.project.update: network allow-lists are access,
+      quota is money, and any change to the point-in-time restore window may
+      discard history.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-allowed-ips.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-quota.http
+        expect: money
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-history-retention.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.delete
+    match: { mcp: { tool: delete_project } }
+    class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Delete Neon project {project_id} with all its branches and data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/projects.md
+    notes: >-
+      Neon documents a 7-day deletion recovery period (recover_project, or
+      POST /projects/{project_id}/recover); after that deletion is permanent.
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: delete
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.recover
+    match: { mcp: { tool: recover_project } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Recover deleted Neon project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-recover.http
+        expect: write
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.list-permissions
+    match: { mcp: { tool: list_project_permissions } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List who project {project_id} is shared with"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-list-permissions.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.list-members
+    match: { mcp: { tool: list_project_members } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List members of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-list-members.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.list-regions
+    match: { mcp: { tool: list_regions } }
+    class: read
+    card: "List Neon regions"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-list-regions.http
+        expect: read
+
+  - id: neon-mcp.project.list-operations
+    match: { mcp: { tool: list_operations } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List operations of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-list-operations.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.project.get-operation
+    match: { mcp: { tool: get_operation } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show operation {operation_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/project-get-operation.http
+        expect: read
+        resource: shop-prod-12345678

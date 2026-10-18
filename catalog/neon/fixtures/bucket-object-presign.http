@@ -1,0 +1,7 @@
+# description: Create a presigned download URL for users/42.png in bucket avatars
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/buckets/avatars/objects/users%2F42.png/presign HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"operation":"download","expires_in_seconds":900}

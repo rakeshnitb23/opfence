@@ -1,0 +1,4 @@
+# description: Delete branch add-orders-index of database shop-db and its data
+DELETE /v1/organizations/acme/databases/shop-db/branches/add-orders-index?delete_descendants=true HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

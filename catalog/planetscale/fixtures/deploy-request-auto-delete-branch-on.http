@@ -1,0 +1,7 @@
+# description: Turn auto-delete of the source branch on or off for deploy request 42
+PUT /v1/organizations/acme/databases/shop-db/deploy-requests/42/auto-delete-branch HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"enable":true}

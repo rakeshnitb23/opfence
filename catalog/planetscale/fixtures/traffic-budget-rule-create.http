@@ -1,0 +1,7 @@
+# description: Add a traffic rule to budget tb_3k9x on branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/traffic/budgets/tb_3k9x/rules HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"kind":"match","fingerprint":"8c2f1e9a"}

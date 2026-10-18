@@ -1,0 +1,7 @@
+# description: Create postgresql database shop-db (PS_10) in acme
+POST /v1/organizations/acme/databases HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-db","kind":"postgresql","cluster_size":"PS_10","region":"us-east"}

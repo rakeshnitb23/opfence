@@ -1,0 +1,7 @@
+# description: Resize branch main of database shop-db to PS_40
+PATCH /v1/organizations/acme/databases/shop-db/branches/main/cluster HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"cluster_size":"PS_40"}

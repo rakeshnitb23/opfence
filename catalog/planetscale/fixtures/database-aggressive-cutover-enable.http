@@ -1,0 +1,4 @@
+# description: Turn on aggressive cutover for deploys to database shop-db
+POST /v1/organizations/acme/databases/shop-db/aggressive-cutover HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

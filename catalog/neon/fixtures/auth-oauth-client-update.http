@@ -1,0 +1,7 @@
+# description: Change OAuth client oac-shop-admin of Neon Auth on branch br-shop-main-123456
+PATCH /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/auth/oauth-provider/clients/oac-shop-admin HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"redirect_uris":["https://admin.shop.example/callback"]}

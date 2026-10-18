@@ -1,0 +1,7 @@
+# description: Change Postgres role role_8kd2 of branch main
+PATCH /v1/organizations/acme/databases/shop-db/branches/main/roles/role_8kd2 HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"require_where_on_delete":"off"}

@@ -1,0 +1,14 @@
+# PlanetScale MCP server: docs
+operations:
+  - id: planetscale-mcp.docs.search
+    match: { mcp: { tool: planetscale_search_documentation } }
+    class: read
+    card: "Search the PlanetScale documentation for {query}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/mcp-server/blob/main/src/tools/search-documentation.ts
+      - https://planetscale.com/docs/connect/mcp
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read

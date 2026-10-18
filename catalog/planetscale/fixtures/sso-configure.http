@@ -1,0 +1,4 @@
+# description: Open the identity provider setup for organization acme
+POST /v1/organizations/acme/sso/configure HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

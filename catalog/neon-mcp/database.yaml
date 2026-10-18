@@ -1,0 +1,89 @@
+# Neon MCP server: database
+operations:
+  - id: neon-mcp.database.list
+    match: { mcp: { tool: list_postgres_databases } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List databases on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/database-list.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.database.get
+    match: { mcp: { tool: get_postgres_database } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/database-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.database.create
+    match: { mcp: { tool: create_postgres_database } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create database {name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.database.update
+    match: { mcp: { tool: update_postgres_database } }
+    class: write
+    when:
+      - if: { arg: owner_name, present: true }
+        class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Changing the owner hands full control of the database to another role.
+    tests:
+      - fixture: fixtures/database-update.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/database-update-owner.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.database.delete
+    match: { mcp: { tool: delete_postgres_database } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456

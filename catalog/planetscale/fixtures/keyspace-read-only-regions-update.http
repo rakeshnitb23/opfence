@@ -1,0 +1,7 @@
+# description: Change the read-only regions of keyspace commerce on branch main
+PUT /v1/organizations/acme/databases/shop-db/branches/main/keyspaces/commerce/read-only-regions HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"read_only_regions":[{"region":"eu-west","replicas":2}]}

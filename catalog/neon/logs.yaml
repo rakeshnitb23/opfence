@@ -1,0 +1,17 @@
+# Neon API v2: logs
+operations:
+  - id: neon.logs.query
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/logs/query" } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Query logs of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      A POST that only reads; the MCP server treats it as read-only too.
+    tests:
+      - fixture: fixtures/logs-query.http
+        expect: read
+        resource: br-shop-main-123456

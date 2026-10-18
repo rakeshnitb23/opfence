@@ -281,7 +281,7 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
     classify: { sql: query }        # derive the class from args.query
 ```
 
-Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `matches` (RE2). `classify.sql` hands an argument to the SQL classifier. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
+Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `matches` (RE2). `classify.sql` hands an argument to the Postgres SQL classifier: a string, or a list of strings classified one by one (a transaction). Any other value leaves the rule's own class. Only Postgres dialects use it: SQLite and MySQL quote and comment differently, so their SQL tools get a fixed class. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
 
 ### 4.5 Classification conventions
 

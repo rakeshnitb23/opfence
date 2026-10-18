@@ -1,0 +1,8 @@
+# description: List databases in an organization
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"planetscale_list_databases","arguments":{"organization":"acme"}}}

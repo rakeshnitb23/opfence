@@ -1,0 +1,4 @@
+# description: Cancel parameter change cc_9t2w of keyspace commerce
+DELETE /v1/organizations/acme/databases/shop-db/branches/main/keyspaces/commerce/config-changes/cc_9t2w HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

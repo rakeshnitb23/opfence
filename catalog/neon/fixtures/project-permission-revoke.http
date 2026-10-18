@@ -1,0 +1,4 @@
+# description: Revoke access perm-12345678 to project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/permissions/perm-12345678 HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

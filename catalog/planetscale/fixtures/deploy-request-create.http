@@ -1,0 +1,7 @@
+# description: Open a deploy request from add-orders-index to main in database shop-db
+POST /v1/organizations/acme/databases/shop-db/deploy-requests HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"branch":"add-orders-index","into_branch":"main","notes":"index orders.user_id"}

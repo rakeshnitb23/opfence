@@ -1,0 +1,7 @@
+# description: Invite dev@acme.example to organization acme as member
+POST /v1/organizations/acme/invitations HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"email":"dev@acme.example","role":"member"}

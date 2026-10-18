@@ -1,0 +1,7 @@
+# description: Restore branch br-shop-main-123456 of project shop-prod-12345678 to an earlier state
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/restore HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"source_branch_id":"br-shop-main-123456","source_timestamp":"2026-10-17T09:00:00Z"}

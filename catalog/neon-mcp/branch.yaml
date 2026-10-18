@@ -1,0 +1,201 @@
+# Neon MCP server: branch
+operations:
+  - id: neon-mcp.branch.list
+    match: { mcp: { tool: list_branches } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List branches of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/branch-list.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.branch.get
+    match: { mcp: { tool: get_branch } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/branch-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.get-default
+    match: { mcp: { tool: get_default_branch } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show the default branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/branch-get-default.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.branch.create
+    match: { mcp: { tool: create_branch } }
+    class: money
+    resource: { arg: project_id, kind: project }
+    card: "Create branch {name} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    notes: >-
+      Adds a billed branch with a compute. Connection strings and role
+      passwords are stripped from the result on the hosted server, and the npm
+      package 0.6.5 prints only branch details.
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: money
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.branch.update
+    match: { mcp: { tool: update_branch } }
+    class: write
+    when:
+      - if: { arg: protected, present: true }
+        class: access
+      - if: { arg: expires_at, present: true }
+        class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Change branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Same judgement as neon.branch.update: protection is a protection
+      setting, expires_at schedules a deletion that can still be cleared.
+    tests:
+      - fixture: fixtures/branch-update.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-update-unprotect.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-update-expires.http
+        expect: delete
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.delete
+    match: { mcp: { tool: delete_branch } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete branch {branch_id} of project {project_id} and all its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/branches.md
+    notes: >-
+      Neon's docs call branch deletion permanent and the current API spec has
+      no branch recovery.
+    tests:
+      - fixture: fixtures/branch-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.set-default
+    match: { mcp: { tool: set_default_branch } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Make branch {branch_id} the default of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/branch-set-default.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.reset-from-parent
+    match: { mcp: { tool: reset_from_parent } }
+    class: delete
+    when:
+      - if: { arg: preserve_under_name, absent: true }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Reset branch {branch_id} of project {project_id} to its parent, discarding its changes"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+    notes: >-
+      Discards every write since the branch diverged. With preserve_under_name
+      the current state is kept as another branch; without it the writes are
+      gone. (The npm package 0.6.5 names its arguments projectId and
+      branchIdOrName under params, so there the rule sees no
+      preserve_under_name and stays irreversible.)
+    tests:
+      - fixture: fixtures/branch-reset-from-parent.http
+        expect: delete
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-reset-from-parent-no-preserve.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.finalize-restore
+    match: { mcp: { tool: finalize_branch_restore } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Finalize the restore of branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Moves computes onto the restored branch and renames the original;
+      nothing is deleted.
+    tests:
+      - fixture: fixtures/branch-finalize-restore.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.branch.describe
+    match: { mcp: { tool: describe_branch } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show the objects on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/branch-describe.http
+        expect: read
+        resource: br-shop-main-123456

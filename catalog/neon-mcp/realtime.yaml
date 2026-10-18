@@ -1,0 +1,85 @@
+# Neon MCP server: realtime
+operations:
+  - id: neon-mcp.realtime.get
+    match: { mcp: { tool: get_realtime } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show Realtime state of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/realtime-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.realtime.enable
+    match: { mcp: { tool: enable_realtime } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Enable Realtime on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Lets browsers connect; an empty allowed_origins list allows any origin.
+    tests:
+      - fixture: fixtures/realtime-enable.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.realtime.disable
+    match: { mcp: { tool: disable_realtime } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Disable Realtime on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Discards the shared secret; enabling again provisions a new one.
+    tests:
+      - fixture: fixtures/realtime-disable.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.realtime.get-secret
+    match: { mcp: { tool: get_realtime_secret } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read the Realtime shared secret of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/realtime-get-secret.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.realtime.rotate-secret
+    match: { mcp: { tool: rotate_realtime_secret } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Rotate the Realtime shared secret of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/realtime-rotate-secret.http
+        expect: credential
+        resource: br-shop-main-123456

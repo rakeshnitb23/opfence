@@ -1,0 +1,4 @@
+# description: Create a signed token to read logs of branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/logs/signatures HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

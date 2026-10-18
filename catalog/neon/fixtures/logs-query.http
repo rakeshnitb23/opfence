@@ -1,0 +1,7 @@
+# description: Query logs of branch br-shop-main-123456
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/logs/query HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"since":"1h","limit":100}

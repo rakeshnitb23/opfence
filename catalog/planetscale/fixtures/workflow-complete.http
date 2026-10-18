@@ -1,0 +1,4 @@
+# description: Complete workflow 42 in database shop-db and clean up the source
+PATCH /v1/organizations/acme/databases/shop-db/workflows/42/complete HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

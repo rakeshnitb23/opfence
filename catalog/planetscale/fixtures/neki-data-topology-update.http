@@ -1,0 +1,7 @@
+# description: Set the data topology of Neki branch main of database shop-db
+PUT /v1/organizations/acme/databases/shop-db/branches/main/data-topology HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"data_topology":{"tables":{}}}

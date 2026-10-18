@@ -1,0 +1,4 @@
+# description: Cancel change chg_1a2b of router group default
+DELETE /v1/organizations/acme/databases/shop-db/branches/main/routers/default/changes/chg_1a2b HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

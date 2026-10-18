@@ -1,0 +1,8 @@
+# description: Check payment method setup pms_9x2c of organization acme
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":22,"method":"tools/call","params":{"name":"planetscale_get_payment_method_setup","arguments":{"organization":"acme","setup_id":"pms_9x2c"}}}

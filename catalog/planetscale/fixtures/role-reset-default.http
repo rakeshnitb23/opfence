@@ -1,0 +1,4 @@
+# description: Reset the default postgres role password of branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/roles/reset-default HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

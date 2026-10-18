@@ -1,0 +1,180 @@
+# Neon API v2: branch
+operations:
+  - id: neon.branch.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Create a branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The CreatedBranch response includes the branch roles (marked
+      x-sensitive, the Role schema has a password field) and, when endpoints
+      are requested, connection_uris with passwords, so this reads a secret.
+      It also adds a billed branch and computes (money); credential is the
+      stricter class in every environment of the default table.
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.branch.create-anonymized
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branch_anonymized" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Create an anonymized branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Same response shape as branch creation (roles and optional
+      connection_uris); also billed.
+    tests:
+      - fixture: fixtures/branch-create-anonymized.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon.branch.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/branches/{branch_id}" } }
+    class: write
+    when:
+      - if: { arg: body.branch.protected, present: true }
+        class: access
+      - if: { arg: body.branch.expires_at, present: true }
+        class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Change branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/branches.md
+    notes: >-
+      protected stops a branch and its computes from being deleted or reset,
+      so changing it is a protection setting. expires_at schedules automatic
+      deletion of the branch; it can be cleared before it fires, so it counts
+      as a delete that can be cancelled.
+    tests:
+      - fixture: fixtures/branch-update.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-update-unprotect.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-update-expires.http
+        expect: delete
+        resource: br-shop-main-123456
+
+  - id: neon.branch.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}" } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete branch {branch_id} of project {project_id} with its databases, roles and computes"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/branches.md
+      - https://unpkg.com/@neondatabase/api-client@2.7.3/public-v2-for-users.gen.yaml
+    notes: >-
+      The current spec and docs ("Deleting a branch is a permanent action")
+      document no recovery. The older @neondatabase/api-client 2.7.3 spec
+      described a 7-day soft delete with hard_delete and POST .../recover, but
+      the current spec dropped both, so the rule does not rely on it.
+    tests:
+      - fixture: fixtures/branch-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon.branch.recover
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/recover" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Recover deleted branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://unpkg.com/@neondatabase/api-client@2.7.3/public-v2-for-users.gen.yaml
+    notes: >-
+      Only in the older @neondatabase/api-client 2.7.3 spec; matched so it is
+      not unknown.
+    tests:
+      - fixture: fixtures/branch-recover.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.branch.restore
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/restore" } }
+    class: delete
+    when:
+      - if: { arg: body.preserve_under_name, absent: true }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Restore branch {branch_id} of project {project_id} to an earlier state"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Replaces the branch's current state. With preserve_under_name the
+      current state is kept as a separate branch, so it can be put back;
+      without it, writes since the restore point are discarded (this is also
+      what the MCP reset_from_parent calls).
+    tests:
+      - fixture: fixtures/branch-restore.http
+        expect: delete
+        resource: br-shop-main-123456
+      - fixture: fixtures/branch-restore-no-preserve.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon.branch.set-default
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/set_as_default" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Make branch {branch_id} the default branch of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/branch-set-default.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.branch.finalize-restore
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/finalize_restore" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Finalize the restore of branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Moves computes onto the restored branch (restarting them) and renames
+      the original branch; nothing is deleted.
+    tests:
+      - fixture: fixtures/branch-finalize-restore.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon.branch.anonymize
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/anonymize" } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Start anonymizing data on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Rewrites data in an anonymized branch only; the parent keeps the
+      original data.
+    tests:
+      - fixture: fixtures/branch-anonymize.http
+        expect: write
+        resource: br-shop-main-123456

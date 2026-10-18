@@ -1,0 +1,35 @@
+# PlanetScale API: payment-method
+operations:
+  - id: planetscale.payment-method.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/billing/payment-method" } }
+    class: money
+    resource: { arg: organization, kind: organization }
+    card: "Delete the payment method of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Removing the card changes how the organization pays; without one, paid databases can be
+      suspended.
+    tests:
+      - fixture: fixtures/payment-method-delete.http
+        expect: money
+        resource: acme
+
+  - id: planetscale.payment-method.setup
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/billing/payment-method-setups" } }
+    class: money
+    resource: { arg: organization, kind: organization }
+    card: "Start replacing the payment method of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Creates a hosted checkout session that adds or replaces the card the organization is
+      charged on.
+    tests:
+      - fixture: fixtures/payment-method-setup.http
+        expect: money
+        resource: acme

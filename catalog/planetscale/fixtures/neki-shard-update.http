@@ -1,0 +1,7 @@
+# description: Change shard shd_4 of Neki branch main
+PATCH /v1/organizations/acme/databases/shop-db/branches/main/shards/shd_4 HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"display_name":"shard-four"}

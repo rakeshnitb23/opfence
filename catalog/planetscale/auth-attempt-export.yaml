@@ -1,0 +1,18 @@
+# PlanetScale API: auth-attempt-export
+operations:
+  - id: planetscale.auth-attempt-export.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/auth-attempt-exports" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Export database authentication attempts of organization {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/auth_attempt_exports.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/auth-attempt-export-create.http
+        expect: write
+        resource: acme

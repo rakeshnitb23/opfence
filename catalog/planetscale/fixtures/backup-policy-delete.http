@@ -1,0 +1,4 @@
+# description: Delete backup policy bp_7m3q of database shop-db
+DELETE /v1/organizations/acme/databases/shop-db/backup-policies/bp_7m3q HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

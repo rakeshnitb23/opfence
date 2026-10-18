@@ -1,0 +1,7 @@
+# description: Refresh tablet state for shard -80 of keyspace commerce
+POST /v1/organizations/acme/databases/shop-db/branches/main/vtctld/shard/refresh-state HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"keyspace":"commerce","shard":"-80"}

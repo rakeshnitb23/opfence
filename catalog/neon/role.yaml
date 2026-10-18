@@ -1,0 +1,94 @@
+# Neon API v2: role
+operations:
+  - id: neon.role.list
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "List Postgres roles (password fields) of branch {branch_id} in project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The Role schema marks password as x-sensitive and the list response may
+      carry it; Opfence cannot see the response, so it assumes the worse case.
+    tests:
+      - fixture: fixtures/role-list.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.role.get
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles/{role_name}" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read Postgres role {role_name} (password field) on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Same Role schema as the list, with an x-sensitive password field.
+    tests:
+      - fixture: fixtures/role-get.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.role.reveal-password
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles/{role_name}/reveal_password" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Read the password of Postgres role {role_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/role-reveal-password.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.role.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Create Postgres role {body.role.name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The response returns the new role's password.
+    tests:
+      - fixture: fixtures/role-create.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.role.reset-password
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles/{role_name}/reset_password" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Reset the password of Postgres role {role_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Returns the new password; the old one stops working.
+    tests:
+      - fixture: fixtures/role-reset-password.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon.role.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/roles/{role_name}" } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete Postgres role {role_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/role-delete.http
+        expect: access
+        resource: br-shop-main-123456

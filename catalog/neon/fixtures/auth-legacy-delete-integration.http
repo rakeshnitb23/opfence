@@ -1,0 +1,4 @@
+# description: Delete the stack auth integration of project shop-prod-12345678
+DELETE /api/v2/projects/shop-prod-12345678/auth/integration/stack HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE

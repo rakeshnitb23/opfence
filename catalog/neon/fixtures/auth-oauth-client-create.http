@@ -1,0 +1,7 @@
+# description: Register OAuth client shop-admin with Neon Auth on branch br-shop-main-123456
+POST /api/v2/projects/shop-prod-12345678/branches/br-shop-main-123456/auth/oauth-provider/clients HTTP/1.1
+Host: console.neon.tech
+Authorization: Bearer opf_neon_EXAMPLE
+Content-Type: application/json
+
+{"name":"shop-admin","redirect_uris":["https://admin.shop.example/callback"],"type":"confidential"}

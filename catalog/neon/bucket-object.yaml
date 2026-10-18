@@ -1,0 +1,52 @@
+# Neon API v2: bucket-object
+operations:
+  - id: neon.bucket-object.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/buckets/{bucket_name}/objects/{object_key*}" } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete object {object_key} from bucket {bucket_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The key template takes the rest of the path so an unencoded key with
+      slashes matches too.
+    tests:
+      - fixture: fixtures/bucket-object-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456
+      - fixture: fixtures/bucket-object-delete-raw-key.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon.bucket-object.delete-by-prefix
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/buckets/{bucket_name}/objects-by-prefix" } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete every object under {query.prefix} in bucket {bucket_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/bucket-object-delete-by-prefix.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon.bucket-object.presign
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/buckets/{bucket_name}/objects/{object_key}/presign" } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Create a presigned {body.operation} URL for {object_key} in bucket {bucket_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      A presigned URL is a bearer credential: anyone holding it can read or
+      write the object until it expires (up to 7 days).
+    tests:
+      - fixture: fixtures/bucket-object-presign.http
+        expect: credential
+        resource: br-shop-main-123456

@@ -1,0 +1,37 @@
+# Neon API v2: bucket
+operations:
+  - id: neon.bucket.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/buckets" } }
+    class: write
+    when:
+      - if: { arg: body.access_level, equals: "public_read" }
+        class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Create bucket {body.name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      public_read lets anyone on the internet read objects in the bucket.
+    tests:
+      - fixture: fixtures/bucket-create.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/bucket-create-public.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon.bucket.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/branches/{branch_id}/buckets/{bucket_name}" } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete bucket {bucket_name} on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/bucket-delete.http
+        expect: irreversible
+        resource: br-shop-main-123456

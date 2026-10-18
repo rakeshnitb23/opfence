@@ -1,0 +1,7 @@
+# description: Copy configuration profile default to large-2
+POST /v1/organizations/acme/databases/shop-db/branches/main/configuration-profiles/default/duplicate HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"large-2"}

@@ -1,0 +1,7 @@
+# description: Run maintenance for configuration profiles default
+POST /v1/organizations/acme/databases/shop-db/branches/main/configuration-profiles/maintenance HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"configuration_profile_names":["default"]}

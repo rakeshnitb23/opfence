@@ -1,0 +1,47 @@
+# PlanetScale API: cidr
+operations:
+  - id: planetscale.cidr.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/cidrs" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Add an IP restriction {body.cidrs} to database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      IP restrictions decide which addresses can connect.
+    tests:
+      - fixture: fixtures/cidr-create.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.cidr.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/cidrs/{id}" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Change IP restriction {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/cidr-update.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.cidr.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/cidrs/{id}" } }
+    class: access
+    resource: { arg: database, kind: database }
+    card: "Delete IP restriction {id} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Removing a restriction can open the database to more addresses.
+    tests:
+      - fixture: fixtures/cidr-delete.http
+        expect: access
+        resource: shop-db

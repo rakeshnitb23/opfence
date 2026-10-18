@@ -1,0 +1,7 @@
+# description: Draft a VTGate parameter change for branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/config-changes HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"change_type":"vtgate","options":{"max_memory_rows":"500000"}}

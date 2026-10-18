@@ -1,0 +1,7 @@
+# description: Change the admin of Neki branch main of database shop-db
+PATCH /v1/organizations/acme/databases/shop-db/branches/main/admin HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"parameters":{"admin":{"recovery-poll-interval":"10s"}}}

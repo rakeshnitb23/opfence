@@ -1,0 +1,271 @@
+# Neon MCP server: auth
+operations:
+  - id: neon-mcp.auth.get
+    match: { mcp: { tool: get_auth } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.get-config
+    match: { mcp: { tool: get_neon_auth_config } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show Neon Auth settings of {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    notes: >-
+      OAuth and SMTP secrets come back redacted.
+    tests:
+      - fixture: fixtures/auth-get-config.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.auth.provision
+    match: { mcp: { tool: provision_neon_auth } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Enable Neon Auth on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+      - https://unpkg.com/@neondatabase/mcp-server-neon@0.6.5/dist/tools/tools.js
+    notes: >-
+      The hosted server strips secret_server_key, but the npm package 0.6.5
+      returns it as STACK_SECRET_SERVER_KEY, so the rule assumes the secret is
+      shown.
+    tests:
+      - fixture: fixtures/auth-provision.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.disable
+    match: { mcp: { tool: disable_auth } }
+    class: access
+    when:
+      - if: { arg: delete_data, equals: "true" }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Disable Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Stops sign-in for the app; delete_data also drops the neon_auth schema
+      and its users.
+    tests:
+      - fixture: fixtures/auth-disable.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/auth-disable-delete-data.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.update-config
+    match: { mcp: { tool: update_auth_config } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change Neon Auth settings on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-update-config.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.list-oauth-providers
+    match: { mcp: { tool: list_auth_oauth_providers } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List Neon Auth OAuth providers of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    notes: >-
+      The server drops client_secret from the result.
+    tests:
+      - fixture: fixtures/auth-list-oauth-providers.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.add-oauth-provider
+    match: { mcp: { tool: add_auth_oauth_provider } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Add OAuth provider {id} to Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Stores an OAuth client secret.
+    tests:
+      - fixture: fixtures/auth-add-oauth-provider.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.update-oauth-provider
+    match: { mcp: { tool: update_auth_oauth_provider } }
+    class: access
+    when:
+      - if: { arg: client_secret, present: true }
+        class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Change OAuth provider {oauth_provider_id} of Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-update-oauth-provider.http
+        expect: access
+        resource: br-shop-main-123456
+      - fixture: fixtures/auth-update-oauth-provider-secret.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.delete-oauth-provider
+    match: { mcp: { tool: delete_auth_oauth_provider } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Remove OAuth provider {oauth_provider_id} from Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-delete-oauth-provider.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.list-trusted-domains
+    match: { mcp: { tool: list_auth_trusted_domains } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List Neon Auth trusted domains of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-list-trusted-domains.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.add-trusted-domain
+    match: { mcp: { tool: add_auth_trusted_domain } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Trust redirect domain {domain} for Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-add-trusted-domain.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.delete-trusted-domain
+    match: { mcp: { tool: delete_auth_trusted_domain } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Remove trusted redirect domains from Neon Auth on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-delete-trusted-domain.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.create-user
+    match: { mcp: { tool: create_auth_user } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Create Neon Auth user {email} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-create-user.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.delete-user
+    match: { mcp: { tool: delete_auth_user } }
+    class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete Neon Auth user {auth_user_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The API spec says this cannot be undone.
+    tests:
+      - fixture: fixtures/auth-delete-user.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.auth.update-user-role
+    match: { mcp: { tool: update_auth_user_role } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the role of Neon Auth user {auth_user_id} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/auth-update-user-role.http
+        expect: access
+        resource: br-shop-main-123456

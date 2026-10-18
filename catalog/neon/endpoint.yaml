@@ -1,0 +1,109 @@
+# Neon API v2: endpoint
+operations:
+  - id: neon.endpoint.create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/endpoints" } }
+    class: money
+    resource: { arg: project_id, kind: project }
+    card: "Create a compute on branch {body.endpoint.branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Computes are billed by compute-unit hours.
+    tests:
+      - fixture: fixtures/endpoint-create.http
+        expect: money
+        resource: shop-prod-12345678
+
+  - id: neon.endpoint.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}/endpoints/{endpoint_id}" } }
+    class: write
+    when:
+      - if: { arg: body.endpoint.autoscaling_limit_max_cu, present: true }
+        class: money
+      - if: { arg: body.endpoint.autoscaling_limit_min_cu, present: true }
+        class: money
+      - if: { arg: body.endpoint.suspend_timeout_seconds, present: true }
+        class: money
+      - if: { arg: body.endpoint.passwordless_access, present: true }
+        class: access
+    resource: { arg: project_id, kind: project }
+    card: "Change compute {endpoint_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Autoscaling limits and the suspend timeout (which can disable auto-
+      suspend) decide how many compute hours are billed. passwordless_access
+      is marked not yet implemented but would change who can connect.
+    tests:
+      - fixture: fixtures/endpoint-update.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/endpoint-update-autoscaling.http
+        expect: money
+        resource: shop-prod-12345678
+      - fixture: fixtures/endpoint-update-passwordless.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.endpoint.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/endpoints/{endpoint_id}" } }
+    class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Delete compute {endpoint_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      A compute holds no data (storage stays with the branch) and can be
+      recreated, but its host name changes and connections drop.
+    tests:
+      - fixture: fixtures/endpoint-delete.http
+        expect: delete
+        resource: shop-prod-12345678
+
+  - id: neon.endpoint.start
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/endpoints/{endpoint_id}/start" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Start compute {endpoint_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/endpoint-start.http
+        expect: write
+        resource: shop-prod-12345678
+
+  - id: neon.endpoint.suspend
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/endpoints/{endpoint_id}/suspend" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Suspend compute {endpoint_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/endpoint-suspend.http
+        expect: write
+        resource: shop-prod-12345678
+
+  - id: neon.endpoint.restart
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/endpoints/{endpoint_id}/restart" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Restart compute {endpoint_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/endpoint-restart.http
+        expect: write
+        resource: shop-prod-12345678

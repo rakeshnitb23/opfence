@@ -1,0 +1,137 @@
+# Neon MCP server: snapshot
+operations:
+  - id: neon-mcp.snapshot.list
+    match: { mcp: { tool: list_snapshots } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List snapshots of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/snapshot-list.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.snapshot.get-schedule
+    match: { mcp: { tool: get_snapshot_schedule } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show the backup schedule of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/snapshot-get-schedule.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.snapshot.set-schedule
+    match: { mcp: { tool: set_snapshot_schedule } }
+    class: write
+    when:
+      - if: { arg: schedule.retention_seconds, present: true }
+        class: irreversible
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the backup schedule of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+    notes: >-
+      retention_seconds decides when scheduled snapshots are deleted;
+      shrinking it removes backups and the old value is not visible, so
+      setting it is the worse case.
+    tests:
+      - fixture: fixtures/snapshot-set-schedule.http
+        expect: write
+        resource: br-shop-main-123456
+      - fixture: fixtures/snapshot-set-schedule-retention.http
+        expect: irreversible
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.snapshot.create
+    match: { mcp: { tool: create_snapshot } }
+    class: write
+    resource: { arg: branch_id, kind: branch }
+    card: "Create snapshot {name} of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/snapshot-create.http
+        expect: write
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.snapshot.update
+    match: { mcp: { tool: update_snapshot } }
+    class: write
+    when:
+      - if: { arg: expires_at, present: true }
+        class: delete
+    resource: { arg: snapshot_id, kind: snapshot }
+    card: "Change snapshot {snapshot_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      expires_at schedules automatic deletion; it can be changed before it
+      fires.
+    tests:
+      - fixture: fixtures/snapshot-update.http
+        expect: write
+        resource: snap-nightly-123456
+      - fixture: fixtures/snapshot-update-expires.http
+        expect: delete
+        resource: snap-nightly-123456
+
+  - id: neon-mcp.snapshot.delete
+    match: { mcp: { tool: delete_snapshot } }
+    class: irreversible
+    resource: { arg: snapshot_id, kind: snapshot }
+    card: "Delete snapshot {snapshot_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/snapshot-delete.http
+        expect: irreversible
+        resource: snap-nightly-123456
+
+  - id: neon-mcp.snapshot.restore
+    match: { mcp: { tool: restore_snapshot } }
+    class: money
+    resource: { arg: snapshot_id, kind: snapshot }
+    card: "Restore snapshot {snapshot_id} of project {project_id} into a branch"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/composed.js
+    notes: >-
+      Creates a new billed branch from the snapshot; finalizing renames the
+      original branch rather than deleting it.
+    tests:
+      - fixture: fixtures/snapshot-restore.http
+        expect: money
+        resource: snap-nightly-123456

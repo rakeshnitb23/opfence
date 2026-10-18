@@ -1,0 +1,7 @@
+# description: Create configuration profile large (PS_80) on Neki branch main
+POST /v1/organizations/acme/databases/shop-db/branches/main/configuration-profiles HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"large","cluster_size":"PS_80","replicas":2}

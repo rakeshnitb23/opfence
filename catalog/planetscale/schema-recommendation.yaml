@@ -1,0 +1,15 @@
+# PlanetScale API: schema-recommendation
+operations:
+  - id: planetscale.schema-recommendation.dismiss
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/schema-recommendations/{number}/dismiss" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Dismiss schema recommendation {number} of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/schema-recommendation-dismiss.http
+        expect: write
+        resource: shop-db

@@ -1,0 +1,144 @@
+# Neon MCP server: sql
+operations:
+  - id: neon-mcp.sql.run
+    match: { mcp: { tool: run_sql } }
+    class: unknown
+    classify: { sql: sql }
+    resource: { arg: project_id, kind: project }
+    card: "Run SQL on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      The class comes from the SQL: SELECT is read, INSERT and UPDATE ...
+      WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and UPDATE
+      or DELETE without WHERE are irreversible, GRANT, REVOKE and role changes
+      are access, and anything the classifier cannot read is unknown. A
+      request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/sql-run.http
+        expect: read
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-delete-where.http
+        expect: delete
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-delete-all.http
+        expect: irreversible
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-drop.http
+        expect: irreversible
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-grant.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-update.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-hidden-in-comment.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.sql.run-transaction
+    match: { mcp: { tool: run_sql_transaction } }
+    class: unknown
+    classify: { sql: sql_statements }
+    resource: { arg: project_id, kind: project }
+    card: "Run a SQL transaction on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      The SQL arrives as a list of statements, each classified on its own;
+      the transaction gets every class they have.
+    tests:
+      - fixture: fixtures/sql-run-transaction.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-run-transaction-drop.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.sql.explain
+    match: { mcp: { tool: explain_sql_statement } }
+    class: unknown
+    classify: { sql: sql }
+    resource: { arg: project_id, kind: project }
+    card: "Explain SQL on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/tools.ts
+    notes: >-
+      With analyze true Postgres runs the statement. The server builds the
+      query by prepending EXPLAIN (...) to the text, so the SQL is classified
+      whatever analyze says; without analyze this is stricter than the effect.
+      The class comes from the SQL: SELECT is read, INSERT and UPDATE ...
+      WHERE are write, DELETE ... WHERE is delete, DROP, TRUNCATE and UPDATE
+      or DELETE without WHERE are irreversible, GRANT, REVOKE and role changes
+      are access, and anything the classifier cannot read is unknown. A
+      request with several statements gets every class they have.
+    tests:
+      - fixture: fixtures/sql-explain.http
+        expect: read
+        resource: shop-prod-12345678
+      - fixture: fixtures/sql-explain-analyze-delete.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.sql.get-connection-string
+    match: { mcp: { tool: get_connection_string } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Read a connection string (with password) for project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    notes: >-
+      The URI embeds the owner role's password, which works against the read-
+      write compute.
+    tests:
+      - fixture: fixtures/sql-get-connection-string.http
+        expect: credential
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.sql.list-slow-queries
+    match: { mcp: { tool: list_slow_queries } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List slow queries on branch {branch_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/sql-list-slow-queries.http
+        expect: read
+        resource: shop-prod-12345678
+
+  - id: neon-mcp.sql.inspect-database
+    match: { mcp: { tool: inspect_database } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Inspect database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    notes: >-
+      Runs one of the server's predefined read-only diagnostic queries.
+    tests:
+      - fixture: fixtures/sql-inspect-database.http
+        expect: read
+        resource: shop-prod-12345678

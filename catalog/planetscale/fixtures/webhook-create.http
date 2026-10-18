@@ -1,0 +1,7 @@
+# description: Send events of database shop-db to https://hooks.example.com/planetscale
+POST /v1/organizations/acme/databases/shop-db/webhooks HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"url":"https://hooks.example.com/planetscale","events":["deploy_request.closed"],"enabled":true}

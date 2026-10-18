@@ -1,0 +1,7 @@
+# description: Create service token ci-deploy in organization acme
+POST /v1/organizations/acme/service-tokens HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"name":"ci-deploy"}

@@ -1,0 +1,34 @@
+# Neon API v2: org-api-key
+operations:
+  - id: neon.org-api-key.create
+    match: { rest: { method: POST, path: "/api/v2/organizations/{org_id}/api_keys" } }
+    class: credential
+    resource: { arg: org_id, kind: organization }
+    card: "Create an API key {body.key_name} for organization {org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/api-keys.md
+    notes: >-
+      With project_id in the body the key is limited to one project; it is
+      still a new secret.
+    tests:
+      - fixture: fixtures/org-api-key-create.http
+        expect: credential
+        resource: org-shop-12345678
+
+  - id: neon.org-api-key.revoke
+    match: { rest: { method: DELETE, path: "/api/v2/organizations/{org_id}/api_keys/{key_id}" } }
+    class: access
+    resource: { arg: org_id, kind: organization }
+    card: "Revoke API key {key_id} of organization {org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/api-keys.md
+    tests:
+      - fixture: fixtures/org-api-key-revoke.http
+        expect: access
+        resource: org-shop-12345678

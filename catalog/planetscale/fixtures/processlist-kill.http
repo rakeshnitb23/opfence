@@ -1,0 +1,7 @@
+# description: Kill MySQL process 48213 on branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/processlist/kill HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"keyspace":"commerce","shard":"-80","id":48213,"kind":"query"}

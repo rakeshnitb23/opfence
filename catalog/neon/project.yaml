@@ -1,0 +1,169 @@
+# Neon API v2: project
+operations:
+  - id: neon.project.create
+    match: { rest: { method: POST, path: "/api/v2/projects" } }
+    class: credential
+    card: "Create Neon project {body.project.name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/projects.md
+    notes: >-
+      The response carries connection_uris with the owner role's password (the
+      spec's CreatedProject response says so), so this reads a secret. It also
+      creates a billed project (money); credential is the stricter class in
+      every environment of the default table, so the rule uses it.
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: credential
+
+  - id: neon.project.update
+    match: { rest: { method: PATCH, path: "/api/v2/projects/{project_id}" } }
+    class: write
+    when:
+      - if: { arg: body.project.settings.allowed_ips, present: true }
+        class: access
+      - if: { arg: body.project.settings.block_public_connections, present: true }
+        class: access
+      - if: { arg: body.project.settings.block_vpc_connections, present: true }
+        class: access
+      - if: { arg: body.project.settings.quota, present: true }
+        class: money
+      - if: { arg: body.project.history_retention_seconds, present: true }
+        class: irreversible
+    resource: { arg: project_id, kind: project }
+    card: "Change settings of Neon project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      allowed_ips and the block_*_connections settings decide who can reach
+      the databases. quota caps consumption, so changing it changes what Neon
+      bills. history_retention_seconds is the point-in-time restore window:
+      shrinking it (0 disables it) discards history, and the rule cannot see
+      the current value, so any change is treated as the worse case.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-allowed-ips.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-public-connections.http
+        expect: access
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-quota.http
+        expect: money
+        resource: shop-prod-12345678
+      - fixture: fixtures/project-update-history-retention.http
+        expect: irreversible
+        resource: shop-prod-12345678
+
+  - id: neon.project.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}" } }
+    class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Delete Neon project {project_id} with all its branches, databases and computes"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/projects.md
+    notes: >-
+      Neon documents a 7-day deletion recovery period: POST
+      /projects/{project_id}/recover restores branches, endpoints, settings
+      and connection strings; after 7 days deletion is permanent. Some
+      integrations and the Data API need setting up again after recovery.
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: delete
+        resource: shop-prod-12345678
+
+  - id: neon.project.recover
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/recover" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Recover deleted Neon project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+      - https://github.com/neondatabase/website/blob/main/content/docs/manage/projects.md
+    tests:
+      - fixture: fixtures/project-recover.http
+        expect: write
+        resource: shop-prod-12345678
+
+  - id: neon.project.transfer-request-create
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/transfer_requests" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Start transferring project {project_id} to another account"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-transfer-request-create.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.project.transfer-request-accept
+    match: { rest: { method: PUT, path: "/api/v2/projects/{project_id}/transfer_requests/{request_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Accept transfer {request_id} of project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-transfer-request-accept.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.project.transfer-between-orgs
+    match: { rest: { method: POST, path: "/api/v2/organizations/{source_org_id}/projects/transfer" } }
+    class: access
+    resource: { arg: source_org_id, kind: organization }
+    card: "Transfer projects {body.project_ids} out of organization {source_org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-transfer-between-orgs.http
+        expect: access
+        resource: org-shop-12345678
+
+  - id: neon.project.transfer-from-user
+    match: { rest: { method: POST, path: "/api/v2/users/me/projects/transfer" } }
+    class: access
+    card: "Transfer personal projects {body.project_ids} to organization {body.destination_org_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      Deprecated in the spec but still listed.
+    tests:
+      - fixture: fixtures/project-transfer-from-user.http
+        expect: access
+
+  - id: neon.project.connection-uri
+    match: { rest: { method: GET, path: "/api/v2/projects/{project_id}/connection_uri" } }
+    class: credential
+    resource: { arg: project_id, kind: project }
+    card: "Read a connection string (with password) for project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    notes: >-
+      The returned URI embeds the role's password.
+    tests:
+      - fixture: fixtures/project-connection-uri.http
+        expect: credential
+        resource: shop-prod-12345678

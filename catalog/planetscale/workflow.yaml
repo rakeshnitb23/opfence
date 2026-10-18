@@ -1,0 +1,172 @@
+# PlanetScale API: workflow
+operations:
+  - id: planetscale.workflow.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/workflows" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Create workflow {body.name} moving tables to keyspace {body.target_keyspace} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-create.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.verify-data
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/verify-data" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Verify the copied data of workflow {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-verify-data.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.switch-replicas
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/switch-replicas" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send replica traffic of workflow {number} to the target keyspace"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-switch-replicas.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.switch-primaries
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/switch-primaries" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send primary traffic of workflow {number} to the target keyspace"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-switch-primaries.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.reverse-traffic
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/reverse-traffic" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Send traffic of workflow {number} back to the source keyspace"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-reverse-traffic.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.cutover
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/cutover" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Cut over workflow {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-cutover.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.reverse-cutover
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/reverse-cutover" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Reverse the cutover of workflow {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-reverse-cutover.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.retry
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/retry" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Retry workflow {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/workflow-retry.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.workflow.complete
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/complete" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Complete workflow {number} in database {database} and clean up the source"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Completing a table-moving workflow cleans up the source tables and cannot be reversed;
+      the SDK does not say what is kept, so assume the source data is dropped. Not in the
+      public OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/workflow-complete.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.workflow.cancel
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}" } }
+    class: delete
+    resource: { arg: database, kind: database }
+    card: "Cancel workflow {number} in database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/workflows.go
+    notes: >-
+      Cancelling discards the copy in the target; the source keyspace still has the data. Not
+      in the public OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/workflow-cancel.http
+        expect: delete
+        resource: shop-db

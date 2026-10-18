@@ -1,0 +1,29 @@
+# Neon API v2: project-vpc-endpoint
+operations:
+  - id: neon.project-vpc-endpoint.assign
+    match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/vpc_endpoints/{vpc_endpoint_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Restrict project {project_id} to VPC endpoint {vpc_endpoint_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-vpc-endpoint-assign.http
+        expect: access
+        resource: shop-prod-12345678
+
+  - id: neon.project-vpc-endpoint.delete
+    match: { rest: { method: DELETE, path: "/api/v2/projects/{project_id}/vpc_endpoints/{vpc_endpoint_id}" } }
+    class: access
+    resource: { arg: project_id, kind: project }
+    card: "Remove VPC endpoint restriction {vpc_endpoint_id} from project {project_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/neon-pkgs/blob/main/packages/sdk/spec/neon-openapi.json
+    tests:
+      - fixture: fixtures/project-vpc-endpoint-delete.http
+        expect: access
+        resource: shop-prod-12345678

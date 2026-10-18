@@ -1,0 +1,4 @@
+# description: Cancel admin change chg_1a2b of Neki branch main
+DELETE /v1/organizations/acme/databases/shop-db/branches/main/admin/changes/chg_1a2b HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

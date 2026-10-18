@@ -1,0 +1,118 @@
+# PlanetScale API: database
+operations:
+  - id: planetscale.database.create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases" } }
+    class: money
+    resource: { arg: organization, kind: organization }
+    card: "Create {body.kind} database {body.name} ({body.cluster_size}) in {organization}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      A new database runs a billed cluster.
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: money
+        resource: acme
+
+  - id: planetscale.database.update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}" } }
+    class: write
+    when:
+      - if: { arg: body.deletion_protected, present: true }
+        class: access
+      - if: { arg: body.require_approval_for_deploy, present: true }
+        class: access
+      - if: { arg: body.production_branch_web_console, present: true }
+        class: access
+      - if: { arg: body.allow_data_branching, present: true }
+        class: access
+    resource: { arg: database, kind: database }
+    card: "Change settings of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      Deletion protection and required deploy approval are safety nets; the production web
+      console and data branching decide who can read production data. Any change to them is
+      access, as with GitHub branch protection.
+    tests:
+      - fixture: fixtures/database-update.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/database-update-deletion-protection-off.http
+        expect: access
+        resource: shop-db
+      - fixture: fixtures/database-update-approval-off.http
+        expect: access
+        resource: shop-db
+      - fixture: fixtures/database-update-web-console.http
+        expect: access
+        resource: shop-db
+
+  - id: planetscale.database.delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Delete PlanetScale database {database} with every branch and its data"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    notes: >-
+      The API documents no way to restore a deleted database; assume branches and their backups
+      go with it.
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: shop-db
+
+  - id: planetscale.database.throttler-update
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/throttler" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Change the deploy throttler of database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/terraform-provider-planetscale/blob/main/schemas/openapi.yaml
+    tests:
+      - fixture: fixtures/database-throttler-update.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.database.aggressive-cutover-enable
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/aggressive-cutover" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Turn on aggressive cutover for deploys to database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/databases.go
+    notes: >-
+      Aggressive cutover kills blocking queries and transactions at cutover. Not in the public
+      OpenAPI spec; the endpoint is called by the official planetscale-go SDK.
+    tests:
+      - fixture: fixtures/database-aggressive-cutover-enable.http
+        expect: write
+        resource: shop-db
+
+  - id: planetscale.database.aggressive-cutover-disable
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/aggressive-cutover" } }
+    class: write
+    resource: { arg: database, kind: database }
+    card: "Turn off aggressive cutover for deploys to database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/planetscale/planetscale-go/blob/main/planetscale/databases.go
+    notes: >-
+      Not in the public OpenAPI spec; the endpoint is called by the official planetscale-go
+      SDK.
+    tests:
+      - fixture: fixtures/database-aggressive-cutover-disable.http
+        expect: write
+        resource: shop-db

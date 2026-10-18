@@ -1,0 +1,92 @@
+# Neon MCP server: role
+operations:
+  - id: neon-mcp.role.list
+    match: { mcp: { tool: list_postgres_roles } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "List Postgres roles of branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    notes: >-
+      The server strips role passwords from every result except create and
+      reset.
+    tests:
+      - fixture: fixtures/role-list.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.role.get
+    match: { mcp: { tool: get_postgres_role } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show Postgres role {role_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    tests:
+      - fixture: fixtures/role-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.role.create
+    match: { mcp: { tool: create_postgres_role } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Create Postgres role {name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    notes: >-
+      The result keeps the new role's password.
+    tests:
+      - fixture: fixtures/role-create.http
+        expect: credential
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.role.delete
+    match: { mcp: { tool: delete_postgres_role } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete Postgres role {role_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/role-delete.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.role.reset-password
+    match: { mcp: { tool: reset_postgres_role_password } }
+    class: credential
+    resource: { arg: branch_id, kind: branch }
+    card: "Reset the password of Postgres role {role_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/sanitize.ts
+    notes: >-
+      The result keeps the new password; the old one stops working.
+    tests:
+      - fixture: fixtures/role-reset-password.http
+        expect: credential
+        resource: br-shop-main-123456

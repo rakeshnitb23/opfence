@@ -1,0 +1,8 @@
+# description: Delete snapshot snap-nightly-123456
+POST /mcp HTTP/1.1
+Host: mcp.neon.tech
+Authorization: Bearer opf_neon-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"delete_snapshot","arguments":{"project_id":"shop-prod-12345678","snapshot_id":"snap-nightly-123456"}}}

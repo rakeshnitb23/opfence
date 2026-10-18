@@ -1,0 +1,4 @@
+# description: Delete SSO domain dom_2k5m of organization acme
+DELETE /v1/organizations/acme/sso/domains/dom_2k5m HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

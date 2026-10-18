@@ -1,0 +1,7 @@
+# description: Apply drafted parameter changes cc_4h1z to branch main of database shop-db
+POST /v1/organizations/acme/databases/shop-db/branches/main/config-changes/submit HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE
+Content-Type: application/json
+
+{"ids":["cc_4h1z"]}

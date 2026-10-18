@@ -1,0 +1,4 @@
+# description: Revoke OAuth token otok_51ab of application oapp_7h2k
+DELETE /v1/organizations/acme/oauth-applications/oapp_7h2k/tokens/otok_51ab HTTP/1.1
+Host: api.planetscale.com
+Authorization: Bearer opf_planetscale_EXAMPLE

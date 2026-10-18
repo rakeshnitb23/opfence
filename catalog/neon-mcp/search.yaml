@@ -1,0 +1,27 @@
+# Neon MCP server: search
+operations:
+  - id: neon-mcp.search.search
+    match: { mcp: { tool: search } }
+    class: read
+    card: "Search Neon organizations, projects and branches"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/search-search.http
+        expect: read
+
+  - id: neon-mcp.search.fetch
+    match: { mcp: { tool: fetch } }
+    class: read
+    card: "Show Neon object {id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/definitions.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/toolsSchema.ts
+    tests:
+      - fixture: fixtures/search-fetch.http
+        expect: read

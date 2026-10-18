@@ -1,0 +1,72 @@
+# Neon MCP server: data-api
+operations:
+  - id: neon-mcp.data-api.get
+    match: { mcp: { tool: get_data_api } }
+    class: read
+    resource: { arg: branch_id, kind: branch }
+    card: "Show the Data API of database {database_name}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    tests:
+      - fixture: fixtures/data-api-get.http
+        expect: read
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.data-api.provision
+    match: { mcp: { tool: provision_neon_data_api } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Expose database {database_name} on branch {branch_id} through the Neon Data API"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Publishes a REST interface over the database.
+    tests:
+      - fixture: fixtures/data-api-provision.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.data-api.update
+    match: { mcp: { tool: update_data_api } }
+    class: access
+    resource: { arg: branch_id, kind: branch }
+    card: "Change the Neon Data API of database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Settings choose the exposed schemas, the anonymous role and CORS
+      origins.
+    tests:
+      - fixture: fixtures/data-api-update.http
+        expect: access
+        resource: br-shop-main-123456
+
+  - id: neon-mcp.data-api.delete
+    match: { mcp: { tool: delete_data_api } }
+    class: delete
+    resource: { arg: branch_id, kind: branch }
+    card: "Delete the Neon Data API of database {database_name} on branch {branch_id}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/operations.ts
+      - https://github.com/neondatabase/mcp-server-neon/blob/main/mcp/tools/generated/names.ts
+      - https://unpkg.com/@neon/tools@2.2.0/dist/lib/ergonomic/catalog.js
+    notes: >-
+      Removes the API and its configuration; the database is untouched.
+    tests:
+      - fixture: fixtures/data-api-delete.http
+        expect: delete
+        resource: br-shop-main-123456
