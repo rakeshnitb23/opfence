@@ -1,0 +1,43 @@
+# MongoDB Atlas Administration API: custom-role
+operations:
+  - id: mongodb-atlas.custom-role.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/customDBRoles/roles" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Create custom database role {body.roleName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/custom-role-create.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.custom-role.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/customDBRoles/roles/{roleName}" } }
+    class: access
+    resource: { arg: roleName, kind: custom-role }
+    card: "Change custom database role {roleName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/custom-role-update.http
+        expect: access
+        resource: analyticsReader
+
+  - id: mongodb-atlas.custom-role.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/customDBRoles/roles/{roleName}" } }
+    class: access
+    resource: { arg: roleName, kind: custom-role }
+    card: "Delete custom database role {roleName} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/custom-role-delete.http
+        expect: access
+        resource: analyticsReader

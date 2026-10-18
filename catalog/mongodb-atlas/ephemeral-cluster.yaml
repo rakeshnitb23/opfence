@@ -1,0 +1,16 @@
+# MongoDB Atlas Administration API: ephemeral-cluster
+operations:
+  - id: mongodb-atlas.ephemeral-cluster.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/unauth/ephemeralClusters:create" } }
+    class: credential
+    card: "Create an unclaimed ephemeral Atlas cluster"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Unauthenticated and free, but the response holds the unredacted password
+      of a readWriteAnyDatabase user.
+    tests:
+      - fixture: fixtures/ephemeral-cluster-create.http
+        expect: credential

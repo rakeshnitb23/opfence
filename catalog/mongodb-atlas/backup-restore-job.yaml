@@ -1,0 +1,73 @@
+# MongoDB Atlas Administration API: backup-restore-job
+operations:
+  - id: mongodb-atlas.backup-restore-job.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/restoreJobs" } }
+    class: irreversible
+    when:
+      - if: { arg: body.deliveryType, equals: "download" }
+        class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Restore snapshot {body.snapshotId} of cluster {clusterName} onto cluster {body.targetClusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      An automated or point-in-time restore replaces all data on the target
+      cluster. A download restore creates a link that hands the whole snapshot
+      to whoever holds it, so it is credential.
+    tests:
+      - fixture: fixtures/backup-restore-job-create.http
+        expect: irreversible
+        resource: orders-prod
+      - fixture: fixtures/backup-restore-job-create-download.http
+        expect: credential
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-restore-job.list
+    match: { rest: { method: GET, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/restoreJobs" } }
+    class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "List restore jobs of cluster {clusterName}, with their download links"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Download restore jobs return deliveryUrl links to the snapshot files;
+      anyone with the link can download the data.
+    tests:
+      - fixture: fixtures/backup-restore-job-list.http
+        expect: credential
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-restore-job.get
+    match: { rest: { method: GET, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/restoreJobs/{restoreJobId}" } }
+    class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Read restore job {restoreJobId} of cluster {clusterName}, with its download link"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Download restore jobs return deliveryUrl links to the snapshot files;
+      anyone with the link can download the data.
+    tests:
+      - fixture: fixtures/backup-restore-job-get.http
+        expect: credential
+        resource: orders-prod
+
+  - id: mongodb-atlas.backup-restore-job.cancel
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/restoreJobs/{restoreJobId}" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Cancel restore job {restoreJobId} of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-restore-job-cancel.http
+        expect: write
+        resource: orders-prod

@@ -1,0 +1,8 @@
+# description: Create MongoDB Cloud user dev@example.com
+POST /api/atlas/v2/users HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"username":"dev@example.com","password":"opf_cloudpass_EXAMPLE","firstName":"Dev","lastName":"Example","country":"US","roles":[{"orgId":"4888442a3354817a7320eb61","roleName":"ORG_MEMBER"}]}

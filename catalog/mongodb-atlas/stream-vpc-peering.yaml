@@ -1,0 +1,45 @@
+# MongoDB Atlas Administration API: stream-vpc-peering
+operations:
+  - id: mongodb-atlas.stream-vpc-peering.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{id}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Delete stream processing VPC peering connection {id} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-vpc-peering-delete.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-vpc-peering.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{peeringAction}" } }
+    class: unknown
+    when:
+      - if: { arg: peeringAction, matches: ":accept$" }
+        class: access
+      - if: { arg: peeringAction, matches: ":reject$" }
+        class: write
+    resource: { arg: groupId, kind: project }
+    card: "Run {peeringAction} on a stream processing VPC peering connection in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The verb sits in the peering segment (vpcPeeringConnections/{id}:accept),
+      which Opfence templates cannot split, so conditions name accept and
+      reject. Accepting opens a network path into stream processing; rejecting
+      is a write; any other method stays unknown.
+    tests:
+      - fixture: fixtures/stream-vpc-peering-custom-action.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/stream-vpc-peering-custom-action-reject.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/stream-vpc-peering-custom-action-other.http
+        expect: unknown
+        resource: 32b6e34b3d91647abb20e7b8

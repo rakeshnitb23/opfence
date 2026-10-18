@@ -1,0 +1,45 @@
+# MongoDB Atlas Administration API: backup-export-bucket
+operations:
+  - id: mongodb-atlas.backup-export-bucket.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/backup/exportBuckets" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Register export bucket {body.bucketName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-export-bucket-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.backup-export-bucket.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/backup/exportBuckets/{exportBucketId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change networking of export bucket {exportBucketId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/backup-export-bucket-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.backup-export-bucket.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/backup/exportBuckets/{exportBucketId}" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Unregister export bucket {exportBucketId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Removes Atlas's link to the bucket; exported snapshots stay in the bucket.
+    tests:
+      - fixture: fixtures/backup-export-bucket-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

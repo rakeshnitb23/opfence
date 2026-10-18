@@ -1,0 +1,25 @@
+# MongoDB MCP server: project
+operations:
+  - id: mongodb-mcp.project.list
+    match: { mcp: { tool: atlas-list-projects } }
+    class: read
+    card: "List Atlas projects in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/listProjects.ts
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: mongodb-mcp.project.create
+    match: { mcp: { tool: atlas-create-project } }
+    class: write
+    card: "Create Atlas project {projectName} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/createProject.ts
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write

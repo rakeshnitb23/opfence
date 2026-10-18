@@ -1,0 +1,17 @@
+# MongoDB Atlas Administration API: database-user-cert
+operations:
+  - id: mongodb-atlas.database-user-cert.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/databaseUsers/{username}/certs" } }
+    class: credential
+    resource: { arg: username, kind: database-user }
+    card: "Create an X.509 certificate for database user {username}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Returns the certificate and its private key.
+    tests:
+      - fixture: fixtures/database-user-cert-create.http
+        expect: credential
+        resource: app-backend

@@ -1,0 +1,18 @@
+# MongoDB Atlas Administration API: shared-tier-snapshot
+operations:
+  - id: mongodb-atlas.shared-tier-snapshot.download
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/tenant/download" } }
+    class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Get a download link for snapshot {body.snapshotId} of shared-tier cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Returns a link to the snapshot files. Removed from the current spec but
+      documented in the SDK spec it was removed from.
+    tests:
+      - fixture: fixtures/shared-tier-snapshot-download.http
+        expect: credential
+        resource: orders-prod

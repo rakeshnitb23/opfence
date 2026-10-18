@@ -1,0 +1,8 @@
+# description: Upgrade shared-tier cluster orders-dev to a serverless instance in project 32b6e34b3d91647abb20e7b8
+POST /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusters/tenantUpgradeToServerless HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"name":"orders-dev","providerSettings":{"providerName":"SERVERLESS","backingProviderName":"AWS","regionName":"US_EAST_1"}}

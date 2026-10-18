@@ -1,0 +1,59 @@
+# MongoDB Atlas Administration API: project-api-key
+operations:
+  - id: mongodb-atlas.project-api-key.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/apiKeys" } }
+    class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Create an API key for project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Returns the private key once, in the response.
+    tests:
+      - fixture: fixtures/project-api-key-create.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-api-key.assign
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/apiKeys/{apiUserId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Give API key {apiUserId} access to project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-api-key-assign.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-api-key.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/apiKeys/{apiUserId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Change the roles of API key {apiUserId} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-api-key-update.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project-api-key.unassign
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/apiKeys/{apiUserId}" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove API key {apiUserId} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-api-key-unassign.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

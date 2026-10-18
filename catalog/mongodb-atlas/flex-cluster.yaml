@@ -1,0 +1,67 @@
+# MongoDB Atlas Administration API: flex-cluster
+operations:
+  - id: mongodb-atlas.flex-cluster.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/flexClusters" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Create flex cluster {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Flex clusters are billed by usage.
+    tests:
+      - fixture: fixtures/flex-cluster-create.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.flex-cluster.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/flexClusters/{name}" } }
+    class: write
+    when:
+      - if: { arg: body.terminationProtectionEnabled, equals: "false" }
+        class: irreversible
+    resource: { arg: name, kind: cluster }
+    card: "Change flex cluster {name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Turning termination protection off removes the guard against deletion.
+    tests:
+      - fixture: fixtures/flex-cluster-update.http
+        expect: write
+        resource: orders-flex
+      - fixture: fixtures/flex-cluster-update-protection-off.http
+        expect: irreversible
+        resource: orders-flex
+
+  - id: mongodb-atlas.flex-cluster.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/flexClusters/{name}" } }
+    class: irreversible
+    resource: { arg: name, kind: cluster }
+    card: "Delete flex cluster {name} and its data in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/flex-cluster-delete.http
+        expect: irreversible
+        resource: orders-flex
+
+  - id: mongodb-atlas.flex-cluster.upgrade
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/flexClusters:tenantUpgrade" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Upgrade flex cluster {body.name} to a dedicated cluster in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/flex-cluster-upgrade.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8

@@ -1,0 +1,45 @@
+# MongoDB Atlas Administration API: push-log-export
+operations:
+  - id: mongodb-atlas.push-log-export.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pushBasedLogExport" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Export the logs of project {groupId} to bucket {body.bucketName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/push-log-export-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.push-log-export.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/pushBasedLogExport" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change the log export of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/push-log-export-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.push-log-export.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/pushBasedLogExport" } }
+    class: delete
+    resource: { arg: groupId, kind: project }
+    card: "Stop exporting the logs of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Logs already in the bucket stay there.
+    tests:
+      - fixture: fixtures/push-log-export-delete.http
+        expect: delete
+        resource: 32b6e34b3d91647abb20e7b8

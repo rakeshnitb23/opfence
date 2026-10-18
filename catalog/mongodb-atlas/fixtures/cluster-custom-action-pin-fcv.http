@@ -1,0 +1,8 @@
+# description: Run orders-prod:pinFeatureCompatibilityVersion on a cluster of project 32b6e34b3d91647abb20e7b8
+POST /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusters/orders-prod:pinFeatureCompatibilityVersion HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"expirationDate":"2026-11-17T00:00:00Z"}

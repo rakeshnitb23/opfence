@@ -1,0 +1,69 @@
+# MongoDB Atlas Administration API: project
+operations:
+  - id: mongodb-atlas.project.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups" } }
+    class: write
+    card: "Create project {body.name} in organization {body.orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+
+  - id: mongodb-atlas.project.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Change project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}" } }
+    class: irreversible
+    resource: { arg: groupId, kind: project }
+    card: "Delete project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas refuses while clusters remain, but the project's users, access list,
+      alerts, integrations and settings go with it.
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: irreversible
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{projectAction}" } }
+    class: unknown
+    when:
+      - if: { arg: projectAction, matches: ":migrate$" }
+        class: access
+    resource: { arg: projectAction, kind: project-action }
+    card: "Run {projectAction} on a project"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The verb sits in the project segment (groups/{groupId}:migrate), which
+      Opfence templates cannot split, so a condition names it. Moving a project
+      to another organization changes who owns and can reach it; any other
+      method stays unknown.
+    tests:
+      - fixture: fixtures/project-custom-action.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8:migrate
+      - fixture: fixtures/project-custom-action-other.http
+        expect: unknown
+        resource: 32b6e34b3d91647abb20e7b8:somethingNew

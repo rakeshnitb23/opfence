@@ -1,0 +1,84 @@
+# MongoDB Atlas Administration API: stream-connection
+operations:
+  - id: mongodb-atlas.stream-connection.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/connections" } }
+    class: write
+    when:
+      - if: { arg: body.authentication.password, present: true }
+        class: credential
+      - if: { arg: body.authentication.clientSecret, present: true }
+        class: credential
+      - if: { arg: body.authentication.sslKey, present: true }
+        class: credential
+      - if: { arg: body.authentication.sslKeyPassword, present: true }
+        class: credential
+      - if: { arg: body.schemaRegistryAuthentication.password, present: true }
+        class: credential
+      - if: { arg: body.headers, present: true }
+        class: credential
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Create stream connection {body.name} in workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Kafka passwords, OAuth client secrets, TLS keys, schema registry passwords
+      and HTTP headers are credentials the connection stores.
+    tests:
+      - fixture: fixtures/stream-connection-create.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-connection-create-secret.http
+        expect: credential
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-connection.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/connections/{connectionName}" } }
+    class: write
+    when:
+      - if: { arg: body.authentication.password, present: true }
+        class: credential
+      - if: { arg: body.authentication.clientSecret, present: true }
+        class: credential
+      - if: { arg: body.authentication.sslKey, present: true }
+        class: credential
+      - if: { arg: body.authentication.sslKeyPassword, present: true }
+        class: credential
+      - if: { arg: body.schemaRegistryAuthentication.password, present: true }
+        class: credential
+      - if: { arg: body.headers, present: true }
+        class: credential
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Change stream connection {connectionName} in workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Kafka passwords, OAuth client secrets, TLS keys, schema registry passwords
+      and HTTP headers are credentials the connection stores.
+    tests:
+      - fixture: fixtures/stream-connection-update.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-connection-update-secret.http
+        expect: credential
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-connection.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/connections/{connectionName}" } }
+    class: irreversible
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Delete stream connection {connectionName} from workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The connection holds credentials that cannot be read back, so they cannot
+      be put back.
+    tests:
+      - fixture: fixtures/stream-connection-delete.http
+        expect: irreversible
+        resource: events-workspace

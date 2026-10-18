@@ -1,0 +1,16 @@
+# MongoDB MCP server: log
+operations:
+  - id: mongodb-mcp.log.list
+    match: { mcp: { tool: mongodb-logs } }
+    class: read
+    card: "Read recent {type} log events from MongoDB"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/logs.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/log-list.http
+        expect: read

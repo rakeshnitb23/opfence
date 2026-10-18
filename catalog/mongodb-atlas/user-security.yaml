@@ -1,0 +1,68 @@
+# MongoDB Atlas Administration API: user-security
+operations:
+  - id: mongodb-atlas.user-security.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/userSecurity" } }
+    class: access
+    when:
+      - if: { arg: body.ldap.bindPassword, present: true }
+        class: credential
+    resource: { arg: groupId, kind: project }
+    card: "Change LDAP or X.509 authentication of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Changes how database users authenticate; setting the bind password stores
+      a secret.
+    tests:
+      - fixture: fixtures/user-security-update.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+      - fixture: fixtures/user-security-update-bind-password.http
+        expect: credential
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.user-security.delete-ldap-mapping
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/userSecurity/ldap/userToDNMapping" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Remove the LDAP user to DN mapping of project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/user-security-delete-ldap-mapping.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.user-security.verify-ldap
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/userSecurity/ldap/verify" } }
+    class: read
+    resource: { arg: groupId, kind: project }
+    card: "Test the LDAP configuration against {body.hostname}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Only tests a connection to the LDAP server; nothing is saved.
+    tests:
+      - fixture: fixtures/user-security-verify-ldap.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.user-security.disable-x509
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/userSecurity/customerX509" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Turn off customer-managed X.509 authentication in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/user-security-disable-x509.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

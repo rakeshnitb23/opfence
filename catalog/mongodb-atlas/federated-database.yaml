@@ -1,0 +1,48 @@
+# MongoDB Atlas Administration API: federated-database
+operations:
+  - id: mongodb-atlas.federated-database.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/dataFederation" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create federated database instance {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Queries are billed by data scanned; creating the instance costs nothing by
+      itself.
+    tests:
+      - fixture: fixtures/federated-database-create.http
+        expect: write
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.federated-database.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/dataFederation/{tenantName}" } }
+    class: write
+    resource: { arg: tenantName, kind: federated-database }
+    card: "Change federated database instance {tenantName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/federated-database-update.http
+        expect: write
+        resource: analytics-federated
+
+  - id: mongodb-atlas.federated-database.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/dataFederation/{tenantName}" } }
+    class: delete
+    resource: { arg: tenantName, kind: federated-database }
+    card: "Delete federated database instance {tenantName} from project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The instance only maps stores (buckets, clusters); the data in them stays.
+    tests:
+      - fixture: fixtures/federated-database-delete.http
+        expect: delete
+        resource: analytics-federated

@@ -1,0 +1,62 @@
+# MongoDB Atlas Administration API: resource-policy
+operations:
+  - id: mongodb-atlas.resource-policy.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/resourcePolicies" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Create resource policy {body.name} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Resource policies decide what anyone in the organization may create or
+      expose.
+    tests:
+      - fixture: fixtures/resource-policy-create.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.resource-policy.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/orgs/{orgId}/resourcePolicies/{resourcePolicyId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change resource policy {resourcePolicyId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/resource-policy-update.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.resource-policy.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/orgs/{orgId}/resourcePolicies/{resourcePolicyId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Delete resource policy {resourcePolicyId} from organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/resource-policy-delete.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.resource-policy.validate
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/resourcePolicies:validate" } }
+    class: read
+    resource: { arg: orgId, kind: organization }
+    card: "Validate resource policy {body.name} for organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Only checks the policy; nothing is saved.
+    tests:
+      - fixture: fixtures/resource-policy-validate.http
+        expect: read
+        resource: 4888442a3354817a7320eb61

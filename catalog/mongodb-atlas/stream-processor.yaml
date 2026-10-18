@@ -1,0 +1,83 @@
+# MongoDB Atlas Administration API: stream-processor
+operations:
+  - id: mongodb-atlas.stream-processor.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/processor" } }
+    class: write
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Create stream processor {body.name} in workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      A processor costs nothing until it starts.
+    tests:
+      - fixture: fixtures/stream-processor-create.http
+        expect: write
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-processor.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/processor/{processorName}" } }
+    class: write
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Change stream processor {processorName} in workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-processor-update.http
+        expect: write
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-processor.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/processor/{processorName}" } }
+    class: delete
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Delete stream processor {processorName} from workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The pipeline can be created again from its definition; its checkpoint
+      (window state) is lost and rebuilt from the source.
+    tests:
+      - fixture: fixtures/stream-processor-delete.http
+        expect: delete
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-processor.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}/processor/{processorAction}" } }
+    class: unknown
+    when:
+      - if: { arg: processorAction, matches: ":start$" }
+        class: money
+      - if: { arg: processorAction, matches: ":startWith$" }
+        class: money
+      - if: { arg: processorAction, matches: ":stop$" }
+        class: write
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Run {processorAction} in stream workspace {tenantName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      The verb sits in the processor segment (processor/{processorName}:start),
+      which Opfence templates cannot split, so conditions name start, startWith
+      and stop. A running processor is billed by the hour; stopping one is a
+      write; any other method stays unknown.
+    tests:
+      - fixture: fixtures/stream-processor-custom-action.http
+        expect: money
+        resource: events-workspace
+      - fixture: fixtures/stream-processor-custom-action-start-with.http
+        expect: money
+        resource: events-workspace
+      - fixture: fixtures/stream-processor-custom-action-stop.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-processor-custom-action-other.http
+        expect: unknown
+        resource: events-workspace

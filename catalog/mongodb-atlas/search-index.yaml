@@ -1,0 +1,122 @@
+# MongoDB Atlas Administration API: search-index
+operations:
+  - id: mongodb-atlas.search-index.create-legacy
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/fts/indexes" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Create Atlas Search index {body.name} on {body.database}.{body.collectionName} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/search-index-create-legacy.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.update-legacy
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/fts/indexes/{indexId}" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change Atlas Search index {indexId} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/search-index-update-legacy.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.delete-legacy
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/fts/indexes/{indexId}" } }
+    class: delete
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete Atlas Search index {indexId} from cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      An index is rebuilt from its definition and the collection; no data is
+      lost.
+    tests:
+      - fixture: fixtures/search-index-delete-legacy.http
+        expect: delete
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/indexes" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Create search index {body.name} on {body.database}.{body.collectionName} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/search-index-create.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.update-by-name
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/indexes/{databaseName}/{collectionName}/{indexName}" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change search index {indexName} on {databaseName}.{collectionName} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/search-index-update-by-name.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.delete-by-name
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/indexes/{databaseName}/{collectionName}/{indexName}" } }
+    class: delete
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete search index {indexName} on {databaseName}.{collectionName} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      An index is rebuilt from its definition and the collection; no data is
+      lost.
+    tests:
+      - fixture: fixtures/search-index-delete-by-name.http
+        expect: delete
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/indexes/{indexId}" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change search index {indexId} in cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/search-index-update.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-index.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/indexes/{indexId}" } }
+    class: delete
+    resource: { arg: clusterName, kind: cluster }
+    card: "Delete search index {indexId} from cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      An index is rebuilt from its definition and the collection; no data is
+      lost.
+    tests:
+      - fixture: fixtures/search-index-delete.http
+        expect: delete
+        resource: orders-prod

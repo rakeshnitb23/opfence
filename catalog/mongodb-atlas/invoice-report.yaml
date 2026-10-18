@@ -1,0 +1,17 @@
+# MongoDB Atlas Administration API: invoice-report
+operations:
+  - id: mongodb-atlas.invoice-report.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/invoices/{invoiceId}/reports" } }
+    class: read
+    resource: { arg: orgId, kind: organization }
+    card: "Generate a report of invoice {invoiceId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Builds a downloadable report of billing data; changes nothing.
+    tests:
+      - fixture: fixtures/invoice-report-create.http
+        expect: read
+        resource: 4888442a3354817a7320eb61

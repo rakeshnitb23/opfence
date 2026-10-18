@@ -1,0 +1,13 @@
+# MongoDB MCP server: organization
+operations:
+  - id: mongodb-mcp.organization.list
+    match: { mcp: { tool: atlas-list-orgs } }
+    class: read
+    card: "List Atlas organizations"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/listOrgs.ts
+    tests:
+      - fixture: fixtures/organization-list.http
+        expect: read

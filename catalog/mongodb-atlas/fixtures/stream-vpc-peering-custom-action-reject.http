@@ -1,0 +1,6 @@
+# description: Run pcx-0a1b2c3d4e5f67890:reject on a stream processing VPC peering connection in project 32b6e34b3d91647abb20e7b8
+POST /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/streams/vpcPeeringConnections/pcx-0a1b2c3d4e5f67890:reject HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+

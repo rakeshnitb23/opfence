@@ -1,0 +1,50 @@
+# MongoDB Atlas Administration API: search-node
+operations:
+  - id: mongodb-atlas.search-node.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/deployment" } }
+    class: money
+    resource: { arg: clusterName, kind: cluster }
+    card: "Add dedicated search nodes to cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Search nodes are billed by the hour.
+    tests:
+      - fixture: fixtures/search-node-create.http
+        expect: money
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-node.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/deployment" } }
+    class: money
+    resource: { arg: clusterName, kind: cluster }
+    card: "Change the search nodes of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Changes the size or count of billed search nodes.
+    tests:
+      - fixture: fixtures/search-node-update.http
+        expect: money
+        resource: orders-prod
+
+  - id: mongodb-atlas.search-node.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/search/deployment" } }
+    class: delete
+    resource: { arg: clusterName, kind: cluster }
+    card: "Remove the dedicated search nodes of cluster {clusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Search indexes are rebuilt from the cluster's data; queries that need them
+      fail until then.
+    tests:
+      - fixture: fixtures/search-node-delete.http
+        expect: delete
+        resource: orders-prod

@@ -1,0 +1,32 @@
+# MongoDB MCP server: access-list
+operations:
+  - id: mongodb-mcp.access-list.inspect
+    match: { mcp: { tool: atlas-inspect-access-list } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show the IP access list of Atlas project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/inspectAccessList.ts
+    tests:
+      - fixture: fixtures/access-list-inspect.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-mcp.access-list.create
+    match: { mcp: { tool: atlas-create-access-list } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Allow IP addresses or CIDR blocks into Atlas project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/create/createAccessList.ts
+    notes: >-
+      Opens the project's clusters to the given addresses (0.0.0.0/0 is the
+      whole internet).
+    tests:
+      - fixture: fixtures/access-list-create.http
+        expect: access
+        resource: 32b6e34b3d91647abb20e7b8

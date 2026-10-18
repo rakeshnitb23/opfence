@@ -1,0 +1,6 @@
+# description: Create an unclaimed ephemeral Atlas cluster
+POST /api/atlas/v2/unauth/ephemeralClusters:create HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+

@@ -1,0 +1,8 @@
+# description: Change search index orders_search on shop.orders in cluster orders-prod
+PATCH /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusters/orders-prod/search/indexes/shop/orders/orders_search HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"definition":{"mappings":{"dynamic":false}}}

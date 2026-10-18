@@ -1,0 +1,115 @@
+# MongoDB MCP server: stream
+operations:
+  - id: mongodb-mcp.stream.discover
+    match: { mcp: { tool: atlas-streams-discover } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Inspect Atlas stream processing in project {projectId} ({action})"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/streams/discover.ts
+    tests:
+      - fixture: fixtures/stream-discover.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-mcp.stream.build
+    match: { mcp: { tool: atlas-streams-build } }
+    class: write
+    when:
+      - if: { arg: resource, equals: "workspace" }
+        class: money
+      - if: { arg: autoStart, equals: "true" }
+        class: money
+      - if: { arg: connectionConfig.authentication.password, present: true }
+        class: credential
+      - if: { arg: connectionConfig.schemaRegistryAuthentication.password, present: true }
+        class: credential
+      - if: { arg: connectionConfig.headers, present: true }
+        class: credential
+    resource: { arg: workspaceName, kind: workspace }
+    card: "Create stream {resource} in workspace {workspaceName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/streams/build.ts
+    notes: >-
+      A workspace and a running processor are billed by the hour, so
+      resource=workspace and autoStart are money. A connection config can carry
+      a Kafka or schema registry password or HTTP headers (usually an API key),
+      which stores a secret. Processors and private links alone are writes.
+    tests:
+      - fixture: fixtures/stream-build.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-build-workspace.http
+        expect: money
+        resource: events-workspace
+      - fixture: fixtures/stream-build-connection-secret.http
+        expect: credential
+        resource: events-workspace
+
+  - id: mongodb-mcp.stream.manage
+    match: { mcp: { tool: atlas-streams-manage } }
+    class: write
+    when:
+      - if: { arg: action, in: ["start-processor", "update-workspace"] }
+        class: money
+      - if: { arg: action, equals: "accept-peering" }
+        class: access
+      - if: { arg: connectionConfig.authentication.password, present: true }
+        class: credential
+      - if: { arg: connectionConfig.schemaRegistryAuthentication.password, present: true }
+        class: credential
+      - if: { arg: connectionConfig.headers, present: true }
+        class: credential
+    resource: { arg: workspaceName, kind: workspace }
+    card: "Run {action} on {resourceName} in stream workspace {workspaceName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/streams/manage.ts
+    notes: >-
+      Starting a processor or changing a workspace's tier or region changes the
+      bill; accepting a VPC peering request opens a network path; updating a
+      connection can store a password or HTTP headers. Stopping or modifying a
+      processor and rejecting peering are writes.
+    tests:
+      - fixture: fixtures/stream-manage.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-manage-start.http
+        expect: money
+        resource: events-workspace
+      - fixture: fixtures/stream-manage-accept-peering.http
+        expect: access
+        resource: events-workspace
+
+  - id: mongodb-mcp.stream.teardown
+    match: { mcp: { tool: atlas-streams-teardown } }
+    class: delete
+    when:
+      - if: { arg: resource, in: ["workspace", "connection"] }
+        class: irreversible
+      - if: { arg: resource, equals: "peering" }
+        class: access
+    resource: { arg: workspaceName, kind: workspace }
+    card: "Delete stream {resource} {resourceName} in workspace {workspaceName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/streams/teardown.ts
+    notes: >-
+      A processor or private link can be recreated from its definition. A
+      connection holds credentials that cannot be read back, and deleting a
+      workspace removes every connection and processor in it, so both are
+      irreversible. Removing a VPC peering cuts a network path, as in the Atlas
+      API rules.
+    tests:
+      - fixture: fixtures/stream-teardown.http
+        expect: delete
+        resource: events-workspace
+      - fixture: fixtures/stream-teardown-workspace.http
+        expect: irreversible
+        resource: events-workspace

@@ -1,0 +1,15 @@
+# MongoDB Atlas Administration API: cloud-user
+operations:
+  - id: mongodb-atlas.cloud-user.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/users" } }
+    class: credential
+    card: "Create MongoDB Cloud user {body.username}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Creates a login with the password in the request.
+    tests:
+      - fixture: fixtures/cloud-user-create.http
+        expect: credential

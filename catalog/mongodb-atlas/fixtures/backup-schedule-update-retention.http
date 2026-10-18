@@ -1,0 +1,8 @@
+# description: Change the backup schedule of cluster orders-prod
+PATCH /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/clusters/orders-prod/backup/schedule HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"updateSnapshots":true,"policies":[{"id":"6650a1b2c3d4e5f6a7b8c920","policyItems":[{"frequencyType":"daily","frequencyInterval":1,"retentionUnit":"days","retentionValue":1}]}]}

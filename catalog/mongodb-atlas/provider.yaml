@@ -1,0 +1,23 @@
+provider: mongodb-atlas
+title: MongoDB Atlas
+docs: https://www.mongodb.com/docs/api/doc/atlas-admin-api-v2/
+# The Atlas Administration API v2 (paths /api/atlas/v2/...). The spec names
+# two security schemes: HTTP Digest with an API key pair, and OAuth2 client
+# credentials for service accounts. A service account's client id and secret
+# go to /api/oauth/token as HTTP Basic; the access token that comes back is
+# sent as a Bearer header. Digest cannot be injected (the client signs each
+# request with the private key itself), so Opfence covers service accounts and
+# access tokens, and the legacy API key pair is not detected.
+hosts: [cloud.mongodb.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+  - basic: password                  # service account client secret at /api/oauth/token
+detect:
+  env:
+    - MONGODB_ATLAS_CLIENT_SECRET    # Atlas CLI, Terraform provider, atlas-sdk-go
+    - MONGODB_ATLAS_ACCESS_TOKEN     # Terraform provider
+    - MDB_MCP_API_CLIENT_SECRET      # mongodb-mcp-server
+  prefixes: [mdb_sa_sk_]             # service account secrets, per the spec's examples
+defaults:
+  rest_safe_methods: read

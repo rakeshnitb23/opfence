@@ -1,0 +1,29 @@
+# MongoDB Atlas Administration API: federation-org
+operations:
+  - id: mongodb-atlas.federation-org.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/connectedOrgConfigs/{orgId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Change the federation configuration of organization {orgId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/federation-org-update.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.federation-org.remove
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/federationSettings/{federationSettingsId}/connectedOrgConfigs/{orgId}" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Remove organization {orgId} from federation {federationSettingsId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/federation-org-remove.http
+        expect: access
+        resource: 4888442a3354817a7320eb61

@@ -1,0 +1,62 @@
+# MongoDB Atlas Administration API: serverless-instance
+operations:
+  - id: mongodb-atlas.serverless-instance.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/serverless" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Create serverless instance {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Removed from the current spec (serverless instances are being replaced by
+      flex clusters) but documented in the SDK spec it was removed from, and old
+      clients still call it.
+    tests:
+      - fixture: fixtures/serverless-instance-create.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.serverless-instance.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/serverless/{name}" } }
+    class: write
+    when:
+      - if: { arg: body.terminationProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.serverlessBackupOptions.serverlessContinuousBackupEnabled, equals: "false" }
+        class: irreversible
+    resource: { arg: name, kind: serverless-instance }
+    card: "Change serverless instance {name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Turning termination protection or continuous backup off removes a safety
+      net. Removed from the current spec but documented in the SDK spec it was
+      removed from.
+    tests:
+      - fixture: fixtures/serverless-instance-update.http
+        expect: write
+        resource: orders-serverless
+      - fixture: fixtures/serverless-instance-update-protection-off.http
+        expect: irreversible
+        resource: orders-serverless
+
+  - id: mongodb-atlas.serverless-instance.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/serverless/{name}" } }
+    class: irreversible
+    resource: { arg: name, kind: serverless-instance }
+    card: "Delete serverless instance {name} and its data in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      Removed from the current spec but documented in the SDK spec it was
+      removed from.
+    tests:
+      - fixture: fixtures/serverless-instance-delete.http
+        expect: irreversible
+        resource: orders-serverless

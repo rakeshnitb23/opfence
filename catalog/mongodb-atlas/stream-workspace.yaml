@@ -1,0 +1,74 @@
+# MongoDB Atlas Administration API: stream-workspace
+operations:
+  - id: mongodb-atlas.stream-workspace.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Create stream workspace {body.name} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Stream processing is billed by tier and running time; Opfence cannot see
+      whether processors will run, so it assumes the worse case.
+    tests:
+      - fixture: fixtures/stream-workspace-create.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-workspace.create-with-samples
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams:withSampleConnections" } }
+    class: money
+    resource: { arg: groupId, kind: project }
+    card: "Create stream workspace {body.name} with sample connections in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Stream processing is billed by tier and running time; Opfence cannot see
+      whether processors will run, so it assumes the worse case.
+    tests:
+      - fixture: fixtures/stream-workspace-create-with-samples.http
+        expect: money
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-workspace.update
+    match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}" } }
+    class: write
+    when:
+      - if: { arg: body.streamConfig, present: true }
+        class: money
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Change stream workspace {tenantName} in project {groupId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      A new tier changes what processing costs.
+    tests:
+      - fixture: fixtures/stream-workspace-update.http
+        expect: write
+        resource: events-workspace
+      - fixture: fixtures/stream-workspace-update-tier.http
+        expect: money
+        resource: events-workspace
+
+  - id: mongodb-atlas.stream-workspace.delete
+    match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/streams/{tenantName}" } }
+    class: irreversible
+    resource: { arg: tenantName, kind: stream-workspace }
+    card: "Delete stream workspace {tenantName} with its connections and processors"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Takes the workspace's connections, with the credentials stored in them,
+      and its processors' state.
+    tests:
+      - fixture: fixtures/stream-workspace-delete.http
+        expect: irreversible
+        resource: events-workspace

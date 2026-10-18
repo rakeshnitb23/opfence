@@ -1,0 +1,15 @@
+# MongoDB MCP server: alert
+operations:
+  - id: mongodb-mcp.alert.list
+    match: { mcp: { tool: atlas-list-alerts } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List alerts in Atlas project {projectId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-atlas/src/tools/read/listAlerts.ts
+    tests:
+      - fixture: fixtures/alert-list.http
+        expect: read
+        resource: 32b6e34b3d91647abb20e7b8

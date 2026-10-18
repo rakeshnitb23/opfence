@@ -1,0 +1,8 @@
+# description: Add private endpoint vpce-0a1b2c3d4e5f67890 for Data Federation and Online Archive in project 32b6e34b3d91647abb20e7b8
+POST /api/atlas/v2/groups/32b6e34b3d91647abb20e7b8/privateNetworkSettings/endpointIds HTTP/1.1
+Host: cloud.mongodb.com
+Authorization: Bearer opf_mongodb-atlas_EXAMPLE
+Accept: application/vnd.atlas.2025-03-12+json
+Content-Type: application/json
+
+{"endpointId":"vpce-0a1b2c3d4e5f67890","provider":"AWS","region":"US_EAST_1"}

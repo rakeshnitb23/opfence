@@ -1,0 +1,22 @@
+# MongoDB Atlas Administration API: serverless-restore-job
+operations:
+  - id: mongodb-atlas.serverless-restore-job.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/serverless/{clusterName}/backup/restoreJobs" } }
+    class: irreversible
+    when:
+      - if: { arg: body.deliveryType, equals: "download" }
+        class: credential
+    resource: { arg: clusterName, kind: cluster }
+    card: "Restore snapshot {body.snapshotId} of serverless instance {clusterName} onto {body.targetClusterName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      An automated restore replaces the target's data; a download restore
+      creates a link to the snapshot. Removed from the current spec but
+      documented in the SDK spec it was removed from.
+    tests:
+      - fixture: fixtures/serverless-restore-job-create.http
+        expect: irreversible
+        resource: orders-serverless

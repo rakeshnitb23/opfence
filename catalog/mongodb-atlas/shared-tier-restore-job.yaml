@@ -1,0 +1,18 @@
+# MongoDB Atlas Administration API: shared-tier-restore-job
+operations:
+  - id: mongodb-atlas.shared-tier-restore-job.create
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/tenant/restore" } }
+    class: irreversible
+    resource: { arg: clusterName, kind: cluster }
+    card: "Restore snapshot {body.snapshotId} of shared-tier cluster {clusterName} onto {body.targetDeploymentItemName}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb/atlas-sdk-go/blob/v20250312001.1.0/openapi/atlas-api-transformed.yaml
+    notes: >-
+      A restore replaces the target's data. Removed from the current spec (M2/M5
+      became flex) but documented in the SDK spec it was removed from.
+    tests:
+      - fixture: fixtures/shared-tier-restore-job-create.http
+        expect: irreversible
+        resource: orders-prod

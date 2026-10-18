@@ -1,0 +1,78 @@
+# MongoDB MCP server: database
+operations:
+  - id: mongodb-mcp.database.list
+    match: { mcp: { tool: list-databases } }
+    class: read
+    card: "List databases on connection {connectionId}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/listDatabases.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/database-list.http
+        expect: read
+
+  - id: mongodb-mcp.database.stats
+    match: { mcp: { tool: db-stats } }
+    class: read
+    resource: { arg: database, kind: database }
+    card: "Show statistics for database {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/metadata/dbStats.ts
+    notes: >-
+      The tool talks to MongoDB over the wire protocol, not HTTP, so only the
+      agent hook sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/database-stats.http
+        expect: read
+        resource: shop
+
+  - id: mongodb-mcp.database.drop
+    match: { mcp: { tool: drop-database } }
+    class: irreversible
+    resource: { arg: database, kind: database }
+    card: "Drop database {database} and every collection in it"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/delete/dropDatabase.ts
+    notes: >-
+      Deletes the database's data files; only a backup brings it back. The tool
+      talks to MongoDB over the wire protocol, not HTTP, so only the agent hook
+      sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/database-drop.http
+        expect: irreversible
+        resource: shop
+
+  - id: mongodb-mcp.database.aggregate
+    match: { mcp: { tool: aggregate-db } }
+    class: read
+    when:
+      - if: { arg: pipeline.$out, present: true }
+        class: irreversible
+      - if: { arg: pipeline.$merge, present: true }
+        class: write
+    resource: { arg: database, kind: database }
+    card: "Run a database-level aggregation on {database}"
+    status: verified
+    verified: 2026-10-17
+    sources:
+      - https://github.com/mongodb-js/mongodb-mcp-server/blob/main/packages/tools-mongodb/src/tools/read/aggregateDB.ts
+    notes: >-
+      A pipeline is a read unless it ends in a write stage: $out replaces the
+      whole target collection, $merge writes into an existing one. The tool
+      talks to MongoDB over the wire protocol, not HTTP, so only the agent hook
+      sees it; the proxy never does.
+    tests:
+      - fixture: fixtures/database-aggregate.http
+        expect: read
+        resource: shop
+      - fixture: fixtures/database-aggregate-out.http
+        expect: irreversible
+        resource: shop
