@@ -3,6 +3,11 @@ operations:
   - id: cloudflare.worker.upload
     match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/scripts/{script_name}" } }
     class: write
+    when:
+      - if: { arg: body.metadata.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+      - if: { arg: body.metadata.keep_bindings, absent: true }
+        class: irreversible
     resource: { arg: script_name, kind: worker }
     card: "Deploy Worker {script_name}"
     status: verified
@@ -10,12 +15,20 @@ operations:
     sources:
       - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
     notes: >-
-      Deploys code. The metadata part can also set secret_text bindings, and an
-      upload without keep_bindings drops bindings the previous version had; the
-      body is multipart, which Opfence does not read.
+      Deploys code. The multipart body's metadata part is read: a secret_text or
+      secret_key binding sets a secret (credential), and an upload without
+      keep_bindings drops the secrets and other bindings the previous version
+      had (irreversible; wrangler deploy keeps them). A body over 64 KiB cannot
+      be read and is unknown.
     tests:
       - fixture: fixtures/worker-upload.http
         expect: write
+        resource: "shop-api"
+      - fixture: fixtures/worker-upload-secret.http
+        expect: credential
+        resource: "shop-api"
+      - fixture: fixtures/worker-upload-drop-bindings.http
+        expect: irreversible
         resource: "shop-api"
 
   - id: cloudflare.worker.delete
@@ -54,6 +67,9 @@ operations:
   - id: cloudflare.worker.version-upload
     match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/workers/scripts/{script_name}/versions" } }
     class: write
+    when:
+      - if: { arg: body.metadata.bindings.type, in: [secret_text, secret_key] }
+        class: credential
     resource: { arg: script_name, kind: worker }
     card: "Upload a new version of Worker {script_name}"
     status: verified
@@ -61,11 +77,15 @@ operations:
     sources:
       - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
     notes: >-
-      Uploads without deploying. The metadata can carry secret_text bindings;
-      the multipart body is not read.
+      Uploads without deploying. The metadata part is read: a secret_text or
+      secret_key binding sets a secret (credential). A body over 64 KiB cannot be
+      read and is unknown.
     tests:
       - fixture: fixtures/worker-version-upload.http
         expect: write
+        resource: "shop-api"
+      - fixture: fixtures/worker-version-upload-secret.http
+        expect: credential
         resource: "shop-api"
 
   - id: cloudflare.worker.deployment-create

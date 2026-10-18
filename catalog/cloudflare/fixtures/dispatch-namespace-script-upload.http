@@ -8,7 +8,7 @@ Content-Type: multipart/form-data; boundary=----opfence7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="metadata"
 Content-Type: application/json
 
-{"main_module": "index.js", "compatibility_date": "2026-09-01"}
+{"main_module": "index.js", "compatibility_date": "2026-09-01", "keep_bindings": ["secret_text", "secret_key"]}
 ------opfence7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="index.js"; filename="index.js"
 Content-Type: application/javascript+module

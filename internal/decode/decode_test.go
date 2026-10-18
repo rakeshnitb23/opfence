@@ -207,6 +207,33 @@ func TestREST(t *testing.T) {
 	}
 }
 
+func TestMultipart(t *testing.T) {
+	mp := func(parts string) Operation {
+		return Decode(fixture(t, "PUT /client/v4/accounts/a/workers/scripts/w HTTP/1.1\nHost: api.cloudflare.com\nContent-Type: multipart/form-data; boundary=XX\n\n"+
+			strings.ReplaceAll(parts, "\n", "\r\n")), Hints{})[0]
+	}
+	op := mp("--XX\nContent-Disposition: form-data; name=\"metadata\"\n\n{\"main_module\":\"w.js\",\"keep_bindings\":[\"secret_text\"]}\n" +
+		"--XX\nContent-Disposition: form-data; name=\"w.js\"; filename=\"w.js\"\nContent-Type: application/javascript+module\n\nexport default {}\n" +
+		"--XX\nContent-Disposition: form-data; name=\"note\"\n\nhi\n--XX\nContent-Disposition: form-data; name=\"note\"\n\nagain\n--XX--\n")
+	want := map[string]any{
+		"metadata": map[string]any{"main_module": "w.js", "keep_bindings": []any{"secret_text"}},
+		"w.js":     "",
+		"note":     []any{"hi", "again"},
+	}
+	if op.BodyErr != "" || !reflect.DeepEqual(op.Args["body"], want) {
+		t.Fatalf("body = %#v, err %q", op.Args["body"], op.BodyErr)
+	}
+	for name, parts := range map[string]string{
+		"bad JSON":  "--XX\nContent-Disposition: form-data; name=\"metadata\"\nContent-Type: application/json\n\n{bad\n--XX--\n",
+		"QP part":   "--XX\nContent-Disposition: form-data; name=\"metadata\"\nContent-Transfer-Encoding: quoted-printable\n\n{}\n--XX--\n",
+		"truncated": "--XX\nContent-Disposition: form-data; name=\"metadata\"\n\n{}",
+	} {
+		if op := mp(parts); op.BodyErr == "" {
+			t.Errorf("%s: no BodyErr, body %#v", name, op.Args["body"])
+		}
+	}
+}
+
 func TestMCP(t *testing.T) {
 	h := Hints{MCP: true}
 	post := func(body string) *request.Request {

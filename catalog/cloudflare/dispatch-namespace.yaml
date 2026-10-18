@@ -77,6 +77,11 @@ operations:
   - id: cloudflare.dispatch-namespace.script-upload
     match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/workers/dispatch/namespaces/{dispatch_namespace}/scripts/{script_name}" } }
     class: write
+    when:
+      - if: { arg: body.metadata.bindings.type, in: [secret_text, secret_key] }
+        class: credential
+      - if: { arg: body.metadata.keep_bindings, absent: true }
+        class: irreversible
     resource: { arg: script_name, kind: worker }
     card: "Deploy Worker {script_name} in dispatch namespace {dispatch_namespace}"
     status: verified
@@ -84,12 +89,20 @@ operations:
     sources:
       - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
     notes: >-
-      Deploys code. The metadata part can also set secret_text bindings, and an
-      upload without keep_bindings drops bindings the previous version had; the
-      body is multipart, which Opfence does not read.
+      Deploys code. The multipart body's metadata part is read: a secret_text or
+      secret_key binding sets a secret (credential), and an upload without
+      keep_bindings drops the secrets and other bindings the previous version
+      had (irreversible; wrangler deploy keeps them). A body over 64 KiB cannot
+      be read and is unknown.
     tests:
       - fixture: fixtures/dispatch-namespace-script-upload.http
         expect: write
+        resource: "shop-api"
+      - fixture: fixtures/dispatch-namespace-script-upload-secret.http
+        expect: credential
+        resource: "shop-api"
+      - fixture: fixtures/dispatch-namespace-script-upload-drop-bindings.http
+        expect: irreversible
         resource: "shop-api"
 
   - id: cloudflare.dispatch-namespace.script-delete
