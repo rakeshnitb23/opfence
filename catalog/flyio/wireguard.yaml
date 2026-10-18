@@ -1,0 +1,90 @@
+# Fly.io GraphQL API: wireguard
+operations:
+  - id: flyio.wireguard.add-wire-guard-peer
+    match: { graphql: { type: mutation, field: addWireGuardPeer } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Add WireGuard peer {input.name} to organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Gives the peer access to the organization's private network.
+    tests:
+      - fixture: fixtures/wireguard-add-wire-guard-peer.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.wireguard.remove-wire-guard-peer
+    match: { graphql: { type: mutation, field: removeWireGuardPeer } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Remove WireGuard peer {input.name} from organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/wireguard-remove-wire-guard-peer.http
+        expect: access
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.wireguard.dummy-wire-guard-peer
+    match: { graphql: { type: mutation, field: dummyWireGuardPeer } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Create a WireGuard peer with a generated private key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a WireGuard private key for the organization network.
+    tests:
+      - fixture: fixtures/wireguard-dummy-wire-guard-peer.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.wireguard.validate-wire-guard-peers
+    match: { graphql: { type: mutation, field: validateWireGuardPeers } }
+    class: read
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Only checks which peer addresses are valid.
+    tests:
+      - fixture: fixtures/wireguard-validate-wire-guard-peers.http
+        expect: read
+
+  - id: flyio.wireguard.create-delegated-wire-guard-token
+    match: { graphql: { type: mutation, field: createDelegatedWireGuardToken } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Create a delegated WireGuard token {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a token that can add WireGuard peers to the organization.
+    tests:
+      - fixture: fixtures/wireguard-create-delegated-wire-guard-token.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.wireguard.delete-delegated-wire-guard-token
+    match: { graphql: { type: mutation, field: deleteDelegatedWireGuardToken } }
+    class: access
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Delete delegated WireGuard token {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/wireguard-delete-delegated-wire-guard-token.http
+        expect: access
+        resource: NOx4Zp9QkV2

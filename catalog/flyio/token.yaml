@@ -1,0 +1,163 @@
+# Fly.io Machines and GraphQL APIs: token
+operations:
+  - id: flyio.token.authenticate
+    match: { rest: { method: POST, path: "/v1/tokens/authenticate" } }
+    class: credential
+    card: "Verify a Fly token header"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Returns the verified token with its caveats and a permission
+      token; treated as revealing a credential.
+    tests:
+      - fixture: fixtures/token-authenticate.http
+        expect: credential
+
+  - id: flyio.token.authorize
+    match: { rest: { method: POST, path: "/v1/tokens/authorize" } }
+    class: credential
+    card: "Check what a Fly token may do"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Returns the verified token as well as the decision; treated as
+      revealing a credential.
+    tests:
+      - fixture: fixtures/token-authorize.http
+        expect: credential
+
+  - id: flyio.token.request-kms
+    match: { rest: { method: POST, path: "/v1/tokens/kms" } }
+    class: credential
+    card: "Request a token for Fly KMS"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Mints a new token.
+    tests:
+      - fixture: fixtures/token-request-kms.http
+        expect: credential
+
+  - id: flyio.token.request-oidc
+    match: { rest: { method: POST, path: "/v1/tokens/oidc" } }
+    class: credential
+    card: "Request an OIDC token with audience {body.aud}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Mints a signed JWT that cloud providers (AWS, GCP) exchange for
+      their own credentials.
+    tests:
+      - fixture: fixtures/token-request-oidc.http
+        expect: credential
+
+  - id: flyio.token.create-access-token
+    match: { graphql: { type: mutation, field: createAccessToken } }
+    class: credential
+    card: "Create personal access token {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a new token with the user's full access.
+    tests:
+      - fixture: fixtures/token-create-access-token.http
+        expect: credential
+
+  - id: flyio.token.delete-access-token
+    match: { graphql: { type: mutation, field: deleteAccessToken } }
+    class: access
+    resource: { arg: input.accessTokenId, kind: token }
+    card: "Delete access token {input.accessTokenId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/token-delete-access-token.http
+        expect: access
+        resource: tok_8k2
+
+  - id: flyio.token.create-limited-access-token
+    match: { graphql: { type: mutation, field: createLimitedAccessToken } }
+    class: credential
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Create {input.profile} token {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a new token.
+    tests:
+      - fixture: fixtures/token-create-limited-access-token.http
+        expect: credential
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.token.delete-limited-access-token
+    match: { graphql: { type: mutation, field: deleteLimitedAccessToken } }
+    class: access
+    resource: { arg: input.id, kind: token }
+    card: "Revoke limited access token {input.id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/token-delete-limited-access-token.http
+        expect: access
+        resource: lat_2m9
+
+  - id: flyio.token.discharge-root-token
+    match: { graphql: { type: mutation, field: dischargeRootToken } }
+    class: credential
+    card: "Discharge a root token for organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a new auth token.
+    tests:
+      - fixture: fixtures/token-discharge-root-token.http
+        expect: credential
+
+  - id: flyio.token.sync-tokens-for-org
+    match: { graphql: { type: mutation, field: syncTokensForOrg } }
+    class: access
+    resource: { arg: input.organizationSlug, kind: organization }
+    card: "Sync tokens of organization {input.organizationSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Changes token state for the whole organization; the schema does
+      not say how, so access.
+    tests:
+      - fixture: fixtures/token-sync-tokens-for-org.http
+        expect: access
+        resource: acme
+
+  - id: flyio.token.list
+    match: { graphql: { type: query, field: accessTokens } }
+    class: credential
+    card: "List personal access tokens"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      AccessToken has a token field with the value.
+    tests:
+      - fixture: fixtures/token-list.http
+        expect: credential

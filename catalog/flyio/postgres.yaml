@@ -1,0 +1,364 @@
+# Fly.io Machines and GraphQL APIs: postgres
+operations:
+  - id: flyio.postgres.create
+    match: { rest: { method: POST, path: "/v1/postgres" } }
+    class: money
+    card: "Create a {body.plan} Managed Postgres cluster {body.name} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Managed Postgres clusters are billed by plan and disk.
+    tests:
+      - fixture: fixtures/postgres-create.http
+        expect: money
+
+  - id: flyio.postgres.delete
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgres_cluster_id}" } }
+    class: irreversible
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Delete Managed Postgres cluster {postgres_cluster_id} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      The spec documents no way to restore a deleted cluster, so its
+      databases and backups are treated as gone.
+    tests:
+      - fixture: fixtures/postgres-delete.http
+        expect: irreversible
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.attach
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/attachments" } }
+    class: write
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Record app {body.app_name} as attached to cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Only records the relationship; it sets no secrets.
+    tests:
+      - fixture: fixtures/postgres-attach.http
+        expect: write
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.detach
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgres_cluster_id}/attachments/{app_name}" } }
+    class: delete
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Detach cluster {postgres_cluster_id} from app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Can be attached again.
+    tests:
+      - fixture: fixtures/postgres-detach.http
+        expect: delete
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.backup-create
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/backups" } }
+    class: write
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Start a {body.type} backup of cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/postgres-backup-create.http
+        expect: write
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.fork
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/fork" } }
+    class: money
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Fork cluster {postgres_cluster_id} into a new cluster {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Creates a new billed cluster; the source is unchanged.
+    tests:
+      - fixture: fixtures/postgres-fork.http
+        expect: money
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.restore
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/restore" } }
+    class: money
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Restore cluster {postgres_cluster_id} into a new cluster {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Restores into a new billed cluster; the source cluster is left
+      unchanged.
+    tests:
+      - fixture: fixtures/postgres-restore.http
+        expect: money
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.database-create
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/databases" } }
+    class: write
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Create database {body.name} in cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/postgres-database-create.http
+        expect: write
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.database-delete
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgres_cluster_id}/databases/{database_name}" } }
+    class: irreversible
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Drop database {database_name} in cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Drops the database and everything that depends on it.
+    tests:
+      - fixture: fixtures/postgres-database-delete.http
+        expect: irreversible
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.extension-enable
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/databases/{database_name}/extensions" } }
+    class: write
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Enable extension {body.name} in database {database_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/postgres-extension-enable.http
+        expect: write
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.extension-disable
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgres_cluster_id}/databases/{database_name}/extensions/{extension_name}" } }
+    class: irreversible
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Disable extension {extension_name} in database {database_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      A DROP EXTENSION: it removes the extension's own objects and data,
+      and with force also drops the objects that depend on it (the SQL
+      classifier treats DROP as irreversible too).
+    tests:
+      - fixture: fixtures/postgres-extension-disable.http
+        expect: irreversible
+        resource: pg7x2kq9m4
+      - fixture: fixtures/postgres-extension-disable-force.http
+        expect: irreversible
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.user-create
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/users" } }
+    class: credential
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Create Postgres user {body.username} with role {body.role} in cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Creates a new database login (its generated password is one call
+      away) with a role; credential rather than access because it mints
+      a credential.
+    tests:
+      - fixture: fixtures/postgres-user-create.http
+        expect: credential
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.user-delete
+    match: { rest: { method: DELETE, path: "/v1/postgres/{postgres_cluster_id}/users/{username}" } }
+    class: access
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Delete Postgres user {username} in cluster {postgres_cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/postgres-user-delete.http
+        expect: access
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.user-update-role
+    match: { rest: { method: PATCH, path: "/v1/postgres/{postgres_cluster_id}/users/{username}" } }
+    class: access
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Change the role of Postgres user {username} to {body.role}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/postgres-user-update-role.http
+        expect: access
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.user-credentials
+    match: { rest: { method: GET, path: "/v1/postgres/{postgres_cluster_id}/users/{username}/credentials" } }
+    class: credential
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Read the password of Postgres user {username}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Returns the user's password.
+    tests:
+      - fixture: fixtures/postgres-user-credentials.http
+        expect: credential
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.user-rotate-password
+    match: { rest: { method: POST, path: "/v1/postgres/{postgres_cluster_id}/users/{username}/rotate_password" } }
+    class: credential
+    resource: { arg: postgres_cluster_id, kind: postgres-cluster }
+    card: "Rotate the password of Postgres user {username}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Returns the new password, and apps using the old one lose access.
+    tests:
+      - fixture: fixtures/postgres-user-rotate-password.http
+        expect: credential
+        resource: pg7x2kq9m4
+
+  - id: flyio.postgres.attach-postgres-cluster
+    match: { graphql: { type: mutation, field: attachPostgresCluster } }
+    class: credential
+    resource: { arg: input.appId, kind: app }
+    card: "Attach Postgres app {input.postgresClusterAppId} to app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Creates a database user and returns its connection string,
+      password included.
+    tests:
+      - fixture: fixtures/postgres-attach-postgres-cluster.http
+        expect: credential
+        resource: shop-api
+
+  - id: flyio.postgres.detach-postgres-cluster
+    match: { graphql: { type: mutation, field: detachPostgresCluster } }
+    class: delete
+    resource: { arg: input.appId, kind: app }
+    card: "Detach Postgres app {input.postgresClusterAppId} from app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+      - https://github.com/superfly/flyctl/blob/master/internal/command/postgres/detach.go
+    notes: >-
+      Removes the attachment record; flyctl unsets the DATABASE_URL
+      secret in a separate Machines API call.
+    tests:
+      - fixture: fixtures/postgres-detach-postgres-cluster.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.postgres.create-postgres-cluster-database
+    match: { graphql: { type: mutation, field: createPostgresClusterDatabase } }
+    class: write
+    resource: { arg: input.appName, kind: app }
+    card: "Create database {input.databaseName} in Postgres app {input.appName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/postgres-create-postgres-cluster-database.http
+        expect: write
+        resource: shop-db
+
+  - id: flyio.postgres.create-postgres-cluster-user
+    match: { graphql: { type: mutation, field: createPostgresClusterUser } }
+    class: credential
+    resource: { arg: input.appName, kind: app }
+    card: "Create Postgres user {input.username} in {input.appName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Creates a database login with the given password (superuser if
+      asked).
+    tests:
+      - fixture: fixtures/postgres-create-postgres-cluster-user.http
+        expect: credential
+        resource: shop-db
+
+  - id: flyio.postgres.grant-postgres-cluster-user-access
+    match: { graphql: { type: mutation, field: grantPostgresClusterUserAccess } }
+    class: access
+    resource: { arg: input.appName, kind: app }
+    card: "Grant {input.username} access to database {input.databaseName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/postgres-grant-postgres-cluster-user-access.http
+        expect: access
+        resource: shop-db
+
+  - id: flyio.postgres.revoke-postgres-cluster-user-access
+    match: { graphql: { type: mutation, field: revokePostgresClusterUserAccess } }
+    class: access
+    resource: { arg: input.appName, kind: app }
+    card: "Revoke {input.username} access to database {input.databaseName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/postgres-revoke-postgres-cluster-user-access.http
+        expect: access
+        resource: shop-db
+
+  - id: flyio.postgres.enable-postgres-consul
+    match: { graphql: { type: mutation, field: enablePostgresConsul } }
+    class: credential
+    resource: { arg: input.appId, kind: app }
+    card: "Enable Consul for Postgres app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a Consul URL with its access token.
+    tests:
+      - fixture: fixtures/postgres-enable-postgres-consul.http
+        expect: credential
+        resource: shop-db

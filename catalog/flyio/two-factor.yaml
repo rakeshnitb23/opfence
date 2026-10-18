@@ -1,0 +1,42 @@
+# Fly.io GraphQL API: two-factor
+operations:
+  - id: flyio.two-factor.enable-one-time-password
+    match: { graphql: { type: mutation, field: enableOneTimePassword } }
+    class: credential
+    card: "Turn on two-factor authentication"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns the TOTP secret (uri and QR code) as well as changing auth
+      settings.
+    tests:
+      - fixture: fixtures/two-factor-enable-one-time-password.http
+        expect: credential
+
+  - id: flyio.two-factor.disable-one-time-password
+    match: { graphql: { type: mutation, field: disableOneTimePassword } }
+    class: access
+    card: "Turn off two-factor authentication"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/two-factor-disable-one-time-password.http
+        expect: access
+
+  - id: flyio.two-factor.generate-two-factor-recovery-codes
+    match: { graphql: { type: mutation, field: generateTwoFactorRecoveryCodes } }
+    class: credential
+    card: "Generate new two-factor recovery codes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns recovery codes that bypass two-factor authentication.
+    tests:
+      - fixture: fixtures/two-factor-generate-two-factor-recovery-codes.http
+        expect: credential

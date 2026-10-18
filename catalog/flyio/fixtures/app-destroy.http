@@ -1,0 +1,4 @@
+# description: Destroy app shop-api
+DELETE /v1/apps/shop-api HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE

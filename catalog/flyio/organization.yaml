@@ -1,0 +1,91 @@
+# Fly.io GraphQL API: organization
+operations:
+  - id: flyio.organization.create-organization
+    match: { graphql: { type: mutation, field: createOrganization } }
+    class: credential
+    resource: { arg: input.name, kind: organization }
+    card: "Create organization {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      The payload returns a token for the new organization.
+    tests:
+      - fixture: fixtures/organization-create-organization.http
+        expect: credential
+        resource: acme-staging
+
+  - id: flyio.organization.delete-organization
+    match: { graphql: { type: mutation, field: deleteOrganization } }
+    class: irreversible
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Delete organization {input.organizationId} and all its apps"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Deletes every app, Machine and volume in the organization.
+    tests:
+      - fixture: fixtures/organization-delete-organization.http
+        expect: irreversible
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.organization.add-allowed-replay-source-orgs
+    match: { graphql: { type: mutation, field: addAllowedReplaySourceOrgs } }
+    class: access
+    resource: { arg: input.organizationSlug, kind: organization }
+    card: "Allow organizations {input.allowedOrgSlugs} to replay requests into {input.organizationSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Lets other organizations route traffic into this one's apps.
+    tests:
+      - fixture: fixtures/organization-add-allowed-replay-source-orgs.http
+        expect: access
+        resource: acme
+
+  - id: flyio.organization.remove-allowed-replay-source-orgs
+    match: { graphql: { type: mutation, field: removeAllowedReplaySourceOrgs } }
+    class: access
+    resource: { arg: input.organizationSlug, kind: organization }
+    card: "Stop organizations {input.orgSlugsToRemove} replaying into {input.organizationSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/organization-remove-allowed-replay-source-orgs.http
+        expect: access
+        resource: acme
+
+  - id: flyio.organization.set-allow-all-cross-network-replays
+    match: { graphql: { type: mutation, field: setAllowAllCrossNetworkReplays } }
+    class: access
+    resource: { arg: input.organizationSlug, kind: organization }
+    card: "Set cross-network replays of {input.organizationSlug} to {input.allow}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/organization-set-allow-all-cross-network-replays.http
+        expect: access
+        resource: acme
+
+  - id: flyio.organization.request-signed-document
+    match: { graphql: { type: mutation, field: requestSignedDocument } }
+    class: write
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Request a signed {input.documentType} for organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/organization-request-signed-document.http
+        expect: write
+        resource: NOx4Zp9QkV2

@@ -1,0 +1,4 @@
+# description: Remove the certificate for shop.example.com
+DELETE /v1/apps/shop-api/certificates/shop.example.com HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE

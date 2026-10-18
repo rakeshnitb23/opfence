@@ -1,0 +1,259 @@
+# Fly.io Machines and GraphQL APIs: app
+operations:
+  - id: flyio.app.create
+    match: { rest: { method: POST, path: "/v1/apps" } }
+    class: write
+    resource: { arg: body.name, kind: app }
+    card: "Create Fly app {body.name} in organization {body.org_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      An empty app costs nothing; Machines and volumes created in it are
+      classified on their own.
+    tests:
+      - fixture: fixtures/app-create.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.destroy
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}" } }
+    class: irreversible
+    resource: { arg: app_name, kind: app }
+    card: "Destroy Fly app {app_name} with all its Machines, volumes and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+      - https://github.com/superfly/flyctl/blob/master/internal/command/apps/destroy.go
+    notes: >-
+      Destroying an app destroys its Machines, volumes (and the data on
+      them), secrets, certificates and IP addresses; flyctl calls it
+      permanent. The API has no undo.
+    tests:
+      - fixture: fixtures/app-destroy.http
+        expect: irreversible
+        resource: shop-api
+
+  - id: flyio.app.create-deploy-token
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/deploy_token" } }
+    class: credential
+    resource: { arg: app_name, kind: app }
+    card: "Create a deploy token for app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Returns a new token that can deploy and manage the app.
+    tests:
+      - fixture: fixtures/app-create-deploy-token.http
+        expect: credential
+        resource: shop-api
+
+  - id: flyio.app.create-app
+    match: { graphql: { type: mutation, field: createApp } }
+    class: write
+    resource: { arg: input.name, kind: app }
+    card: "Create Fly app {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      An empty app costs nothing; Machines and volumes in it are
+      classified on their own.
+    tests:
+      - fixture: fixtures/app-create-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.create-machine-app
+    match: { graphql: { type: mutation, field: createMachineApp } }
+    class: write
+    resource: { arg: input.appName, kind: app }
+    card: "Create Fly app {input.appName} in {input.organizationSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-create-machine-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.delete-app
+    match: { graphql: { type: mutation, field: deleteApp } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Delete Fly app {appId} with all its Machines, volumes and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+      - https://github.com/superfly/flyctl/blob/master/internal/command/apps/destroy.go
+    notes: >-
+      Deletes the app with its Machines, volumes and their data, secrets
+      and IPs; flyctl calls it permanent.
+    tests:
+      - fixture: fixtures/app-delete-app.http
+        expect: irreversible
+        resource: shop-api
+
+  - id: flyio.app.move-app
+    match: { graphql: { type: mutation, field: moveApp } }
+    class: access
+    resource: { arg: input.appId, kind: app }
+    card: "Move app {input.appId} to organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Changes which organization, and so which people and tokens,
+      control the app.
+    tests:
+      - fixture: fixtures/app-move-app.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.app.pause-app
+    match: { graphql: { type: mutation, field: pauseApp } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Pause app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-pause-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.resume-app
+    match: { graphql: { type: mutation, field: resumeApp } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Resume app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-resume-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.restart-app
+    match: { graphql: { type: mutation, field: restartApp } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Restart app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-restart-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.lock-app
+    match: { graphql: { type: mutation, field: lockApp } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Lock app {input.appId} for a deploy"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-lock-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.unlock-app
+    match: { graphql: { type: mutation, field: unlockApp } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Unlock app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-unlock-app.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.configure-regions
+    match: { graphql: { type: mutation, field: configureRegions } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Change the regions of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-configure-regions.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.set-platform-version
+    match: { graphql: { type: mutation, field: setPlatformVersion } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Set the platform version of app {input.appId} to {input.platformVersion}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-set-platform-version.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.nomad-to-machines-migration
+    match: { graphql: { type: mutation, field: nomadToMachinesMigration } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Migrate app {input.appId} from Nomad to Machines"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-nomad-to-machines-migration.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.nomad-to-machines-migration-prep
+    match: { graphql: { type: mutation, field: nomadToMachinesMigrationPrep } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Prepare app {input.appId} for migration to Machines"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-nomad-to-machines-migration-prep.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.app.set-apps-v2-default-on
+    match: { graphql: { type: mutation, field: setAppsV2DefaultOn } }
+    class: write
+    resource: { arg: input.organizationSlug, kind: organization }
+    card: "Set the Apps V2 default of organization {input.organizationSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/app-set-apps-v2-default-on.http
+        expect: write
+        resource: acme

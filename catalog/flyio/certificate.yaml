@@ -1,0 +1,160 @@
+# Fly.io Machines and GraphQL APIs: certificate
+operations:
+  - id: flyio.certificate.request-acme
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/certificates/acme" } }
+    class: access
+    resource: { arg: app_name, kind: app }
+    card: "Serve app {app_name} on {body.hostname} with a new ACME certificate"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Puts the app on a public custom hostname, like a custom domain on
+      other platforms.
+    tests:
+      - fixture: fixtures/certificate-request-acme.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.certificate.upload-custom
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/certificates/custom" } }
+    class: credential
+    resource: { arg: app_name, kind: app }
+    card: "Upload a custom certificate and private key for {body.hostname} to app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Stores a TLS private key with Fly (setting a secret) and serves
+      the app on the hostname.
+    tests:
+      - fixture: fixtures/certificate-upload-custom.http
+        expect: credential
+        resource: shop-api
+
+  - id: flyio.certificate.delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/certificates/{hostname}" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Remove hostname {hostname} and its certificates from app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      ACME certificates are issued again by adding the hostname back; a
+      custom certificate is uploaded again from the owner's copy. Same
+      class as Vercel certificate deletion.
+    tests:
+      - fixture: fixtures/certificate-delete.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.certificate.delete-acme
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/certificates/{hostname}/acme" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Remove the ACME certificates of {hostname} from app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/certificate-delete-acme.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.certificate.delete-custom
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/certificates/{hostname}/custom" } }
+    class: delete
+    resource: { arg: app_name, kind: app }
+    card: "Remove the custom certificate of {hostname} from app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    notes: >-
+      Fly never returns the private key, but the owner uploaded it and
+      can upload it again.
+    tests:
+      - fixture: fixtures/certificate-delete-custom.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.certificate.check
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/certificates/{hostname}/check" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Check DNS and revalidate the certificate of {hostname} on app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/certificate-check.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.certificate.add-certificate
+    match: { graphql: { type: mutation, field: addCertificate } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Serve app {appId} on hostname {hostname}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Puts the app on a public custom hostname.
+    tests:
+      - fixture: fixtures/certificate-add-certificate.http
+        expect: access
+        resource: shop-api
+
+  - id: flyio.certificate.check-certificate
+    match: { graphql: { type: mutation, field: checkCertificate } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Check the certificate of {input.hostname} on app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/certificate-check-certificate.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.certificate.delete-certificate
+    match: { graphql: { type: mutation, field: deleteCertificate } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Remove hostname {hostname} from app {appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Certificates are issued again by adding the hostname back.
+    tests:
+      - fixture: fixtures/certificate-delete-certificate.http
+        expect: delete
+        resource: shop-api
+
+  - id: flyio.certificate.import-certificate
+    match: { graphql: { type: mutation, field: importCertificate } }
+    class: credential
+    resource: { arg: appId, kind: app }
+    card: "Import a certificate and private key for {hostname} into app {appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Stores a TLS private key with Fly.
+    tests:
+      - fixture: fixtures/certificate-import-certificate.http
+        expect: credential
+        resource: shop-api

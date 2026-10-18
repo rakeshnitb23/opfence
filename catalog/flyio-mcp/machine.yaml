@@ -1,0 +1,231 @@
+# flyctl MCP server (fly mcp server): machine
+operations:
+  - id: flyio-mcp.machine.clone
+    match: { mcp: { tool: fly-machine-clone } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Clone Machine {id} in app {app}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Creates a new billed Machine (and an empty volume when the
+      original has one).
+
+  - id: flyio-mcp.machine.cordon
+    match: { mcp: { tool: fly-machine-cordon } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Stop routing traffic to Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.create
+    match: { mcp: { tool: fly-machine-create } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Create a Machine from image {image} in app {app}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.destroy
+    match: { mcp: { tool: fly-machine-destroy } }
+    class: delete
+    resource: { arg: app, kind: app }
+    card: "Destroy Machine {id} in app {app}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      The root file system is ephemeral and volumes survive, so the
+      Machine can be recreated from the app config.
+
+  - id: flyio-mcp.machine.egress-ip-allocate
+    match: { mcp: { tool: fly-machine-egress-ip-allocate } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Allocate static egress IPs for Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Static egress addresses are billed.
+
+  - id: flyio-mcp.machine.egress-ip-list
+    match: { mcp: { tool: fly-machine-egress-ip-list } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.egress-ip-release
+    match: { mcp: { tool: fly-machine-egress-ip-release } }
+    class: delete
+    resource: { arg: app, kind: app }
+    card: "Release the static egress IPs of Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.exec
+    match: { mcp: { tool: fly-machine-exec } }
+    class: irreversible
+    resource: { arg: app, kind: app }
+    card: "Run {command} on Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Runs any command inside the Machine.
+
+  - id: flyio-mcp.machine.leases-clear
+    match: { mcp: { tool: fly-machine-leases-clear } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Clear the leases of Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.kill
+    match: { mcp: { tool: fly-machine-kill } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Kill Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.leases-view
+    match: { mcp: { tool: fly-machine-leases-view } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.list
+    match: { mcp: { tool: fly-machine-list } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.restart
+    match: { mcp: { tool: fly-machine-restart } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Restart Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.run
+    match: { mcp: { tool: fly-machine-run } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Run a new Machine from image {image} in app {app}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.start
+    match: { mcp: { tool: fly-machine-start } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Start Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.status
+    match: { mcp: { tool: fly-machine-status } }
+    class: read
+    resource: { arg: app, kind: app }
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.stop
+    match: { mcp: { tool: fly-machine-stop } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Stop Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.suspend
+    match: { mcp: { tool: fly-machine-suspend } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Suspend Machine {id}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.upcordon
+    match: { mcp: { tool: fly-machine-upcordon } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Route traffic to Machine {id} again"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.machine.update
+    match: { mcp: { tool: fly-machine-update } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Create a Machine from {id} with image {image} in app {app}"
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/machine.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+    notes: >-
+      Despite its name, the tool runs "fly machine create <id> --image
+      ..." (flyctl builds the machine create command), which creates a
+      new billed Machine instead of updating one.

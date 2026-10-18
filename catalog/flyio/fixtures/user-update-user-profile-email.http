@@ -1,0 +1,7 @@
+# description: Change the account email address
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UpdateUserProfile($input: UpdateUserProfileInput!) { updateUserProfile(input: $input) { __typename } }","variables":{"input":{"email":"new@example.com"}}}

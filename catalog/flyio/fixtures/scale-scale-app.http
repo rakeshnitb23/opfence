@@ -1,0 +1,7 @@
+# description: Scale an app to 3 instances
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ScaleApp($input: ScaleAppInput!) { scaleApp(input: $input) { __typename } }","variables":{"input":{"appId":"shop-api","regions":[{"region":"ams","count":3}]}}}

@@ -1,0 +1,7 @@
+# description: Remove cross-organization replay sources
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RemoveAllowedReplaySourceOrgs($input: RemoveAllowedReplaySourceOrgsInput!) { removeAllowedReplaySourceOrgs(input: $input) { __typename } }","variables":{"input":{"organizationSlug":"acme","orgSlugsToRemove":["partner"]}}}

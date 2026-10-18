@@ -1,0 +1,7 @@
+# description: Register a volume
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RegisterVolume($input: RegisterVolumeInput!) { registerVolume(input: $input) { __typename } }","variables":{"input":{"appId":1234,"volumeId":"vol_4r8kz2q7m1xd9p6v","name":"pg_data","region":"ams","sizeGb":10,"host":"h1","encrypted":true,"autoBackupEnabled":true}}}

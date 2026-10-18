@@ -1,0 +1,7 @@
+# description: Turn scheduled snapshots on
+PUT /v1/apps/shop-api/volumes/vol_4r8kz2q7m1xd9p6v HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"auto_backup_enabled":true}

@@ -1,0 +1,91 @@
+# Fly.io GraphQL API: build
+operations:
+  - id: flyio.build.create-build
+    match: { graphql: { type: mutation, field: createBuild } }
+    class: write
+    resource: { arg: input.appName, kind: app }
+    card: "Record a new build of app {input.appName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/build-create-build.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.build.start-build
+    match: { graphql: { type: mutation, field: startBuild } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Start a build of app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/build-start-build.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.build.finish-build
+    match: { graphql: { type: mutation, field: finishBuild } }
+    class: write
+    resource: { arg: input.appName, kind: app }
+    card: "Record build {input.buildId} of app {input.appName} as finished"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/build-finish-build.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.build.cancel-build
+    match: { graphql: { type: mutation, field: cancelBuild } }
+    class: write
+    resource: { arg: buildId, kind: build }
+    card: "Cancel build {buildId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/build-cancel-build.http
+        expect: write
+        resource: bld_1x2y
+
+  - id: flyio.build.build-machine
+    match: { graphql: { type: mutation, field: buildMachine } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Resolve a Machine config for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a resolved config; it launches nothing (launchMachine
+      does).
+    tests:
+      - fixture: fixtures/build-build-machine.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.build.build-volume
+    match: { graphql: { type: mutation, field: buildVolume } }
+    class: write
+    resource: { arg: input.appId, kind: app }
+    card: "Plan a {input.sizeGb} GB volume for app {input.appId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns placement details; it creates no volume (createVolume
+      does).
+    tests:
+      - fixture: fixtures/build-build-volume.http
+        expect: write
+        resource: shop-api

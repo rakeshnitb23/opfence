@@ -1,0 +1,7 @@
+# description: Add a hostname certificate
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation AddCertificate($appId: ID!, $hostname: String!) { addCertificate(appId: $appId, hostname: $hostname) { __typename } }","variables":{"appId":"shop-api","hostname":"shop.example.com"}}

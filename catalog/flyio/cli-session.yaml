@@ -1,0 +1,75 @@
+# Fly.io REST (api.fly.io) and GraphQL APIs: cli-session
+operations:
+  - id: flyio.cli-session.get
+    match: { rest: { method: GET, path: "/api/v1/cli_sessions/{id}" } }
+    class: credential
+    card: "Read CLI login session {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/cli_session.go
+    notes: >-
+      Once the session is confirmed the response carries the new access
+      token (fly-go GetAccessTokenForCLISession).
+    tests:
+      - fixture: fixtures/cli-session-get.http
+        expect: credential
+
+  - id: flyio.cli-session.create
+    match: { rest: { method: POST, path: "/api/v1/cli_sessions" } }
+    class: write
+    card: "Start a CLI login session"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/cli_session.go
+    notes: >-
+      Grants nothing until a signed-in user confirms it.
+    tests:
+      - fixture: fixtures/cli-session-create.http
+        expect: write
+
+  - id: flyio.cli-session.redeem
+    match: { rest: { method: POST, path: "/api/v1/cli_sessions/{id}/redeem" } }
+    class: credential
+    card: "Redeem CLI login session {id} for a token"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/cli_session.go
+    notes: >-
+      Returns an access token.
+    tests:
+      - fixture: fixtures/cli-session-redeem.http
+        expect: credential
+
+  - id: flyio.session.create
+    match: { rest: { method: POST, path: "/api/v1/sessions" } }
+    class: credential
+    card: "Sign in to Fly.io with email and password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/client.go
+    notes: >-
+      Returns a new access token.
+    tests:
+      - fixture: fixtures/session-create.http
+        expect: credential
+
+  - id: flyio.cli-session.confirm-cli-session
+    match: { graphql: { type: mutation, field: confirmCliSession } }
+    class: credential
+    resource: { arg: input.id, kind: cli-session }
+    card: "Approve CLI login session {input.id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Approving a session hands a new access token to whoever started
+      it.
+    tests:
+      - fixture: fixtures/cli-session-confirm-cli-session.http
+        expect: credential
+        resource: cs_7hq2m9x4

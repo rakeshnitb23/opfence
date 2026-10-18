@@ -1,0 +1,4 @@
+# description: Delete a Postgres user
+DELETE /v1/postgres/pg7x2kq9m4/users/reporting HTTP/1.1
+Host: api.machines.dev
+Authorization: Bearer opf_flyio_EXAMPLE

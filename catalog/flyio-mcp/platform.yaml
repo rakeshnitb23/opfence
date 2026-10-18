@@ -1,0 +1,28 @@
+# flyctl MCP server (fly mcp server): platform
+operations:
+  - id: flyio-mcp.platform.regions
+    match: { mcp: { tool: fly-platform-regions } }
+    class: read
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/platform.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.platform.status
+    match: { mcp: { tool: fly-platform-status } }
+    class: read
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/platform.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go
+
+  - id: flyio-mcp.platform.vm-sizes
+    match: { mcp: { tool: fly-platform-vm-sizes } }
+    class: read
+    status: community
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server/platform.go
+      - https://github.com/superfly/flyctl/blob/master/internal/command/mcp/server.go

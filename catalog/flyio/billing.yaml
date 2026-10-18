@@ -1,0 +1,141 @@
+# Fly.io GraphQL API: billing
+operations:
+  - id: flyio.billing.add-stripe-payment-method
+    match: { graphql: { type: mutation, field: addStripePaymentMethod } }
+    class: money
+    card: "Add a payment method"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/billing-add-stripe-payment-method.http
+        expect: money
+
+  - id: flyio.billing.change-organization-plan
+    match: { graphql: { type: mutation, field: changeOrganizationPlan } }
+    class: money
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Change the plan of organization {input.organizationId} to {input.newPlanId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/billing-change-organization-plan.http
+        expect: money
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.billing.create-stripe-verification-session
+    match: { graphql: { type: mutation, field: createStripeVerificationSession } }
+    class: credential
+    card: "Start a Stripe identity verification"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Returns a Stripe client secret.
+    tests:
+      - fixture: fixtures/billing-create-stripe-verification-session.http
+        expect: credential
+
+  - id: flyio.billing.ensure-organization-stripe-container-subscription
+    match: { graphql: { type: mutation, field: ensureOrganizationStripeContainerSubscription } }
+    class: money
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Subscribe organization {input.organizationId} to container billing"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/billing-ensure-organization-stripe-container-subscription.http
+        expect: money
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.billing.stop-plan-downgrade
+    match: { graphql: { type: mutation, field: stopPlanDowngrade } }
+    class: money
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Cancel the plan downgrade of organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Keeps the organization on its current, more expensive plan.
+    tests:
+      - fixture: fixtures/billing-stop-plan-downgrade.http
+        expect: money
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.billing.update-user-coupon
+    match: { graphql: { type: mutation, field: updateUserCoupon } }
+    class: money
+    resource: { arg: input.organizationId, kind: organization }
+    card: "Apply the user coupon to organization {input.organizationId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/billing-update-user-coupon.http
+        expect: money
+        resource: NOx4Zp9QkV2
+
+  - id: flyio.billing.add-devrel-coupon
+    match: { graphql: { type: mutation, field: addDevrelCoupon } }
+    class: money
+    card: "Add coupon {input.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    tests:
+      - fixture: fixtures/billing-add-devrel-coupon.http
+        expect: money
+
+  - id: flyio.billing.enable-dedicated-vms
+    match: { graphql: { type: mutation, field: enableDedicatedVms } }
+    class: money
+    card: "Enable dedicated VMs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Dedicated VMs are billed at a higher rate.
+    tests:
+      - fixture: fixtures/billing-enable-dedicated-vms.http
+        expect: money
+
+  - id: flyio.billing.update-risk-from-stripe
+    match: { graphql: { type: mutation, field: updateRiskFromStripe } }
+    class: unknown
+    card: "Update billing risk from a Stripe outcome"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      Internal billing mutation; the schema does not say what it
+      changes.
+    tests:
+      - fixture: fixtures/billing-update-risk-from-stripe.http
+        expect: unknown
+
+  - id: flyio.billing.create-extension-tos-agreement
+    match: { graphql: { type: mutation, field: createExtensionTosAgreement } }
+    class: write
+    card: "Accept the terms of extension provider {input.addOnProviderName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/fly-go/blob/main/schema.graphql
+    notes: >-
+      A legal agreement only; creating the add-on is classified
+      separately.
+    tests:
+      - fixture: fixtures/billing-create-extension-tos-agreement.http
+        expect: write

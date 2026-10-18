@@ -1,0 +1,7 @@
+# description: Import a custom certificate
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ImportCertificate($appId: ID!, $fullchain: String!, $hostname: String, $privateKey: String!) { importCertificate(appId: $appId, fullchain: $fullchain, hostname: $hostname, privateKey: $privateKey) { __typename } }","variables":{"appId":"shop-api","hostname":"shop.example.com","fullchain":"-----BEGIN CERTIFICATE-----\nEXAMPLE\n-----END CERTIFICATE-----\n","privateKey":"-----BEGIN EC PRIVATE KEY-----\nEXAMPLE\n-----END EC PRIVATE KEY-----\n"}}

@@ -1,0 +1,29 @@
+# Fly.io Machines API: machine-lease
+operations:
+  - id: flyio.machine-lease.create
+    match: { rest: { method: POST, path: "/v1/apps/{app_name}/machines/{machine_id}/lease" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Take a lease on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-lease-create.http
+        expect: write
+        resource: shop-api
+
+  - id: flyio.machine-lease.release
+    match: { rest: { method: DELETE, path: "/v1/apps/{app_name}/machines/{machine_id}/lease" } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Release the lease on Machine {machine_id} in app {app_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/superfly/docs/blob/main/api/machines/openapi.json
+    tests:
+      - fixture: fixtures/machine-lease-release.http
+        expect: write
+        resource: shop-api

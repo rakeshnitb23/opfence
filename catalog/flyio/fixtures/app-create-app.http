@@ -1,0 +1,7 @@
+# description: Create app shop-api
+POST /graphql HTTP/1.1
+Host: api.fly.io
+Authorization: Bearer opf_flyio_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CreateApp($input: CreateAppInput!) { createApp(input: $input) { __typename } }","variables":{"input":{"name":"shop-api","organizationId":"NOx4Zp9QkV2","machines":true}}}
