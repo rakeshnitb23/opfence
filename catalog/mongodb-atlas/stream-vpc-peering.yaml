@@ -14,32 +14,50 @@ operations:
         expect: access
         resource: 32b6e34b3d91647abb20e7b8
 
-  - id: mongodb-atlas.stream-vpc-peering.custom-action
-    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{peeringAction}" } }
-    class: unknown
-    when:
-      - if: { arg: peeringAction, matches: ":accept$" }
-        class: access
-      - if: { arg: peeringAction, matches: ":reject$" }
-        class: write
+  - id: mongodb-atlas.stream-vpc-peering.accept
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{id}:accept" } }
+    class: access
     resource: { arg: groupId, kind: project }
-    card: "Run {peeringAction} on a stream processing VPC peering connection in project {groupId}"
+    card: "Accept stream processing VPC peering connection {id} in project {groupId}"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-18
     sources:
       - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
     notes: >-
-      The verb sits in the peering segment (vpcPeeringConnections/{id}:accept),
-      which Opfence templates cannot split, so conditions name accept and
-      reject. Accepting opens a network path into stream processing; rejecting
-      is a write; any other method stays unknown.
+      Accepting opens a network path into stream processing.
     tests:
-      - fixture: fixtures/stream-vpc-peering-custom-action.http
+      - fixture: fixtures/stream-vpc-peering-accept.http
         expect: access
         resource: 32b6e34b3d91647abb20e7b8
-      - fixture: fixtures/stream-vpc-peering-custom-action-reject.http
+
+  - id: mongodb-atlas.stream-vpc-peering.reject
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{id}:reject" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Reject stream processing VPC peering connection {id} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/stream-vpc-peering-reject.http
         expect: write
         resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.stream-vpc-peering.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/streams/vpcPeeringConnections/{peeringAction}" } }
+    class: unknown
+    resource: { arg: groupId, kind: project }
+    card: "Run {peeringAction} on a stream processing VPC peering connection in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
+    tests:
       - fixture: fixtures/stream-vpc-peering-custom-action-other.http
         expect: unknown
         resource: 32b6e34b3d91647abb20e7b8

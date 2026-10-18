@@ -42,31 +42,48 @@ operations:
         expect: access
         resource: 4888442a3354817a7320eb61
 
+  - id: mongodb-atlas.org-user.add-role
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/users/{userId}:addRole" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Add a role to user {userId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-user-add-role.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.org-user.remove-role
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/users/{userId}:removeRole" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Remove a role from user {userId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/org-user-remove-role.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
   - id: mongodb-atlas.org-user.custom-action
     match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/users/{userAction}" } }
     class: unknown
-    when:
-      - if: { arg: userAction, matches: ":addRole$" }
-        class: access
-      - if: { arg: userAction, matches: ":removeRole$" }
-        class: access
     resource: { arg: orgId, kind: organization }
     card: "Run {userAction} on a user of organization {orgId}"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-18
     sources:
       - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
     notes: >-
-      The verb sits in the user segment (users/{userId}:addRole), which Opfence
-      templates cannot split, so conditions name addRole and removeRole; any
-      other method stays unknown.
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
     tests:
-      - fixture: fixtures/org-user-custom-action.http
-        expect: access
-        resource: 4888442a3354817a7320eb61
-      - fixture: fixtures/org-user-custom-action-remove-role.http
-        expect: access
-        resource: 4888442a3354817a7320eb61
       - fixture: fixtures/org-user-custom-action-other.http
         expect: unknown
         resource: 4888442a3354817a7320eb61

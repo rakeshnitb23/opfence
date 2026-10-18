@@ -9,6 +9,7 @@ func TestParseTemplateErrors(t *testing.T) {
 	bad := []string{
 		"", "v9/projects", "/v9//projects", "/v9/projects/", "/a/{id}.json", "/a/{id}/{id}",
 		"/a/{rest*}/b", "/a/{1x}", "/a?b=c", "/a/./b", "/a/../b", "/a/{}", "/a/{x",
+		"/a/{x}:", "/a/{x*}:verb", "/a/{x}:{y}", "/a/v:{x}", "/a/{x}:a}",
 	}
 	for _, s := range bad {
 		if _, err := ParseTemplate(s); err == nil {
@@ -35,6 +36,12 @@ func TestTemplateMatch(t *testing.T) {
 		{"/v9/projects/{idOrName}", "/v9/projects/%zz", nil},
 		{"/repos/{owner}/{repo}/contents/{path*}", "/repos/o/r/contents/a/b/c.txt", map[string]string{"owner": "o", "repo": "r", "path": "a/b/c.txt"}},
 		{"/repos/{owner}/{repo}/contents/{path*}", "/repos/o/r/contents", nil},
+		{"/clusters/{name}:pin", "/clusters/orders:pin", map[string]string{"name": "orders"}},
+		{"/clusters/{name}:pin", "/clusters/a:b:pin", map[string]string{"name": "a:b"}},
+		{"/clusters/{name}:pin", "/clusters/orders%3Apin", map[string]string{"name": "orders"}},
+		{"/clusters/{name}:pin", "/clusters/:pin", nil},
+		{"/clusters/{name}:pin", "/clusters/orders", nil},
+		{"/clusters/{name}:pin", "/clusters/orders:unpin", nil},
 		{"/", "/", map[string]string{}},
 		{"/", "//", map[string]string{}},
 	}
@@ -66,6 +73,10 @@ func TestShapeAndSpecificity(t *testing.T) {
 	rest, _ := ParseTemplate("/v9/{x*}")
 	if !lit.MoreSpecific(a) || a.MoreSpecific(lit) {
 		t.Error("literal segment should be more specific than a parameter")
+	}
+	verb, _ := ParseTemplate("/v9/projects/{id}:pin")
+	if !verb.MoreSpecific(a) || a.MoreSpecific(verb) || verb.Shape() == a.Shape() {
+		t.Error("a {param}:verb segment should be more specific than a bare parameter")
 	}
 	if !a.MoreSpecific(rest) {
 		t.Error("parameter template should beat a trailing wildcard")

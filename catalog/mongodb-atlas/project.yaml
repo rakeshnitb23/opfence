@@ -43,27 +43,36 @@ operations:
         expect: irreversible
         resource: 32b6e34b3d91647abb20e7b8
 
-  - id: mongodb-atlas.project.custom-action
-    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{projectAction}" } }
-    class: unknown
-    when:
-      - if: { arg: projectAction, matches: ":migrate$" }
-        class: access
-    resource: { arg: projectAction, kind: project-action }
-    card: "Run {projectAction} on a project"
+  - id: mongodb-atlas.project.migrate
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}:migrate" } }
+    class: access
+    resource: { arg: groupId, kind: project }
+    card: "Move project {groupId} to another organization"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-18
     sources:
       - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
     notes: >-
-      The verb sits in the project segment (groups/{groupId}:migrate), which
-      Opfence templates cannot split, so a condition names it. Moving a project
-      to another organization changes who owns and can reach it; any other
-      method stays unknown.
+      Moving a project to another organization changes who owns and can reach it.
     tests:
-      - fixture: fixtures/project-custom-action.http
+      - fixture: fixtures/project-migrate.http
         expect: access
-        resource: 32b6e34b3d91647abb20e7b8:migrate
+        resource: 32b6e34b3d91647abb20e7b8
+
+  - id: mongodb-atlas.project.custom-action
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{projectAction}" } }
+    class: unknown
+    resource: { arg: projectAction, kind: project-action }
+    card: "Run {projectAction} on a project"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    notes: >-
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
+    tests:
       - fixture: fixtures/project-custom-action-other.http
         expect: unknown
         resource: 32b6e34b3d91647abb20e7b8:somethingNew

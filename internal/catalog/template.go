@@ -10,7 +10,9 @@ import (
 )
 
 // Template is a parsed REST path template such as
-// /v9/projects/{idOrName} or /repos/{owner}/{repo}/contents/{path*}.
+// /v9/projects/{idOrName} or /repos/{owner}/{repo}/contents/{path*}. A
+// parameter can carry a literal suffix for custom methods, as in
+// /clusters/{name}:pin (Google-style APIs and MongoDB Atlas).
 type Template struct {
 	Raw      string
 	Segments []Segment
@@ -21,6 +23,7 @@ type Segment struct {
 	Literal string // set for literal segments
 	Param   string // set for {name} and {name*} segments
 	Rest    bool   // {name*}: matches one or more remaining segments
+	Suffix  string // {name}:verb: the literal after the parameter
 }
 
 var paramName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
@@ -50,8 +53,12 @@ func ParseTemplate(s string) (*Template, error) {
 			t.Segments = append(t.Segments, Segment{Literal: p})
 			continue
 		}
+		suffix := ""
+		if i := strings.LastIndex(p, "}:"); i > 0 && i+2 < len(p) && !strings.ContainsAny(p[i+2:], "{}") {
+			p, suffix = p[:i+1], p[i+1:]
+		}
 		if !strings.HasPrefix(p, "{") || !strings.HasSuffix(p, "}") || strings.Count(p, "{") != 1 || strings.Count(p, "}") != 1 {
-			return nil, fmt.Errorf("path template %q: segment %q must be a literal or a whole {param}", s, p)
+			return nil, fmt.Errorf("path template %q: segment %q must be a literal, a whole {param} or {param}:verb", s, p+suffix)
 		}
 		name := p[1 : len(p)-1]
 		rest := strings.HasSuffix(name, "*")
@@ -66,7 +73,10 @@ func ParseTemplate(s string) (*Template, error) {
 		if rest && i != len(parts)-1 {
 			return nil, fmt.Errorf("path template %q: {%s*} must be the last segment", s, name)
 		}
-		t.Segments = append(t.Segments, Segment{Param: name, Rest: rest})
+		if rest && suffix != "" {
+			return nil, fmt.Errorf("path template %q: {%s*} cannot take a suffix", s, name)
+		}
+		t.Segments = append(t.Segments, Segment{Param: name, Rest: rest, Suffix: suffix})
 	}
 	return t, nil
 }
@@ -84,7 +94,7 @@ func (t *Template) Shape() string {
 		case s.Rest:
 			b.WriteString("{*}")
 		case s.Param != "":
-			b.WriteString("{}")
+			b.WriteString("{}" + s.Suffix)
 		default:
 			b.WriteString(s.Literal)
 		}
@@ -93,11 +103,12 @@ func (t *Template) Shape() string {
 }
 
 // Specificity orders templates that match the same path: more literal
-// segments first, then no trailing wildcard, then more segments.
+// segments first (a {param}:verb segment counts as literal), then no
+// trailing wildcard, then more segments.
 func (t *Template) Specificity() (literals int, noRest bool, segments int) {
 	noRest = true
 	for _, s := range t.Segments {
-		if s.Literal != "" {
+		if s.Literal != "" || s.Suffix != "" {
 			literals++
 		}
 		if s.Rest {
@@ -122,7 +133,7 @@ func (t *Template) MoreSpecific(u *Template) bool {
 	}
 	// Same counts: a literal earlier in the path wins (/a/{x} beats /{y}/b).
 	for i := range t.Segments {
-		tl, ul := t.Segments[i].Literal != "", u.Segments[i].Literal != ""
+		tl, ul := t.Segments[i].Literal != "" || t.Segments[i].Suffix != "", u.Segments[i].Literal != "" || u.Segments[i].Suffix != ""
 		if tl != ul {
 			return tl
 		}
@@ -164,6 +175,12 @@ func (t *Template) Match(rawPath string) (map[string]string, bool) {
 			v, err := url.PathUnescape(segs[i])
 			if err != nil {
 				return nil, false
+			}
+			if ts.Suffix != "" {
+				var ok bool
+				if v, ok = strings.CutSuffix(v, ts.Suffix); !ok || v == "" {
+					return nil, false
+				}
 			}
 			params[ts.Param] = v
 		default:

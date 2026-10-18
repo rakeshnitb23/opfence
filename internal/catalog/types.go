@@ -180,6 +180,7 @@ type Condition struct {
 	In      []string `yaml:"in"`
 	Present bool     `yaml:"present"`
 	Absent  bool     `yaml:"absent"`
+	Empty   bool     `yaml:"empty"`   // absent, null, "", {} or []
 	Matches string   `yaml:"matches"` // RE2, unanchored
 
 	re *regexp.Regexp

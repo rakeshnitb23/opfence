@@ -454,6 +454,15 @@ func TestAnnotations(t *testing.T) {
 	}
 }
 
+func TestTemplateGlob(t *testing.T) {
+	if g := templateGlob("/g/{groupId}/clusters/{name}:pin"); g != "/g/*/clusters/*:pin" {
+		t.Errorf("templateGlob = %q", g)
+	}
+	if g := denyGlob("/g/*/clusters/*:pin"); g != "/g/*/clusters/*" {
+		t.Errorf("denyGlob = %q", g)
+	}
+}
+
 func TestGlobsOverlap(t *testing.T) {
 	cases := []struct {
 		a, b string
@@ -465,6 +474,12 @@ func TestGlobsOverlap(t *testing.T) {
 		{"/repos/*/*", "/repos/*/*/keys", false},
 		{"/a/b", "/a/c", false},
 		{"/**", "/", true},
+		{"/c/*:pin", "/c/*", true},
+		{"/c/*:pin", "/c/*:grant", false},
+		{"/c/*:pin", "/c/orders:pin", true},
+		{"/c/orders:pin", "/c/*:pin", true},
+		{"/c/*:pin", "/c/:pin", false},
+		{"/c/*:pin", "/c/orders", false},
 	}
 	for _, c := range cases {
 		if got := globsOverlap(c.a, c.b); got != c.want {

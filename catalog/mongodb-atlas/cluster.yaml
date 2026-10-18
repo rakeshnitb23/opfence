@@ -233,44 +233,76 @@ operations:
         expect: write
         resource: orders-prod
 
+  - id: mongodb-atlas.cluster.grant-mongodb-employee-access
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:grantMongoDBEmployeeAccess" } }
+    class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Grant MongoDB support staff access to cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-grant-mongodb-employee-access.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.revoke-mongodb-employee-access
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:revokeMongoDBEmployeeAccess" } }
+    class: access
+    resource: { arg: clusterName, kind: cluster }
+    card: "Revoke MongoDB support staff access to cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-revoke-mongodb-employee-access.http
+        expect: access
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.pin-feature-compatibility-version
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:pinFeatureCompatibilityVersion" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Pin the feature compatibility version of cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-pin-feature-compatibility-version.http
+        expect: write
+        resource: orders-prod
+
+  - id: mongodb-atlas.cluster.unpin-feature-compatibility-version
+    match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}:unpinFeatureCompatibilityVersion" } }
+    class: write
+    resource: { arg: clusterName, kind: cluster }
+    card: "Unpin the feature compatibility version of cluster {clusterName} in project {groupId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/cluster-unpin-feature-compatibility-version.http
+        expect: write
+        resource: orders-prod
+
   - id: mongodb-atlas.cluster.custom-action
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterAction}" } }
     class: unknown
-    when:
-      - if: { arg: clusterAction, matches: ":grantMongoDBEmployeeAccess$" }
-        class: access
-      - if: { arg: clusterAction, matches: ":revokeMongoDBEmployeeAccess$" }
-        class: access
-      - if: { arg: clusterAction, matches: ":pinFeatureCompatibilityVersion$" }
-        class: write
-      - if: { arg: clusterAction, matches: ":unpinFeatureCompatibilityVersion$" }
-        class: write
     resource: { arg: clusterAction, kind: cluster-action }
     card: "Run {clusterAction} on a cluster of project {groupId}"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-18
     sources:
       - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
     notes: >-
-      Atlas's custom methods put the verb in the cluster segment
-      (clusters/{clusterName}:grantMongoDBEmployeeAccess). Opfence templates
-      match whole segments only, so one rule captures the segment and its
-      conditions name the four documented methods: granting or revoking MongoDB
-      employee access is access, pinning or unpinning the feature compatibility
-      version is write. Any other method stays unknown.
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
     tests:
-      - fixture: fixtures/cluster-custom-action.http
-        expect: access
-        resource: orders-prod:grantMongoDBEmployeeAccess
-      - fixture: fixtures/cluster-custom-action-revoke.http
-        expect: access
-        resource: orders-prod:revokeMongoDBEmployeeAccess
-      - fixture: fixtures/cluster-custom-action-pin-fcv.http
-        expect: write
-        resource: orders-prod:pinFeatureCompatibilityVersion
-      - fixture: fixtures/cluster-custom-action-unpin-fcv.http
-        expect: write
-        resource: orders-prod:unpinFeatureCompatibilityVersion
       - fixture: fixtures/cluster-custom-action-other.http
         expect: unknown
         resource: orders-prod:somethingNew

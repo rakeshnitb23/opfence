@@ -170,3 +170,24 @@ func TestClassifySQLArg(t *testing.T) {
 		}
 	}
 }
+
+func TestConditionEmpty(t *testing.T) {
+	c := Condition{Arg: "filter", Empty: true}
+	for _, tc := range []struct {
+		args map[string]any
+		want bool
+	}{
+		{map[string]any{}, true},
+		{map[string]any{"filter": nil}, true},
+		{map[string]any{"filter": ""}, true},
+		{map[string]any{"filter": map[string]any{}}, true},
+		{map[string]any{"filter": []any{}}, true},
+		{map[string]any{"filter": map[string]any{"a": 1.0}}, false},
+		{map[string]any{"filter": "x"}, false},
+		{map[string]any{"filter": false}, false},
+	} {
+		if got := c.Eval(tc.args); got != tc.want {
+			t.Errorf("Eval(%v) = %v, want %v", tc.args, got, tc.want)
+		}
+	}
+}

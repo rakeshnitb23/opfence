@@ -222,10 +222,12 @@ func restEndpoint(p *policy.Effective, prov *catalog.Provider, rules []*catalog.
 				allow.Content = append(allow.Content, allowRule(rule))
 			}
 		case x.d == classes.Deny:
+			rule = pairs("method", scalar(x.method), "path", scalar(denyGlob(x.glob)))
 			rule.HeadComment = argNote(p, x.r, env)
 			deny.Content = append(deny.Content, rule)
 		default:
 			if by := coveredByAllow(x); by != "" {
+				rule = pairs("method", scalar(x.method), "path", scalar(denyGlob(x.glob)))
 				rule.HeadComment = x.r.ID + ": " + wouldAsk(x.r) + ", but " + by + " would let it through, so it is denied."
 				deny.Content = append(deny.Content, rule)
 			}
@@ -381,6 +383,22 @@ func templateGlob(t string) string {
 			segs[i] = "**"
 		case strings.HasPrefix(s, "{") && strings.HasSuffix(s, "}"):
 			segs[i] = "*"
+		case strings.HasPrefix(s, "{") && strings.Contains(s, "}:"):
+			segs[i] = "*" + s[strings.Index(s, "}:")+1:] // {name}:verb
+		}
+	}
+	return strings.Join(segs, "/")
+}
+
+// denyGlob widens custom-method segments (*:verb) to * for deny rules. An
+// allow glob that a gateway reads more narrowly than meant only blocks more;
+// a deny glob must never be read more narrowly, so it does not rely on
+// wildcards inside a segment.
+func denyGlob(g string) string {
+	segs := strings.Split(g, "/")
+	for i, s := range segs {
+		if strings.HasPrefix(s, "*:") {
+			segs[i] = "*"
 		}
 	}
 	return strings.Join(segs, "/")
@@ -396,10 +414,26 @@ func globsOverlap(a, b string) bool {
 			return true
 		case i == len(as) || i == len(bs):
 			return len(as) == len(bs)
-		case as[i] != "*" && bs[i] != "*" && as[i] != bs[i]:
+		case !segsOverlap(as[i], bs[i]):
 			return false
 		}
 	}
+}
+
+// segsOverlap reports whether one path segment could match both glob
+// segments: a literal, * or *:verb (a custom method).
+func segsOverlap(a, b string) bool {
+	switch {
+	case a == "*" || b == "*" || a == b:
+		return true
+	case strings.HasPrefix(a, "*") && strings.HasPrefix(b, "*"):
+		return false // different verbs
+	case strings.HasPrefix(b, "*"):
+		a, b = b, a
+	case !strings.HasPrefix(a, "*"):
+		return false // different literals
+	}
+	return len(b) > len(a)-1 && strings.HasSuffix(b, a[1:])
 }
 
 func addRules(ep, allow, deny *yaml.Node) {

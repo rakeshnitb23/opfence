@@ -313,11 +313,30 @@ func (c *Condition) Eval(args map[string]any) bool {
 		return present
 	case c.Absent:
 		return !present
+	case c.Empty:
+		return isEmpty(v)
 	}
 	for _, el := range vals {
 		if s, isScalar := Scalar(el); isScalar && c.match(s) {
 			return true
 		}
+	}
+	return false
+}
+
+// isEmpty reports whether v selects or sets nothing: a missing value, null,
+// "", {} or []. An empty filter matches every document, so "filter": {} is
+// as bad as no filter.
+func isEmpty(v any) bool {
+	switch t := v.(type) {
+	case nil:
+		return true
+	case string:
+		return t == ""
+	case map[string]any:
+		return len(t) == 0
+	case []any:
+		return len(t) == 0
 	}
 	return false
 }
@@ -346,6 +365,8 @@ func (c *Condition) String() string {
 		return c.Arg + " is present"
 	case c.Absent:
 		return c.Arg + " is absent"
+	case c.Empty:
+		return c.Arg + " is empty"
 	case c.Equals != nil:
 		return fmt.Sprintf("%s = %q", c.Arg, *c.Equals)
 	case c.In != nil:

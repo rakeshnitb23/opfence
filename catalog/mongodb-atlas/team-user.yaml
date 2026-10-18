@@ -1,30 +1,47 @@
 # MongoDB Atlas Administration API: team-user
 operations:
+  - id: mongodb-atlas.team-user.add-user
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/teams/{teamId}:addUser" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Add users to team {teamId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/team-user-add-user.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
+  - id: mongodb-atlas.team-user.remove-user
+    match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/teams/{teamId}:removeUser" } }
+    class: access
+    resource: { arg: orgId, kind: organization }
+    card: "Remove a user from team {teamId} in organization {orgId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
+    tests:
+      - fixture: fixtures/team-user-remove-user.http
+        expect: access
+        resource: 4888442a3354817a7320eb61
+
   - id: mongodb-atlas.team-user.custom-action
     match: { rest: { method: POST, path: "/api/atlas/v2/orgs/{orgId}/teams/{teamAction}" } }
     class: unknown
-    when:
-      - if: { arg: teamAction, matches: ":addUser$" }
-        class: access
-      - if: { arg: teamAction, matches: ":removeUser$" }
-        class: access
     resource: { arg: orgId, kind: organization }
     card: "Run {teamAction} on a team of organization {orgId}"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-18
     sources:
       - https://github.com/mongodb/openapi/blob/main/openapi/v2.yaml
     notes: >-
-      The verb sits in the team segment (teams/{teamId}:addUser), which Opfence
-      templates cannot split, so conditions name addUser and removeUser; any
-      other method stays unknown.
+      Atlas custom methods put the verb after the last segment
+      ({x}:verb). The documented ones have their own rules; this one catches
+      any other verb, and a plain POST to the item, as unknown.
     tests:
-      - fixture: fixtures/team-user-custom-action.http
-        expect: access
-        resource: 4888442a3354817a7320eb61
-      - fixture: fixtures/team-user-custom-action-remove-user.http
-        expect: access
-        resource: 4888442a3354817a7320eb61
       - fixture: fixtures/team-user-custom-action-other.http
         expect: unknown
         resource: 4888442a3354817a7320eb61
