@@ -267,6 +267,12 @@ operations:
         class: credential
       - if: { arg: only, matches: '(?i)(firestore|storage|database|auth|hosting|functions|apphosting|dataconnect)' }
         class: access
+      - if: { arg: only, empty: true }
+        class: irreversible
+      - if: { arg: only, present: true }
+        class: irreversible
+      - if: { arg: only, present: true }
+        class: access
     resource: { arg: only, kind: targets }
     card: "Deploy {only} from firebase.json to the active Firebase project"
     status: verified
@@ -285,8 +291,15 @@ operations:
       non-interactively without --force, so function and extension deletions
       and destructive Data Connect migrations abort instead of running.
       predeploy/postdeploy hooks in firebase.json run as local shell commands
-      that the Bash hook never sees.
+      in the MCP server's process, outside the sandbox and unseen by the Bash
+      hook, and the agent can edit firebase.json first; so every deploy is
+      also irreversible and needs a typed confirmation.
     tests:
+      - fixture: fixtures/project-deploy.json
+        expect: irreversible
+      - fixture: fixtures/project-deploy-rules.json
+        expect: irreversible
+        resource: "firestore,storage"
       - fixture: fixtures/project-deploy.json
         expect: access
       - fixture: fixtures/project-deploy.json
