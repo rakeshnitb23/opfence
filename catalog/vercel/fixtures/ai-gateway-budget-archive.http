@@ -1,0 +1,5 @@
+# description: Archive the team AI Gateway budget
+DELETE /ai-gateway/budgets?scopeType=team HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

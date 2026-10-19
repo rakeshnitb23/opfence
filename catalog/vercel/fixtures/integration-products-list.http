@@ -1,0 +1,5 @@
+# description: List the products of integration configuration icfg_1 with their drain headers
+GET /v1/integrations/configuration/icfg_1/products HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

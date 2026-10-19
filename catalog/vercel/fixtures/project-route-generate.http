@@ -1,0 +1,7 @@
+# description: Suggest a routing rule for project prj_shop
+POST /v1/projects/prj_shop/routes/generate HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"prompt":"redirect /blog to /news"}

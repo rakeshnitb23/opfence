@@ -1,0 +1,42 @@
+# Vercel REST API: privatelink-endpoint
+operations:
+  - id: vercel.privatelink-endpoint.create
+    match: { rest: { method: POST, path: "/{version}/networking/privatelink/endpoints" } }
+    class: money
+    resource: { arg: body.projectId, kind: project }
+    card: "Create PrivateLink endpoint {body.name} for project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      PrivateLink belongs to Vercel's paid Secure Compute networking, so creating
+      an endpoint is assumed to be billed.
+    tests:
+      - fixture: fixtures/privatelink-endpoint-create.http
+        expect: money
+        resource: prj_shop
+
+  - id: vercel.privatelink-endpoint.update
+    match: { rest: { method: PATCH, path: "/{version}/networking/privatelink/endpoints/{endpointId}" } }
+    class: write
+    card: "Change PrivateLink endpoint {endpointId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/privatelink-endpoint-update.http
+        expect: write
+
+  - id: vercel.privatelink-endpoint.delete
+    match: { rest: { method: DELETE, path: "/{version}/networking/privatelink/endpoints/{endpointId}" } }
+    class: delete
+    card: "Delete PrivateLink endpoint {endpointId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/privatelink-endpoint-delete.http
+        expect: delete

@@ -1,0 +1,74 @@
+# Vercel REST API: bulk-redirect
+operations:
+  - id: vercel.bulk-redirect.stage
+    match: { rest: { method: PUT, path: "/{version}/bulk-redirects" } }
+    class: write
+    card: "Stage redirects for project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Staged changes reach production only when a version is promoted.
+    tests:
+      - fixture: fixtures/bulk-redirect-stage.http
+        expect: write
+
+  - id: vercel.bulk-redirect.delete
+    match: { rest: { method: DELETE, path: "/{version}/bulk-redirects" } }
+    class: delete
+    card: "Stage removal of redirects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Stages a version without the redirects; the production version stays until
+      promoted.
+    tests:
+      - fixture: fixtures/bulk-redirect-delete.http
+        expect: delete
+
+  - id: vercel.bulk-redirect.edit
+    match: { rest: { method: PATCH, path: "/{version}/bulk-redirects" } }
+    class: write
+    card: "Change a staged redirect"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/bulk-redirect-edit.http
+        expect: write
+
+  - id: vercel.bulk-redirect.restore
+    match: { rest: { method: POST, path: "/{version}/bulk-redirects/restore" } }
+    class: write
+    card: "Restore staged redirects to their production values"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/bulk-redirect-restore.http
+        expect: write
+
+  - id: vercel.bulk-redirect.version
+    match: { rest: { method: POST, path: "/{version}/bulk-redirects/versions" } }
+    class: write
+    when:
+      - if: { arg: body.action, equals: "discard" }
+        class: delete
+    card: "Apply {body.action} to redirects version {body.id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Promote publishes the staged redirects and restore brings back an earlier
+      production version; discard throws the staged version away.
+    tests:
+      - fixture: fixtures/bulk-redirect-version.http
+        expect: write
+      - fixture: fixtures/bulk-redirect-version-discard.http
+        expect: delete

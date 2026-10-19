@@ -1,0 +1,5 @@
+# description: Read alias shop.example.com with its shareable-link secrets
+GET /v4/aliases/shop.example.com HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

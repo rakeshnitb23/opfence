@@ -1,0 +1,101 @@
+# Vercel REST API: project-route
+operations:
+  - id: vercel.project-route.stage
+    match: { rest: { method: PUT, path: "/{version}/projects/{projectId}/routes" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Stage routing rules for project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Staged rules reach production only when a version is promoted.
+    tests:
+      - fixture: fixtures/project-route-stage.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project-route.add
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/routes" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Add a routing rule to project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-route-add.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project-route.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{projectId}/routes" } }
+    class: delete
+    resource: { arg: projectId, kind: project }
+    card: "Stage removal of routing rules {body.routeIds} from project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Stages a version without the rules; production keeps them until it is
+      promoted.
+    tests:
+      - fixture: fixtures/project-route-delete.http
+        expect: delete
+        resource: prj_shop
+
+  - id: vercel.project-route.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectId}/routes/{routeId}" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Change routing rule {routeId} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-route-update.http
+        expect: write
+        resource: prj_shop
+
+  - id: vercel.project-route.generate
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/routes/generate" } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Suggest a routing rule for project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Returns a suggestion; nothing is saved.
+    tests:
+      - fixture: fixtures/project-route-generate.http
+        expect: read
+        resource: prj_shop
+
+  - id: vercel.project-route.version
+    match: { rest: { method: POST, path: "/{version}/projects/{projectId}/routes/versions" } }
+    class: write
+    when:
+      - if: { arg: body.action, equals: "discard" }
+        class: delete
+    resource: { arg: projectId, kind: project }
+    card: "Apply {body.action} to routing version {body.id} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Promote publishes the staged rules and restore brings back an earlier
+      production version; discard throws the staged version away.
+    tests:
+      - fixture: fixtures/project-route-version.http
+        expect: write
+        resource: prj_shop
+      - fixture: fixtures/project-route-version-discard.http
+        expect: delete
+        resource: prj_shop

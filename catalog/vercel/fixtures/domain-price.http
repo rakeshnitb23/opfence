@@ -1,0 +1,7 @@
+# description: Get prices of domains
+POST /v1/registrar/domains/price HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"domains":["example.com"],"years":1}

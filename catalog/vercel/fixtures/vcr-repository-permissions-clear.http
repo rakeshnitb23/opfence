@@ -1,0 +1,5 @@
+# description: Stop sharing container repository web-images with every team
+DELETE /v1/vcr/repository/web-images/permissions/all HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

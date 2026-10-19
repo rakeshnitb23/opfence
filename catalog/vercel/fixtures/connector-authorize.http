@@ -1,0 +1,7 @@
+# description: Start an authorization request for connector con_slack
+POST /v1/connect/authorize/con_slack HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"subject":"usr_1","scopes":["chat:write"]}

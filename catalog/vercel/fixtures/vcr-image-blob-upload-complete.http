@@ -1,0 +1,5 @@
+# description: Complete a blob upload to web-images
+PUT /v2/acme/shop-web/web-images/blobs/uploads/up_1?digest=sha256:abc HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

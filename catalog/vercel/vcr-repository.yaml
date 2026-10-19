@@ -1,0 +1,69 @@
+# Vercel REST API: vcr-repository
+operations:
+  - id: vercel.vcr-repository.create
+    match: { rest: { method: POST, path: "/{version}/vcr/repository" } }
+    class: write
+    card: "Create container repository {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-repository-create.http
+        expect: write
+
+  - id: vercel.vcr-repository.delete
+    match: { rest: { method: DELETE, path: "/{version}/vcr/repository/{idOrName}" } }
+    class: irreversible
+    resource: { arg: idOrName, kind: vcr-repository }
+    card: "Delete container repository {idOrName} and every image in it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-repository-delete.http
+        expect: irreversible
+        resource: web-images
+
+  - id: vercel.vcr-repository.permission-add
+    match: { rest: { method: POST, path: "/{version}/vcr/repository/{idOrName}/permissions" } }
+    class: access
+    resource: { arg: idOrName, kind: vcr-repository }
+    card: "Share container repository {idOrName} with team {body.teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-repository-permission-add.http
+        expect: access
+        resource: web-images
+
+  - id: vercel.vcr-repository.permission-remove
+    match: { rest: { method: DELETE, path: "/{version}/vcr/repository/{idOrName}/permissions" } }
+    class: access
+    resource: { arg: idOrName, kind: vcr-repository }
+    card: "Stop sharing container repository {idOrName} with team {body.teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-repository-permission-remove.http
+        expect: access
+        resource: web-images
+
+  - id: vercel.vcr-repository.permissions-clear
+    match: { rest: { method: DELETE, path: "/{version}/vcr/repository/{idOrName}/permissions/all" } }
+    class: access
+    resource: { arg: idOrName, kind: vcr-repository }
+    card: "Stop sharing container repository {idOrName} with every team"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-repository-permissions-clear.http
+        expect: access
+        resource: web-images

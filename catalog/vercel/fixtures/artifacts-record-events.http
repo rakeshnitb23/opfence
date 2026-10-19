@@ -1,0 +1,7 @@
+# description: Record Remote Cache usage events
+POST /v8/artifacts/events HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+[{"sessionId":"s1","source":"REMOTE","event":"HIT","hash":"12HKQaOmR5t5Uy6vdcQsNIiZgHGB","duration":400}]

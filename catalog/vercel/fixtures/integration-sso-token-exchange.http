@@ -1,0 +1,7 @@
+# description: Exchange an SSO code for an OIDC token
+POST /v1/integrations/sso/token HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"code":"abc","client_id":"oac_1","client_secret":"opf_vercel_EXAMPLE","grant_type":"authorization_code"}

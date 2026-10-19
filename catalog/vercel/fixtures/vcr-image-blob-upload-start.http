@@ -1,0 +1,5 @@
+# description: Start a blob upload to acme/shop-web/web-images
+POST /v2/acme/shop-web/web-images/blobs/uploads/ HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

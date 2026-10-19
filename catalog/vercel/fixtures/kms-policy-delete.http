@@ -1,0 +1,5 @@
+# description: Remove policy prj_shop from KMS issuer iss_1
+DELETE /v1/kms/issuers/iss_1/policies/project-grant/prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

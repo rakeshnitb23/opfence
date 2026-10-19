@@ -1,0 +1,28 @@
+# Vercel REST API: integration-store
+operations:
+  - id: vercel.integration-store.create-direct
+    match: { rest: { method: POST, path: "/{version}/storage/stores/integration/direct" } }
+    class: credential
+    when:
+      - if: { arg: body.billingPlanId, present: true }
+        class: money
+      - if: { arg: body.billingPlanId, present: true }
+        class: credential
+      - if: { arg: body.prepaymentAmountCents, present: true }
+        class: money
+      - if: { arg: body.prepaymentAmountCents, present: true }
+        class: credential
+    card: "Create Marketplace store {body.name} ({body.integrationProductIdOrSlug})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The response carries the new store's secrets (connection strings). A paid
+      billing plan or a prepayment also spends money; each money condition
+      repeats credential so the response's secrets still count.
+    tests:
+      - fixture: fixtures/integration-store-create-direct.http
+        expect: credential
+      - fixture: fixtures/integration-store-create-direct-paid.http
+        expect: credential

@@ -1,0 +1,7 @@
+# description: Create Secure Compute network prod-egress
+POST /v1/connect/networks HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"prod-egress","region":"iad1","cidr":"10.0.0.0/16"}

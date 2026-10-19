@@ -1,0 +1,88 @@
+# Vercel REST API: sandbox
+operations:
+  - id: vercel.sandbox.create
+    match: { rest: { method: POST, path: "/{version}/sandboxes" } }
+    class: money
+    when:
+      - if: { arg: body.networkPolicy.injectionRules, present: true }
+        class: credential
+    resource: { arg: body.name, kind: sandbox }
+    card: "Create sandbox {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Sandboxes bill for CPU, memory and storage while they run.
+      networkPolicy.injectionRules set credentials the sandbox's outgoing
+      requests carry. One rule covers v2, v3 and v4.
+    tests:
+      - fixture: fixtures/sandbox-create.http
+        expect: money
+        resource: agent-box
+      - fixture: fixtures/sandbox-create-injection.http
+        expect: credential
+        resource: agent-box
+
+  - id: vercel.sandbox.update
+    match: { rest: { method: PATCH, path: "/{version}/sandboxes/{name}" } }
+    class: write
+    when:
+      - if: { arg: body.resources, present: true }
+        class: money
+      - if: { arg: body.networkPolicy, present: true }
+        class: access
+      - if: { arg: body.networkPolicy.injectionRules, present: true }
+        class: credential
+    resource: { arg: name, kind: sandbox }
+    card: "Change sandbox {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      More resources cost more; the network policy decides which hosts the
+      sandbox can reach, and injectionRules set credentials its requests carry.
+    tests:
+      - fixture: fixtures/sandbox-update.http
+        expect: write
+        resource: agent-box
+      - fixture: fixtures/sandbox-update-network.http
+        expect: access
+        resource: agent-box
+
+  - id: vercel.sandbox.delete
+    match: { rest: { method: DELETE, path: "/{version}/sandboxes/{name}" } }
+    class: irreversible
+    resource: { arg: name, kind: sandbox }
+    card: "Delete sandbox {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Stops its sessions and deletes every sandbox entity with the name.
+    tests:
+      - fixture: fixtures/sandbox-delete.http
+        expect: irreversible
+        resource: agent-box
+
+  - id: vercel.sandbox.fork
+    match: { rest: { method: POST, path: "/{version}/sandboxes/{name}/fork" } }
+    class: money
+    when:
+      - if: { arg: body.networkPolicy.injectionRules, present: true }
+        class: credential
+    resource: { arg: name, kind: sandbox }
+    card: "Fork sandbox {name} as {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates a new billed sandbox with the source's environment variables. One
+      rule covers v2 and v3.
+    tests:
+      - fixture: fixtures/sandbox-fork.http
+        expect: money
+        resource: agent-box

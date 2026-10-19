@@ -1,0 +1,5 @@
+# description: Finalize billing of installation icfg_1
+POST /v1/installations/icfg_1/billing/finalize HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

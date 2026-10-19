@@ -1,0 +1,7 @@
+# description: Push experimentation data into the Edge Config of resource res_ff
+PUT /v1/installations/icfg_1/resources/res_ff/experimentation/global-config HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"data":{"checkout":true}}

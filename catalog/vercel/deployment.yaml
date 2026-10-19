@@ -44,3 +44,15 @@ operations:
       - fixture: fixtures/deployment-delete.http
         expect: delete
         resource: dpl_123
+
+  - id: vercel.deployment.file-upload
+    match: { rest: { method: POST, path: "/{version}/files" } }
+    class: write
+    card: "Upload a deployment file"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-file-upload.http
+        expect: write

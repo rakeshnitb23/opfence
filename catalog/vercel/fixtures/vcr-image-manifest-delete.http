@@ -1,0 +1,5 @@
+# description: Delete image web-images@sha256:abc
+DELETE /v2/acme/shop-web/web-images/manifests/sha256:abc HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

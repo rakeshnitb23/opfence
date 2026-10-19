@@ -35,3 +35,94 @@ operations:
     tests:
       - fixture: fixtures/firewall-bypass-add.http
         expect: access
+
+  - id: vercel.firewall.attack-mode
+    match: { rest: { method: POST, path: "/{version}/security/attack-mode" } }
+    class: access
+    resource: { arg: body.projectId, kind: project }
+    card: "Set Attack Challenge Mode to {body.attackModeEnabled} for project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-attack-mode.http
+        expect: access
+        resource: prj_shop
+
+  - id: vercel.firewall.config-version-delete
+    match: { rest: { method: DELETE, path: "/{version}/security/firewall/config/{configVersion}" } }
+    class: access
+    card: "Delete firewall configuration version {configVersion} of project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The spec's summary is copied from the activate endpoint; the method removes
+      a configuration version.
+    tests:
+      - fixture: fixtures/firewall-config-version-delete.http
+        expect: access
+
+  - id: vercel.firewall.config-version-activate
+    match: { rest: { method: POST, path: "/{version}/security/firewall/config/{configVersion}/activate" } }
+    class: access
+    card: "Activate firewall configuration version {configVersion} of project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-config-version-activate.http
+        expect: access
+
+  - id: vercel.firewall.bypass-remove
+    match: { rest: { method: DELETE, path: "/{version}/security/firewall/bypass" } }
+    class: access
+    card: "Remove a system bypass rule of project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-bypass-remove.http
+        expect: access
+
+  - id: vercel.firewall.conditional-bypass-create
+    match: { rest: { method: POST, path: "/{version}/security/firewall/bypass/rules" } }
+    class: access
+    card: "Let matching requests to {body.domain} skip the firewall"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-conditional-bypass-create.http
+        expect: access
+
+  - id: vercel.firewall.conditional-bypass-delete
+    match: { rest: { method: DELETE, path: "/{version}/security/firewall/bypass/rules" } }
+    class: access
+    card: "Delete a conditional firewall bypass of project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/firewall-conditional-bypass-delete.http
+        expect: access
+
+  - id: vercel.firewall.generate-rule
+    match: { rest: { method: POST, path: "/{version}/security/firewall/config/generate-rule" } }
+    class: read
+    card: "Suggest a firewall rule"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Returns a suggestion; nothing is saved.
+    tests:
+      - fixture: fixtures/firewall-generate-rule.http
+        expect: read

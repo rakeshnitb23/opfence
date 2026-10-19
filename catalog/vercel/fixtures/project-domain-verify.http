@@ -1,0 +1,5 @@
+# description: Verify domain shop.example.com of project shop-web
+POST /v9/projects/shop-web/domains/shop.example.com/verify HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

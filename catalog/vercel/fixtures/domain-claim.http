@@ -1,0 +1,5 @@
+# description: Claim ownership of example.com for this team
+POST /v9/domains/example.com/claim HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

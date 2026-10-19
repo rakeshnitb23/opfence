@@ -1,0 +1,7 @@
+# description: Change shared variables
+PATCH /v1/env HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"updates":{"env_1":{"value":"new-value","target":["production"]}}}

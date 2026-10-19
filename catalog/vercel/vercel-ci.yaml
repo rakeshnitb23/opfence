@@ -1,0 +1,49 @@
+# Vercel REST API: vercel-ci
+operations:
+  - id: vercel.vercel-ci.repository-settings
+    match: { rest: { method: PATCH, path: "/{version}/vercel-ci/repository-settings" } }
+    class: write
+    card: "Set Vercel CI enabled={body.ciEnabled} for a repository"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vercel-ci-repository-settings.http
+        expect: write
+
+  - id: vercel.vercel-ci.task-analysis-create
+    match: { rest: { method: POST, path: "/{version}/vercel-ci/task-analyses" } }
+    class: write
+    card: "Start a Vercel CI task analysis of {body.owner}/{body.repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vercel-ci-task-analysis-create.http
+        expect: write
+
+  - id: vercel.vercel-ci.task-pull-request
+    match: { rest: { method: POST, path: "/{version}/vercel-ci/task-analyses/{analysisId}/pull-request" } }
+    class: write
+    card: "Open a pull request with Vercel CI tasks from analysis {analysisId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vercel-ci-task-pull-request.http
+        expect: write
+
+  - id: vercel.vercel-ci.invocation-retry
+    match: { rest: { method: POST, path: "/{version}/vercel-ci/invocations/{invocationId}/attempts/{attempt}/retry" } }
+    class: write
+    card: "Retry attempt {attempt} of Vercel CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vercel-ci-invocation-retry.http
+        expect: write

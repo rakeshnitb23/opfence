@@ -1,0 +1,7 @@
+# description: Create experimentation items for resource res_ff
+POST /v1/installations/icfg_1/resources/res_ff/experimentation/items HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"items":[{"id":"exp_1","slug":"checkout","origin":"https://flags.example.com"}]}

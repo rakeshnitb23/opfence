@@ -1,0 +1,7 @@
+# description: Change integration installation icfg_1
+PATCH /v1/installations/icfg_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"billingPlan":{"id":"pro","type":"subscription","name":"Pro"}}

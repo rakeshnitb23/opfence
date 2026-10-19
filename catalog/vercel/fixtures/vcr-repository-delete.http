@@ -1,0 +1,5 @@
+# description: Delete container repository web-images and every image in it
+DELETE /v1/vcr/repository/web-images HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

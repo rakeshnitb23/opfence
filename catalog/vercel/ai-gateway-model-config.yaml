@@ -1,0 +1,80 @@
+# Vercel REST API: ai-gateway-model-config
+operations:
+  - id: vercel.ai-gateway-model-config.create
+    match: { rest: { method: POST, path: "/ai-gateway/virtual-model-configs" } }
+    class: access
+    card: "Create an AI Gateway virtual model config"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A virtual model config can relay requests to any baseUrl, pick the BYOK
+      credentials it uses and relax provider privacy settings
+      (disallowPromptTraining). The spec publishes no request body, so creating
+      or changing one is access.
+    tests:
+      - fixture: fixtures/ai-gateway-model-config-create.http
+        expect: access
+
+  - id: vercel.ai-gateway-model-config.update
+    match: { rest: { method: PATCH, path: "/ai-gateway/virtual-model-configs" } }
+    class: access
+    card: "Change an AI Gateway virtual model config"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A virtual model config can relay requests to any baseUrl, pick the BYOK
+      credentials it uses and relax provider privacy settings
+      (disallowPromptTraining). The spec publishes no request body, so creating
+      or changing one is access.
+    tests:
+      - fixture: fixtures/ai-gateway-model-config-update.http
+        expect: access
+
+  - id: vercel.ai-gateway-model-config.update-by-slug
+    match: { rest: { method: PATCH, path: "/ai-gateway/virtual-model-configs/{vmcSlug}" } }
+    class: access
+    card: "Change AI Gateway virtual model config {vmcSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A virtual model config can relay requests to any baseUrl, pick the BYOK
+      credentials it uses and relax provider privacy settings
+      (disallowPromptTraining). The spec publishes no request body, so creating
+      or changing one is access.
+    tests:
+      - fixture: fixtures/ai-gateway-model-config-update-by-slug.http
+        expect: access
+
+  - id: vercel.ai-gateway-model-config.delete
+    match: { rest: { method: DELETE, path: "/ai-gateway/virtual-model-configs" } }
+    class: delete
+    card: "Delete AI Gateway virtual model config {query.virtualModelSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A soft delete; requests that name the config stop resolving.
+    tests:
+      - fixture: fixtures/ai-gateway-model-config-delete.http
+        expect: delete
+
+  - id: vercel.ai-gateway-model-config.delete-by-slug
+    match: { rest: { method: DELETE, path: "/ai-gateway/virtual-model-configs/{vmcSlug}" } }
+    class: delete
+    card: "Delete AI Gateway virtual model config {vmcSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A soft delete; requests that name the config stop resolving.
+    tests:
+      - fixture: fixtures/ai-gateway-model-config-delete-by-slug.http
+        expect: delete

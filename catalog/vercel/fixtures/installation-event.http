@@ -1,0 +1,7 @@
+# description: Notify Vercel of a change to installation icfg_1
+POST /v1/installations/icfg_1/events HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"event":{"type":"installation.updated"}}

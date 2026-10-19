@@ -1,0 +1,7 @@
+# description: Create check e2e for project shop-web
+POST /v2/projects/shop-web/checks HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"e2e","requires":"deployment-url","blocks":"deployment-promotion"}

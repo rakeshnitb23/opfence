@@ -11,3 +11,32 @@ operations:
     tests:
       - fixture: fixtures/log-drain-delete.http
         expect: delete
+
+  - id: vercel.log-drain.create
+    match: { rest: { method: POST, path: "/{version}/log-drains" } }
+    class: credential
+    card: "Create log drain {body.name} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Sends logs to an outside URL with the given signing secret and headers.
+    tests:
+      - fixture: fixtures/log-drain-create.http
+        expect: credential
+
+  - id: vercel.log-drain.list
+    match: { rest: { method: GET, path: "/{version}/log-drains" } }
+    class: credential
+    card: "List log drains with their delivery secrets"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Each drain's delivery settings include its signing secret and custom
+      headers, which often carry an Authorization value.
+    tests:
+      - fixture: fixtures/log-drain-list.http
+        expect: credential

@@ -1,0 +1,7 @@
+# description: Fork sandbox agent-box as agent-box-2
+POST /v3/sandboxes/agent-box/fork HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"agent-box-2"}

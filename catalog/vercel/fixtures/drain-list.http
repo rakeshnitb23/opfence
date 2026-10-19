@@ -1,0 +1,5 @@
+# description: List drains with their delivery secrets
+GET /v1/drains HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

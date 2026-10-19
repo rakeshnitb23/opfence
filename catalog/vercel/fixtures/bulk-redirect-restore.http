@@ -1,0 +1,7 @@
+# description: Restore staged redirects to their production values
+POST /v1/bulk-redirects/restore?projectId=prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"redirects":["/old"]}

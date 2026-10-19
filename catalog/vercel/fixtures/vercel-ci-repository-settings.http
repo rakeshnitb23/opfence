@@ -1,0 +1,7 @@
+# description: Set Vercel CI enabled=true for a repository
+PATCH /v1/vercel-ci/repository-settings?owner=acme&repo=shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"ciEnabled":true}

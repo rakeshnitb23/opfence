@@ -1,0 +1,7 @@
+# description: Mark edge cache entries tagged ["products"] stale
+POST /v1/edge-cache/invalidate-by-tags?projectIdOrName=shop-web HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"tags":["products"]}

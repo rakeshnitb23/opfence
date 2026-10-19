@@ -1,0 +1,42 @@
+# Vercel REST API: secure-compute-network
+operations:
+  - id: vercel.secure-compute-network.create
+    match: { rest: { method: POST, path: "/{version}/connect/networks" } }
+    class: money
+    card: "Create Secure Compute network {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Secure Compute is a paid Enterprise add-on.
+    tests:
+      - fixture: fixtures/secure-compute-network-create.http
+        expect: money
+
+  - id: vercel.secure-compute-network.update
+    match: { rest: { method: PATCH, path: "/{version}/connect/networks/{networkId}" } }
+    class: write
+    card: "Rename Secure Compute network {networkId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/secure-compute-network-update.http
+        expect: write
+
+  - id: vercel.secure-compute-network.delete
+    match: { rest: { method: DELETE, path: "/{version}/connect/networks/{networkId}" } }
+    class: delete
+    card: "Delete Secure Compute network {networkId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Projects on the network lose its dedicated egress IPs and peering; a new
+      network gets new IPs that allowlists must learn again.
+    tests:
+      - fixture: fixtures/secure-compute-network-delete.http
+        expect: delete

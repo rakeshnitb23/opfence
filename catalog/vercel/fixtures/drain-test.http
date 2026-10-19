@@ -1,0 +1,7 @@
+# description: Send sample events to test a drain configuration
+POST /v1/drains/test HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"schemas":{"log":{"version":"v1"}},"delivery":{"type":"http","endpoint":"https://logs.example.com","encoding":"json","headers":{}}}

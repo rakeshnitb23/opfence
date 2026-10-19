@@ -1,0 +1,7 @@
+# description: Configure Static IPs for project shop-web
+PATCH /v1/projects/shop-web/shared-connect-links HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"regions":["iad1"],"builds":true}

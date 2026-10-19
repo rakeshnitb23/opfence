@@ -1,0 +1,5 @@
+# description: Delete AI Gateway routing rule rule_1
+DELETE /ai-gateway/rules?ruleId=rule_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

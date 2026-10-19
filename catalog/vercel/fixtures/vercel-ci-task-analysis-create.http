@@ -1,0 +1,7 @@
+# description: Start a Vercel CI task analysis of acme/shop
+POST /v1/vercel-ci/task-analyses HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"owner":"acme","repo":"shop"}

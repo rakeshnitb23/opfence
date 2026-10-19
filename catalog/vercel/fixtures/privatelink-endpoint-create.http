@@ -1,0 +1,7 @@
+# description: Create PrivateLink endpoint db for project prj_shop
+POST /v1/networking/privatelink/endpoints HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_shop","name":"db","vercelRegion":"iad1","awsServiceName":"com.amazonaws.vpce.us-east-1.vpce-svc-0example"}

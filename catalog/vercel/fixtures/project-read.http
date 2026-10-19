@@ -1,0 +1,5 @@
+# description: Read project shop-web with its bypass secrets
+GET /v9/projects/shop-web HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

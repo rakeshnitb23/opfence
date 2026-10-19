@@ -1,0 +1,42 @@
+# Vercel REST API: integration-log-drain
+operations:
+  - id: vercel.integration-log-drain.create
+    match: { rest: { method: POST, path: "/{version}/integrations/log-drains" } }
+    class: credential
+    card: "Create integration log drain {body.name} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Sends logs to an outside URL with the given signing secret and headers.
+    tests:
+      - fixture: fixtures/integration-log-drain-create.http
+        expect: credential
+
+  - id: vercel.integration-log-drain.list
+    match: { rest: { method: GET, path: "/{version}/integrations/log-drains" } }
+    class: credential
+    card: "List integration log drains with their headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Each drain's headers are returned; the spec's own example is an
+      Authorization header.
+    tests:
+      - fixture: fixtures/integration-log-drain-list.http
+        expect: credential
+
+  - id: vercel.integration-log-drain.delete
+    match: { rest: { method: DELETE, path: "/{version}/integrations/log-drains/{id}" } }
+    class: delete
+    card: "Delete integration log drain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-log-drain-delete.http
+        expect: delete

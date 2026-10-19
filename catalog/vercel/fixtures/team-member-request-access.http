@@ -1,0 +1,7 @@
+# description: Request to join team team_acme
+POST /v1/teams/team_acme/request HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"joinedFrom":{"origin":"import"}}

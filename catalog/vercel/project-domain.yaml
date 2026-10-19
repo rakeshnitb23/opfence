@@ -13,3 +13,64 @@ operations:
       - fixture: fixtures/project-domain-delete.http
         expect: delete
         resource: shop-web
+
+  - id: vercel.project-domain.add
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/domains" } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Serve project {idOrName} on domain {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Puts the project on a public domain; production custom domains are exempt
+      from Standard Deployment Protection.
+    tests:
+      - fixture: fixtures/project-domain-add.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel.project-domain.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/domains/{domain}" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Change domain {domain} of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-domain-update.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.project-domain.move
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/domains/{domain}/move" } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Move domain {domain} from project {idOrName} to project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The other project is then served on the domain.
+    tests:
+      - fixture: fixtures/project-domain-move.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel.project-domain.verify
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/domains/{domain}/verify" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Verify domain {domain} of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-domain-verify.http
+        expect: write
+        resource: shop-web

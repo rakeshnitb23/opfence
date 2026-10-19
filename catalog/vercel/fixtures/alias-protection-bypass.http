@@ -1,0 +1,7 @@
+# description: Change the protection bypass of URL shop-web-git-main.vercel.app
+PATCH /aliases/shop-web-git-main.vercel.app/protection-bypass HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"ttl":86400}

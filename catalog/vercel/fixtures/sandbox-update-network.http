@@ -1,0 +1,7 @@
+# description: Change sandbox agent-box
+PATCH /v2/sandboxes/agent-box HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"networkPolicy":{"mode":"allow-all"}}

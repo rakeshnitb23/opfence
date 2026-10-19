@@ -149,3 +149,128 @@ operations:
     tests:
       - fixture: fixtures/project-transfer-accept.http
         expect: access
+
+  - id: vercel.project.read
+    match: { rest: { method: GET, path: "/{version}/projects/{idOrName}" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Read project {idOrName} with its bypass secrets"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Each project's protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). The secrets
+      are map keys, which a response redact cannot hide, so the read stays
+      credential.
+    tests:
+      - fixture: fixtures/project-read.http
+        expect: credential
+        resource: shop-web
+
+  - id: vercel.project.list
+    match: { rest: { method: GET, path: "/{version}/projects" } }
+    class: credential
+    card: "List projects with their bypass secrets"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Each project's protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). The secrets
+      are map keys, which a response redact cannot hide, so the read stays
+      credential.
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: credential
+
+  - id: vercel.project.trace-read
+    match: { rest: { method: GET, path: "/{version}/projects/traces" } }
+    class: read
+    card: "Read a request trace"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Listed so the project read rule does not claim this path.
+    tests:
+      - fixture: fixtures/project-trace-read.http
+        expect: read
+
+  - id: vercel.project.trace-session
+    match: { rest: { method: POST, path: "/{version}/projects/traces/session" } }
+    class: credential
+    card: "Mint a trace session token for {body.hostname}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Returns a short-lived JWT that the Vercel proxy accepts for that
+      deployment.
+    tests:
+      - fixture: fixtures/project-trace-session.http
+        expect: credential
+
+  - id: vercel.project.avatar-upload
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/avatar" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Upload an avatar for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-avatar-upload.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.project.avatar-delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}/avatar" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Remove the avatar of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Clears the chosen avatar; the stored image is kept.
+    tests:
+      - fixture: fixtures/project-avatar-delete.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.project.static-ips
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/shared-connect-links" } }
+    class: money
+    resource: { arg: idOrName, kind: project }
+    card: "Configure Static IPs for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Static IPs are a paid add-on.
+    tests:
+      - fixture: fixtures/project-static-ips.http
+        expect: money
+        resource: shop-web
+
+  - id: vercel.project.rollback-description
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectId}/rollback/{deploymentId}/update-description" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Change the reason given for rolling project {projectId} back to {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-rollback-description.http
+        expect: write
+        resource: prj_shop

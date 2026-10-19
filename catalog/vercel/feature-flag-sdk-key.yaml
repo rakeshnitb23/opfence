@@ -1,0 +1,31 @@
+# Vercel REST API: feature-flag-sdk-key
+operations:
+  - id: vercel.feature-flag-sdk-key.create
+    match: { rest: { method: PUT, path: "/{version}/projects/{projectIdOrName}/feature-flags/sdk-keys" } }
+    class: credential
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create a {body.sdkKeyType} Flags SDK key for project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The response carries the key in clear text, once.
+    tests:
+      - fixture: fixtures/feature-flag-sdk-key-create.http
+        expect: credential
+        resource: shop-web
+
+  - id: vercel.feature-flag-sdk-key.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{projectIdOrName}/feature-flags/sdk-keys/{hashKey}" } }
+    class: access
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Revoke Flags SDK key {hashKey} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-sdk-key-delete.http
+        expect: access
+        resource: shop-web

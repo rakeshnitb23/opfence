@@ -1,0 +1,7 @@
+# description: Submit an invoice for installation icfg_1
+POST /v1/installations/icfg_1/billing/invoices HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"invoiceDate":"2026-10-19T00:00:00Z","period":{},"items":[]}

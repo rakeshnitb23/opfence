@@ -13,3 +13,25 @@ operations:
       - fixture: fixtures/blob-store-delete.http
         expect: irreversible
         resource: store_assets
+
+  - id: vercel.blob-store.create
+    match: { rest: { method: POST, path: "/storage/stores/blob" } }
+    class: money
+    when:
+      - if: { arg: body.access, equals: "public" }
+        class: money
+      - if: { arg: body.access, equals: "public" }
+        class: access
+    card: "Create Blob store {body.name} with {body.access} access"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Blob storage is billed. A public store serves its files to anyone with the
+      URL; the money condition repeats so a public store is both.
+    tests:
+      - fixture: fixtures/blob-store-create.http
+        expect: money
+      - fixture: fixtures/blob-store-create-public.http
+        expect: access

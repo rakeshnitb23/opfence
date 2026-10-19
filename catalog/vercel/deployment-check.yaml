@@ -1,0 +1,43 @@
+# Vercel REST API: deployment-check
+operations:
+  - id: vercel.deployment-check.create
+    match: { rest: { method: POST, path: "/{version}/deployments/{deploymentId}/checks" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Create check {body.name} on deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-check-create.http
+        expect: write
+        resource: dpl_123
+
+  - id: vercel.deployment-check.update
+    match: { rest: { method: PATCH, path: "/{version}/deployments/{deploymentId}/checks/{checkId}" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Report check {checkId} on deployment {deploymentId} as {body.conclusion}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-check-update.http
+        expect: write
+        resource: dpl_123
+
+  - id: vercel.deployment-check.rerequest
+    match: { rest: { method: POST, path: "/{version}/deployments/{deploymentId}/checks/{checkId}/rerequest" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Run check {checkId} on deployment {deploymentId} again"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-check-rerequest.http
+        expect: write
+        resource: dpl_123

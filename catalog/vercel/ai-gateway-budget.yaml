@@ -11,3 +11,43 @@ operations:
     tests:
       - fixture: fixtures/ai-gateway-budget-set.http
         expect: money
+
+  - id: vercel.ai-gateway-budget.archive
+    match: { rest: { method: DELETE, path: "/ai-gateway/budgets" } }
+    class: money
+    card: "Archive the {query.scopeType} AI Gateway budget"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Archiving a budget removes the spending cap it enforced.
+    tests:
+      - fixture: fixtures/ai-gateway-budget-archive.http
+        expect: money
+
+  - id: vercel.ai-gateway-budget.default-set
+    match: { rest: { method: PUT, path: "/ai-gateway/budgets/defaults" } }
+    class: money
+    card: "Set the default AI Gateway budget for scope {body.scopeType}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/ai-gateway-budget-default-set.http
+        expect: money
+
+  - id: vercel.ai-gateway-budget.default-archive
+    match: { rest: { method: DELETE, path: "/ai-gateway/budgets/defaults" } }
+    class: money
+    card: "Archive the default AI Gateway budget for scope {query.scopeType}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Archiving a default budget removes the spending cap new scopes would get.
+    tests:
+      - fixture: fixtures/ai-gateway-budget-default-archive.http
+        expect: money

@@ -1,0 +1,7 @@
+# description: Query observability metric requests
+POST /v2/observability/query HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"metric":"requests","startTime":"2026-10-18T00:00:00Z","endTime":"2026-10-19T00:00:00Z"}

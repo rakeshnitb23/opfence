@@ -1,0 +1,7 @@
+# description: Look up Remote Cache artifacts
+POST /v8/artifacts HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"hashes":["12HKQaOmR5t5Uy6vdcQsNIiZgHGB"]}

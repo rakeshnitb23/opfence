@@ -1,0 +1,5 @@
+# description: Delete integration log drain ld_1
+DELETE /v1/integrations/log-drains/ld_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

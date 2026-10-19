@@ -1,0 +1,7 @@
+# description: Open a pull request with Vercel CI tasks from analysis ana_1
+POST /v1/vercel-ci/task-analyses/ana_1/pull-request HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"tasks":[]}

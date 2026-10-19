@@ -1,0 +1,31 @@
+# Vercel REST API: observability
+operations:
+  - id: vercel.observability.project-config
+    match: { rest: { method: PUT, path: "/{version}/observability/manage/configuration/projects/{projectIdOrName}" } }
+    class: money
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Set Observability Plus disabled={body.disabled} for project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Observability Plus is billed per event.
+    tests:
+      - fixture: fixtures/observability-project-config.http
+        expect: money
+        resource: shop-web
+
+  - id: vercel.observability.query
+    match: { rest: { method: POST, path: "/{version}/observability/query" } }
+    class: read
+    card: "Query observability metric {body.metric}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A query sent as POST; it changes nothing.
+    tests:
+      - fixture: fixtures/observability-query.http
+        expect: read

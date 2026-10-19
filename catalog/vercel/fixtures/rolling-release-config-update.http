@@ -1,0 +1,7 @@
+# description: Change rolling release settings of project shop-web
+PATCH /v1/projects/shop-web/rolling-release/config HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"enabled":true,"stages":[{"targetPercentage":10},{"targetPercentage":100}]}

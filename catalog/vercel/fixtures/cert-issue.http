@@ -1,0 +1,7 @@
+# description: Issue a certificate for ["shop.example.com"]
+POST /v8/certs HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"cns":["shop.example.com"]}

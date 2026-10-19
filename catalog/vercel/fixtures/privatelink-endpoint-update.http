@@ -1,0 +1,7 @@
+# description: Change PrivateLink endpoint ple_1
+PATCH /v1/networking/privatelink/endpoints/ple_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"enablePrivateDns":true}

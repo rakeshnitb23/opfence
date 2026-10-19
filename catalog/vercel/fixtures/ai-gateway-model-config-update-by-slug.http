@@ -1,0 +1,7 @@
+# description: Change AI Gateway virtual model config fast
+PATCH /ai-gateway/virtual-model-configs/fast HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"disallowPromptTraining":false}

@@ -1,0 +1,5 @@
+# description: Turn off rolling releases for project shop-web
+DELETE /v1/projects/shop-web/rolling-release/config HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

@@ -1,0 +1,104 @@
+# Vercel REST API: installation
+operations:
+  - id: vercel.installation.update
+    match: { rest: { method: PATCH, path: "/{version}/installations/{integrationConfigurationId}" } }
+    class: write
+    when:
+      - if: { arg: body.billingPlan, present: true }
+        class: money
+      - if: { arg: body.status, in: [suspended, uninstalled] }
+        class: delete
+    card: "Change integration installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API. A new billing plan changes what the customer pays; suspended
+      or uninstalled status stops the integration for the customer.
+    tests:
+      - fixture: fixtures/installation-update.http
+        expect: write
+      - fixture: fixtures/installation-update-plan.http
+        expect: money
+
+  - id: vercel.installation.event
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/events" } }
+    class: write
+    card: "Notify Vercel of a change to installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/installation-event.http
+        expect: write
+
+  - id: vercel.installation.billing-submit
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/billing" } }
+    class: money
+    card: "Submit billing and usage data for installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API; Vercel bills the customer from what the partner submits.
+    tests:
+      - fixture: fixtures/installation-billing-submit.http
+        expect: money
+
+  - id: vercel.installation.invoice-submit
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/billing/invoices" } }
+    class: money
+    card: "Submit an invoice for installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API; Vercel bills the customer from what the partner submits.
+    tests:
+      - fixture: fixtures/installation-invoice-submit.http
+        expect: money
+
+  - id: vercel.installation.finalize
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/billing/finalize" } }
+    class: money
+    card: "Finalize billing of installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API; declares that no more invoices will be sent so the uninstall
+      can proceed.
+    tests:
+      - fixture: fixtures/installation-finalize.http
+        expect: money
+
+  - id: vercel.installation.invoice-action
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/billing/invoices/{invoiceId}/actions" } }
+    class: money
+    card: "Request {body.action} of invoice {invoiceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/installation-invoice-action.http
+        expect: money
+
+  - id: vercel.installation.balance-submit
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/billing/balance" } }
+    class: money
+    card: "Submit prepayment balances for installation {integrationConfigurationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API; Vercel bills the customer from what the partner submits.
+    tests:
+      - fixture: fixtures/installation-balance-submit.http
+        expect: money

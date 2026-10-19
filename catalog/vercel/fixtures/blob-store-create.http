@@ -1,0 +1,7 @@
+# description: Create Blob store assets with private access
+POST /storage/stores/blob HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"assets","region":"iad1","access":"private"}

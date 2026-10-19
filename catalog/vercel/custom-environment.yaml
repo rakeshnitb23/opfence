@@ -13,3 +13,31 @@ operations:
       - fixture: fixtures/custom-environment-delete.http
         expect: delete
         resource: shop-web
+
+  - id: vercel.custom-environment.create
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/custom-environments" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Create custom environment {body.slug} in project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/custom-environment-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.custom-environment.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/custom-environments/{environmentSlugOrId}" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Change custom environment {environmentSlugOrId} of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/custom-environment-update.http
+        expect: write
+        resource: shop-web

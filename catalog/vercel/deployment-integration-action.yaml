@@ -1,0 +1,15 @@
+# Vercel REST API: deployment-integration-action
+operations:
+  - id: vercel.deployment-integration-action.update
+    match: { rest: { method: PATCH, path: "/{version}/deployments/{deploymentId}/integrations/{integrationConfigurationId}/resources/{resourceId}/actions/{action}" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Report integration action {action} on deployment {deploymentId} as {body.status}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/deployment-integration-action-update.http
+        expect: write
+        resource: dpl_123

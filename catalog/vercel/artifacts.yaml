@@ -13,3 +13,44 @@ operations:
     tests:
       - fixture: fixtures/artifacts-delete-all.http
         expect: delete
+
+  - id: vercel.artifacts.query
+    match: { rest: { method: POST, path: "/{version}/artifacts" } }
+    class: read
+    card: "Look up Remote Cache artifacts"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A lookup sent as POST; it changes nothing.
+    tests:
+      - fixture: fixtures/artifacts-query.http
+        expect: read
+
+  - id: vercel.artifacts.record-events
+    match: { rest: { method: POST, path: "/{version}/artifacts/events" } }
+    class: write
+    card: "Record Remote Cache usage events"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/artifacts-record-events.http
+        expect: write
+
+  - id: vercel.artifacts.upload
+    match: { rest: { method: PUT, path: "/{version}/artifacts/{hash}" } }
+    class: write
+    card: "Upload Remote Cache artifact {hash}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Later builds restore the artifact instead of building, so a bad one reaches
+      deployments.
+    tests:
+      - fixture: fixtures/artifacts-upload.http
+        expect: write

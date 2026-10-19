@@ -1,0 +1,122 @@
+# Vercel REST API: vcr-image
+operations:
+  - id: vercel.vcr-image.delete
+    match: { rest: { method: DELETE, path: "/{version}/vcr/repository/{idOrName}/images/{imageId}" } }
+    class: irreversible
+    resource: { arg: idOrName, kind: vcr-repository }
+    card: "Delete image {imageId} from container repository {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-image-delete.http
+        expect: irreversible
+        resource: web-images
+
+  - id: vercel.vcr-image.blob-upload-start
+    match: { rest: { method: POST, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/blobs/uploads" } }
+    class: write
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Start a blob upload to {teamSlug}/{projectSlug}/{repositoryName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      OCI distribution API; /v2 is the registry protocol version, not a Vercel
+      API version.
+    tests:
+      - fixture: fixtures/vcr-image-blob-upload-start.http
+        expect: write
+        resource: web-images
+
+  - id: vercel.vcr-image.blob-upload-chunk
+    match: { rest: { method: PATCH, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/blobs/uploads/{uuid}" } }
+    class: write
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Upload a blob chunk to {repositoryName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-image-blob-upload-chunk.http
+        expect: write
+        resource: web-images
+
+  - id: vercel.vcr-image.blob-upload-complete
+    match: { rest: { method: PUT, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/blobs/uploads/{uuid}" } }
+    class: write
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Complete a blob upload to {repositoryName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-image-blob-upload-complete.http
+        expect: write
+        resource: web-images
+
+  - id: vercel.vcr-image.blob-upload-cancel
+    match: { rest: { method: DELETE, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/blobs/uploads/{uuid}" } }
+    class: write
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Cancel blob upload {uuid} to {repositoryName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-image-blob-upload-cancel.http
+        expect: write
+        resource: web-images
+
+  - id: vercel.vcr-image.blob-delete
+    match: { rest: { method: DELETE, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/blobs/{digest}" } }
+    class: irreversible
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Delete blob {digest} from {repositoryName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Vercel does not support blob deletion today; if it did, every image using
+      the blob would break.
+    tests:
+      - fixture: fixtures/vcr-image-blob-delete.http
+        expect: irreversible
+        resource: web-images
+
+  - id: vercel.vcr-image.manifest-push
+    match: { rest: { method: PUT, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/manifests/{reference}" } }
+    class: write
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Push image {repositoryName}:{reference}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Pushing to an existing tag moves it; the previous image stays reachable by
+      digest.
+    tests:
+      - fixture: fixtures/vcr-image-manifest-push.http
+        expect: write
+        resource: web-images
+
+  - id: vercel.vcr-image.manifest-delete
+    match: { rest: { method: DELETE, path: "/v2/{teamSlug}/{projectSlug}/{repositoryName}/manifests/{reference}" } }
+    class: irreversible
+    resource: { arg: repositoryName, kind: vcr-repository }
+    card: "Delete image {repositoryName}@{reference}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/vcr-image-manifest-delete.http
+        expect: irreversible
+        resource: web-images

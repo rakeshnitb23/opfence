@@ -1,0 +1,5 @@
+# description: Archive the default AI Gateway budget for scope project
+DELETE /ai-gateway/budgets/defaults?scopeType=project HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

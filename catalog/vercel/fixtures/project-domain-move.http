@@ -1,0 +1,7 @@
+# description: Move domain shop.example.com from project shop-web to project prj_other
+POST /v1/projects/shop-web/domains/shop.example.com/move HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_other"}

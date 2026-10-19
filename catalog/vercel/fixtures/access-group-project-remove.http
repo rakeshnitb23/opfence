@@ -1,0 +1,5 @@
+# description: Remove access group ag_admins from project prj_shop
+DELETE /v1/access-groups/ag_admins/projects/prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

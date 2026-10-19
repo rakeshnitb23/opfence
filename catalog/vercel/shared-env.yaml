@@ -43,3 +43,36 @@ operations:
     tests:
       - fixture: fixtures/shared-env-delete.http
         expect: irreversible
+
+  - id: vercel.shared-env.update
+    match: { rest: { method: PATCH, path: "/{version}/env" } }
+    class: credential
+    card: "Change shared variables"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Updates are keyed by variable id, so the rule cannot see each variable's
+      type; shared variables are usually encrypted, so every update is treated as
+      setting a secret.
+    tests:
+      - fixture: fixtures/shared-env-update.http
+        expect: credential
+
+  - id: vercel.shared-env.unlink
+    match: { rest: { method: PATCH, path: "/{version}/env/{id}/unlink/{projectId}" } }
+    class: delete
+    resource: { arg: projectId, kind: project }
+    card: "Disconnect shared variable {id} from project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The project loses the variable on its next deployment; the variable stays
+      and can be linked again.
+    tests:
+      - fixture: fixtures/shared-env-unlink.http
+        expect: delete
+        resource: prj_shop
