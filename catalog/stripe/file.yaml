@@ -1,0 +1,15 @@
+# Stripe REST API: file
+operations:
+  - id: stripe.file.create
+    match: { rest: { method: POST, path: "/v1/files" } }
+    class: write
+    card: "Upload a file for {body.purpose}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Served on files.stripe.com.
+    tests:
+      - fixture: fixtures/file-create.http
+        expect: write

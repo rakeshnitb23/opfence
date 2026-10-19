@@ -1,0 +1,5 @@
+# description: Create an Express dashboard login link for acct_1ShopConnect01
+POST /v1/accounts/acct_1ShopConnect01/login_links HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Create Terminal location Main St store
+POST /v1/terminal/locations HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+display_name=Main%20St%20store&address[line1]=1%20Main%20St&address[city]=San%20Francisco&address[state]=CA&address[postal_code]=94111&address[country]=US

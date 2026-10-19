@@ -1,0 +1,7 @@
+# description: Reject test card design ipcd_ShopBlack0001
+POST /v1/test_helpers/issuing/personalization_designs/ipcd_ShopBlack0001/reject HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+rejection_reasons[card_logo][0]=geographic_location

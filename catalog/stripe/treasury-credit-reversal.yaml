@@ -1,0 +1,13 @@
+# Stripe REST API: treasury credit reversal
+operations:
+  - id: stripe.treasury-credit-reversal.create
+    match: { rest: { method: POST, path: "/v1/treasury/credit_reversals" } }
+    class: money
+    card: "Reverse received credit {body.received_credit}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-credit-reversal-create.http
+        expect: money

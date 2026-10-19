@@ -1,0 +1,59 @@
+# Stripe REST API: customer
+operations:
+  - id: stripe.customer.create
+    match: { rest: { method: POST, path: "/v1/customers" } }
+    class: write
+    when:
+      - if: { arg: body.balance, present: true }
+        class: money
+    card: "Create customer {body.email}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A starting balance is a credit or debit on the customer's next invoices.
+    tests:
+      - fixture: fixtures/customer-create.http
+        expect: write
+      - fixture: fixtures/customer-create-balance.http
+        expect: money
+
+  - id: stripe.customer.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}" } }
+    class: irreversible
+    resource: { arg: customer, kind: customer }
+    card: "Delete customer {customer} with its payment methods and subscriptions"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe deletes the customer's payment methods and cancels its
+      subscriptions; none of it can be restored.
+    tests:
+      - fixture: fixtures/customer-delete.http
+        expect: irreversible
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}" } }
+    class: write
+    when:
+      - if: { arg: body.balance, present: true }
+        class: money
+    resource: { arg: customer, kind: customer }
+    card: "Update customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Setting balance credits or debits the customer's next invoices.
+    tests:
+      - fixture: fixtures/customer-update.http
+        expect: write
+        resource: cus_ShopAcme0001
+      - fixture: fixtures/customer-update-balance.http
+        expect: money
+        resource: cus_ShopAcme0001

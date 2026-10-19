@@ -1,0 +1,5 @@
+# description: Decline card purchase iauth_ShopPurchase01
+POST /v1/issuing/authorizations/iauth_ShopPurchase01/decline HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

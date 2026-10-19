@@ -1,0 +1,41 @@
+# Stripe REST API: three d secure authentication
+operations:
+  - id: stripe.three-d-secure-authentication.create
+    match: { rest: { method: POST, path: "/v1/three_d_secure/authentications" } }
+    class: write
+    card: "Start a 3D Secure authentication"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/three-d-secure-authentication-create.http
+        expect: write
+
+  - id: stripe.three-d-secure-authentication.cancel
+    match: { rest: { method: POST, path: "/v1/three_d_secure/authentications/{authentication}/cancel" } }
+    class: write
+    resource: { arg: authentication, kind: authentication }
+    card: "Cancel 3D Secure authentication {authentication}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/three-d-secure-authentication-cancel.http
+        expect: write
+        resource: threeds_ShopAuth0001
+
+  - id: stripe.three-d-secure-authentication.submit
+    match: { rest: { method: POST, path: "/v1/three_d_secure/authentications/{authentication}/submit" } }
+    class: write
+    resource: { arg: authentication, kind: authentication }
+    card: "Submit 3D Secure authentication {authentication}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/three-d-secure-authentication-submit.http
+        expect: write
+        resource: threeds_ShopAuth0001

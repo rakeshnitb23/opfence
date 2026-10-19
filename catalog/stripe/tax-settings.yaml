@@ -1,0 +1,13 @@
+# Stripe REST API: tax settings
+operations:
+  - id: stripe.tax-settings.update
+    match: { rest: { method: POST, path: "/v1/tax/settings" } }
+    class: write
+    card: "Change tax settings"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/tax-settings-update.http
+        expect: write

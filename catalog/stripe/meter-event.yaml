@@ -1,0 +1,15 @@
+# Stripe REST API: meter event
+operations:
+  - id: stripe.meter-event.create
+    match: { rest: { method: POST, path: "/v1/billing/meter_events" } }
+    class: money
+    card: "Record usage {body.event_name} for a customer"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Usage events decide what customers on metered prices are billed.
+    tests:
+      - fixture: fixtures/meter-event-create.http
+        expect: money

@@ -1,0 +1,15 @@
+# Stripe REST API: sigma saved query
+operations:
+  - id: stripe.sigma-saved-query.update
+    match: { rest: { method: POST, path: "/v1/sigma/saved_queries/{id}" } }
+    class: write
+    resource: { arg: id, kind: saved_query }
+    card: "Update Sigma query {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/sigma-saved-query-update.http
+        expect: write
+        resource: sigsq_ShopRevenue01

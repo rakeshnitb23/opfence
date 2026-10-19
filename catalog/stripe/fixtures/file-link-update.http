@@ -1,0 +1,7 @@
+# description: Change public file link link_ShopReceipt01
+POST /v1/file_links/link_ShopReceipt01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+expires_at=now

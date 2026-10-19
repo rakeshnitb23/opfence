@@ -1,0 +1,16 @@
+# Stripe MCP server: payment intent
+operations:
+  - id: stripe-mcp.payment-intent.list
+    match: { mcp: { tool: list_payment_intents } }
+    class: read
+    resource: { arg: customer, kind: customer }
+    card: "List payments of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/payment-intent-list.http
+        expect: read
+        resource: cus_ShopAcme0001

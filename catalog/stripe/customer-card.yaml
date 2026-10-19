@@ -1,0 +1,46 @@
+# Stripe REST API: customer card
+operations:
+  - id: stripe.customer-card.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/cards" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Attach a payment source to customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-card-create.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-card.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/cards/{id}" } }
+    class: irreversible
+    resource: { arg: customer, kind: customer }
+    card: "Delete payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a detached or deleted payment method cannot be
+      used again or re-attached; the customer has to enter it again.
+    tests:
+      - fixture: fixtures/customer-card-delete.http
+        expect: irreversible
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-card.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/cards/{id}" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Update payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-card-update.http
+        expect: write
+        resource: cus_ShopAcme0001

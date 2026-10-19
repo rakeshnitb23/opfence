@@ -1,0 +1,31 @@
+# Stripe MCP server: resource
+operations:
+  - id: stripe-mcp.resource.search
+    match: { mcp: { tool: search_stripe_resources } }
+    class: read
+    card: "Search Stripe objects for {query}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://docs.stripe.com/mcp
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Listed for the hosted server at docs.stripe.com/mcp, which this machine
+      cannot reach; the published npm source (0.7.12) does not define it and
+      newer packages fetch tools from mcp.stripe.com at run time, so the name
+      and arguments are unverified.
+
+  - id: stripe-mcp.resource.fetch
+    match: { mcp: { tool: fetch_stripe_resources } }
+    class: read
+    card: "Fetch Stripe object {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://docs.stripe.com/mcp
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Listed for the hosted server at docs.stripe.com/mcp, which this machine
+      cannot reach; the published npm source (0.7.12) does not define it and
+      newer packages fetch tools from mcp.stripe.com at run time, so the name
+      and arguments are unverified.

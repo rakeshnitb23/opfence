@@ -1,0 +1,7 @@
+# description: Record a payment made outside Stripe
+POST /v1/payment_records/report_payment HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amount_requested[value]=2000&amount_requested[currency]=usd&initiated_at=1760000000&payment_method_details[payment_method]=pm_ShopVisa0001

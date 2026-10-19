@@ -1,0 +1,44 @@
+# Stripe REST API: checkout session
+operations:
+  - id: stripe.checkout-session.create
+    match: { rest: { method: POST, path: "/v1/checkout/sessions" } }
+    class: write
+    card: "Create a Checkout session ({body.mode})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Creates a payment page; money moves only when the customer pays. Its
+      client_secret is scoped to this one session.
+    tests:
+      - fixture: fixtures/checkout-session-create.http
+        expect: write
+
+  - id: stripe.checkout-session.update
+    match: { rest: { method: POST, path: "/v1/checkout/sessions/{session}" } }
+    class: write
+    resource: { arg: session, kind: session }
+    card: "Update Checkout session {session}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/checkout-session-update.http
+        expect: write
+        resource: cs_ShopCheckout0001
+
+  - id: stripe.checkout-session.expire
+    match: { rest: { method: POST, path: "/v1/checkout/sessions/{session}/expire" } }
+    class: write
+    resource: { arg: session, kind: session }
+    card: "Expire Checkout session {session}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/checkout-session-expire.http
+        expect: write
+        resource: cs_ShopCheckout0001

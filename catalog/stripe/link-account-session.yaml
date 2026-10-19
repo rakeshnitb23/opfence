@@ -1,0 +1,15 @@
+# Stripe REST API: link account session
+operations:
+  - id: stripe.link-account-session.create
+    match: { rest: { method: POST, path: "/v1/link_account_sessions" } }
+    class: write
+    card: "Start a bank account linking session"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Older name of financial_connections/sessions.
+    tests:
+      - fixture: fixtures/link-account-session-create.http
+        expect: write

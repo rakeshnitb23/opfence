@@ -1,0 +1,8 @@
+# description: Send a batch of usage events
+POST /v2/billing/meter_event_stream HTTP/1.1
+Host: meter-events.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+Content-Type: application/json
+
+{"events":[{"event_name":"api_requests","payload":{"stripe_customer_id":"cus_ShopAcme0001","value":"25"}}]}

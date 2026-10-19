@@ -1,0 +1,27 @@
+# Stripe MCP server: customer
+operations:
+  - id: stripe-mcp.customer.create
+    match: { mcp: { tool: create_customer } }
+    class: write
+    card: "Create customer {name} ({email})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/customer-create.http
+        expect: write
+
+  - id: stripe-mcp.customer.list
+    match: { mcp: { tool: list_customers } }
+    class: read
+    card: "List customers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/customer-list.http
+        expect: read

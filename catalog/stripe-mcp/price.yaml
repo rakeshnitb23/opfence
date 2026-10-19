@@ -1,0 +1,31 @@
+# Stripe MCP server: price
+operations:
+  - id: stripe-mcp.price.create
+    match: { mcp: { tool: create_price } }
+    class: write
+    resource: { arg: product, kind: product }
+    card: "Create price {unit_amount} {currency} for product {product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/price-create.http
+        expect: write
+        resource: prod_ShopPro0001
+
+  - id: stripe-mcp.price.list
+    match: { mcp: { tool: list_prices } }
+    class: read
+    resource: { arg: product, kind: product }
+    card: "List prices of product {product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/price-list.http
+        expect: read
+        resource: prod_ShopPro0001

@@ -1,0 +1,32 @@
+# Stripe REST API: file link
+operations:
+  - id: stripe.file-link.create
+    match: { rest: { method: POST, path: "/v1/file_links" } }
+    class: access
+    card: "Create a public link to file {body.file}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Anyone with the URL can download the file (dispute evidence, identity
+      documents).
+    tests:
+      - fixture: fixtures/file-link-create.http
+        expect: access
+
+  - id: stripe.file-link.update
+    match: { rest: { method: POST, path: "/v1/file_links/{link}" } }
+    class: access
+    resource: { arg: link, kind: file_link }
+    card: "Change public file link {link}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can extend how long the file stays public.
+    tests:
+      - fixture: fixtures/file-link-update.http
+        expect: access
+        resource: link_ShopReceipt01

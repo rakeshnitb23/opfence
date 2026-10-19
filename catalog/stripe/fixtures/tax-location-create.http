@@ -1,0 +1,7 @@
+# description: Create tax location
+POST /v1/tax/locations HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+type=performance&address[country]=US&address[postal_code]=94111&description=Concert%20hall

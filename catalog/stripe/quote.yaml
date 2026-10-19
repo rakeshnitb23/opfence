@@ -1,0 +1,71 @@
+# Stripe REST API: quote
+operations:
+  - id: stripe.quote.create
+    match: { rest: { method: POST, path: "/v1/quotes" } }
+    class: write
+    card: "Create a quote for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/quote-create.http
+        expect: write
+
+  - id: stripe.quote.update
+    match: { rest: { method: POST, path: "/v1/quotes/{quote}" } }
+    class: write
+    resource: { arg: quote, kind: quote }
+    card: "Update quote {quote}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/quote-update.http
+        expect: write
+        resource: qt_ShopAnnual0001
+
+  - id: stripe.quote.accept
+    match: { rest: { method: POST, path: "/v1/quotes/{quote}/accept" } }
+    class: money
+    resource: { arg: quote, kind: quote }
+    card: "Accept quote {quote}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Accepting creates the invoice or subscription and starts billing.
+    tests:
+      - fixture: fixtures/quote-accept.http
+        expect: money
+        resource: qt_ShopAnnual0001
+
+  - id: stripe.quote.cancel
+    match: { rest: { method: POST, path: "/v1/quotes/{quote}/cancel" } }
+    class: write
+    resource: { arg: quote, kind: quote }
+    card: "Cancel quote {quote}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/quote-cancel.http
+        expect: write
+        resource: qt_ShopAnnual0001
+
+  - id: stripe.quote.finalize
+    match: { rest: { method: POST, path: "/v1/quotes/{quote}/finalize" } }
+    class: write
+    resource: { arg: quote, kind: quote }
+    card: "Finalize quote {quote}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/quote-finalize.http
+        expect: write
+        resource: qt_ShopAnnual0001

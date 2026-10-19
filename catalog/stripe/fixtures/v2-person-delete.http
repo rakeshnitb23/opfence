@@ -1,0 +1,6 @@
+# description: Remove person person_ShopJane0001 from account acct_1ShopConnect01
+DELETE /v2/core/accounts/acct_1ShopConnect01/persons/person_ShopJane0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+

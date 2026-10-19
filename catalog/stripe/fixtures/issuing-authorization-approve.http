@@ -1,0 +1,7 @@
+# description: Approve card purchase iauth_ShopPurchase01
+POST /v1/issuing/authorizations/iauth_ShopPurchase01/approve HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amount=4200

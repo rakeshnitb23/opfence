@@ -1,0 +1,7 @@
+# description: Start a 3D Secure authentication
+POST /v1/three_d_secure/authentications HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+payment_method=pm_ShopVisa0001&amount=2000&currency=usd&return_url=https%3A%2F%2Fshop.example.com%2F3ds

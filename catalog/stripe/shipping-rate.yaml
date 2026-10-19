@@ -1,0 +1,27 @@
+# Stripe REST API: shipping rate
+operations:
+  - id: stripe.shipping-rate.create
+    match: { rest: { method: POST, path: "/v1/shipping_rates" } }
+    class: write
+    card: "Create shipping rate {body.display_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/shipping-rate-create.http
+        expect: write
+
+  - id: stripe.shipping-rate.update
+    match: { rest: { method: POST, path: "/v1/shipping_rates/{shipping_rate_token}" } }
+    class: write
+    resource: { arg: shipping_rate_token, kind: shipping_rate }
+    card: "Update shipping rate {shipping_rate_token}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/shipping-rate-update.http
+        expect: write
+        resource: shr_ShopGround0001

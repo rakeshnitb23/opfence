@@ -1,0 +1,18 @@
+# Stripe REST API: billing portal session
+operations:
+  - id: stripe.billing-portal-session.create
+    match: { rest: { method: POST, path: "/v1/billing_portal/sessions" } }
+    class: credential
+    card: "Create a customer portal login for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The URL signs its holder into the customer's billing portal, where
+      payment methods and subscriptions can be changed. The response hands out
+      a secret or URL that gives its holder access to the account or customer
+      beyond one payment.
+    tests:
+      - fixture: fixtures/billing-portal-session-create.http
+        expect: credential

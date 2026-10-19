@@ -1,0 +1,29 @@
+# Stripe REST API: application fee refund
+operations:
+  - id: stripe.application-fee-refund.update
+    match: { rest: { method: POST, path: "/v1/application_fees/{fee}/refunds/{id}" } }
+    class: write
+    resource: { arg: id, kind: fee_refund }
+    card: "Update application fee refund {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/application-fee-refund-update.http
+        expect: write
+        resource: fr_ShopFeeRefund01
+
+  - id: stripe.application-fee-refund.create
+    match: { rest: { method: POST, path: "/v1/application_fees/{id}/refunds" } }
+    class: money
+    resource: { arg: id, kind: application_fee }
+    card: "Refund application fee {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/application-fee-refund-create.http
+        expect: money
+        resource: fee_ShopFee0001

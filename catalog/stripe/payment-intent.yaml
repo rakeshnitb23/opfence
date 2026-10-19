@@ -1,0 +1,124 @@
+# Stripe REST API: payment intent
+operations:
+  - id: stripe.payment-intent.create
+    match: { rest: { method: POST, path: "/v1/payment_intents" } }
+    class: write
+    when:
+      - if: { arg: body.confirm, equals: "true" }
+        class: money
+    card: "Create a payment of {body.amount} {body.currency} for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Without confirm=true nothing is charged until the PaymentIntent is
+      confirmed. Its client_secret is scoped to this one payment.
+    tests:
+      - fixture: fixtures/payment-intent-create.http
+        expect: write
+      - fixture: fixtures/payment-intent-create-confirm.http
+        expect: money
+
+  - id: stripe.payment-intent.update
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}" } }
+    class: write
+    resource: { arg: intent, kind: payment_intent }
+    card: "Update payment {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Updates apply before confirmation; confirm and capture are classified
+      separately.
+    tests:
+      - fixture: fixtures/payment-intent-update.http
+        expect: write
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.apply-customer-balance
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/apply_customer_balance" } }
+    class: money
+    resource: { arg: intent, kind: payment_intent }
+    card: "Pay {intent} from the customer's cash balance"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-intent-apply-customer-balance.http
+        expect: money
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.cancel
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/cancel" } }
+    class: money
+    resource: { arg: intent, kind: payment_intent }
+    card: "Cancel payment {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Releases any authorized funds, which cannot be captured afterwards.
+    tests:
+      - fixture: fixtures/payment-intent-cancel.http
+        expect: money
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.capture
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/capture" } }
+    class: money
+    resource: { arg: intent, kind: payment_intent }
+    card: "Capture payment {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-intent-capture.http
+        expect: money
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.confirm
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/confirm" } }
+    class: money
+    resource: { arg: intent, kind: payment_intent }
+    card: "Confirm payment {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-intent-confirm.http
+        expect: money
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.increment-authorization
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/increment_authorization" } }
+    class: money
+    resource: { arg: intent, kind: payment_intent }
+    card: "Raise the authorized amount of {intent} to {body.amount}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-intent-increment-authorization.http
+        expect: money
+        resource: pi_3ShopPay0001
+
+  - id: stripe.payment-intent.verify-microdeposits
+    match: { rest: { method: POST, path: "/v1/payment_intents/{intent}/verify_microdeposits" } }
+    class: write
+    resource: { arg: intent, kind: payment_intent }
+    card: "Verify microdeposits for payment {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-intent-verify-microdeposits.http
+        expect: write
+        resource: pi_3ShopPay0001

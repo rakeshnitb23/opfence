@@ -1,0 +1,43 @@
+# Stripe REST API: issuing dispute
+operations:
+  - id: stripe.issuing-dispute.create
+    match: { rest: { method: POST, path: "/v1/issuing/disputes" } }
+    class: write
+    card: "Open a dispute on card transaction {body.transaction}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-dispute-create.http
+        expect: write
+
+  - id: stripe.issuing-dispute.update
+    match: { rest: { method: POST, path: "/v1/issuing/disputes/{dispute}" } }
+    class: write
+    resource: { arg: dispute, kind: dispute }
+    card: "Update card dispute {dispute}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-dispute-update.http
+        expect: write
+        resource: idp_ShopDispute0001
+
+  - id: stripe.issuing-dispute.submit
+    match: { rest: { method: POST, path: "/v1/issuing/disputes/{dispute}/submit" } }
+    class: money
+    resource: { arg: dispute, kind: dispute }
+    card: "Submit card dispute {dispute} to the network"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A claim for funds; once submitted the evidence cannot change.
+    tests:
+      - fixture: fixtures/issuing-dispute-submit.http
+        expect: money
+        resource: idp_ShopDispute0001

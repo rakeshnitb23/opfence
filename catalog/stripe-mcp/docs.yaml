@@ -1,0 +1,16 @@
+# Stripe MCP server: docs
+operations:
+  - id: stripe-mcp.docs.search
+    match: { mcp: { tool: search_stripe_documentation } }
+    class: read
+    card: "Search the Stripe docs for {question}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Answers from Stripe's documentation; touches no account data.
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read

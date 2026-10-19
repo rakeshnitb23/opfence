@@ -1,0 +1,27 @@
+# Stripe REST API: treasury inbound transfer
+operations:
+  - id: stripe.treasury-inbound-transfer.create
+    match: { rest: { method: POST, path: "/v1/treasury/inbound_transfers" } }
+    class: money
+    card: "Pull {body.amount} {body.currency} into financial account {body.financial_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-inbound-transfer-create.http
+        expect: money
+
+  - id: stripe.treasury-inbound-transfer.cancel
+    match: { rest: { method: POST, path: "/v1/treasury/inbound_transfers/{inbound_transfer}/cancel" } }
+    class: money
+    resource: { arg: inbound_transfer, kind: inbound_transfer }
+    card: "Cancel inbound transfer {inbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-inbound-transfer-cancel.http
+        expect: money
+        resource: ibt_ShopPull0001

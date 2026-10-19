@@ -1,0 +1,27 @@
+# Stripe REST API: trial offer
+operations:
+  - id: stripe.trial-offer.create
+    match: { rest: { method: POST, path: "/v1/product_catalog/trial_offers" } }
+    class: write
+    card: "Create trial offer for price {body.price}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/trial-offer-create.http
+        expect: write
+
+  - id: stripe.trial-offer.update
+    match: { rest: { method: POST, path: "/v1/product_catalog/trial_offers/{id}" } }
+    class: write
+    resource: { arg: id, kind: trial_offer }
+    card: "Update trial offer {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/trial-offer-update.http
+        expect: write
+        resource: trof_ShopTrial0001

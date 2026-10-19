@@ -1,0 +1,5 @@
+# description: Post test outbound payment obp_ShopVendor0001
+POST /v1/test_helpers/treasury/outbound_payments/obp_ShopVendor0001/post HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

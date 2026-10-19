@@ -1,0 +1,5 @@
+# description: Simulate an input timeout on test reader tmr_ShopFront0001
+POST /v1/test_helpers/terminal/readers/tmr_ShopFront0001/timeout_input_collection HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

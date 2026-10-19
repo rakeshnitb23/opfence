@@ -1,0 +1,17 @@
+# Stripe REST API: terminal connection token
+operations:
+  - id: stripe.terminal-connection-token.create
+    match: { rest: { method: POST, path: "/v1/terminal/connection_tokens" } }
+    class: credential
+    card: "Create a Terminal connection token"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The token lets a reader SDK connect to the account and take payments.
+      The response hands out a secret or URL that gives its holder access to
+      the account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/terminal-connection-token-create.http
+        expect: credential

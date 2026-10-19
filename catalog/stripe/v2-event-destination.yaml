@@ -1,0 +1,103 @@
+# Stripe REST API: v2 event destination
+operations:
+  - id: stripe.v2-event-destination.create
+    match: { rest: { method: POST, path: "/v2/core/event_destinations" } }
+    class: access
+    when:
+      - if: { arg: body.include, matches: "signing_secret" }
+        class: credential
+    card: "Send events to destination {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Sends account events to an outside URL or cloud event bus;
+      include=webhook_endpoint.signing_secret also returns the signing secret.
+    tests:
+      - fixture: fixtures/v2-event-destination-create.http
+        expect: access
+      - fixture: fixtures/v2-event-destination-create-include-secret.http
+        expect: credential
+
+  - id: stripe.v2-event-destination.update
+    match: { rest: { method: POST, path: "/v2/core/event_destinations/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.webhook_endpoint.url, present: true }
+        class: access
+      - if: { arg: body.include, matches: "signing_secret" }
+        class: credential
+    resource: { arg: id, kind: event_destination }
+    card: "Update event destination {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changing the webhook URL sends account events somewhere else.
+    tests:
+      - fixture: fixtures/v2-event-destination-update.http
+        expect: write
+        resource: ed_ShopOrders0001
+      - fixture: fixtures/v2-event-destination-update-url.http
+        expect: access
+        resource: ed_ShopOrders0001
+
+  - id: stripe.v2-event-destination.delete
+    match: { rest: { method: DELETE, path: "/v2/core/event_destinations/{id}" } }
+    class: delete
+    resource: { arg: id, kind: event_destination }
+    card: "Delete event destination {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can be created again, with a new signing secret.
+    tests:
+      - fixture: fixtures/v2-event-destination-delete.http
+        expect: delete
+        resource: ed_ShopOrders0001
+
+  - id: stripe.v2-event-destination.disable
+    match: { rest: { method: POST, path: "/v2/core/event_destinations/{id}/disable" } }
+    class: write
+    resource: { arg: id, kind: event_destination }
+    card: "Disable event destination {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/v2-event-destination-disable.http
+        expect: write
+        resource: ed_ShopOrders0001
+
+  - id: stripe.v2-event-destination.enable
+    match: { rest: { method: POST, path: "/v2/core/event_destinations/{id}/enable" } }
+    class: write
+    resource: { arg: id, kind: event_destination }
+    card: "Enable event destination {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/v2-event-destination-enable.http
+        expect: write
+        resource: ed_ShopOrders0001
+
+  - id: stripe.v2-event-destination.ping
+    match: { rest: { method: POST, path: "/v2/core/event_destinations/{id}/ping" } }
+    class: write
+    resource: { arg: id, kind: event_destination }
+    card: "Send a test event to destination {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/v2-event-destination-ping.http
+        expect: write
+        resource: ed_ShopOrders0001

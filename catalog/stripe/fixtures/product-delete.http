@@ -1,0 +1,5 @@
+# description: Delete product prod_ShopPro0001
+DELETE /v1/products/prod_ShopPro0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

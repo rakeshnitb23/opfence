@@ -1,0 +1,18 @@
+# Stripe MCP server: refund
+operations:
+  - id: stripe-mcp.refund.create
+    match: { mcp: { tool: create_refund } }
+    class: money
+    resource: { arg: payment_intent, kind: payment_intent }
+    card: "Refund {amount} of payment {payment_intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Without amount the whole payment is refunded.
+    tests:
+      - fixture: fixtures/refund-create.http
+        expect: money
+        resource: pi_3ShopPay0001

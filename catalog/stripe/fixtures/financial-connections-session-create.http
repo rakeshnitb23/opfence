@@ -1,0 +1,7 @@
+# description: Start a bank account linking session
+POST /v1/financial_connections/sessions HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+account_holder[type]=customer&account_holder[customer]=cus_ShopAcme0001&permissions[0]=balances

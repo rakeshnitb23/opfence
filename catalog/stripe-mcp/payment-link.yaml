@@ -1,0 +1,19 @@
+# Stripe MCP server: payment link
+operations:
+  - id: stripe-mcp.payment-link.create
+    match: { mcp: { tool: create_payment_link } }
+    class: write
+    resource: { arg: price, kind: price }
+    card: "Create a payment link for {quantity} x price {price}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      A payment page meant to be shared; money moves only when a customer
+      pays.
+    tests:
+      - fixture: fixtures/payment-link-create.http
+        expect: write
+        resource: price_ShopTee0001

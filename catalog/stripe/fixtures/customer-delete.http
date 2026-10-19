@@ -1,0 +1,5 @@
+# description: Delete customer cus_ShopAcme0001 with its payment methods and subscriptions
+DELETE /v1/customers/cus_ShopAcme0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

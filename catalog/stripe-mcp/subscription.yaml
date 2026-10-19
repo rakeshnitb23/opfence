@@ -1,0 +1,52 @@
+# Stripe MCP server: subscription
+operations:
+  - id: stripe-mcp.subscription.list
+    match: { mcp: { tool: list_subscriptions } }
+    class: read
+    resource: { arg: customer, kind: customer }
+    card: "List subscriptions of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/subscription-list.http
+        expect: read
+        resource: cus_ShopAcme0001
+
+  - id: stripe-mcp.subscription.cancel
+    match: { mcp: { tool: cancel_subscription } }
+    class: irreversible
+    resource: { arg: subscription, kind: subscription }
+    card: "Cancel subscription {subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Calls subscriptions.cancel; Stripe documents that a canceled
+      subscription cannot be reactivated.
+    tests:
+      - fixture: fixtures/subscription-cancel.http
+        expect: irreversible
+        resource: sub_ShopPro0001
+
+  - id: stripe-mcp.subscription.update
+    match: { mcp: { tool: update_subscription } }
+    class: money
+    resource: { arg: subscription, kind: subscription }
+    card: "Change items of subscription {subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Changes prices and quantities, which changes what the customer is
+      charged.
+    tests:
+      - fixture: fixtures/subscription-update.http
+        expect: money
+        resource: sub_ShopPro0001

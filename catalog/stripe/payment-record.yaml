@@ -1,0 +1,111 @@
+# Stripe REST API: payment record
+operations:
+  - id: stripe.payment-record.report-payment
+    match: { rest: { method: POST, path: "/v1/payment_records/report_payment" } }
+    class: write
+    card: "Record a payment made outside Stripe"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records a payment made outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment.http
+        expect: write
+
+  - id: stripe.payment-record.report-payment-attempt
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_payment_attempt" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record payment attempt on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment-attempt.http
+        expect: write
+        resource: pr_ShopOutside01
+
+  - id: stripe.payment-record.report-payment-attempt-canceled
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_payment_attempt_canceled" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record payment attempt canceled on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment-attempt-canceled.http
+        expect: write
+        resource: pr_ShopOutside01
+
+  - id: stripe.payment-record.report-payment-attempt-failed
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_payment_attempt_failed" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record payment attempt failed on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment-attempt-failed.http
+        expect: write
+        resource: pr_ShopOutside01
+
+  - id: stripe.payment-record.report-payment-attempt-guaranteed
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_payment_attempt_guaranteed" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record payment attempt guaranteed on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment-attempt-guaranteed.http
+        expect: write
+        resource: pr_ShopOutside01
+
+  - id: stripe.payment-record.report-payment-attempt-informational
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_payment_attempt_informational" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record payment attempt informational on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-payment-attempt-informational.http
+        expect: write
+        resource: pr_ShopOutside01
+
+  - id: stripe.payment-record.report-refund
+    match: { rest: { method: POST, path: "/v1/payment_records/{id}/report_refund" } }
+    class: write
+    resource: { arg: id, kind: payment_record }
+    card: "Record refund on payment record {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records what happened outside Stripe; no money moves through Stripe.
+    tests:
+      - fixture: fixtures/payment-record-report-refund.http
+        expect: write
+        resource: pr_ShopOutside01

@@ -1,0 +1,7 @@
+# description: Create a client session for customer cus_ShopAcme0001
+POST /v1/customer_sessions HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+customer=cus_ShopAcme0001&components[payment_element][enabled]=true

@@ -1,0 +1,5 @@
+# description: Release subscription schedule sub_sched_ShopAnnual01
+POST /v1/subscription_schedules/sub_sched_ShopAnnual01/release HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

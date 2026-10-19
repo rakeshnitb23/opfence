@@ -1,0 +1,7 @@
+# description: Create plan pro-monthly
+POST /v1/plans HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+id=pro-monthly&amount=2900&currency=usd&interval=month&product=prod_ShopPro0001

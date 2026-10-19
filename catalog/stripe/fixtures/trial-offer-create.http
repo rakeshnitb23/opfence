@@ -1,0 +1,7 @@
+# description: Create trial offer for price price_ShopPro0001
+POST /v1/product_catalog/trial_offers HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+price=price_ShopPro0001&duration[type]=relative&duration[relative][iterations]=14&end_behavior[transition][price]=price_ShopPro0001

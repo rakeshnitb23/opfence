@@ -1,0 +1,55 @@
+# Stripe REST API: webhook endpoint
+operations:
+  - id: stripe.webhook-endpoint.create
+    match: { rest: { method: POST, path: "/v1/webhook_endpoints" } }
+    class: credential
+    card: "Send events to webhook {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Returns the endpoint's signing secret, which Stripe shows only on
+      create. It also sends account events, with customer data, to an outside
+      URL (access); credential is the stricter of the two.
+    tests:
+      - fixture: fixtures/webhook-endpoint-create.http
+        expect: credential
+
+  - id: stripe.webhook-endpoint.delete
+    match: { rest: { method: DELETE, path: "/v1/webhook_endpoints/{webhook_endpoint}" } }
+    class: delete
+    resource: { arg: webhook_endpoint, kind: webhook_endpoint }
+    card: "Delete webhook endpoint {webhook_endpoint}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can be created again, with a new signing secret.
+    tests:
+      - fixture: fixtures/webhook-endpoint-delete.http
+        expect: delete
+        resource: we_ShopOrders0001
+
+  - id: stripe.webhook-endpoint.update
+    match: { rest: { method: POST, path: "/v1/webhook_endpoints/{webhook_endpoint}" } }
+    class: write
+    when:
+      - if: { arg: body.url, present: true }
+        class: access
+    resource: { arg: webhook_endpoint, kind: webhook_endpoint }
+    card: "Update webhook endpoint {webhook_endpoint}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changing url sends account events, with customer data, somewhere else.
+    tests:
+      - fixture: fixtures/webhook-endpoint-update.http
+        expect: write
+        resource: we_ShopOrders0001
+      - fixture: fixtures/webhook-endpoint-update-url.http
+        expect: access
+        resource: we_ShopOrders0001

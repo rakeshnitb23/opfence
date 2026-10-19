@@ -1,0 +1,7 @@
+# description: Create billing meter api_requests
+POST /v1/billing/meters HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+display_name=API%20requests&event_name=api_requests&default_aggregation[formula]=sum

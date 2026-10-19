@@ -1,0 +1,6 @@
+# description: Create a meter event stream session
+POST /v2/billing/meter_event_session HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+

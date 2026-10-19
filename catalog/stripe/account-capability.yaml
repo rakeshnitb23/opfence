@@ -1,0 +1,17 @@
+# Stripe REST API: account capability
+operations:
+  - id: stripe.account-capability.update
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/capabilities/{capability}" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Change capability {capability} of connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Requests or removes what the account may do (card payments, transfers).
+    tests:
+      - fixture: fixtures/account-capability-update.http
+        expect: access
+        resource: acct_1ShopConnect01

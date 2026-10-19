@@ -1,0 +1,7 @@
+# description: Create billing alert API usage
+POST /v1/billing/alerts HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+alert_type=usage_threshold&title=API%20usage&usage_threshold[gte]=1000&usage_threshold[meter]=mtr_ShopApi0001

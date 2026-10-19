@@ -1,0 +1,5 @@
+# description: Accept the dispute on charge ch_3ShopCharge0001 and give up the funds
+POST /v1/charges/ch_3ShopCharge0001/dispute/close HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

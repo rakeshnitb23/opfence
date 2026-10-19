@@ -1,0 +1,27 @@
+# Stripe REST API: issuing personalization design
+operations:
+  - id: stripe.issuing-personalization-design.create
+    match: { rest: { method: POST, path: "/v1/issuing/personalization_designs" } }
+    class: write
+    card: "Create card design {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-personalization-design-create.http
+        expect: write
+
+  - id: stripe.issuing-personalization-design.update
+    match: { rest: { method: POST, path: "/v1/issuing/personalization_designs/{personalization_design}" } }
+    class: write
+    resource: { arg: personalization_design, kind: personalization_design }
+    card: "Update card design {personalization_design}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-personalization-design-update.http
+        expect: write
+        resource: ipcd_ShopBlack0001

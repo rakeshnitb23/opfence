@@ -1,0 +1,700 @@
+# Stripe REST API: test helpers
+operations:
+  - id: stripe.test-confirmation-token.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/confirmation_tokens" } }
+    class: write
+    card: "Create a test confirmation token"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-confirmation-token-create.http
+        expect: write
+
+  - id: stripe.test-customer.fund-cash-balance
+    match: { rest: { method: POST, path: "/v1/test_helpers/customers/{customer}/fund_cash_balance" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Fund the test cash balance of {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-customer-fund-cash-balance.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.test-issuing-authorization.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations" } }
+    class: write
+    card: "Create a test card authorization"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-create.http
+        expect: write
+
+  - id: stripe.test-issuing-authorization.capture
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/capture" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Capture test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-capture.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-authorization.expire
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/expire" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Expire test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-expire.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-authorization.finalize-amount
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/finalize_amount" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Finalize the amount of test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-finalize-amount.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-authorization.respond-fraud-challenge
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/fraud_challenges/respond" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Answer the fraud challenge of test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-respond-fraud-challenge.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-authorization.increment
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/increment" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Increment test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-increment.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-authorization.reverse
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/authorizations/{authorization}/reverse" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Reverse test authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-authorization-reverse.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.test-issuing-card.deliver
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/cards/{card}/shipping/deliver" } }
+    class: write
+    resource: { arg: card, kind: card }
+    card: "Mark test card {card} delivered"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-card-deliver.http
+        expect: write
+        resource: ic_ShopVirtual01
+
+  - id: stripe.test-issuing-card.fail
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/cards/{card}/shipping/fail" } }
+    class: write
+    resource: { arg: card, kind: card }
+    card: "Mark test card {card} shipping failed"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-card-fail.http
+        expect: write
+        resource: ic_ShopVirtual01
+
+  - id: stripe.test-issuing-card.return
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/cards/{card}/shipping/return" } }
+    class: write
+    resource: { arg: card, kind: card }
+    card: "Mark test card {card} returned"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-card-return.http
+        expect: write
+        resource: ic_ShopVirtual01
+
+  - id: stripe.test-issuing-card.ship
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/cards/{card}/shipping/ship" } }
+    class: write
+    resource: { arg: card, kind: card }
+    card: "Mark test card {card} shipped"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-card-ship.http
+        expect: write
+        resource: ic_ShopVirtual01
+
+  - id: stripe.test-issuing-card.submit
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/cards/{card}/shipping/submit" } }
+    class: write
+    resource: { arg: card, kind: card }
+    card: "Submit test card {card} for shipping"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-card-submit.http
+        expect: write
+        resource: ic_ShopVirtual01
+
+  - id: stripe.test-issuing-personalization-design.activate
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/personalization_designs/{personalization_design}/activate" } }
+    class: write
+    resource: { arg: personalization_design, kind: personalization_design }
+    card: "Activate test card design {personalization_design}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-personalization-design-activate.http
+        expect: write
+        resource: ipcd_ShopBlack0001
+
+  - id: stripe.test-issuing-personalization-design.deactivate
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/personalization_designs/{personalization_design}/deactivate" } }
+    class: write
+    resource: { arg: personalization_design, kind: personalization_design }
+    card: "Deactivate test card design {personalization_design}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-personalization-design-deactivate.http
+        expect: write
+        resource: ipcd_ShopBlack0001
+
+  - id: stripe.test-issuing-personalization-design.reject
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/personalization_designs/{personalization_design}/reject" } }
+    class: write
+    resource: { arg: personalization_design, kind: personalization_design }
+    card: "Reject test card design {personalization_design}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-personalization-design-reject.http
+        expect: write
+        resource: ipcd_ShopBlack0001
+
+  - id: stripe.test-issuing-settlement.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/settlements" } }
+    class: write
+    card: "Create a test settlement"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-settlement-create.http
+        expect: write
+
+  - id: stripe.test-issuing-settlement.complete
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/settlements/{settlement}/complete" } }
+    class: write
+    resource: { arg: settlement, kind: settlement }
+    card: "Complete test settlement {settlement}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-settlement-complete.http
+        expect: write
+        resource: ist_ShopSettle0001
+
+  - id: stripe.test-issuing-transaction.force-capture
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/transactions/create_force_capture" } }
+    class: write
+    card: "Create a test force capture"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-transaction-force-capture.http
+        expect: write
+
+  - id: stripe.test-issuing-transaction.unlinked-refund
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/transactions/create_unlinked_refund" } }
+    class: write
+    card: "Create a test unlinked refund"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-transaction-unlinked-refund.http
+        expect: write
+
+  - id: stripe.test-issuing-transaction.refund
+    match: { rest: { method: POST, path: "/v1/test_helpers/issuing/transactions/{transaction}/refund" } }
+    class: write
+    resource: { arg: transaction, kind: transaction }
+    card: "Refund test transaction {transaction}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-issuing-transaction-refund.http
+        expect: write
+        resource: ipi_ShopTxn0001
+
+  - id: stripe.test-refund.expire
+    match: { rest: { method: POST, path: "/v1/test_helpers/refunds/{refund}/expire" } }
+    class: write
+    resource: { arg: refund, kind: refund }
+    card: "Expire test refund {refund}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-refund-expire.http
+        expect: write
+        resource: re_3ShopRefund0001
+
+  - id: stripe.test-terminal-reader.present-payment-method
+    match: { rest: { method: POST, path: "/v1/test_helpers/terminal/readers/{reader}/present_payment_method" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Simulate a card on test reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-terminal-reader-present-payment-method.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.test-terminal-reader.succeed-input-collection
+    match: { rest: { method: POST, path: "/v1/test_helpers/terminal/readers/{reader}/succeed_input_collection" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Simulate input on test reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-terminal-reader-succeed-input-collection.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.test-terminal-reader.timeout-input-collection
+    match: { rest: { method: POST, path: "/v1/test_helpers/terminal/readers/{reader}/timeout_input_collection" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Simulate an input timeout on test reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-terminal-reader-timeout-input-collection.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.test-clock.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/test_clocks" } }
+    class: write
+    card: "Create test clock {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-clock-create.http
+        expect: write
+
+  - id: stripe.test-clock.advance
+    match: { rest: { method: POST, path: "/v1/test_helpers/test_clocks/{test_clock}/advance" } }
+    class: write
+    resource: { arg: test_clock, kind: test_clock }
+    card: "Advance test clock {test_clock}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-clock-advance.http
+        expect: write
+        resource: clock_ShopRenewal01
+
+  - id: stripe.test-treasury-inbound-transfer.fail
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/inbound_transfers/{id}/fail" } }
+    class: write
+    resource: { arg: id, kind: treasury_inbound_transfer }
+    card: "Fail test inbound transfer {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-inbound-transfer-fail.http
+        expect: write
+        resource: ibt_ShopPull0001
+
+  - id: stripe.test-treasury-inbound-transfer.return
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/inbound_transfers/{id}/return" } }
+    class: write
+    resource: { arg: id, kind: treasury_inbound_transfer }
+    card: "Return test inbound transfer {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-inbound-transfer-return.http
+        expect: write
+        resource: ibt_ShopPull0001
+
+  - id: stripe.test-treasury-inbound-transfer.succeed
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/inbound_transfers/{id}/succeed" } }
+    class: write
+    resource: { arg: id, kind: treasury_inbound_transfer }
+    card: "Succeed test inbound transfer {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-inbound-transfer-succeed.http
+        expect: write
+        resource: ibt_ShopPull0001
+
+  - id: stripe.test-treasury-outbound-payment.update
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_payments/{id}" } }
+    class: write
+    resource: { arg: id, kind: treasury_outbound_payment }
+    card: "Update test outbound payment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-payment-update.http
+        expect: write
+        resource: obp_ShopVendor0001
+
+  - id: stripe.test-treasury-outbound-payment.fail
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_payments/{id}/fail" } }
+    class: write
+    resource: { arg: id, kind: treasury_outbound_payment }
+    card: "Fail test outbound payment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-payment-fail.http
+        expect: write
+        resource: obp_ShopVendor0001
+
+  - id: stripe.test-treasury-outbound-payment.post
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_payments/{id}/post" } }
+    class: write
+    resource: { arg: id, kind: treasury_outbound_payment }
+    card: "Post test outbound payment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-payment-post.http
+        expect: write
+        resource: obp_ShopVendor0001
+
+  - id: stripe.test-treasury-outbound-payment.return
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_payments/{id}/return" } }
+    class: write
+    resource: { arg: id, kind: treasury_outbound_payment }
+    card: "Return test outbound payment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-payment-return.http
+        expect: write
+        resource: obp_ShopVendor0001
+
+  - id: stripe.test-treasury-outbound-transfer.update
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_transfers/{outbound_transfer}" } }
+    class: write
+    resource: { arg: outbound_transfer, kind: outbound_transfer }
+    card: "Update test outbound transfer {outbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-transfer-update.http
+        expect: write
+        resource: obt_ShopMove0001
+
+  - id: stripe.test-treasury-outbound-transfer.fail
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_transfers/{outbound_transfer}/fail" } }
+    class: write
+    resource: { arg: outbound_transfer, kind: outbound_transfer }
+    card: "Fail test outbound transfer {outbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-transfer-fail.http
+        expect: write
+        resource: obt_ShopMove0001
+
+  - id: stripe.test-treasury-outbound-transfer.post
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_transfers/{outbound_transfer}/post" } }
+    class: write
+    resource: { arg: outbound_transfer, kind: outbound_transfer }
+    card: "Post test outbound transfer {outbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-transfer-post.http
+        expect: write
+        resource: obt_ShopMove0001
+
+  - id: stripe.test-treasury-outbound-transfer.return
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/outbound_transfers/{outbound_transfer}/return" } }
+    class: write
+    resource: { arg: outbound_transfer, kind: outbound_transfer }
+    card: "Return test outbound transfer {outbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-outbound-transfer-return.http
+        expect: write
+        resource: obt_ShopMove0001
+
+  - id: stripe.test-treasury-received-credit.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/received_credits" } }
+    class: write
+    card: "Create a test received credit"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-received-credit-create.http
+        expect: write
+
+  - id: stripe.test-treasury-received-debit.create
+    match: { rest: { method: POST, path: "/v1/test_helpers/treasury/received_debits" } }
+    class: write
+    card: "Create a test received debit"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Test helpers only work with a test-mode key; Stripe rejects them with a
+      live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-treasury-received-debit-create.http
+        expect: write
+
+  - id: stripe.test-clock.delete
+    match: { rest: { method: DELETE, path: "/v1/test_helpers/test_clocks/{test_clock}" } }
+    class: irreversible
+    resource: { arg: test_clock, kind: test_clock }
+    card: "Delete test clock {test_clock} and every object attached to it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Deletes the test customers, subscriptions and invoices attached to the
+      clock. Test helpers only work with a test-mode key; Stripe rejects them
+      with a live key. Opfence holds placeholders and cannot see the mode.
+    tests:
+      - fixture: fixtures/test-clock-delete.http
+        expect: irreversible
+        resource: clock_ShopRenewal01

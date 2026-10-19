@@ -1,0 +1,40 @@
+# Stripe REST API: dispute
+operations:
+  - id: stripe.dispute.update
+    match: { rest: { method: POST, path: "/v1/disputes/{dispute}" } }
+    class: write
+    when:
+      - if: { arg: body.submit, equals: "true" }
+        class: irreversible
+    resource: { arg: dispute, kind: dispute }
+    card: "Update evidence for dispute {dispute}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      submit=true sends the evidence to the bank; Stripe accepts one
+      submission, so it cannot be corrected.
+    tests:
+      - fixture: fixtures/dispute-update.http
+        expect: write
+        resource: dp_ShopDispute0001
+      - fixture: fixtures/dispute-update-submit.http
+        expect: irreversible
+        resource: dp_ShopDispute0001
+
+  - id: stripe.dispute.close
+    match: { rest: { method: POST, path: "/v1/disputes/{dispute}/close" } }
+    class: money
+    resource: { arg: dispute, kind: dispute }
+    card: "Accept dispute {dispute} and give up the funds"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Closing concedes the dispute; Stripe documents that it cannot be undone.
+    tests:
+      - fixture: fixtures/dispute-close.http
+        expect: money
+        resource: dp_ShopDispute0001

@@ -1,0 +1,5 @@
+# description: Cancel refund re_3ShopRefund0001
+POST /v1/refunds/re_3ShopRefund0001/cancel HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

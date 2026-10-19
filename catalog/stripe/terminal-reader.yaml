@@ -1,0 +1,157 @@
+# Stripe REST API: terminal reader
+operations:
+  - id: stripe.terminal-reader.create
+    match: { rest: { method: POST, path: "/v1/terminal/readers" } }
+    class: write
+    card: "Register Terminal reader {body.label}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-create.http
+        expect: write
+
+  - id: stripe.terminal-reader.delete
+    match: { rest: { method: DELETE, path: "/v1/terminal/readers/{reader}" } }
+    class: delete
+    resource: { arg: reader, kind: reader }
+    card: "Delete Terminal reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The reader can be registered again.
+    tests:
+      - fixture: fixtures/terminal-reader-delete.http
+        expect: delete
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.update
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Update Terminal reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-update.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.cancel-action
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/cancel_action" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Cancel the current action on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-cancel-action.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.collect-inputs
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/collect_inputs" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Collect inputs on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-collect-inputs.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.collect-payment-method
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/collect_payment_method" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Collect a card on reader {reader} for {body.payment_intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Reads the card; confirm_payment_intent charges it.
+    tests:
+      - fixture: fixtures/terminal-reader-collect-payment-method.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.confirm-payment-intent
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/confirm_payment_intent" } }
+    class: money
+    resource: { arg: reader, kind: reader }
+    card: "Charge {body.payment_intent} on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-confirm-payment-intent.http
+        expect: money
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.process-payment-intent
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/process_payment_intent" } }
+    class: money
+    resource: { arg: reader, kind: reader }
+    card: "Take payment {body.payment_intent} on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-process-payment-intent.http
+        expect: money
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.process-setup-intent
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/process_setup_intent" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Save a card on reader {reader} for {body.setup_intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-process-setup-intent.http
+        expect: write
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.refund-payment
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/refund_payment" } }
+    class: money
+    resource: { arg: reader, kind: reader }
+    card: "Refund {body.payment_intent} in person on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-refund-payment.http
+        expect: money
+        resource: tmr_ShopFront0001
+
+  - id: stripe.terminal-reader.set-display
+    match: { rest: { method: POST, path: "/v1/terminal/readers/{reader}/set_reader_display" } }
+    class: write
+    resource: { arg: reader, kind: reader }
+    card: "Show a cart on reader {reader}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-reader-set-display.http
+        expect: write
+        resource: tmr_ShopFront0001

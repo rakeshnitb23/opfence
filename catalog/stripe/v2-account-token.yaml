@@ -1,0 +1,16 @@
+# Stripe REST API: v2 account token
+operations:
+  - id: stripe.v2-account-token.create
+    match: { rest: { method: POST, path: "/v2/core/account_tokens" } }
+    class: write
+    card: "Create an account token"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A single-use token carrying account details for a later create or
+      update.
+    tests:
+      - fixture: fixtures/v2-account-token-create.http
+        expect: write

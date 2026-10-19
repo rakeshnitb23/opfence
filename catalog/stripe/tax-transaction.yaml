@@ -1,0 +1,29 @@
+# Stripe REST API: tax transaction
+operations:
+  - id: stripe.tax-transaction.create
+    match: { rest: { method: POST, path: "/v1/tax/transactions/create_from_calculation" } }
+    class: write
+    card: "Record tax transaction {body.reference}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records the sale for tax reporting; no money moves.
+    tests:
+      - fixture: fixtures/tax-transaction-create.http
+        expect: write
+
+  - id: stripe.tax-transaction.reverse
+    match: { rest: { method: POST, path: "/v1/tax/transactions/create_reversal" } }
+    class: write
+    card: "Reverse tax transaction {body.original_transaction}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Records a refund for tax reporting; no money moves.
+    tests:
+      - fixture: fixtures/tax-transaction-reverse.http
+        expect: write

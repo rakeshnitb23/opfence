@@ -1,0 +1,55 @@
+# Stripe REST API: payout
+operations:
+  - id: stripe.payout.create
+    match: { rest: { method: POST, path: "/v1/payouts" } }
+    class: money
+    card: "Pay out {body.amount} {body.currency} to the bank"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payout-create.http
+        expect: money
+
+  - id: stripe.payout.update
+    match: { rest: { method: POST, path: "/v1/payouts/{payout}" } }
+    class: write
+    resource: { arg: payout, kind: payout }
+    card: "Update payout {payout}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payout-update.http
+        expect: write
+        resource: po_ShopWeekly0001
+
+  - id: stripe.payout.cancel
+    match: { rest: { method: POST, path: "/v1/payouts/{payout}/cancel" } }
+    class: money
+    resource: { arg: payout, kind: payout }
+    card: "Cancel payout {payout}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payout-cancel.http
+        expect: money
+        resource: po_ShopWeekly0001
+
+  - id: stripe.payout.reverse
+    match: { rest: { method: POST, path: "/v1/payouts/{payout}/reverse" } }
+    class: money
+    resource: { arg: payout, kind: payout }
+    card: "Reverse payout {payout}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payout-reverse.http
+        expect: money
+        resource: po_ShopWeekly0001

@@ -1,0 +1,63 @@
+# Stripe REST API: treasury financial account
+operations:
+  - id: stripe.treasury-financial-account.create
+    match: { rest: { method: POST, path: "/v1/treasury/financial_accounts" } }
+    class: write
+    card: "Open a financial account"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-financial-account-create.http
+        expect: write
+
+  - id: stripe.treasury-financial-account.update
+    match: { rest: { method: POST, path: "/v1/treasury/financial_accounts/{financial_account}" } }
+    class: access
+    resource: { arg: financial_account, kind: financial_account }
+    card: "Update financial account {financial_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can turn on money-movement features and change forwarding settings;
+      nested form keys cannot be told apart, so every update is access.
+    tests:
+      - fixture: fixtures/treasury-financial-account-update.http
+        expect: access
+        resource: fa_ShopTreasury01
+
+  - id: stripe.treasury-financial-account.close
+    match: { rest: { method: POST, path: "/v1/treasury/financial_accounts/{financial_account}/close" } }
+    class: irreversible
+    resource: { arg: financial_account, kind: financial_account }
+    card: "Close financial account {financial_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A closed financial account cannot be reopened.
+    tests:
+      - fixture: fixtures/treasury-financial-account-close.http
+        expect: irreversible
+        resource: fa_ShopTreasury01
+
+  - id: stripe.treasury-financial-account.update-features
+    match: { rest: { method: POST, path: "/v1/treasury/financial_accounts/{financial_account}/features" } }
+    class: access
+    resource: { arg: financial_account, kind: financial_account }
+    card: "Change features of financial account {financial_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Turns money-movement features (outbound payments, card issuing) on or
+      off.
+    tests:
+      - fixture: fixtures/treasury-financial-account-update-features.http
+        expect: access
+        resource: fa_ShopTreasury01

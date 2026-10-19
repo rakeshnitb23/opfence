@@ -1,0 +1,7 @@
+# description: Save a payment method for cus_ShopAcme0001
+POST /v1/setup_intents HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+customer=cus_ShopAcme0001&usage=off_session

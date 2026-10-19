@@ -1,0 +1,65 @@
+# Stripe REST API: customer subscription
+operations:
+  - id: stripe.customer-subscription.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/subscriptions" } }
+    class: money
+    resource: { arg: customer, kind: customer }
+    card: "Subscribe customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Starts billing the customer.
+    tests:
+      - fixture: fixtures/customer-subscription-create.http
+        expect: money
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-subscription.cancel
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/subscriptions/{subscription_exposed_id}" } }
+    class: irreversible
+    when:
+      - if: { arg: body.invoice_now, equals: "true" }
+        class: money
+      - if: { arg: query.invoice_now, equals: "true" }
+        class: money
+      - if: { arg: body.prorate, equals: "true" }
+        class: money
+      - if: { arg: query.prorate, equals: "true" }
+        class: money
+    resource: { arg: subscription_exposed_id, kind: subscription }
+    card: "Cancel subscription {subscription_exposed_id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a canceled subscription cannot be reactivated.
+      invoice_now or prorate also bill or credit the customer at once.
+    tests:
+      - fixture: fixtures/customer-subscription-cancel.http
+        expect: irreversible
+        resource: sub_ShopPro0001
+      - fixture: fixtures/customer-subscription-cancel-invoice-now.http
+        expect: money
+        resource: sub_ShopPro0001
+
+  - id: stripe.customer-subscription.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/subscriptions/{subscription_exposed_id}" } }
+    class: money
+    resource: { arg: subscription_exposed_id, kind: subscription }
+    card: "Change subscription {subscription_exposed_id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can change prices, quantities, trials and proration, which changes what
+      the customer is charged. Stripe sends items as form keys like
+      items[0][price], which conditions cannot address, so every update is
+      money.
+    tests:
+      - fixture: fixtures/customer-subscription-update.http
+        expect: money
+        resource: sub_ShopPro0001

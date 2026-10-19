@@ -1,0 +1,29 @@
+# Stripe REST API: apple pay domain
+operations:
+  - id: stripe.apple-pay-domain.create
+    match: { rest: { method: POST, path: "/v1/apple_pay/domains" } }
+    class: write
+    card: "Register Apple Pay domain {body.domain_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/apple-pay-domain-create.http
+        expect: write
+
+  - id: stripe.apple-pay-domain.delete
+    match: { rest: { method: DELETE, path: "/v1/apple_pay/domains/{domain}" } }
+    class: delete
+    resource: { arg: domain, kind: domain }
+    card: "Remove Apple Pay domain {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The domain can be registered again.
+    tests:
+      - fixture: fixtures/apple-pay-domain-delete.http
+        expect: delete
+        resource: apwc_ShopDomain0001

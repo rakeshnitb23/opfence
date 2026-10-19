@@ -1,0 +1,43 @@
+# Stripe REST API: terminal location
+operations:
+  - id: stripe.terminal-location.create
+    match: { rest: { method: POST, path: "/v1/terminal/locations" } }
+    class: write
+    card: "Create Terminal location {body.display_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-location-create.http
+        expect: write
+
+  - id: stripe.terminal-location.delete
+    match: { rest: { method: DELETE, path: "/v1/terminal/locations/{location}" } }
+    class: delete
+    resource: { arg: location, kind: location }
+    card: "Delete Terminal location {location}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      An address record; it can be created again.
+    tests:
+      - fixture: fixtures/terminal-location-delete.http
+        expect: delete
+        resource: tml_ShopStore0001
+
+  - id: stripe.terminal-location.update
+    match: { rest: { method: POST, path: "/v1/terminal/locations/{location}" } }
+    class: write
+    resource: { arg: location, kind: location }
+    card: "Update Terminal location {location}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-location-update.http
+        expect: write
+        resource: tml_ShopStore0001

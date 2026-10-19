@@ -1,0 +1,7 @@
+# description: Verify microdeposits for setup seti_ShopSave0001
+POST /v1/setup_intents/seti_ShopSave0001/verify_microdeposits HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amounts[0]=32&amounts[1]=45

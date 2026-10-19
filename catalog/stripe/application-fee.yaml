@@ -1,0 +1,17 @@
+# Stripe REST API: application fee
+operations:
+  - id: stripe.application-fee.refund
+    match: { rest: { method: POST, path: "/v1/application_fees/{id}/refund" } }
+    class: money
+    resource: { arg: id, kind: application_fee }
+    card: "Refund application fee {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Deprecated endpoint, still served.
+    tests:
+      - fixture: fixtures/application-fee-refund.http
+        expect: money
+        resource: fee_ShopFee0001

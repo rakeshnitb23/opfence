@@ -1,0 +1,5 @@
+# description: Deactivate test card design ipcd_ShopBlack0001
+POST /v1/test_helpers/issuing/personalization_designs/ipcd_ShopBlack0001/deactivate HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

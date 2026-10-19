@@ -1,0 +1,7 @@
+# description: Calculate tax
+POST /v1/tax/calculations HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+currency=usd&line_items[0][amount]=2000&line_items[0][reference]=tee&customer_details[address][country]=US&customer_details[address][postal_code]=94111&customer_details[address_source]=shipping

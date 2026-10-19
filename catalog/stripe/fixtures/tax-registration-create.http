@@ -1,0 +1,7 @@
+# description: Register for tax in DE
+POST /v1/tax/registrations HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+country=DE&country_options[de][type]=standard&active_from=now

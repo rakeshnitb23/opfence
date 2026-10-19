@@ -1,0 +1,7 @@
+# description: Register payment method domain shop.example.com
+POST /v1/payment_method_domains HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+domain_name=shop.example.com

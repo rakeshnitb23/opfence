@@ -1,0 +1,52 @@
+# Stripe REST API: account person
+operations:
+  - id: stripe.account-person.create
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/persons" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Add a person to connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/account-person-create.http
+        expect: access
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account-person.delete
+    match: { rest: { method: DELETE, path: "/v1/accounts/{account}/persons/{person}" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Remove person {person} from connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/account-person-delete.http
+        expect: access
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account-person.update
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/persons/{person}" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Update person {person} of connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/account-person-update.http
+        expect: access
+        resource: acct_1ShopConnect01

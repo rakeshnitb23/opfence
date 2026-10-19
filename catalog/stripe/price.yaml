@@ -1,0 +1,30 @@
+# Stripe REST API: price
+operations:
+  - id: stripe.price.create
+    match: { rest: { method: POST, path: "/v1/prices" } }
+    class: write
+    card: "Create price {body.unit_amount} {body.currency} for {body.product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Prices cannot be deleted through the API, only archived with
+      active=false.
+    tests:
+      - fixture: fixtures/price-create.http
+        expect: write
+
+  - id: stripe.price.update
+    match: { rest: { method: POST, path: "/v1/prices/{price}" } }
+    class: write
+    resource: { arg: price, kind: price }
+    card: "Update price {price}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/price-update.http
+        expect: write
+        resource: price_ShopPro0001

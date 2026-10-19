@@ -1,0 +1,60 @@
+# Stripe REST API: identity verification session
+operations:
+  - id: stripe.identity-verification-session.create
+    match: { rest: { method: POST, path: "/v1/identity/verification_sessions" } }
+    class: write
+    card: "Start an identity verification ({body.type})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The client_secret and URL are scoped to this one verification.
+    tests:
+      - fixture: fixtures/identity-verification-session-create.http
+        expect: write
+
+  - id: stripe.identity-verification-session.update
+    match: { rest: { method: POST, path: "/v1/identity/verification_sessions/{session}" } }
+    class: write
+    resource: { arg: session, kind: verification_session }
+    card: "Update identity verification {session}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/identity-verification-session-update.http
+        expect: write
+        resource: vs_ShopVerify0001
+
+  - id: stripe.identity-verification-session.cancel
+    match: { rest: { method: POST, path: "/v1/identity/verification_sessions/{session}/cancel" } }
+    class: write
+    resource: { arg: session, kind: verification_session }
+    card: "Cancel identity verification {session}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/identity-verification-session-cancel.http
+        expect: write
+        resource: vs_ShopVerify0001
+
+  - id: stripe.identity-verification-session.redact
+    match: { rest: { method: POST, path: "/v1/identity/verification_sessions/{session}/redact" } }
+    class: irreversible
+    resource: { arg: session, kind: verification_session }
+    card: "Redact identity verification {session} and its documents"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Deletes collected documents and personal data; Stripe documents that
+      redaction cannot be undone.
+    tests:
+      - fixture: fixtures/identity-verification-session-redact.http
+        expect: irreversible
+        resource: vs_ShopVerify0001

@@ -1,0 +1,73 @@
+# Stripe REST API: setup intent
+operations:
+  - id: stripe.setup-intent.create
+    match: { rest: { method: POST, path: "/v1/setup_intents" } }
+    class: write
+    card: "Save a payment method for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Saves a payment method for later charges; nothing is charged.
+    tests:
+      - fixture: fixtures/setup-intent-create.http
+        expect: write
+
+  - id: stripe.setup-intent.update
+    match: { rest: { method: POST, path: "/v1/setup_intents/{intent}" } }
+    class: write
+    resource: { arg: intent, kind: setup_intent }
+    card: "Update setup {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/setup-intent-update.http
+        expect: write
+        resource: seti_ShopSave0001
+
+  - id: stripe.setup-intent.cancel
+    match: { rest: { method: POST, path: "/v1/setup_intents/{intent}/cancel" } }
+    class: write
+    resource: { arg: intent, kind: setup_intent }
+    card: "Cancel setup {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/setup-intent-cancel.http
+        expect: write
+        resource: seti_ShopSave0001
+
+  - id: stripe.setup-intent.confirm
+    match: { rest: { method: POST, path: "/v1/setup_intents/{intent}/confirm" } }
+    class: write
+    resource: { arg: intent, kind: setup_intent }
+    card: "Confirm setup {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Saves the payment method; nothing is charged.
+    tests:
+      - fixture: fixtures/setup-intent-confirm.http
+        expect: write
+        resource: seti_ShopSave0001
+
+  - id: stripe.setup-intent.verify-microdeposits
+    match: { rest: { method: POST, path: "/v1/setup_intents/{intent}/verify_microdeposits" } }
+    class: write
+    resource: { arg: intent, kind: setup_intent }
+    card: "Verify microdeposits for setup {intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/setup-intent-verify-microdeposits.http
+        expect: write
+        resource: seti_ShopSave0001

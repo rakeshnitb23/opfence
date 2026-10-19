@@ -1,0 +1,29 @@
+# Stripe REST API: invoice rendering template
+operations:
+  - id: stripe.invoice-rendering-template.archive
+    match: { rest: { method: POST, path: "/v1/invoice_rendering_templates/{template}/archive" } }
+    class: write
+    resource: { arg: template, kind: invoice_rendering_template }
+    card: "Archive invoice template {template}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/invoice-rendering-template-archive.http
+        expect: write
+        resource: inrtem_ShopBrand01
+
+  - id: stripe.invoice-rendering-template.unarchive
+    match: { rest: { method: POST, path: "/v1/invoice_rendering_templates/{template}/unarchive" } }
+    class: write
+    resource: { arg: template, kind: invoice_rendering_template }
+    card: "Unarchive invoice template {template}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/invoice-rendering-template-unarchive.http
+        expect: write
+        resource: inrtem_ShopBrand01

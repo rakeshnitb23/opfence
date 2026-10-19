@@ -1,0 +1,5 @@
+# description: Accept quote qt_ShopAnnual0001
+POST /v1/quotes/qt_ShopAnnual0001/accept HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

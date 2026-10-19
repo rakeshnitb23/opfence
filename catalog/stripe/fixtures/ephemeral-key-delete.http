@@ -1,0 +1,5 @@
+# description: Invalidate ephemeral key ephkey_ShopMobile01
+DELETE /v1/ephemeral_keys/ephkey_ShopMobile01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

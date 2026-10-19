@@ -1,0 +1,7 @@
+# description: Record payment attempt failed on payment record pr_ShopOutside01
+POST /v1/payment_records/pr_ShopOutside01/report_payment_attempt_failed HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+failed_at=1760000100

@@ -1,0 +1,27 @@
+# Stripe REST API: tax rate
+operations:
+  - id: stripe.tax-rate.create
+    match: { rest: { method: POST, path: "/v1/tax_rates" } }
+    class: write
+    card: "Create tax rate {body.display_name} {body.percentage}%"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/tax-rate-create.http
+        expect: write
+
+  - id: stripe.tax-rate.update
+    match: { rest: { method: POST, path: "/v1/tax_rates/{tax_rate}" } }
+    class: write
+    resource: { arg: tax_rate, kind: tax_rate }
+    card: "Update tax rate {tax_rate}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/tax-rate-update.http
+        expect: write
+        resource: txr_ShopVat0001

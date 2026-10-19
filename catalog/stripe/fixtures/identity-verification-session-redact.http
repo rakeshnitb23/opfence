@@ -1,0 +1,5 @@
+# description: Redact identity verification vs_ShopVerify0001 and its documents
+POST /v1/identity/verification_sessions/vs_ShopVerify0001/redact HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

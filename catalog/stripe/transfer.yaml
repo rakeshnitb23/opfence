@@ -1,0 +1,27 @@
+# Stripe REST API: transfer
+operations:
+  - id: stripe.transfer.create
+    match: { rest: { method: POST, path: "/v1/transfers" } }
+    class: money
+    card: "Transfer {body.amount} {body.currency} to {body.destination}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/transfer-create.http
+        expect: money
+
+  - id: stripe.transfer.update
+    match: { rest: { method: POST, path: "/v1/transfers/{transfer}" } }
+    class: write
+    resource: { arg: transfer, kind: transfer }
+    card: "Update transfer {transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/transfer-update.http
+        expect: write
+        resource: tr_ShopSeller0001

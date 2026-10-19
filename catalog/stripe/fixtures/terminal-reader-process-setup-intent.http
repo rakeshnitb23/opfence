@@ -1,0 +1,7 @@
+# description: Save a card on reader tmr_ShopFront0001 for seti_ShopSave0001
+POST /v1/terminal/readers/tmr_ShopFront0001/process_setup_intent HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+setup_intent=seti_ShopSave0001&allow_redisplay=always

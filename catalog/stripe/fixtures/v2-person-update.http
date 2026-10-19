@@ -1,0 +1,8 @@
+# description: Update person person_ShopJane0001 of account acct_1ShopConnect01
+POST /v2/core/accounts/acct_1ShopConnect01/persons/person_ShopJane0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+Content-Type: application/json
+
+{"relationship":{"owner":true,"percent_ownership":"60"}}

@@ -1,0 +1,32 @@
+# Stripe REST API: issuing cardholder
+operations:
+  - id: stripe.issuing-cardholder.create
+    match: { rest: { method: POST, path: "/v1/issuing/cardholders" } }
+    class: write
+    card: "Create cardholder {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A cardholder cannot spend until a card is issued.
+    tests:
+      - fixture: fixtures/issuing-cardholder-create.http
+        expect: write
+
+  - id: stripe.issuing-cardholder.update
+    match: { rest: { method: POST, path: "/v1/issuing/cardholders/{cardholder}" } }
+    class: money
+    resource: { arg: cardholder, kind: cardholder }
+    card: "Update cardholder {cardholder}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can raise the cardholder's spending limits; nested form keys cannot be
+      told apart, so every update is money.
+    tests:
+      - fixture: fixtures/issuing-cardholder-update.http
+        expect: money
+        resource: ich_ShopJane0001

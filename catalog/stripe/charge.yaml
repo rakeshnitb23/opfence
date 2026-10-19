@@ -1,0 +1,59 @@
+# Stripe REST API: charge
+operations:
+  - id: stripe.charge.create
+    match: { rest: { method: POST, path: "/v1/charges" } }
+    class: money
+    card: "Charge {body.amount} {body.currency} to {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      capture=false only places a hold, which is still money.
+    tests:
+      - fixture: fixtures/charge-create.http
+        expect: money
+
+  - id: stripe.charge.update
+    match: { rest: { method: POST, path: "/v1/charges/{charge}" } }
+    class: write
+    resource: { arg: charge, kind: charge }
+    card: "Update charge {charge}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/charge-update.http
+        expect: write
+        resource: ch_3ShopCharge0001
+
+  - id: stripe.charge.capture
+    match: { rest: { method: POST, path: "/v1/charges/{charge}/capture" } }
+    class: money
+    resource: { arg: charge, kind: charge }
+    card: "Capture charge {charge}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/charge-capture.http
+        expect: money
+        resource: ch_3ShopCharge0001
+
+  - id: stripe.charge.refund
+    match: { rest: { method: POST, path: "/v1/charges/{charge}/refund" } }
+    class: money
+    resource: { arg: charge, kind: charge }
+    card: "Refund charge {charge}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Deprecated endpoint, still served.
+    tests:
+      - fixture: fixtures/charge-refund.http
+        expect: money
+        resource: ch_3ShopCharge0001

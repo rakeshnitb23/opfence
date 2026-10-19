@@ -1,0 +1,5 @@
+# description: Validate payment method domain pmd_ShopDomain0001
+POST /v1/payment_method_domains/pmd_ShopDomain0001/validate HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

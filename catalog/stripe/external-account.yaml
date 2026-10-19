@@ -1,0 +1,20 @@
+# Stripe REST API: external account
+operations:
+  - id: stripe.external-account.update
+    match: { rest: { method: POST, path: "/v1/external_accounts/{id}" } }
+    class: money
+    resource: { arg: id, kind: external_account }
+    card: "Update external account {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Called with Stripe-Account; default_for_currency makes it the payout
+      destination. External accounts are the bank accounts and debit cards
+      payouts go to; changing them changes where money goes, so the class is
+      money rather than access.
+    tests:
+      - fixture: fixtures/external-account-update.http
+        expect: money
+        resource: ba_ShopPayout0001

@@ -1,0 +1,8 @@
+# description: Update evidence for dispute dp_ShopDispute0001
+POST / HTTP/1.1
+Host: mcp.stripe.com
+Authorization: Bearer opf_stripe-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":22,"method":"tools/call","params":{"name":"update_dispute","arguments":{"dispute":"dp_ShopDispute0001","evidence":{"uncategorized_text":"Delivered on 2026-10-01"},"submit":false}}}

@@ -1,0 +1,215 @@
+# Stripe REST API: invoice
+operations:
+  - id: stripe.invoice.create
+    match: { rest: { method: POST, path: "/v1/invoices" } }
+    class: write
+    when:
+      - if: { arg: body.auto_advance, equals: "true" }
+        class: money
+    card: "Create a draft invoice for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A draft charges nothing; auto_advance=true lets Stripe finalize and
+      collect it on its own.
+    tests:
+      - fixture: fixtures/invoice-create.http
+        expect: write
+      - fixture: fixtures/invoice-create-auto-advance.http
+        expect: money
+
+  - id: stripe.invoice.preview
+    match: { rest: { method: POST, path: "/v1/invoices/create_preview" } }
+    class: read
+    card: "Preview the next invoice of {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Computes an invoice without creating anything.
+    tests:
+      - fixture: fixtures/invoice-preview.http
+        expect: read
+
+  - id: stripe.invoice.delete
+    match: { rest: { method: DELETE, path: "/v1/invoices/{invoice}" } }
+    class: delete
+    resource: { arg: invoice, kind: invoice }
+    card: "Delete draft invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only drafts can be deleted, and a draft can be created again.
+    tests:
+      - fixture: fixtures/invoice-delete.http
+        expect: delete
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.update
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}" } }
+    class: write
+    when:
+      - if: { arg: body.auto_advance, equals: "true" }
+        class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Update invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      auto_advance=true lets Stripe finalize and collect it on its own.
+    tests:
+      - fixture: fixtures/invoice-update.http
+        expect: write
+        resource: in_ShopInvoice0001
+      - fixture: fixtures/invoice-update-auto-advance.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.add-lines
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/add_lines" } }
+    class: write
+    resource: { arg: invoice, kind: invoice }
+    card: "Add lines to draft invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only draft invoices can be changed; nothing is charged until
+      finalization.
+    tests:
+      - fixture: fixtures/invoice-add-lines.http
+        expect: write
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.remove-lines
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/remove_lines" } }
+    class: write
+    resource: { arg: invoice, kind: invoice }
+    card: "Remove lines from draft invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only draft invoices can be changed; nothing is charged until
+      finalization.
+    tests:
+      - fixture: fixtures/invoice-remove-lines.http
+        expect: write
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.update-lines
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/update_lines" } }
+    class: write
+    resource: { arg: invoice, kind: invoice }
+    card: "Change lines of draft invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only draft invoices can be changed; nothing is charged until
+      finalization.
+    tests:
+      - fixture: fixtures/invoice-update-lines.http
+        expect: write
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.attach-payment
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/attach_payment" } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Pay invoice {invoice} with payment {body.payment_intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/invoice-attach-payment.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.finalize
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/finalize" } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Finalize invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A finalized invoice can no longer be edited, and Stripe collects it
+      automatically when the collection method is charge_automatically.
+    tests:
+      - fixture: fixtures/invoice-finalize.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.mark-uncollectible
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/mark_uncollectible" } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Write off invoice {invoice} as uncollectible"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/invoice-mark-uncollectible.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.pay
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/pay" } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Pay invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/invoice-pay.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.send
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/send" } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Email invoice {invoice} to the customer for payment"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Asks the customer for money; the email cannot be recalled.
+    tests:
+      - fixture: fixtures/invoice-send.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe.invoice.void
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/void" } }
+    class: irreversible
+    resource: { arg: invoice, kind: invoice }
+    card: "Void invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that voiding is permanent.
+    tests:
+      - fixture: fixtures/invoice-void.http
+        expect: irreversible
+        resource: in_ShopInvoice0001

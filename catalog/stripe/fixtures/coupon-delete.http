@@ -1,0 +1,5 @@
+# description: Delete coupon SPRING25
+DELETE /v1/coupons/SPRING25 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Create card design Black card
+POST /v1/issuing/personalization_designs HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+physical_bundle=pb_ShopBlack0001&name=Black%20card

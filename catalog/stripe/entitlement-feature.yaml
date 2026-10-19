@@ -1,0 +1,27 @@
+# Stripe REST API: entitlement feature
+operations:
+  - id: stripe.entitlement-feature.create
+    match: { rest: { method: POST, path: "/v1/entitlements/features" } }
+    class: write
+    card: "Create feature {body.lookup_key}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/entitlement-feature-create.http
+        expect: write
+
+  - id: stripe.entitlement-feature.update
+    match: { rest: { method: POST, path: "/v1/entitlements/features/{id}" } }
+    class: write
+    resource: { arg: id, kind: feature }
+    card: "Update feature {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/entitlement-feature-update.http
+        expect: write
+        resource: feat_ShopSupport01

@@ -1,0 +1,13 @@
+# Stripe REST API: treasury debit reversal
+operations:
+  - id: stripe.treasury-debit-reversal.create
+    match: { rest: { method: POST, path: "/v1/treasury/debit_reversals" } }
+    class: money
+    card: "Reverse received debit {body.received_debit}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-debit-reversal-create.http
+        expect: money

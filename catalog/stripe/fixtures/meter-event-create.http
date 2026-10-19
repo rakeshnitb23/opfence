@@ -1,0 +1,7 @@
+# description: Record usage api_requests for a customer
+POST /v1/billing/meter_events HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+event_name=api_requests&payload[stripe_customer_id]=cus_ShopAcme0001&payload[value]=25

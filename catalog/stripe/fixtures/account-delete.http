@@ -1,0 +1,5 @@
+# description: Close and delete connected account acct_1ShopConnect01
+DELETE /v1/accounts/acct_1ShopConnect01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

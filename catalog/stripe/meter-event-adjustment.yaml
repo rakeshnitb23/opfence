@@ -1,0 +1,15 @@
+# Stripe REST API: meter event adjustment
+operations:
+  - id: stripe.meter-event-adjustment.create
+    match: { rest: { method: POST, path: "/v1/billing/meter_event_adjustments" } }
+    class: money
+    card: "Cancel usage event for meter {body.event_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Usage events decide what customers on metered prices are billed.
+    tests:
+      - fixture: fixtures/meter-event-adjustment-create.http
+        expect: money

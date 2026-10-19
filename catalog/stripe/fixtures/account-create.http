@@ -1,0 +1,7 @@
+# description: Create a connected account (express, US)
+POST /v1/accounts HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+type=express&country=US&email=seller%40example.com&capabilities[transfers][requested]=true

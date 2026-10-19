@@ -1,0 +1,14 @@
+# Stripe MCP server: balance
+operations:
+  - id: stripe-mcp.balance.get
+    match: { mcp: { tool: retrieve_balance } }
+    class: read
+    card: "Show the account balance"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/balance-get.http
+        expect: read

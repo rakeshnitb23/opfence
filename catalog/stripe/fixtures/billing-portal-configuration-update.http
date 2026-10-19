@@ -1,0 +1,7 @@
+# description: Update customer portal configuration bpc_ShopPortal0001
+POST /v1/billing_portal/configurations/bpc_ShopPortal0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+features[subscription_cancel][enabled]=false

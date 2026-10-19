@@ -1,0 +1,64 @@
+# Stripe REST API: financial connections account
+operations:
+  - id: stripe.financial-connections-account.disconnect
+    match: { rest: { method: POST, path: "/v1/financial_connections/accounts/{account}/disconnect" } }
+    class: irreversible
+    resource: { arg: account, kind: account }
+    card: "Disconnect linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that the data can no longer be accessed; the customer
+      has to link the account again.
+    tests:
+      - fixture: fixtures/financial-connections-account-disconnect.http
+        expect: irreversible
+        resource: fca_ShopChecking01
+
+  - id: stripe.financial-connections-account.refresh
+    match: { rest: { method: POST, path: "/v1/financial_connections/accounts/{account}/refresh" } }
+    class: money
+    resource: { arg: account, kind: account }
+    card: "Refresh data of linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Financial Connections data refreshes are billed per request.
+    tests:
+      - fixture: fixtures/financial-connections-account-refresh.http
+        expect: money
+        resource: fca_ShopChecking01
+
+  - id: stripe.financial-connections-account.subscribe
+    match: { rest: { method: POST, path: "/v1/financial_connections/accounts/{account}/subscribe" } }
+    class: money
+    resource: { arg: account, kind: account }
+    card: "Subscribe to daily refreshes of linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Transaction subscriptions are billed per account.
+    tests:
+      - fixture: fixtures/financial-connections-account-subscribe.http
+        expect: money
+        resource: fca_ShopChecking01
+
+  - id: stripe.financial-connections-account.unsubscribe
+    match: { rest: { method: POST, path: "/v1/financial_connections/accounts/{account}/unsubscribe" } }
+    class: write
+    resource: { arg: account, kind: account }
+    card: "Stop refreshes of linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/financial-connections-account-unsubscribe.http
+        expect: write
+        resource: fca_ShopChecking01

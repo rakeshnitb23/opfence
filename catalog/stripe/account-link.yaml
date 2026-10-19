@@ -1,0 +1,18 @@
+# Stripe REST API: account link
+operations:
+  - id: stripe.account-link.create
+    match: { rest: { method: POST, path: "/v1/account_links" } }
+    class: credential
+    card: "Create an onboarding link for connected account {body.account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The URL lets whoever opens it fill in and change the connected account's
+      details, bank account included. The response hands out a secret or URL
+      that gives its holder access to the account or customer beyond one
+      payment.
+    tests:
+      - fixture: fixtures/account-link-create.http
+        expect: credential

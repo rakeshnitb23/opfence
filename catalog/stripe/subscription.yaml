@@ -1,0 +1,111 @@
+# Stripe REST API: subscription
+operations:
+  - id: stripe.subscription.create
+    match: { rest: { method: POST, path: "/v1/subscriptions" } }
+    class: money
+    card: "Subscribe customer {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Starts billing the customer.
+    tests:
+      - fixture: fixtures/subscription-create.http
+        expect: money
+
+  - id: stripe.subscription.cancel
+    match: { rest: { method: DELETE, path: "/v1/subscriptions/{subscription_exposed_id}" } }
+    class: irreversible
+    when:
+      - if: { arg: body.invoice_now, equals: "true" }
+        class: money
+      - if: { arg: query.invoice_now, equals: "true" }
+        class: money
+      - if: { arg: body.prorate, equals: "true" }
+        class: money
+      - if: { arg: query.prorate, equals: "true" }
+        class: money
+    resource: { arg: subscription_exposed_id, kind: subscription }
+    card: "Cancel subscription {subscription_exposed_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a canceled subscription cannot be reactivated.
+      invoice_now or prorate also bill or credit the customer at once.
+    tests:
+      - fixture: fixtures/subscription-cancel.http
+        expect: irreversible
+        resource: sub_ShopPro0001
+      - fixture: fixtures/subscription-cancel-prorate.http
+        expect: money
+        resource: sub_ShopPro0001
+
+  - id: stripe.subscription.update
+    match: { rest: { method: POST, path: "/v1/subscriptions/{subscription_exposed_id}" } }
+    class: money
+    resource: { arg: subscription_exposed_id, kind: subscription }
+    card: "Change subscription {subscription_exposed_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can change prices, quantities, trials and proration, which changes what
+      the customer is charged. Stripe sends items as form keys like
+      items[0][price], which conditions cannot address, so every update is
+      money.
+    tests:
+      - fixture: fixtures/subscription-update.http
+        expect: money
+        resource: sub_ShopPro0001
+
+  - id: stripe.subscription.migrate
+    match: { rest: { method: POST, path: "/v1/subscriptions/{subscription}/migrate" } }
+    class: write
+    resource: { arg: subscription, kind: subscription }
+    card: "Change the billing mode of subscription {subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes how future prorations are computed; charges nothing by itself.
+    tests:
+      - fixture: fixtures/subscription-migrate.http
+        expect: write
+        resource: sub_ShopPro0001
+
+  - id: stripe.subscription.pause
+    match: { rest: { method: POST, path: "/v1/subscriptions/{subscription}/pause" } }
+    class: money
+    resource: { arg: subscription, kind: subscription }
+    card: "Pause billing of subscription {subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stops invoices until resumed; bill_for can invoice the current period.
+    tests:
+      - fixture: fixtures/subscription-pause.http
+        expect: money
+        resource: sub_ShopPro0001
+
+  - id: stripe.subscription.resume
+    match: { rest: { method: POST, path: "/v1/subscriptions/{subscription}/resume" } }
+    class: money
+    resource: { arg: subscription, kind: subscription }
+    card: "Resume subscription {subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Starts billing again and can invoice at once.
+    tests:
+      - fixture: fixtures/subscription-resume.http
+        expect: money
+        resource: sub_ShopPro0001

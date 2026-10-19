@@ -1,0 +1,48 @@
+# Stripe REST API: v2 account
+operations:
+  - id: stripe.v2-account.create
+    match: { rest: { method: POST, path: "/v2/core/accounts" } }
+    class: access
+    card: "Create account {body.display_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Adds a party the platform can pay out to and requests capabilities.
+    tests:
+      - fixture: fixtures/v2-account-create.http
+        expect: access
+
+  - id: stripe.v2-account.update
+    match: { rest: { method: POST, path: "/v2/core/accounts/{id}" } }
+    class: money
+    resource: { arg: id, kind: account }
+    card: "Update account {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can change where outbound money goes and request capabilities, so every
+      update is money.
+    tests:
+      - fixture: fixtures/v2-account-update.http
+        expect: money
+        resource: acct_1ShopConnect01
+
+  - id: stripe.v2-account.close
+    match: { rest: { method: POST, path: "/v2/core/accounts/{id}/close" } }
+    class: irreversible
+    resource: { arg: id, kind: account }
+    card: "Close account {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that closed accounts can no longer be operated on.
+    tests:
+      - fixture: fixtures/v2-account-close.http
+        expect: irreversible
+        resource: acct_1ShopConnect01

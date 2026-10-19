@@ -1,0 +1,31 @@
+# Stripe REST API: customer tax id
+operations:
+  - id: stripe.customer-tax-id.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/tax_ids" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Add tax ID {body.value} to customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-tax-id-create.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-tax-id.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/tax_ids/{id}" } }
+    class: delete
+    resource: { arg: customer, kind: customer }
+    card: "Remove tax ID {id} from customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The tax ID can be added again.
+    tests:
+      - fixture: fixtures/customer-tax-id-delete.http
+        expect: delete
+        resource: cus_ShopAcme0001

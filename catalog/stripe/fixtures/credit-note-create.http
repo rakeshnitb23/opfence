@@ -1,0 +1,7 @@
+# description: Issue a credit note on invoice in_ShopInvoice0001
+POST /v1/credit_notes HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+invoice=in_ShopInvoice0001&lines[0][type]=invoice_line_item&lines[0][invoice_line_item]=il_ShopLine0001&lines[0][quantity]=1&refund_amount=2000

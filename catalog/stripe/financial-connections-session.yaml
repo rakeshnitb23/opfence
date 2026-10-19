@@ -1,0 +1,15 @@
+# Stripe REST API: financial connections session
+operations:
+  - id: stripe.financial-connections-session.create
+    match: { rest: { method: POST, path: "/v1/financial_connections/sessions" } }
+    class: write
+    card: "Start a bank account linking session"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The client_secret is scoped to this one linking flow.
+    tests:
+      - fixture: fixtures/financial-connections-session-create.http
+        expect: write

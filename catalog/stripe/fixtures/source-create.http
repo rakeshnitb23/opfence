@@ -1,0 +1,7 @@
+# description: Create a ach_credit_transfer source
+POST /v1/sources HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+type=ach_credit_transfer&currency=usd&owner[email]=jane%40example.com

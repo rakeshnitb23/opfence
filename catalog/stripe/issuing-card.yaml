@@ -1,0 +1,57 @@
+# Stripe REST API: issuing card
+operations:
+  - id: stripe.issuing-card.create
+    match: { rest: { method: POST, path: "/v1/issuing/cards" } }
+    class: credential
+    card: "Issue a {body.type} card for cardholder {body.cardholder}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Spends from the Issuing balance (money), and the response carries the
+      card number and CVC when expand[]=number or expand[]=cvc is sent. Stripe
+      sends expand as form keys like expand[]=number or expand[0]=number,
+      which conditions cannot address, so the rule assumes the secret is
+      requested.
+    tests:
+      - fixture: fixtures/issuing-card-create.http
+        expect: credential
+
+  - id: stripe.issuing-card.update
+    match: { rest: { method: POST, path: "/v1/issuing/cards/{card}" } }
+    class: credential
+    resource: { arg: card, kind: card }
+    card: "Update issuing card {card}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can activate the card or raise spending limits (money), and the response
+      carries the number and CVC when expanded. Stripe sends expand as form
+      keys like expand[]=number or expand[0]=number, which conditions cannot
+      address, so the rule assumes the secret is requested.
+    tests:
+      - fixture: fixtures/issuing-card-update.http
+        expect: credential
+        resource: ic_ShopVirtual01
+
+  - id: stripe.issuing-card.get
+    match: { rest: { method: GET, path: "/v1/issuing/cards/{card}" } }
+    class: credential
+    resource: { arg: card, kind: card }
+    card: "Read issuing card {card}, possibly with its number and CVC"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe returns the full number and CVC of virtual cards on this endpoint
+      only, with expand. Stripe sends expand as form keys like expand[]=number
+      or expand[0]=number, which conditions cannot address, so the rule
+      assumes the secret is requested.
+    tests:
+      - fixture: fixtures/issuing-card-get.http
+        expect: credential
+        resource: ic_ShopVirtual01

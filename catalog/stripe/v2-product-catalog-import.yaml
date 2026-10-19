@@ -1,0 +1,20 @@
+# Stripe REST API: v2 product catalog import
+operations:
+  - id: stripe.v2-product-catalog-import.create
+    match: { rest: { method: POST, path: "/v2/commerce/product_catalog/imports" } }
+    class: write
+    when:
+      - if: { arg: body.mode, equals: "replace" }
+        class: irreversible
+    card: "Import {body.feed_type} catalog data ({body.mode})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      mode=replace drops existing catalog entries that are not in the feed.
+    tests:
+      - fixture: fixtures/v2-product-catalog-import-create.http
+        expect: write
+      - fixture: fixtures/v2-product-catalog-import-create-replace.http
+        expect: irreversible

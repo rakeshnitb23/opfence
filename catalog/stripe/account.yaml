@@ -1,0 +1,82 @@
+# Stripe REST API: account
+operations:
+  - id: stripe.account.create
+    match: { rest: { method: POST, path: "/v1/accounts" } }
+    class: access
+    card: "Create a connected account ({body.type}, {body.country})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Adds a party the platform can pay out to, requests capabilities and can
+      attach a bank account.
+    tests:
+      - fixture: fixtures/account-create.http
+        expect: access
+
+  - id: stripe.account.delete
+    match: { rest: { method: DELETE, path: "/v1/accounts/{account}" } }
+    class: irreversible
+    resource: { arg: account, kind: account }
+    card: "Close and delete connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents no way to restore a deleted account.
+    tests:
+      - fixture: fixtures/account-delete.http
+        expect: irreversible
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account.update
+    match: { rest: { method: POST, path: "/v1/accounts/{account}" } }
+    class: money
+    resource: { arg: account, kind: account }
+    card: "Update connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can replace external_account (where payouts go) and change the payout
+      schedule; nested form keys cannot be told apart, so every update is
+      money.
+    tests:
+      - fixture: fixtures/account-update.http
+        expect: money
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account.reject
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/reject" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Reject connected account {account} ({body.reason})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stops charges and payouts on the account; unreject restores it.
+    tests:
+      - fixture: fixtures/account-reject.http
+        expect: access
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account.unreject
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/unreject" } }
+    class: access
+    resource: { arg: account, kind: account }
+    card: "Unreject connected account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Lets the account charge and receive payouts again.
+    tests:
+      - fixture: fixtures/account-unreject.http
+        expect: access
+        resource: acct_1ShopConnect01

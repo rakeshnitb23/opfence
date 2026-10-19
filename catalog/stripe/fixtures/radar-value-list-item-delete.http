@@ -1,0 +1,5 @@
+# description: Remove item rsli_ShopFraud0001 from its Radar list
+DELETE /v1/radar/value_list_items/rsli_ShopFraud0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

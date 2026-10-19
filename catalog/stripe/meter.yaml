@@ -1,0 +1,57 @@
+# Stripe REST API: meter
+operations:
+  - id: stripe.meter.create
+    match: { rest: { method: POST, path: "/v1/billing/meters" } }
+    class: write
+    card: "Create billing meter {body.event_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/meter-create.http
+        expect: write
+
+  - id: stripe.meter.update
+    match: { rest: { method: POST, path: "/v1/billing/meters/{id}" } }
+    class: write
+    resource: { arg: id, kind: meter }
+    card: "Update billing meter {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/meter-update.http
+        expect: write
+        resource: mtr_ShopApi0001
+
+  - id: stripe.meter.deactivate
+    match: { rest: { method: POST, path: "/v1/billing/meters/{id}/deactivate" } }
+    class: write
+    resource: { arg: id, kind: meter }
+    card: "Deactivate billing meter {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The meter stops accepting events; reactivate restores it.
+    tests:
+      - fixture: fixtures/meter-deactivate.http
+        expect: write
+        resource: mtr_ShopApi0001
+
+  - id: stripe.meter.reactivate
+    match: { rest: { method: POST, path: "/v1/billing/meters/{id}/reactivate" } }
+    class: write
+    resource: { arg: id, kind: meter }
+    card: "Reactivate billing meter {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/meter-reactivate.http
+        expect: write
+        resource: mtr_ShopApi0001

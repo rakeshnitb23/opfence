@@ -1,0 +1,5 @@
+# description: Submit card dispute idp_ShopDispute0001 to the network
+POST /v1/issuing/disputes/idp_ShopDispute0001/submit HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,5 @@
+# description: Unarchive invoice template inrtem_ShopBrand01
+POST /v1/invoice_rendering_templates/inrtem_ShopBrand01/unarchive HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

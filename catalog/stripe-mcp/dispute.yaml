@@ -1,0 +1,38 @@
+# Stripe MCP server: dispute
+operations:
+  - id: stripe-mcp.dispute.list
+    match: { mcp: { tool: list_disputes } }
+    class: read
+    card: "List disputes"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/dispute-list.http
+        expect: read
+
+  - id: stripe-mcp.dispute.update
+    match: { mcp: { tool: update_dispute } }
+    class: write
+    when:
+      - if: { arg: submit, equals: "true" }
+        class: irreversible
+    resource: { arg: dispute, kind: dispute }
+    card: "Update evidence for dispute {dispute}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      submit=true sends the evidence to the bank; Stripe accepts one
+      submission, so it cannot be corrected.
+    tests:
+      - fixture: fixtures/dispute-update.http
+        expect: write
+        resource: dp_ShopDispute0001
+      - fixture: fixtures/dispute-update-submit.http
+        expect: irreversible
+        resource: dp_ShopDispute0001
