@@ -272,3 +272,22 @@ func TestVault(t *testing.T) {
 		t.Fatal("CA round trip")
 	}
 }
+
+func TestSetAdd(t *testing.T) {
+	a := &Secret{Provider: "x", Name: "a", Value: strings.Repeat("v", 20), Placeholder: strings.Repeat("p", 20)}
+	set := NewSet(nil)
+	if err := set.Add(a); err != nil {
+		t.Fatal(err)
+	}
+	if set.ByPlaceholder(a.Placeholder) != a || set.Len() != 1 {
+		t.Fatal("added secret not found")
+	}
+	if err := set.Add(&Secret{Provider: "x", Name: "b", Value: strings.Repeat("w", 20), Placeholder: a.Placeholder}); err == nil {
+		t.Fatal("placeholder collision accepted")
+	}
+	all := set.All()
+	_ = set.Add(&Secret{Provider: "x", Name: "c", Value: strings.Repeat("c", 20), Placeholder: strings.Repeat("q", 20)})
+	if len(all) != 1 {
+		t.Fatal("All's slice changed under the caller")
+	}
+}

@@ -42,9 +42,12 @@ type Entry struct {
 	Approver string `json:"approver,omitempty"`
 	// Credentials names the secrets injected (provider/name), never values.
 	Credentials []string `json:"credentials,omitempty"`
-	Hash        string   `json:"hash,omitempty"` // request hash approvals bind to
-	Status      int      `json:"status,omitempty"`
-	Prev        string   `json:"prev"`
+	// Minted names the credentials a response created, which Opfence now
+	// holds for the session (provider/name), never values.
+	Minted []string `json:"minted,omitempty"`
+	Hash   string   `json:"hash,omitempty"` // request hash approvals bind to
+	Status int      `json:"status,omitempty"`
+	Prev   string   `json:"prev"`
 }
 
 // Operation is the verdict on one operation of a request.

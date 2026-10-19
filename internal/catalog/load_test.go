@@ -148,6 +148,22 @@ func TestLoadInvalid(t *testing.T) {
 		{"two documents", replace("acme/db.yaml", "operations:", "operations: []\n---\noperations:"), "only one YAML document"},
 		{"empty rule file", func(m fstest.MapFS) { m["acme/empty.yaml"] = &fstest.MapFile{Data: []byte("")} }, "empty file"},
 		{"stray folder", func(m fstest.MapFS) { m["acme/tests/x.http"] = &fstest.MapFile{Data: []byte("x")} }, "unexpected folder"},
+		{"response without paths", responseRule(`{ class: read }`), "needs redact or mint"},
+		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},
+		{"response bad path", responseRule(`{ redact: ["a b"], class: read }`), "not a dotted path"},
+		{"response untested", responseRule(`{ redact: [secret], class: read }`), "needs a test with a recorded response"},
+		{"test response without transform", func(m fstest.MapFS) {
+			replace("acme/db.yaml", "        expect: irreversible\n", "        expect: irreversible\n        response: fixtures/db-delete.json\n")(m)
+			m["acme/fixtures/db-delete.json"] = &fstest.MapFile{Data: []byte("{}")}
+		}, "for rules with a response transform"},
+		{"test response not json", func(m fstest.MapFS) {
+			responseRule(`{ redact: [secret], class: read }`)(m)
+			replace("acme/db.yaml", "        expect: irreversible\n", "        expect: irreversible\n        response: fixtures/db-delete.http\n")(m)
+		}, "clean .json path"},
+		{"test response missing", func(m fstest.MapFS) {
+			responseRule(`{ redact: [secret], class: read }`)(m)
+			replace("acme/db.yaml", "        expect: irreversible\n", "        expect: irreversible\n        response: fixtures/nope.json\n")(m)
+		}, "fixtures/nope.json not found"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -163,6 +179,11 @@ func TestLoadInvalid(t *testing.T) {
 			}
 		})
 	}
+}
+
+// responseRule gives acme.db.delete a response transform.
+func responseRule(x string) func(fstest.MapFS) {
+	return replace("acme/db.yaml", "    resource: { arg: id, kind: database }", "    response: "+x+"\n    resource: { arg: id, kind: database }")
 }
 
 // gitRule makes acme.db.wipe a git rule on a git host.

@@ -18,6 +18,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
@@ -107,6 +108,7 @@ type Server struct {
 	cfg       Config
 	scrubber  *inject.Scrubber
 	resign    chan struct{} // slots for AWS re-signing that buffers a body
+	minted    atomic.Int64  // numbers minted credentials' names
 	transport *http.Transport
 	rp        *httputil.ReverseProxy
 	plainRP   *httputil.ReverseProxy
@@ -139,7 +141,18 @@ func New(cfg Config) (*Server, error) {
 	if cfg.Logf == nil {
 		cfg.Logf = log.Printf
 	}
-	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: inject.NewScrubber(cfg.Secrets), resign: make(chan struct{}, maxResigning)}
+	if cfg.Secrets == nil {
+		cfg.Secrets = secrets.NewSet(nil) // responses can still mint some
+	}
+	// Rules' response transforms count only where they are applied.
+	eng := *cfg.Engine
+	eng.TransformsResponses = true
+	cfg.Engine = &eng
+	scrubber := inject.NewScrubber(cfg.Secrets)
+	if scrubber == nil {
+		scrubber = &inject.Scrubber{}
+	}
+	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: scrubber, resign: make(chan struct{}, maxResigning)}
 	s.transport = &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return s.dial(ctx, network, addr, false)

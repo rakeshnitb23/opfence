@@ -7,6 +7,7 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -150,10 +151,30 @@ func (v *Vault) SetCA(certPEM, keyPEM []byte) error {
 }
 
 // Set is the in-memory view the proxy uses: lookups by placeholder and the
-// pairs the response scrubber replaces.
+// pairs the response scrubber replaces. Add makes it safe for concurrent
+// use.
 type Set struct {
+	mu            sync.RWMutex
 	byPlaceholder map[string]*Secret
 	all           []*Secret
+}
+
+// MaxMinted caps the secrets Add will take in one session.
+const MaxMinted = 10000
+
+// Add adds a secret the session learned, such as a token a response minted.
+func (s *Set) Add(sec *Secret) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if len(s.all) >= MaxMinted {
+		return errors.New("too many minted credentials in this session")
+	}
+	if _, dup := s.byPlaceholder[sec.Placeholder]; dup {
+		return errors.New("placeholder collision")
+	}
+	s.byPlaceholder[sec.Placeholder] = sec
+	s.all = append(s.all, sec)
+	return nil
 }
 
 // NewSet indexes secrets by placeholder.
@@ -171,6 +192,8 @@ func (s *Set) ByPlaceholder(p string) *Secret {
 	if s == nil {
 		return nil
 	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	return s.byPlaceholder[p]
 }
 
@@ -179,7 +202,9 @@ func (s *Set) All() []*Secret {
 	if s == nil {
 		return nil
 	}
-	return s.all
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.all[:len(s.all):len(s.all)]
 }
 
 // Len is the number of secrets.
@@ -187,6 +212,8 @@ func (s *Set) Len() int {
 	if s == nil {
 		return 0
 	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	return len(s.all)
 }
 

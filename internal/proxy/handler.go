@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,13 +14,16 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/audit"
+	"github.com/rakeshnitb23/opfence/internal/catalog"
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/decode"
 	"github.com/rakeshnitb23/opfence/internal/engine"
 	"github.com/rakeshnitb23/opfence/internal/inject"
 	"github.com/rakeshnitb23/opfence/internal/request"
+	"github.com/rakeshnitb23/opfence/internal/secrets"
 )
 
 // maxAuditPath bounds the path written to the audit log.
@@ -32,6 +36,15 @@ type fwdKey struct{}
 type fwd struct {
 	host, path, rawPath, rawQuery string
 	entry                         audit.Entry
+	// transforms are the response transforms of the request's rules, which
+	// must be applied before the response reaches the agent.
+	transforms []transform
+}
+
+type transform struct {
+	prov *catalog.Provider
+	rule string
+	x    *catalog.Response
 }
 
 // serveIntercepted evaluates one request on an intercepted connection and
@@ -105,9 +118,15 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		entry.Reason = fmt.Sprintf("placeholder for %s sent to %s; not swapped in", strings.Join(inj.Foreign, ", "), host)
 	}
 	sigV4 := res.Provider != nil && res.Provider.SigV4
-	if s.scrubber != nil {
+	var transforms []transform
+	for _, ev := range res.Evaluations {
+		if ev.Transform != nil {
+			transforms = append(transforms, transform{res.Provider, ev.Rule.ID, ev.Transform})
+		}
+	}
+	if s.scrubber.Active() || len(transforms) > 0 {
 		// Let the transport ask for gzip and decode it, so responses can be
-		// scrubbed.
+		// scrubbed and transformed.
 		r.Header.Del("Accept-Encoding")
 		if !sigV4 {
 			// A key split across two ranged reads would not be scrubbed in
@@ -146,7 +165,7 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		}
 		whole = body
 	}
-	f := &fwd{host: host, path: path, rawPath: req.Path, rawQuery: rawQuery, entry: entry}
+	f := &fwd{host: host, path: path, rawPath: req.Path, rawQuery: rawQuery, entry: entry, transforms: transforms}
 	if r.Body != nil && r.Body != http.NoBody {
 		var rd io.Reader = io.MultiReader(bytes.NewReader(raw), r.Body)
 		if whole != nil {
@@ -157,11 +176,7 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 			io.Closer
 		}{rd, r.Body}
 	}
-	var rw http.ResponseWriter = w
-	if s.scrubber != nil {
-		rw = scrubWriter{w, s}
-	}
-	s.rp.ServeHTTP(rw, r.WithContext(contextWith(r, f)))
+	s.rp.ServeHTTP(scrubWriter{w, s}, r.WithContext(contextWith(r, f)))
 }
 
 // scrubWriter scrubs the headers of informational (1xx) responses, which the
@@ -191,31 +206,115 @@ func rewriteIntercepted(pr *httputil.ProxyRequest) {
 	pr.Out.Host = f.host
 }
 
-// modifyResponse scrubs secrets from the response and writes the audit
-// entry once the upstream's response headers arrive, before any body
-// streams, so a long stream is logged immediately. A response in an
-// encoding Opfence cannot read is refused when there are secrets to scrub.
+// modifyResponse applies the rules' response transforms, scrubs secrets
+// from the response and writes the audit entry once the upstream's response
+// headers arrive, before any body streams, so a long stream is logged
+// immediately. A response in an encoding Opfence cannot read is refused
+// when there are secrets to scrub or a transform to apply.
 func (s *Server) modifyResponse(resp *http.Response) error {
-	if s.scrubber != nil {
+	f, _ := resp.Request.Context().Value(fwdKey{}).(*fwd)
+	var transforms []transform
+	if f != nil {
+		transforms = f.transforms
+	}
+	if s.scrubber.Active() || len(transforms) > 0 {
 		if ce := strings.TrimSpace(resp.Header.Get("Content-Encoding")); ce != "" && !strings.EqualFold(ce, "identity") {
-			return fmt.Errorf("the response is encoded with %s, which Opfence cannot scrub for credentials", ce)
+			return withheldError(fmt.Sprintf("the response is encoded with %s, which Opfence cannot scrub for credentials", ce))
 		}
+	}
+	if len(transforms) > 0 {
+		minted, err := s.transformResponse(resp, transforms)
+		f.entry.Minted = minted
+		if err != nil {
+			return err
+		}
+	}
+	if s.scrubber.Active() {
 		s.scrubber.Header(resp.Header)
 		resp.Body = s.scrubber.Reader(resp.Body, func() { s.scrubber.Header(resp.Trailer) })
 	}
-	if f, ok := resp.Request.Context().Value(fwdKey{}).(*fwd); ok {
+	if f != nil {
 		f.entry.Status = resp.StatusCode
 		s.record(f.entry)
 	}
 	return nil
 }
 
+// transformResponse buffers the body and applies every transform to it,
+// returning the credentials it minted. It fails closed: a successful
+// response it cannot transform is withheld. An unsuccessful response that
+// is not JSON carries none of the data the rule describes and passes on.
+func (s *Server) transformResponse(resp *http.Response, transforms []transform) ([]string, error) {
+	body, err := io.ReadAll(io.LimitReader(resp.Body, inject.MaxTransformBody+1))
+	_ = resp.Body.Close()
+	if err != nil {
+		return nil, fmt.Errorf("reading the response: %w", err)
+	}
+	if len(body) > inject.MaxTransformBody {
+		return nil, withheldError(fmt.Sprintf("the response is larger than %d MiB, so Opfence cannot remove the credentials in it", inject.MaxTransformBody>>20))
+	}
+	resp.Body = io.NopCloser(bytes.NewReader(body))
+	if len(bytes.TrimSpace(body)) == 0 {
+		return nil, nil // HEAD, 204, 304: headers only, kept as they are
+	}
+	var minted []string
+	for _, t := range transforms {
+		out, _, err := inject.Transform(body, t.x, func(value string) (string, error) {
+			sec, err := s.mint(t, value)
+			if err != nil {
+				return "", err
+			}
+			minted = append(minted, sec.Provider+"/"+sec.Name)
+			return sec.Placeholder, nil
+		})
+		if err != nil {
+			if resp.StatusCode/100 != 2 && len(minted) == 0 {
+				return nil, nil // an error page, not the data the rule describes
+			}
+			return minted, withheldError(fmt.Sprintf("Opfence could not remove the credentials from this response (%s): %v", t.rule, err))
+		}
+		body = out
+	}
+	resp.Body = io.NopCloser(bytes.NewReader(body))
+	resp.ContentLength = int64(len(body))
+	resp.Header.Set("Content-Length", strconv.Itoa(len(body)))
+	for _, h := range []string{"Content-Md5", "Digest", "Repr-Digest", "Content-Digest"} {
+		resp.Header.Del(h)
+	}
+	return minted, nil
+}
+
+// mint holds a credential a response created, like a stored secret of the
+// rule's provider, and returns it with the placeholder the agent gets.
+func (s *Server) mint(t transform, value string) (*secrets.Secret, error) {
+	ph, err := secrets.NewPlaceholder(value, t.prov.Detect.Prefixes)
+	if err != nil {
+		return nil, err
+	}
+	sec := &secrets.Secret{Provider: t.prov.ID, Name: fmt.Sprintf("minted/%s/%d", t.rule, s.minted.Add(1)), Value: value, Placeholder: ph, Created: time.Now().UTC()}
+	if err := s.cfg.Secrets.Add(sec); err != nil {
+		return nil, err
+	}
+	s.scrubber.AddSecret(sec)
+	return sec, nil
+}
+
+// withheldError is a response Opfence received but will not pass on.
+type withheldError string
+
+func (e withheldError) Error() string { return string(e) }
+
 func (s *Server) upstreamError(w http.ResponseWriter, r *http.Request, err error) {
 	if f, ok := r.Context().Value(fwdKey{}).(*fwd); ok {
 		f.entry.Outcome, f.entry.Status, f.entry.Reason = "error", http.StatusBadGateway, err.Error()
 		s.record(f.entry)
 	}
-	http.Error(w, "Opfence could not reach the API: "+err.Error(), http.StatusBadGateway)
+	msg := "Opfence could not reach the API: " + err.Error()
+	var we withheldError
+	if errors.As(err, &we) {
+		msg = "Opfence withheld the API's response: " + err.Error()
+	}
+	http.Error(w, msg, http.StatusBadGateway)
 }
 
 // block answers a request that will not be forwarded. MCP clients get a

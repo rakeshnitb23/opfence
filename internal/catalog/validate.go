@@ -74,6 +74,9 @@ func (l *loader) validate(c *Catalog) {
 				if t.Fixture != "" {
 					referenced[path.Join(p.Dir, t.Fixture)] = true
 				}
+				if t.Response != "" {
+					referenced[path.Join(p.Dir, t.Response)] = true
+				}
 			}
 		}
 	}
@@ -228,6 +231,29 @@ func (l *loader) validateRule(r *Rule) {
 			l.addf(f, ln, "%s: when[%d]: unknown class %q", r.ID, i, w.Class)
 		}
 		l.validateCondition(r, i, &w.If)
+	}
+	if x := r.Response; x != nil {
+		if r.Match.REST == nil && r.Match.GraphQL == nil {
+			l.addf(f, ln, "%s: response transforms are for rest and graphql rules", r.ID)
+		}
+		if len(x.Redact)+len(x.Mint) == 0 {
+			l.addf(f, ln, "%s: response needs redact or mint paths", r.ID)
+		}
+		for _, p := range append(append([]string{}, x.Redact...), x.Mint...) {
+			if !argPathRe.MatchString(p) {
+				l.addf(f, ln, "%s: response path %q is not a dotted path", r.ID, p)
+			}
+		}
+		if !x.Class.Valid() {
+			l.addf(f, ln, "%s: response.class %q is not a class", r.ID, x.Class)
+		}
+		hasResponseTest := false
+		for _, t := range r.Tests {
+			hasResponseTest = hasResponseTest || t.Response != ""
+		}
+		if !hasResponseTest && r.Status == Verified {
+			l.addf(f, ln, "%s: a verified rule with a response transform needs a test with a recorded response", r.ID)
+		}
 	}
 	if r.Classify != nil {
 		if r.Classify.SQL == "" {
@@ -444,6 +470,19 @@ func (l *loader) validateTest(r *Rule, i int, t Test) {
 	}
 	if !t.Expect.Valid() {
 		l.addf(f, ln, "%s: tests[%d]: unknown expected class %q", r.ID, i, t.Expect)
+	}
+	if t.Response != "" {
+		clean := path.Clean(t.Response)
+		switch {
+		case r.Response == nil:
+			l.addf(f, ln, "%s: tests[%d]: response is for rules with a response transform", r.ID, i)
+		case clean != t.Response || !strings.HasPrefix(clean, FixturesDir+"/") || !strings.HasSuffix(clean, ".json"):
+			l.addf(f, ln, "%s: tests[%d]: response %q must be a clean .json path under %s/", r.ID, i, t.Response, FixturesDir)
+		default:
+			if _, err := fs.Stat(l.fsys, path.Join(r.Provider.Dir, clean)); err != nil {
+				l.addf(f, ln, "%s: tests[%d]: response %s not found", r.ID, i, t.Response)
+			}
+		}
 	}
 }
 

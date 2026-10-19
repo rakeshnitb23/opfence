@@ -1,0 +1,5 @@
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtZGJfc2FfaWRfZXhhbXBsZSJ9.opf_mongodb-atlas_EXAMPLE_signature",
+  "expires_in": 3600,
+  "token_type": "Bearer"
+}

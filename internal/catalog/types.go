@@ -90,6 +90,7 @@ type Rule struct {
 	Class    classes.Class `yaml:"class"`
 	When     []When        `yaml:"when"`
 	Classify *Classify     `yaml:"classify"`
+	Response *Response     `yaml:"response"`
 	Resource *Resource     `yaml:"resource"`
 	Card     string        `yaml:"card"`
 	Status   Status        `yaml:"status"`
@@ -194,6 +195,25 @@ type Classify struct {
 	SQL string `yaml:"sql"` // argument holding SQL text
 }
 
+// Response describes what the proxy does to the response of a read that
+// returns secrets (docs/ARCHITECTURE.md §8.4). Only the proxy can do it, so
+// only the proxy uses Class; everything else keeps the rule's own class.
+type Response struct {
+	// Redact lists JSON paths whose strings, at any depth below, are
+	// replaced with RedactedValue.
+	Redact []string `yaml:"redact"`
+	// Mint lists JSON paths of tokens the response creates. Each is
+	// replaced with a placeholder, and the real value is held for the
+	// session like a stored secret of the provider.
+	Mint []string `yaml:"mint"`
+	// Class is the operation's class when the proxy transforms the
+	// response.
+	Class classes.Class `yaml:"class"`
+}
+
+// RedactedValue replaces redacted strings in responses.
+const RedactedValue = "[redacted by opfence]"
+
 // Resource names the argument that identifies what the operation acts on.
 type Resource struct {
 	Arg  string `yaml:"arg"`
@@ -205,6 +225,9 @@ type Test struct {
 	Fixture  string        `yaml:"fixture"` // path relative to the provider folder
 	Expect   classes.Class `yaml:"expect"`
 	Resource string        `yaml:"resource"` // optional expected resource value
+	// Response is a recorded JSON response body; the test checks that every
+	// path in the rule's response transform finds something in it.
+	Response string `yaml:"response"`
 }
 
 // Matcher returns the protocol name of the rule's matcher.

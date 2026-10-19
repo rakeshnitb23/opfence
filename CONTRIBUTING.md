@@ -8,7 +8,8 @@ Thanks for helping. The most valuable contribution is a catalog rule: one tested
 2. Add the operation to a rule file (see [docs/ARCHITECTURE.md §4](docs/ARCHITECTURE.md#4-catalog) for the format).
 3. Capture a fixture: the raw HTTP request (headers and body) saved as `fixtures/<name>.http`. Replace every real token with a placeholder such as `opf_railway_EXAMPLE`. With mitmproxy, use "Copy as raw request". For an MCP server that runs locally (no host), save the tool call instead as `fixtures/<name>.json`: `{"description": "...", "tool": "<tool name>", "arguments": {...}}`.
 4. Link a primary source (the provider's API reference, OpenAPI spec, GraphQL schema or MCP server source) in `sources`.
-5. Run `opfence catalog validate` and `opfence test`.
+5. If the operation's response returns secrets next to ordinary data, add a `response` transform (see [docs/ARCHITECTURE.md §4.4](docs/ARCHITECTURE.md#44-conditional-classes)) and a recorded response, `fixtures/<name>-response.json`, named by the test's `response:` key. Every path must find something in it.
+6. Run `opfence catalog validate` and `opfence test`.
 
 A rule can be `status: verified` only when it has a fixture, a source and a `verified` date; otherwise use `community` or `draft`.
 
