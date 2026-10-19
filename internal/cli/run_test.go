@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -301,5 +302,74 @@ func TestDoctorReportsEachCheck(t *testing.T) {
 		if !strings.Contains(out, want) {
 			t.Errorf("missing %q in:\n%s", want, out)
 		}
+	}
+}
+
+// opfence run --srt -- codex applies Codex's preset: its backend is
+// tunnelled, its state folder writable but its config not, its sandbox off,
+// and its MCP servers and Opfence's hook configured with -c.
+func TestRunSrtCodex(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("no sandbox on Windows")
+	}
+	isolate(t)
+	bin := t.TempDir()
+	out := filepath.Join(t.TempDir(), "srt")
+	codexHome := filepath.Join(t.TempDir(), "codex-home")
+	t.Setenv("CODEX_HOME", codexHome)
+	srt := "#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$OUT\"\ncp \"$2\" \"$OUT.settings\"\nenv > \"$OUT.env\"\nexit 4\n"
+	codex := "#!/bin/sh\n[ \"$1 $2 $3\" = 'mcp list --json' ] && { echo '[{\"name\":\"supabase\",\"enabled\":true,\"transport\":{\"type\":\"stdio\",\"env_vars\":[]}}]'; exit 0; }\nexit 9\n"
+	for name, script := range map[string]string{"srt": srt, "codex": codex} {
+		if err := os.WriteFile(filepath.Join(bin, name), []byte(script), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Setenv("PATH", bin+string(os.PathListSeparator)+os.Getenv("PATH"))
+	t.Setenv("OUT", out)
+	code, _, errOut := run(t, "run", "--srt", "--", "codex", "exec", "fix the bug")
+	if code != 4 {
+		t.Fatalf("exit %d\n%s", code, errOut)
+	}
+	if !strings.Contains(errOut, "Codex: srt is its sandbox; its backend (api.openai.com") {
+		t.Errorf("banner:\n%s", errOut)
+	}
+	raw, _ := os.ReadFile(out)
+	args := strings.Split(strings.TrimSuffix(string(raw), "\n"), "\n")
+	if len(args) < 6 || args[0] != "--settings" || args[2] != "--" || args[3] != "codex" || args[4] != "-s" || args[5] != "danger-full-access" {
+		t.Fatalf("srt args %q", args)
+	}
+	if args[len(args)-2] != "exec" || args[len(args)-1] != "fix the bug" {
+		t.Errorf("Codex's own arguments moved: %q", args)
+	}
+	joined := strings.Join(args, "\n")
+	for _, want := range []string{`mcp_servers.supabase.default_tools_approval_mode="prompt"`, `"HTTPS_PROXY"`, "hooks.PreToolUse=", "hook codex", "trusted_hash="} {
+		if !strings.Contains(joined, want) {
+			t.Errorf("missing %s in srt args:\n%s", want, joined)
+		}
+	}
+	var s struct {
+		Filesystem struct{ AllowWrite, DenyWrite []string }
+	}
+	settings, _ := os.ReadFile(out + ".settings")
+	if err := json.Unmarshal(settings, &s); err != nil {
+		t.Fatalf("%v:\n%s", err, settings)
+	}
+	if !slices.Contains(s.Filesystem.AllowWrite, codexHome) || !slices.Contains(s.Filesystem.DenyWrite, filepath.Join(codexHome, "config.toml")) {
+		t.Errorf("filesystem %+v", s.Filesystem)
+	}
+	if st, err := os.Stat(codexHome); err != nil || !st.IsDir() {
+		t.Errorf("CODEX_HOME not created: %v", err)
+	}
+	envRaw, _ := os.ReadFile(out + ".env")
+	if !strings.Contains(string(envRaw), "CODEX_CA_CERTIFICATE=") {
+		t.Error("CODEX_CA_CERTIFICATE not set")
+	}
+}
+
+func TestCodexConfigOptions(t *testing.T) {
+	got := codexConfigOptions([]string{"-c", "model=\"o3\"", "--profile=work", "-m", "x", "--enable", "hooks", "exec", "-c", "late=1"})
+	want := []string{"-c", "model=\"o3\"", "--profile=work", "--enable", "hooks", "-c", "late=1"}
+	if !slices.Equal(got, want) {
+		t.Errorf("got %q, want %q", got, want)
 	}
 }

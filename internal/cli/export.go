@@ -101,32 +101,50 @@ call rather than let it through. Install it with
 "opfence export --target claude-code".`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			err := hook.ClaudeCode(cmd.InOrStdin(), cmd.OutOrStdout(), func(cwd string) (*engine.Engine, error) {
-				c, err := g.loadCatalog()
-				if err != nil {
-					return nil, err
-				}
-				gg := *g
-				if gg.policyFile == "" && cwd != "" {
-					// The repository policy belongs to the project Claude Code
-					// runs in, not to wherever the hook process starts.
-					if _, statErr := os.Stat(filepath.Join(cwd, "opfence.yaml")); statErr == nil {
-						gg.policyFile = filepath.Join(cwd, "opfence.yaml")
-					}
-				}
-				p, err := gg.loadPolicy()
-				if err != nil {
-					return nil, err
-				}
-				return engine.New(c, p), nil
-			})
-			if err != nil {
+			if err := hook.ClaudeCode(cmd.InOrStdin(), cmd.OutOrStdout(), g.hookEngine); err != nil {
+				return hookError{err}
+			}
+			return nil
+		},
+	})
+	cmd.AddCommand(&cobra.Command{
+		Use:   "codex",
+		Short: "Codex PreToolUse and PermissionRequest hook for MCP tool calls",
+		Long: `Reads a Codex PreToolUse or PermissionRequest event on standard input and, for
+MCP servers in the catalog, prints Codex's decision: a deny where Opfence
+denies, an approval where Opfence allows, and nothing where Opfence asks, so
+Codex prompts (a deny when Codex is set never to prompt). Any error exits with
+status 2, which Codex takes as a deny. "opfence run --srt -- codex" installs it.`,
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			if err := hook.Codex(cmd.InOrStdin(), cmd.OutOrStdout(), g.hookEngine); err != nil {
 				return hookError{err}
 			}
 			return nil
 		},
 	})
 	return cmd
+}
+
+// hookEngine builds the engine for a hook call made in project folder cwd.
+func (g *globalOptions) hookEngine(cwd string) (*engine.Engine, error) {
+	c, err := g.loadCatalog()
+	if err != nil {
+		return nil, err
+	}
+	gg := *g
+	if gg.policyFile == "" && cwd != "" {
+		// The repository policy belongs to the project the agent runs in,
+		// not to wherever the hook process starts.
+		if _, statErr := os.Stat(filepath.Join(cwd, "opfence.yaml")); statErr == nil {
+			gg.policyFile = filepath.Join(cwd, "opfence.yaml")
+		}
+	}
+	p, err := gg.loadPolicy()
+	if err != nil {
+		return nil, err
+	}
+	return engine.New(c, p), nil
 }
 
 // hookError makes Main exit 2 (Claude Code's "block") with the reason on

@@ -120,13 +120,15 @@ type listenSpec struct {
 	// privateTunnels lets tunnels reach private addresses (agent listener).
 	privateTunnels bool
 	http, socks    string // listen addresses; socks "" means no SOCKS listener
+	// agentHosts are the sandboxed agent's backend hosts, tunnelled on 443.
+	agentHosts []string
 }
 
 // listen starts a proxy server for spec and returns its addresses.
 func (s *session) listen(spec listenSpec) (httpAddr, socksAddr string, err error) {
 	srv, err := proxy.New(proxy.Config{
 		Engine: s.eng, CA: s.ca, Audit: s.audit, Session: s.id, Via: spec.via, Mode: spec.mode,
-		PrivateTunnels: spec.privateTunnels, Secrets: secrets.NewSet(append(append([]*secrets.Secret{}, s.stored...), s.extra...)),
+		PrivateTunnels: spec.privateTunnels, AgentHosts: spec.agentHosts, Secrets: secrets.NewSet(append(append([]*secrets.Secret{}, s.stored...), s.extra...)),
 		Approver: s.broker, Logf: s.logf, Upstream: s.upstream,
 	})
 	if err != nil {

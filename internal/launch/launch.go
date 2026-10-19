@@ -216,6 +216,12 @@ func ruleGlob(p protectedPath) string {
 
 // HookCommand is the shell command Claude Code runs for the hook.
 func HookCommand(exe string, args []string) string {
+	return AgentHookCommand(exe, args, "claude-code")
+}
+
+// AgentHookCommand is the shell command an agent runs for opfence hook
+// <agent>.
+func AgentHookCommand(exe string, args []string, agent string) string {
 	if exe == "" {
 		exe = "opfence"
 	}
@@ -223,7 +229,7 @@ func HookCommand(exe string, args []string) string {
 	for _, a := range args {
 		parts = append(parts, ShellQuote(a))
 	}
-	return strings.Join(append(parts, "hook", "claude-code"), " ")
+	return strings.Join(append(parts, "hook", agent), " ")
 }
 
 // ShellQuote quotes s for a POSIX shell when it needs it.
@@ -240,9 +246,12 @@ type SrtOptions struct {
 	GOOS                string
 	Paths               Paths
 	DenyRead            []string
-	// AllowWrite lists the folders the agent may write: its working folder
-	// and the temporary folder.
+	// AllowWrite lists the folders the agent may write: its working folder,
+	// the temporary folder and an agent preset's state folder.
 	AllowWrite []string
+	// DenyWrite adds files the agent may not write inside those folders,
+	// such as an agent's own config.
+	DenyWrite []string
 }
 
 type srtSettings struct {
@@ -272,7 +281,7 @@ func SrtSettings(o SrtOptions) ([]byte, error) {
 		Filesystem: filesystem{
 			DenyRead:   nonNil(deny),
 			AllowWrite: nonNil(o.AllowWrite),
-			DenyWrite:  pathsOf(o.Paths.protectedWrites()),
+			DenyWrite:  append(pathsOf(o.Paths.protectedWrites()), o.DenyWrite...),
 		},
 		EnableWeakerNetworkIsolation: o.GOOS == "darwin",
 	}

@@ -128,6 +128,9 @@ func (s *Server) tunnelAllowed(host string) (bool, string) {
 }
 
 func (s *Server) tunnelReason(host string) string {
+	if hostIn(host, s.cfg.AgentHosts) && !hostIn(host, s.cfg.Passthrough) {
+		return "agent backend"
+	}
 	if s.passthrough(host) {
 		return "passthrough"
 	}
@@ -172,7 +175,7 @@ func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 			// The built-in passthrough hosts are HTTPS registries. On another
 			// port nothing checks the TLS server name, so the tunnel could
 			// carry anything to a shared CDN address.
-			refuse(fmt.Sprintf("%s is on the built-in passthrough list for HTTPS on port 443 only; list it under passthrough in your user config to allow port %s", host, port))
+			refuse(fmt.Sprintf("%s is tunnelled for HTTPS on port 443 only (a built-in passthrough host or the agent's backend); list it under passthrough in your user config to allow port %s", host, port))
 			return
 		}
 		if ok, why := s.tunnelAllowed(host); !ok {

@@ -104,9 +104,18 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 			if runtime.GOOS == "linux" {
 				denyRead = launch.LinuxSecretSockets(os.Getenv)
 			}
+			var agent *launch.Agent
+			var watch []string
+			if kind == "srt" {
+				agent = launch.AgentFor(args[0])
+			}
 			switch kind {
 			case "claude", "srt":
-				h, so, err := s.listen(listenSpec{via: map[string]string{"claude": "sandbox", "srt": "srt"}[kind], mode: mode, http: "127.0.0.1:0", socks: "127.0.0.1:0"})
+				spec := listenSpec{via: map[string]string{"claude": "sandbox", "srt": "srt"}[kind], mode: mode, http: "127.0.0.1:0", socks: "127.0.0.1:0"}
+				if agent != nil {
+					spec.agentHosts = agent.Hosts
+				}
+				h, so, err := s.listen(spec)
 				if err != nil {
 					return err
 				}
@@ -146,9 +155,31 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 					if err != nil {
 						return err
 					}
+					allowWrite := []string{cwd, os.TempDir()}
+					var denyWrite []string
+					childArgs := args[1:]
+					if agent != nil {
+						home, err := os.UserHomeDir()
+						if err != nil {
+							return err
+						}
+						if denyWrite, watch, err = agent.Guard(home, cwd, os.Getenv); err != nil {
+							return err
+						}
+						allowWrite = append(allowWrite, agent.StateDir(home, os.Getenv))
+						for k, v := range agent.Env(s.caFiles.CA, s.caFiles.Bundle) {
+							vars[k] = v
+						}
+						var extra []string
+						if agent.IsCodex() {
+							extra = codexArgs(cmd.Context(), stderr, logf, args, launch.SetEnv(env, vars, false), cwd, codexEnvVars(vars, changes),
+								launch.AgentHookCommand(paths.Executable, g.hookArgs(paths.ConfigFile), "codex"))
+						}
+						childArgs = agent.Args(args[1:], extra)
+					}
 					settings, err := launch.SrtSettings(launch.SrtOptions{
 						HTTPPort: launch.Port(h), SOCKSPort: launch.Port(so), GOOS: runtime.GOOS,
-						Paths: paths, DenyRead: denyRead, AllowWrite: []string{cwd, os.TempDir()},
+						Paths: paths, DenyRead: denyRead, AllowWrite: allowWrite, DenyWrite: denyWrite,
 					})
 					if err != nil {
 						return err
@@ -158,7 +189,7 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 						return err
 					}
 					cleanup = func() { os.Remove(file) }
-					argv = append([]string{srtPath, "--settings", file, "--"}, args...)
+					argv = append([]string{srtPath, "--settings", file, "--", args[0]}, childArgs...)
 				}
 			case "weak":
 				h, _, err := s.listen(listenSpec{via: "weak", mode: "open", privateTunnels: true, http: "127.0.0.1:0"})
@@ -179,11 +210,16 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 			if effMode == "" {
 				effMode = s.eng.Policy.Mode
 			}
-			printRunBanner(stderr, s, kind, effMode, changes, logFile.Name())
+			printRunBanner(stderr, s, kind, effMode, agent, changes, logFile.Name())
 			if kind == "claude" {
 				claudeWarnings(stderr, args[0])
 			}
 			code, err := runChild(cmd.Context(), argv, env)
+			for _, p := range watch {
+				if _, serr := os.Lstat(p); serr == nil {
+					fmt.Fprintf(stderr, "opfence: %s was created during the session; it can change what %s runs when started without Opfence, so check it first\n", p, agent.Name)
+				}
+			}
 			if err != nil {
 				return err
 			}
@@ -291,13 +327,16 @@ func openRunLog(path string) (*os.File, func(string, ...any), error) {
 	}, nil
 }
 
-func printRunBanner(w io.Writer, s *session, kind, mode string, changes []launch.EnvChange, logPath string) {
+func printRunBanner(w io.Writer, s *session, kind, mode string, agent *launch.Agent, changes []launch.EnvChange, logPath string) {
 	how := map[string]string{
 		"claude": "Claude Code's sandbox",
 		"srt":    "the sandbox runtime",
 		"weak":   "no sandbox (weak mode: the program could bypass Opfence)",
 	}[kind]
 	fmt.Fprintf(w, "Opfence session %s: %s mode, %s.\n", s.id, mode, how)
+	if agent != nil {
+		fmt.Fprintf(w, "  %s: srt is its sandbox; its backend (%s) is tunnelled\n", agent.Name, strings.Join(agent.Hosts, ", "))
+	}
 	fmt.Fprintf(w, "  Approvals: %s\n", s.approvals)
 	fmt.Fprintf(w, "  Credentials: %d; audit log %s; problems go to %s\n", s.credentials(), s.audit.Path(), logPath)
 	if s.upstream != nil {

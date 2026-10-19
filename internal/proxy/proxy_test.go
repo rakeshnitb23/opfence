@@ -64,7 +64,8 @@ type opts struct {
 	via         string
 	private     bool     // PrivateTunnels
 	passthrough []string // added to the built-in list
-	upstream    bool     // go through a fake corporate proxy
+	agentHosts  []string
+	upstream    bool // go through a fake corporate proxy
 	// respond, when set, answers upstream requests instead of the default.
 	respond func(w http.ResponseWriter, r *http.Request)
 }
@@ -110,7 +111,7 @@ func newEnv(t *testing.T, o opts) *env {
 	api.StartTLS()
 	t.Cleanup(api.Close)
 
-	echoCA, err := ca.New("echo", []string{"registry.npmjs.org", "example.com", "backboard.railway.com"})
+	echoCA, err := ca.New("echo", []string{"registry.npmjs.org", "example.com", "backboard.railway.com", "api.openai.com", "cursor.sh"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,6 +155,7 @@ func newEnv(t *testing.T, o opts) *env {
 		Mode:            o.mode,
 		Via:             o.via,
 		PrivateTunnels:  o.private,
+		AgentHosts:      o.agentHosts,
 		Secrets:         o.secrets,
 		UpstreamRootCAs: upCA.Pool(),
 		Logf:            t.Logf,
@@ -547,6 +549,40 @@ func TestStrictOpenAndPassthrough(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("audit missing %q in:\n%s", want, got)
 		}
+	}
+}
+
+func TestAgentHosts(t *testing.T) {
+	e := newEnv(t, opts{agentHosts: []string{"api.openai.com", "*.cursor.sh"}})
+	for _, host := range []string{"api.openai.com", "api2.cursor.sh"} {
+		c, code := connect(t, e.httpAddr, host+":443")
+		if code != 200 || !e.tlsEchoes(c, host) {
+			t.Fatalf("%s: %d", host, code)
+		}
+		c.Close()
+	}
+	// Like the built-in passthrough hosts: port 443 only, TLS name checked.
+	if c, code := connect(t, e.httpAddr, "api.openai.com:8080"); code != http.StatusForbidden {
+		t.Fatalf("agent host on port 8080 got %d", code)
+	} else {
+		c.Close()
+	}
+	c, _ := connect(t, e.httpAddr, "api.openai.com:443")
+	if e.tlsEchoes(c, "backboard.railway.com") {
+		t.Fatal("TLS for an API host was tunnelled under an agent host name")
+	}
+	c.Close()
+	if c, code := connect(t, e.httpAddr, "cursor.sh:443"); code != http.StatusForbidden {
+		t.Fatalf("cursor.sh (not *.cursor.sh) got %d", code)
+	} else {
+		c.Close()
+	}
+	var got []string
+	for _, en := range e.entries() {
+		got = append(got, en.Outcome+": "+en.Host+": "+en.Reason)
+	}
+	if !slices.Contains(got, "tunneled: api.openai.com: agent backend") {
+		t.Errorf("audit: %q", got)
 	}
 }
 
