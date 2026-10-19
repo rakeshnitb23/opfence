@@ -1,0 +1,7 @@
+# description: Create legacy plugin postgresql in project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PluginCreate($input: PluginCreateInput!) { pluginCreate(input: $input) { id } }","variables":{"input":{"projectId":"prj-shop","name":"postgresql"}}}

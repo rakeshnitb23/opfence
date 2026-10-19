@@ -1,0 +1,7 @@
+# description: Sign in the Railway CLI session with code word-word-word
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation LoginSessionAuth($input: LoginSessionAuthInput!) { loginSessionAuth(input: $input) }","variables":{"input":{"code":"word-word-word","hostname":"laptop"}}}

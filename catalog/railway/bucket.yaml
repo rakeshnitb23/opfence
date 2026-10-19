@@ -14,3 +14,54 @@ operations:
       - fixture: fixtures/bucket-credentials.http
         expect: credential
         resource: bkt-assets
+
+  - id: railway.bucket.create
+    match: { graphql: { type: mutation, field: bucketCreate } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Create bucket {input.name} in project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway-mcp's create_bucket and railway.volume.create: storage is
+      billed by use, like every Railway resource.
+    tests:
+      - fixture: fixtures/bucket-create.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.bucket.credentials-reset
+    match: { graphql: { type: mutation, field: bucketCredentialsReset } }
+    class: credential
+    resource: { arg: bucketId, kind: bucket }
+    card: "Reset and read the S3 credentials of bucket {bucketId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns the new access key and secret, and invalidates the old ones for
+      every client that uses them.
+    tests:
+      - fixture: fixtures/bucket-credentials-reset.http
+        expect: credential
+        resource: bkt-assets
+
+  - id: railway.bucket.update
+    match: { graphql: { type: mutation, field: bucketUpdate } }
+    class: write
+    resource: { arg: id, kind: bucket }
+    card: "Rename bucket {id} to {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/bucket-update.http
+        expect: write
+        resource: bkt-assets

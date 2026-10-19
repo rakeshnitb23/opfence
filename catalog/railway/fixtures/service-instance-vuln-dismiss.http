@@ -1,0 +1,7 @@
+# description: Dismiss the Postgres security update for service svc-pg
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceVulnRemediationDismiss($serviceId: String!, $environmentId: String!) { serviceInstanceVulnRemediationDismiss(serviceId: $serviceId, environmentId: $environmentId) }","variables":{"serviceId":"svc-pg","environmentId":"env-production"}}

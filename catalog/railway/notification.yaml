@@ -1,0 +1,63 @@
+# Railway GraphQL API: notification
+operations:
+  - id: railway.notification.mark-read
+    match: { graphql: { type: mutation, field: notificationDeliveriesMarkAsRead } }
+    class: write
+    card: "Mark notifications {deliveryIds} as read"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/notification-mark-read.http
+        expect: write
+
+  - id: railway.notification.rule-create
+    match: { graphql: { type: mutation, field: notificationRuleCreate } }
+    class: write
+    resource: { arg: input.workspaceId, kind: workspace }
+    card: "Create a notification rule for {input.eventTypes} in workspace {input.workspaceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Notification channels receive event summaries, not variable values.
+    tests:
+      - fixture: fixtures/notification-rule-create.http
+        expect: write
+        resource: ws-acme
+
+  - id: railway.notification.rule-delete
+    match: { graphql: { type: mutation, field: notificationRuleDelete } }
+    class: delete
+    resource: { arg: id, kind: notification-rule }
+    card: "Delete notification rule {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A rule is configuration that can be created again.
+    tests:
+      - fixture: fixtures/notification-rule-delete.http
+        expect: delete
+        resource: nr-1
+
+  - id: railway.notification.rule-update
+    match: { graphql: { type: mutation, field: notificationRuleUpdate } }
+    class: write
+    resource: { arg: id, kind: notification-rule }
+    card: "Change notification rule {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/notification-rule-update.http
+        expect: write
+        resource: nr-1

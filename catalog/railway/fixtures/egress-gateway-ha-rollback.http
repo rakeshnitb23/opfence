@@ -1,0 +1,7 @@
+# description: Switch service svc-api from HA static egress IPs back to a standard one
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EgressGatewayRollbackFromHA($input: EgressGatewayServiceTargetInput!) { egressGatewayRollbackFromHA(input: $input) { __typename } }","variables":{"input":{"environmentId":"env-production","serviceId":"svc-api"}}}

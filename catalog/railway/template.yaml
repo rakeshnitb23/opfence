@@ -1,0 +1,151 @@
+# Railway GraphQL API: template
+operations:
+  - id: railway.template.clone
+    match: { graphql: { type: mutation, field: templateClone } }
+    class: write
+    resource: { arg: input.code, kind: template }
+    card: "Copy template {input.code} into workspace {input.workspaceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/template-clone.http
+        expect: write
+        resource: postgres
+
+  - id: railway.template.delete
+    match: { graphql: { type: mutation, field: templateDelete } }
+    class: irreversible
+    resource: { arg: id, kind: template }
+    card: "Delete template {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The API has no undelete; a new template can be generated from the project,
+      but the published code, readme and its deploy history are gone.
+    tests:
+      - fixture: fixtures/template-delete.http
+        expect: irreversible
+        resource: tpl-shop
+
+  - id: railway.template.deploy
+    match: { graphql: { type: mutation, field: templateDeploy } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Deploy template {input.templateCode} into project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Deprecated in the schema. Creates the template's services, as railway-
+      mcp's deploy_template (write).
+    tests:
+      - fixture: fixtures/template-deploy.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.template.deploy-v2
+    match: { graphql: { type: mutation, field: templateDeployV2 } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Deploy template {input.templateId} into project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway-mcp's deploy_template (write).
+    tests:
+      - fixture: fixtures/template-deploy-v2.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.template.generate
+    match: { graphql: { type: mutation, field: templateGenerate } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Generate a template from project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/template-generate.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.template.publish
+    match: { graphql: { type: mutation, field: templatePublish } }
+    class: access
+    resource: { arg: id, kind: template }
+    card: "Publish template {id} to the marketplace"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Makes the template, with the configuration (and default variable values)
+      generated from a project, public on the internet.
+    tests:
+      - fixture: fixtures/template-publish.http
+        expect: access
+        resource: tpl-shop
+
+  - id: railway.template.source-eject
+    match: { graphql: { type: mutation, field: templateServiceSourceEject } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Copy the template source of services {input.serviceIds} into repo {input.repoOwner}/{input.repoName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Creates a new repo and points the services at it; the old source stays.
+    tests:
+      - fixture: fixtures/template-source-eject.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.template.unpublish
+    match: { graphql: { type: mutation, field: templateUnpublish } }
+    class: write
+    resource: { arg: id, kind: template }
+    card: "Unpublish template {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Can be published again.
+    tests:
+      - fixture: fixtures/template-unpublish.http
+        expect: write
+        resource: tpl-shop
+
+  - id: railway.template.volume-size
+    match: { graphql: { type: mutation, field: templateVolumeUpdate } }
+    class: write
+    resource: { arg: templateId, kind: template }
+    card: "Set the default size of volume {volumeId} in template {templateId} to {sizeMB} MB"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/template-volume-size.http
+        expect: write
+        resource: tpl-shop

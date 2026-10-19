@@ -1,0 +1,7 @@
+# description: Send a Railway CLI telemetry event for up
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CliEventTrack($input: CliEventTrackInput!) { cliEventTrack(input: $input) }","variables":{"input":{"arch":"x86_64","cliVersion":"4.10.0","command":"up","durationMs":1200,"isCi":false,"os":"linux","success":true}}}

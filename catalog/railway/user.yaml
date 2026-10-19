@@ -12,3 +12,147 @@ operations:
     tests:
       - fixture: fixtures/user-delete.http
         expect: irreversible
+
+  - id: railway.user.email-change-confirm
+    match: { graphql: { type: mutation, field: emailChangeConfirm } }
+    class: access
+    card: "Confirm a change of the Railway account email"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The account email is the sign-in and recovery identity.
+    tests:
+      - fixture: fixtures/user-email-change-confirm.http
+        expect: access
+
+  - id: railway.user.email-change
+    match: { graphql: { type: mutation, field: emailChangeInitiate } }
+    class: access
+    card: "Change the Railway account email to {newEmail}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The account email is the sign-in and recovery identity.
+    tests:
+      - fixture: fixtures/user-email-change.http
+        expect: access
+
+  - id: railway.user.fair-use
+    match: { graphql: { type: mutation, field: fairUseAgree } }
+    class: write
+    card: "Agree to Railway's fair use policy"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-fair-use.http
+        expect: write
+
+  - id: railway.user.terms
+    match: { graphql: { type: mutation, field: userTermsUpdate } }
+    class: write
+    card: "Record agreement to Railway's terms"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-terms.http
+        expect: write
+
+  - id: railway.user.beta-leave
+    match: { graphql: { type: mutation, field: userBetaLeave } }
+    class: write
+    card: "Leave the Railway beta program"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-beta-leave.http
+        expect: write
+
+  - id: railway.user.discord-disconnect
+    match: { graphql: { type: mutation, field: userDiscordDisconnect } }
+    class: write
+    card: "Disconnect the Railway account from Discord"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Discord is linked for community roles, not for sign-in (unlike
+      railway.provider-auth.remove).
+    tests:
+      - fixture: fixtures/user-discord-disconnect.http
+        expect: write
+
+  - id: railway.user.flags-remove
+    match: { graphql: { type: mutation, field: userFlagsRemove } }
+    class: write
+    card: "Remove flags {input.flags} from the user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-flags-remove.http
+        expect: write
+
+  - id: railway.user.flags-set
+    match: { graphql: { type: mutation, field: userFlagsSet } }
+    class: write
+    card: "Set flags {input.flags} on the user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-flags-set.http
+        expect: write
+
+  - id: railway.user.profile-update
+    match: { graphql: { type: mutation, field: userProfileUpdate } }
+    class: write
+    when:
+      - if: { arg: input.isPublic, equals: "true" }
+        class: access
+    card: "Update the Railway profile (public: {input.isPublic})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Making the profile public exposes it to the internet, which is access.
+    tests:
+      - fixture: fixtures/user-profile-update.http
+        expect: write
+      - fixture: fixtures/user-profile-update-public.http
+        expect: access
+
+  - id: railway.user.preferences
+    match: { graphql: { type: mutation, field: preferencesUpdate } }
+    class: write
+    card: "Update the Railway email preferences"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/user-preferences.http
+        expect: write

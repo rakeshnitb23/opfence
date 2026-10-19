@@ -1,0 +1,7 @@
+# description: Add service svc-api to private network pn-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PrivateNetworkEndpointCreateOrGet($input: PrivateNetworkEndpointCreateOrGetInput!) { privateNetworkEndpointCreateOrGet(input: $input) { __typename } }","variables":{"input":{"environmentId":"env-production","privateNetworkId":"pn-1","serviceId":"svc-api","serviceName":"api","tags":[]}}}

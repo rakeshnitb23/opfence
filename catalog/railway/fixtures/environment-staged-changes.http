@@ -1,0 +1,7 @@
+# description: Read the staged changes of environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"query EnvironmentStagedChanges($environmentId: String!) { environmentStagedChanges(environmentId: $environmentId) { id status } }","variables":{"environmentId":"env-production"}}

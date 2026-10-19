@@ -1,0 +1,7 @@
+# description: Record agreement to Railway's terms
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UserTermsUpdate { userTermsUpdate { id } }","variables":{}}

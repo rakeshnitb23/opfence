@@ -1,0 +1,46 @@
+# Railway GraphQL API: telemetry
+operations:
+  - id: railway.telemetry.cli-auth-event
+    match: { graphql: { type: mutation, field: cliAuthEventTrack } }
+    class: write
+    card: "Send a Railway CLI sign-in telemetry event"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Telemetry only; it changes nothing in the account.
+    tests:
+      - fixture: fixtures/telemetry-cli-auth-event.http
+        expect: write
+
+  - id: railway.telemetry.cli-event
+    match: { graphql: { type: mutation, field: cliEventTrack } }
+    class: write
+    card: "Send a Railway CLI telemetry event for {input.command}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Telemetry only; it changes nothing in the account.
+    tests:
+      - fixture: fixtures/telemetry-cli-event.http
+        expect: write
+
+  - id: railway.telemetry.setup-agent-event
+    match: { graphql: { type: mutation, field: setupAgentEventTrack } }
+    class: write
+    card: "Send a Railway setup agent telemetry event"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Telemetry only; it changes nothing in the account.
+    tests:
+      - fixture: fixtures/telemetry-setup-agent-event.http
+        expect: write

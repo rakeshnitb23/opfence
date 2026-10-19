@@ -1,0 +1,7 @@
+# description: Copy the canvas layout of environment env-staging into env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CanvasViewMerge($sourceEnvironmentId: String!, $targetEnvironmentId: String!) { canvasViewMerge(sourceEnvironmentId: $sourceEnvironmentId, targetEnvironmentId: $targetEnvironmentId) }","variables":{"sourceEnvironmentId":"env-staging","targetEnvironmentId":"env-production"}}

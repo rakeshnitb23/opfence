@@ -1,0 +1,7 @@
+# description: Create an observability dashboard in environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ObservabilityDashboardCreate($input: ObservabilityDashboardCreateInput!) { observabilityDashboardCreate(input: $input) }","variables":{"input":{"environmentId":"env-production","items":[]}}}

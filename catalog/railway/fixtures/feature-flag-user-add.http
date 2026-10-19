@@ -1,0 +1,7 @@
+# description: Turn on feature flag CLOUD_AGENTS for the user
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation FeatureFlagAdd($input: FeatureFlagToggleInput!) { featureFlagAdd(input: $input) }","variables":{"input":{"flag":"CLOUD_AGENTS"}}}

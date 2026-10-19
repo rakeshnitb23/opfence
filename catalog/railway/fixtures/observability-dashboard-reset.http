@@ -1,0 +1,7 @@
+# description: Reset observability dashboard od-1 to the default items
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ObservabilityDashboardReset($id: String!) { observabilityDashboardReset(id: $id) }","variables":{"id":"od-1"}}

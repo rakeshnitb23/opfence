@@ -1,0 +1,7 @@
+# description: Generate a template from project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateGenerate($input: TemplateGenerateInput!) { templateGenerate(input: $input) { id } }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production"}}}

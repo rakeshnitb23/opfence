@@ -1,0 +1,90 @@
+# Railway GraphQL API: feature-flag
+operations:
+  - id: railway.feature-flag.user-add
+    match: { graphql: { type: mutation, field: featureFlagAdd } }
+    class: write
+    card: "Turn on feature flag {input.flag} for the user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/feature-flag-user-add.http
+        expect: write
+
+  - id: railway.feature-flag.user-remove
+    match: { graphql: { type: mutation, field: featureFlagRemove } }
+    class: write
+    card: "Turn off feature flag {input.flag} for the user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/feature-flag-user-remove.http
+        expect: write
+
+  - id: railway.feature-flag.project-add
+    match: { graphql: { type: mutation, field: projectFeatureFlagAdd } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Turn on feature flag {input.flag} for project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/feature-flag-project-add.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.feature-flag.project-remove
+    match: { graphql: { type: mutation, field: projectFeatureFlagRemove } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Turn off feature flag {input.flag} for project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/feature-flag-project-remove.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.feature-flag.service-add
+    match: { graphql: { type: mutation, field: serviceFeatureFlagAdd } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Turn on feature flag {input.flag} for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Railway's own opt-in platform features (runtime, build options); each is
+      reversible by removing the flag.
+    tests:
+      - fixture: fixtures/feature-flag-service-add.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.feature-flag.service-remove
+    match: { graphql: { type: mutation, field: serviceFeatureFlagRemove } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Turn off feature flag {input.flag} for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/feature-flag-service-remove.http
+        expect: write
+        resource: svc-api

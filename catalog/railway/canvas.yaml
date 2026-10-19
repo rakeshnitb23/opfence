@@ -1,0 +1,18 @@
+# Railway GraphQL API: canvas
+operations:
+  - id: railway.canvas.merge
+    match: { graphql: { type: mutation, field: canvasViewMerge } }
+    class: write
+    resource: { arg: targetEnvironmentId, kind: environment }
+    card: "Copy the canvas layout of environment {sourceEnvironmentId} into {targetEnvironmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes only the dashboard layout.
+    tests:
+      - fixture: fixtures/canvas-merge.http
+        expect: write
+        resource: env-production

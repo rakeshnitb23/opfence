@@ -1,0 +1,7 @@
+# description: Allow deploys from GITHUB_ORG acme in workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspacePolicyDeploySourceAllowlistAdd($workspaceId: String!, $sourceType: WorkspacePolicyDeploySourceType!, $sourceId: String!) { workspacePolicyDeploySourceAllowlistAdd(workspaceId: $workspaceId, sourceType: $sourceType, sourceId: $sourceId) { id } }","variables":{"workspaceId":"ws-acme","sourceType":"GITHUB_ORG","sourceId":"acme"}}

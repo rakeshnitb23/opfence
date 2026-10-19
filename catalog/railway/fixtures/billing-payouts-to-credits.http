@@ -1,0 +1,7 @@
+# description: Set whether customer cus-1 turns payouts into credits (true)
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CustomerTogglePayoutsToCredits($customerId: String!, $input: customerTogglePayoutsToCreditsInput!) { customerTogglePayoutsToCredits(customerId: $customerId, input: $input) }","variables":{"customerId":"cus-1","input":{"isWithdrawingToCredits":true}}}

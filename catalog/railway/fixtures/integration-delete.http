@@ -1,0 +1,7 @@
+# description: Delete integration int-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation IntegrationDelete($id: String!) { integrationDelete(id: $id) }","variables":{"id":"int-1"}}

@@ -1,0 +1,84 @@
+# Railway GraphQL API: private-network
+operations:
+  - id: railway.private-network.create
+    match: { graphql: { type: mutation, field: privateNetworkCreateOrGet } }
+    class: write
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Create private network {input.name} in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/private-network-create.http
+        expect: write
+        resource: env-production
+
+  - id: railway.private-network.endpoint-create
+    match: { graphql: { type: mutation, field: privateNetworkEndpointCreateOrGet } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Add service {input.serviceId} to private network {input.privateNetworkId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Joins an environment's own private network, as railway-mcp's
+      private_network_update is a write.
+    tests:
+      - fixture: fixtures/private-network-endpoint-create.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.private-network.endpoint-delete
+    match: { graphql: { type: mutation, field: privateNetworkEndpointDelete } }
+    class: delete
+    resource: { arg: id, kind: private-network-endpoint }
+    card: "Remove private network endpoint {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The endpoint can be created again.
+    tests:
+      - fixture: fixtures/private-network-endpoint-delete.http
+        expect: delete
+        resource: pne-1
+
+  - id: railway.private-network.endpoint-rename
+    match: { graphql: { type: mutation, field: privateNetworkEndpointRename } }
+    class: write
+    resource: { arg: id, kind: private-network-endpoint }
+    card: "Rename private network endpoint {id} to {dnsName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/private-network-endpoint-rename.http
+        expect: write
+        resource: pne-1
+
+  - id: railway.private-network.delete-all
+    match: { graphql: { type: mutation, field: privateNetworksForEnvironmentDelete } }
+    class: delete
+    resource: { arg: environmentId, kind: environment }
+    card: "Delete every private network of environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Networks hold no data and can be created again, so delete, not
+      irreversible; services lose internal reachability until then.
+    tests:
+      - fixture: fixtures/private-network-delete-all.http
+        expect: delete
+        resource: env-production

@@ -1,0 +1,7 @@
+# description: Purge the CDN cache (ALL) of service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PurgeServiceCache($input: PurgeServiceCacheInput!) { purgeServiceCache(input: $input) }","variables":{"input":{"environmentId":"env-production","serviceId":"svc-api","scope":"ALL"}}}

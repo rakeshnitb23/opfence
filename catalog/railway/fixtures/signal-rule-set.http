@@ -1,0 +1,7 @@
+# description: Set rule beta on signal new-checkout
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SignalRuleSet($input: SignalRuleSetInput!) { signalRuleSet(input: $input) { __typename } }","variables":{"input":{"owner":"prj-shop","name":"new-checkout","ruleId":"beta","expression":{"eq":["plan","pro"]},"value":true}}}

@@ -1,0 +1,18 @@
+# Railway GraphQL API: session
+operations:
+  - id: railway.session.delete
+    match: { graphql: { type: mutation, field: sessionDelete } }
+    class: access
+    resource: { arg: id, kind: session }
+    card: "Sign out session {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Ending a sign-in session is an access change, as railway.api-token.delete.
+    tests:
+      - fixture: fixtures/session-delete.http
+        expect: access
+        resource: ses-1

@@ -1,0 +1,19 @@
+# Railway GraphQL API: bot-binding
+operations:
+  - id: railway.bot-binding.remove
+    match: { graphql: { type: mutation, field: botScopeBindingRemove } }
+    class: access
+    resource: { arg: id, kind: bot-binding }
+    card: "Remove Railway agent chat binding {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Removes which chat workspace the Railway agent answers in; a membership
+      change, as removing a member is access.
+    tests:
+      - fixture: fixtures/bot-binding-remove.http
+        expect: access
+        resource: bsb-slack

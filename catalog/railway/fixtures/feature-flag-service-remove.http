@@ -1,0 +1,7 @@
+# description: Turn off feature flag USE_VM_RUNTIME for service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceFeatureFlagRemove($input: ServiceFeatureFlagToggleInput!) { serviceFeatureFlagRemove(input: $input) }","variables":{"input":{"serviceId":"svc-api","flag":"USE_VM_RUNTIME"}}}

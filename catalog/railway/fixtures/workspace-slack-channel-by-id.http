@@ -1,0 +1,7 @@
+# description: Create a Slack support channel for workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspaceUpsertSlackChannel($id: String!) { workspaceUpsertSlackChannel(id: $id) }","variables":{"id":"ws-acme"}}

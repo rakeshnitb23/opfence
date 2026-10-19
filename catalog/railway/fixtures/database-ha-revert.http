@@ -1,0 +1,7 @@
+# description: Revert HA cluster svc-pg to a standalone database
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateRevert($input: TemplateRevertInput!) { templateRevert(input: $input) { __typename } }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","rootServiceId":"svc-pg","templateCode":"postgres-ha"}}}

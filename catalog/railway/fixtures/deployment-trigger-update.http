@@ -1,0 +1,7 @@
+# description: Change deployment trigger trg-main to acme/shop@release
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeploymentTriggerUpdate($id: String!, $input: DeploymentTriggerUpdateInput!) { deploymentTriggerUpdate(id: $id, input: $input) { __typename } }","variables":{"id":"trg-main","input":{"repository":"acme/shop","branch":"release"}}}

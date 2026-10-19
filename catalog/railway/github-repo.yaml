@@ -1,0 +1,34 @@
+# Railway GraphQL API: github-repo
+operations:
+  - id: railway.github-repo.deploy
+    match: { graphql: { type: mutation, field: githubRepoDeploy } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Deploy GitHub repo {input.repo} into project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Creates a service from the repo and deploys it, as railway.service.create
+      and deploy are writes.
+    tests:
+      - fixture: fixtures/github-repo-deploy.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.github-repo.update
+    match: { graphql: { type: mutation, field: githubRepoUpdate } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Update service {input.serviceId}'s repo from its template"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/github-repo-update.http
+        expect: write
+        resource: svc-api

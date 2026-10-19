@@ -1,0 +1,7 @@
+# description: Connect service svc-api to acme/shop(none)
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceConnect($id: String!, $input: ServiceConnectInput!) { serviceConnect(id: $id, input: $input) { id } }","variables":{"id":"svc-api","input":{"repo":"acme/shop","branch":"main"}}}

@@ -1,0 +1,7 @@
+# description: Commit a config patch to environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EnvironmentPatchCommit($environmentId: String!, $patch: EnvironmentConfig, $commitMessage: String) { environmentPatchCommit(environmentId: $environmentId, patch: $patch, commitMessage: $commitMessage) }","variables":{"environmentId":"env-production","patch":{"services":{}},"commitMessage":"scale"}}

@@ -1,0 +1,83 @@
+# Railway GraphQL API: login-session
+operations:
+  - id: railway.login-session.auth
+    match: { graphql: { type: mutation, field: loginSessionAuth } }
+    class: credential
+    resource: { arg: input.code, kind: login-session }
+    card: "Sign in the Railway CLI session with code {input.code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Approving a login code gives whoever started that session (the holder of
+      the code) a token for this account.
+    tests:
+      - fixture: fixtures/login-session-auth.http
+        expect: credential
+        resource: word-word-word
+
+  - id: railway.login-session.cancel
+    match: { graphql: { type: mutation, field: loginSessionCancel } }
+    class: write
+    resource: { arg: code, kind: login-session }
+    card: "Cancel CLI login session {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/login-session-cancel.http
+        expect: write
+        resource: word-word-word
+
+  - id: railway.login-session.consume
+    match: { graphql: { type: mutation, field: loginSessionConsume } }
+    class: credential
+    resource: { arg: code, kind: login-session }
+    card: "Collect the token of CLI login session {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns the account token of an approved login session.
+    tests:
+      - fixture: fixtures/login-session-consume.http
+        expect: credential
+        resource: word-word-word
+
+  - id: railway.login-session.create
+    match: { graphql: { type: mutation, field: loginSessionCreate } }
+    class: write
+    card: "Start a Railway CLI login session"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns a code to approve; no token until it is approved and consumed.
+    tests:
+      - fixture: fixtures/login-session-create.http
+        expect: write
+
+  - id: railway.login-session.verify
+    match: { graphql: { type: mutation, field: loginSessionVerify } }
+    class: read
+    resource: { arg: code, kind: login-session }
+    card: "Check CLI login session {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A mutation by type that only reports whether the code is valid.
+    tests:
+      - fixture: fixtures/login-session-verify.http
+        expect: read
+        resource: word-word-word

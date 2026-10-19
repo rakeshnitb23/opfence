@@ -1,0 +1,7 @@
+# description: Set the default size of volume vol-pg-data in template tpl-shop to 5000 MB
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateVolumeUpdate($templateId: String!, $serviceId: String!, $volumeId: String!, $sizeMB: Int) { templateVolumeUpdate(templateId: $templateId, serviceId: $serviceId, volumeId: $volumeId, sizeMB: $sizeMB) { id } }","variables":{"templateId":"tpl-shop","serviceId":"svc-api","volumeId":"vol-pg-data","sizeMB":5000}}

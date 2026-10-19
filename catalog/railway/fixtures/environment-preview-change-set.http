@@ -1,0 +1,7 @@
+# description: Preview a change set for environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EnvironmentPreviewChangeSet($environmentId: String!, $input: JSON!) { environmentPreviewChangeSet(environmentId: $environmentId, input: $input) { __typename } }","variables":{"environmentId":"env-production","input":{"services":{}}}}

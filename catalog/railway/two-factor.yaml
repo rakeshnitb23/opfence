@@ -12,3 +12,49 @@ operations:
     tests:
       - fixture: fixtures/two-factor-delete.http
         expect: access
+
+  - id: railway.two-factor.create
+    match: { graphql: { type: mutation, field: twoFactorInfoCreate } }
+    class: credential
+    card: "Turn on two-factor authentication and get recovery codes"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes auth settings (access) and returns recovery codes; credential is
+      the stricter of the two in production.
+    tests:
+      - fixture: fixtures/two-factor-create.http
+        expect: credential
+
+  - id: railway.two-factor.secret
+    match: { graphql: { type: mutation, field: twoFactorInfoSecret } }
+    class: credential
+    card: "Generate the two-factor app secret"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns the TOTP secret and its otpauth URI.
+    tests:
+      - fixture: fixtures/two-factor-secret.http
+        expect: credential
+
+  - id: railway.two-factor.validate
+    match: { graphql: { type: mutation, field: twoFactorInfoValidate } }
+    class: access
+    card: "Validate a two-factor code"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Completes a two-factor action or sign-in.
+    tests:
+      - fixture: fixtures/two-factor-validate.http
+        expect: access

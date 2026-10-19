@@ -16,3 +16,101 @@ operations:
       - fixture: fixtures/plugin-delete.http
         expect: irreversible
         resource: plg-postgres
+
+  - id: railway.plugin.create
+    match: { graphql: { type: mutation, field: pluginCreate } }
+    class: write
+    resource: { arg: input.projectId, kind: project }
+    card: "Create legacy plugin {input.name} in project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Deprecated in the schema; kept because the API still serves it.
+    tests:
+      - fixture: fixtures/plugin-create.http
+        expect: write
+        resource: prj-shop
+
+  - id: railway.plugin.reset
+    match: { graphql: { type: mutation, field: pluginReset } }
+    class: irreversible
+    resource: { arg: id, kind: plugin }
+    card: "Reset legacy plugin {id} (variables and container) in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Resets the plugin's variables and container; a database plugin's data and
+      credentials do not come back.
+    tests:
+      - fixture: fixtures/plugin-reset.http
+        expect: irreversible
+        resource: plg-postgres
+
+  - id: railway.plugin.reset-credentials
+    match: { graphql: { type: mutation, field: pluginResetCredentials } }
+    class: credential
+    resource: { arg: id, kind: plugin }
+    card: "Reset the credentials of legacy plugin {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Sets new credentials (breaking every client of the old ones) and returns a
+      string; assumed to carry the new secret.
+    tests:
+      - fixture: fixtures/plugin-reset-credentials.http
+        expect: credential
+        resource: plg-postgres
+
+  - id: railway.plugin.restart
+    match: { graphql: { type: mutation, field: pluginRestart } }
+    class: write
+    resource: { arg: id, kind: plugin }
+    card: "Restart legacy plugin {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/plugin-restart.http
+        expect: write
+        resource: plg-postgres
+
+  - id: railway.plugin.start
+    match: { graphql: { type: mutation, field: pluginStart } }
+    class: write
+    resource: { arg: id, kind: plugin }
+    card: "Start legacy plugin {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/plugin-start.http
+        expect: write
+        resource: plg-postgres
+
+  - id: railway.plugin.update
+    match: { graphql: { type: mutation, field: pluginUpdate } }
+    class: write
+    resource: { arg: id, kind: plugin }
+    card: "Rename legacy plugin {id} to {input.friendlyName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/plugin-update.http
+        expect: write
+        resource: plg-postgres

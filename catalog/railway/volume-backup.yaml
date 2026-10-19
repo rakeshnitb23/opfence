@@ -67,3 +67,18 @@ operations:
       - fixture: fixtures/volume-backup-schedule.http
         expect: write
         resource: vi-pg-data
+
+  - id: railway.volume-backup.lock
+    match: { graphql: { type: mutation, field: volumeInstanceBackupLock } }
+    class: write
+    resource: { arg: volumeInstanceId, kind: volume-instance }
+    card: "Keep backup {volumeInstanceBackupId} of volume instance {volumeInstanceId} without expiry"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/volume-backup-lock.http
+        expect: write
+        resource: vi-pg-data

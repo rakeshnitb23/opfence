@@ -1,0 +1,7 @@
+# description: Replace signal new-checkout, clearing all its rules
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SignalReplace($input: SignalReplaceInput!) { signalReplace(input: $input) { __typename } }","variables":{"input":{"owner":"prj-shop","name":"new-checkout","type":"STRING","default":"off"}}}

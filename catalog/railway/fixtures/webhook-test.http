@@ -1,0 +1,7 @@
+# description: Send a test webhook to https://hooks.example.com/railway
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WebhookTest($url: String!, $payload: String!) { webhookTest(url: $url, payload: $payload) }","variables":{"url":"https://hooks.example.com/railway","payload":"{\"type\":\"test\"}"}}

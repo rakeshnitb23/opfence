@@ -1,0 +1,7 @@
+# description: Roll signal new-checkout back to before change 12
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SignalRollback($input: SignalRollbackInput!) { signalRollback(input: $input) { __typename } }","variables":{"input":{"owner":"prj-shop","name":"new-checkout","seq":"12"}}}

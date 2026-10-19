@@ -1,0 +1,18 @@
+# Railway GraphQL API: provider-auth
+operations:
+  - id: railway.provider-auth.remove
+    match: { graphql: { type: mutation, field: providerAuthRemove } }
+    class: access
+    resource: { arg: id, kind: provider-auth }
+    card: "Remove linked sign-in provider {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Unlinks a sign-in provider (GitHub, Google) from the account.
+    tests:
+      - fixture: fixtures/provider-auth-remove.http
+        expect: access
+        resource: pa-github

@@ -1,0 +1,7 @@
+# description: Retry verification of trusted domain td-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TrustedDomainRetriggerVerification($id: String!) { trustedDomainRetriggerVerification(id: $id) { id } }","variables":{"id":"td-1"}}

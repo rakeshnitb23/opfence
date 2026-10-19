@@ -1,0 +1,7 @@
+# description: Rename environment env-staging to qa
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EnvironmentRename($id: String!, $input: EnvironmentRenameInput!) { environmentRename(id: $id, input: $input) { id } }","variables":{"id":"env-staging","input":{"name":"qa"}}}

@@ -1,0 +1,7 @@
+# description: Join a project with invite code inv-code-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation InviteCodeUse($code: String!) { inviteCodeUse(code: $code) { id } }","variables":{"code":"inv-code-1"}}

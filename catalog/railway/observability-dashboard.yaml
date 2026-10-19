@@ -1,0 +1,48 @@
+# Railway GraphQL API: observability-dashboard
+operations:
+  - id: railway.observability-dashboard.create
+    match: { graphql: { type: mutation, field: observabilityDashboardCreate } }
+    class: write
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Create an observability dashboard in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/observability-dashboard-create.http
+        expect: write
+        resource: env-production
+
+  - id: railway.observability-dashboard.reset
+    match: { graphql: { type: mutation, field: observabilityDashboardReset } }
+    class: delete
+    resource: { arg: id, kind: observability-dashboard }
+    card: "Reset observability dashboard {id} to the default items"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Drops the custom items, which can be built again by hand; no data is lost.
+    tests:
+      - fixture: fixtures/observability-dashboard-reset.http
+        expect: delete
+        resource: od-1
+
+  - id: railway.observability-dashboard.update
+    match: { graphql: { type: mutation, field: observabilityDashboardUpdate } }
+    class: write
+    resource: { arg: id, kind: observability-dashboard }
+    card: "Change observability dashboard {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/observability-dashboard-update.http
+        expect: write
+        resource: od-1

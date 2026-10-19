@@ -1,0 +1,7 @@
+# description: Choose which services get shared variable DATABASE_URL
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SharedVariableConfigure($input: SharedVariableConfigureInput!) { sharedVariableConfigure(input: $input) { id } }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","name":"DATABASE_URL","enabledServiceIds":["svc-api"],"disabledServiceIds":[]}}}

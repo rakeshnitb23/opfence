@@ -1,0 +1,7 @@
+# description: Stop the PITR workflow of HA cluster svc-pg
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CancelPitrHaWorkflow($environmentId: String!, $rootServiceId: String!) { cancelPitrHaWorkflow(environmentId: $environmentId, rootServiceId: $rootServiceId) }","variables":{"environmentId":"env-production","rootServiceId":"svc-pg"}}

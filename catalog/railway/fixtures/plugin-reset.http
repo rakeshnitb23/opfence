@@ -1,0 +1,7 @@
+# description: Reset legacy plugin plg-postgres (variables and container) in environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PluginReset($id: String!, $input: ResetPluginInput!) { pluginReset(id: $id, input: $input) }","variables":{"id":"plg-postgres","input":{"environmentId":"env-production"}}}

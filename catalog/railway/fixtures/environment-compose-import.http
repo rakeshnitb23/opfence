@@ -1,0 +1,7 @@
+# description: Create services and volumes in environment env-production from a docker compose file
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DockerComposeImport($projectId: String!, $environmentId: String!, $yaml: String!) { dockerComposeImport(projectId: $projectId, environmentId: $environmentId, yaml: $yaml) { __typename } }","variables":{"projectId":"prj-shop","environmentId":"env-production","yaml":"services:\n  web:\n    image: nginx\n"}}

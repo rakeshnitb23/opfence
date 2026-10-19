@@ -1,0 +1,102 @@
+# Railway GraphQL API: cloud-agent
+operations:
+  - id: railway.cloud-agent.create
+    match: { graphql: { type: mutation, field: cloudAgentCreate } }
+    class: write
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Create cloud agent {input.name} in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Starts a machine that runs coding agents, like creating a service (write).
+      Its variables are generic variables.
+    tests:
+      - fixture: fixtures/cloud-agent-create.http
+        expect: write
+        resource: env-production
+
+  - id: railway.cloud-agent.delete
+    match: { graphql: { type: mutation, field: cloudAgentDelete } }
+    class: irreversible
+    resource: { arg: id, kind: cloud-agent }
+    card: "Delete cloud agent {id} and its disk"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Sleep keeps the agent's volume; delete removes the agent with it, and the
+      API offers no restore.
+    tests:
+      - fixture: fixtures/cloud-agent-delete.http
+        expect: irreversible
+        resource: ca-dev
+
+  - id: railway.cloud-agent.harness-token
+    match: { graphql: { type: mutation, field: cloudAgentHarnessToken } }
+    class: credential
+    resource: { arg: id, kind: cloud-agent }
+    card: "Mint a token for the harness of cloud agent {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns a short-lived JWT for the agent's harness WebSocket.
+    tests:
+      - fixture: fixtures/cloud-agent-harness-token.http
+        expect: credential
+        resource: ca-dev
+
+  - id: railway.cloud-agent.sleep
+    match: { graphql: { type: mutation, field: cloudAgentSleep } }
+    class: write
+    resource: { arg: id, kind: cloud-agent }
+    card: "Put cloud agent {id} to sleep"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Stops the agent's processes and keeps its volume, as stopping a deployment
+      is a write.
+    tests:
+      - fixture: fixtures/cloud-agent-sleep.http
+        expect: write
+        resource: ca-dev
+
+  - id: railway.cloud-agent.state-report
+    match: { graphql: { type: mutation, field: cloudAgentStateReport } }
+    class: write
+    resource: { arg: input.cloudAgentId, kind: cloud-agent }
+    card: "Report the session state of cloud agent {input.cloudAgentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/cloud-agent-state-report.http
+        expect: write
+        resource: ca-dev
+
+  - id: railway.cloud-agent.wake
+    match: { graphql: { type: mutation, field: cloudAgentWake } }
+    class: write
+    resource: { arg: id, kind: cloud-agent }
+    card: "Wake cloud agent {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/cloud-agent-wake.http
+        expect: write
+        resource: ca-dev

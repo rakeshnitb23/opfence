@@ -1,0 +1,7 @@
+# description: Commit the staged changes of environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EnvironmentPatchCommitStaged($environmentId: String!, $commitMessage: String) { environmentPatchCommitStaged(environmentId: $environmentId, commitMessage: $commitMessage) }","variables":{"environmentId":"env-production","commitMessage":"release"}}

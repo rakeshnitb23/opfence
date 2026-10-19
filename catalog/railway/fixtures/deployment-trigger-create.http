@@ -1,0 +1,7 @@
+# description: Deploy service svc-api on every push to acme/shop@main
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation DeploymentTriggerCreate($input: DeploymentTriggerCreateInput!) { deploymentTriggerCreate(input: $input) { __typename } }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","serviceId":"svc-api","provider":"github","repository":"acme/shop","branch":"main"}}}

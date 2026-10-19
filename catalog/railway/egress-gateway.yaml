@@ -1,0 +1,90 @@
+# Railway GraphQL API: egress-gateway
+operations:
+  - id: railway.egress-gateway.create
+    match: { graphql: { type: mutation, field: egressGatewayAssociationCreate } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Give service {input.serviceId} a static egress IP"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Railway does not list a separate price for static egress IPs (Fly.io bills
+      them, hence money there), so this is a write.
+    tests:
+      - fixture: fixtures/egress-gateway-create.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.egress-gateway.clear
+    match: { graphql: { type: mutation, field: egressGatewayAssociationsClear } }
+    class: delete
+    resource: { arg: input.serviceId, kind: service }
+    card: "Release the static egress IPs of service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As flyio-mcp's egress-ip release: a new association gets new addresses, so
+      allowlists built on the old ones break.
+    tests:
+      - fixture: fixtures/egress-gateway-clear.http
+        expect: delete
+        resource: svc-api
+
+  - id: railway.egress-gateway.ha-preview
+    match: { graphql: { type: mutation, field: egressGatewayHAMigrationPreview } }
+    class: read
+    resource: { arg: input.serviceId, kind: service }
+    card: "Preview HA static egress IPs for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A mutation by type, but the schema says it previews the IPs without
+      applying them.
+    tests:
+      - fixture: fixtures/egress-gateway-ha-preview.http
+        expect: read
+        resource: svc-api
+
+  - id: railway.egress-gateway.ha-rollback
+    match: { graphql: { type: mutation, field: egressGatewayRollbackFromHA } }
+    class: delete
+    resource: { arg: input.serviceId, kind: service }
+    card: "Switch service {input.serviceId} from HA static egress IPs back to a standard one"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Releases the HA addresses (see railway.egress-gateway.clear).
+    tests:
+      - fixture: fixtures/egress-gateway-ha-rollback.http
+        expect: delete
+        resource: svc-api
+
+  - id: railway.egress-gateway.ha-upgrade
+    match: { graphql: { type: mutation, field: egressGatewayUpgradeToHA } }
+    class: delete
+    resource: { arg: input.serviceId, kind: service }
+    card: "Switch service {input.serviceId} to HA static egress IPs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Assigns new addresses in place of the current static IP, which is
+      released, so it is delete like railway.egress-gateway.clear.
+    tests:
+      - fixture: fixtures/egress-gateway-ha-upgrade.http
+        expect: delete
+        resource: svc-api

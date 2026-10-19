@@ -1,0 +1,7 @@
+# description: Copy template postgres into workspace ws-acme
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateClone($input: TemplateCloneInput!) { templateClone(input: $input) { id } }","variables":{"input":{"code":"postgres","workspaceId":"ws-acme"}}}

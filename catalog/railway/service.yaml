@@ -47,3 +47,67 @@ operations:
       - fixture: fixtures/service-disconnect.http
         expect: write
         resource: svc-api
+
+  - id: railway.service.connect
+    match: { graphql: { type: mutation, field: serviceConnect } }
+    class: write
+    resource: { arg: id, kind: service }
+    card: "Connect service {id} to {input.repo}{input.image}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway-mcp's connect_service_source.
+    tests:
+      - fixture: fixtures/service-connect.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service.duplicate
+    match: { graphql: { type: mutation, field: serviceDuplicate } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Duplicate service {serviceId} with its variables and volumes"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Deprecated in the schema. Creates a copy; the original is untouched.
+    tests:
+      - fixture: fixtures/service-duplicate.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service.remove-upstream
+    match: { graphql: { type: mutation, field: serviceRemoveUpstreamUrl } }
+    class: write
+    resource: { arg: id, kind: service }
+    card: "Remove the template upstream URL of service {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-remove-upstream.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service.update
+    match: { graphql: { type: mutation, field: serviceUpdate } }
+    class: write
+    resource: { arg: id, kind: service }
+    card: "Change name, icon or tracing of service {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-update.http
+        expect: write
+        resource: svc-api

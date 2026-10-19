@@ -1,0 +1,7 @@
+# description: Delete sandbox checkpoint ready
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SandboxCheckpointDelete($environmentId: String!, $id: ID!) { sandboxCheckpointDelete(environmentId: $environmentId, id: $id) }","variables":{"environmentId":"env-production","id":"ready"}}

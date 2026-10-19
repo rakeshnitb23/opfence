@@ -1,0 +1,56 @@
+# Railway GraphQL API: integration
+operations:
+  - id: railway.integration.create
+    match: { graphql: { type: mutation, field: integrationCreate } }
+    class: credential
+    resource: { arg: input.projectId, kind: project }
+    card: "Create integration {input.name} for project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The schema does not describe config. Railway's integrations (Vercel and
+      similar) sync the project's variables, database URLs included, into
+      another provider, and config is a free JSON object that can hold that
+      provider's keys, so it takes the strictest plausible class.
+    tests:
+      - fixture: fixtures/integration-create.http
+        expect: credential
+        resource: prj-shop
+
+  - id: railway.integration.update
+    match: { graphql: { type: mutation, field: integrationUpdate } }
+    class: credential
+    resource: { arg: input.projectId, kind: project }
+    card: "Change integration {id} of project {input.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway.integration.create.
+    tests:
+      - fixture: fixtures/integration-update.http
+        expect: credential
+        resource: prj-shop
+
+  - id: railway.integration.delete
+    match: { graphql: { type: mutation, field: integrationDelete } }
+    class: delete
+    resource: { arg: id, kind: integration }
+    card: "Delete integration {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Stops the sync; the integration can be set up again from the same provider
+      account.
+    tests:
+      - fixture: fixtures/integration-delete.http
+        expect: delete
+        resource: int-1

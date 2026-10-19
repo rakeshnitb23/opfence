@@ -1,0 +1,7 @@
+# description: Change notification rule nr-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation NotificationRuleUpdate($id: String!, $input: UpdateNotificationRuleInput!) { notificationRuleUpdate(id: $id, input: $input) { id } }","variables":{"id":"nr-1","input":{"eventTypes":["DEPLOY_CRASHED"]}}}

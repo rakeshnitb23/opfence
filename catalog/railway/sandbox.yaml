@@ -1,0 +1,145 @@
+# Railway GraphQL API: sandbox
+operations:
+  - id: railway.sandbox.checkpoint-create
+    match: { graphql: { type: mutation, field: sandboxCheckpointCreate } }
+    class: write
+    resource: { arg: sandboxId, kind: sandbox }
+    card: "Save sandbox {sandboxId}'s disk as checkpoint {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/sandbox-checkpoint-create.http
+        expect: write
+        resource: sbx-1
+
+  - id: railway.sandbox.checkpoint-delete
+    match: { graphql: { type: mutation, field: sandboxCheckpointDelete } }
+    class: irreversible
+    resource: { arg: id, kind: sandbox-checkpoint }
+    card: "Delete sandbox checkpoint {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A checkpoint is a disk snapshot; deleting it loses that disk.
+    tests:
+      - fixture: fixtures/sandbox-checkpoint-delete.http
+        expect: irreversible
+        resource: ready
+
+  - id: railway.sandbox.checkpoint-rename
+    match: { graphql: { type: mutation, field: sandboxCheckpointRename } }
+    class: write
+    resource: { arg: id, kind: sandbox-checkpoint }
+    card: "Rename sandbox checkpoint {id} to {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/sandbox-checkpoint-rename.http
+        expect: write
+        resource: ready
+
+  - id: railway.sandbox.create
+    match: { graphql: { type: mutation, field: sandboxCreate } }
+    class: write
+    when:
+      - if: { arg: input.publicDomains, present: true }
+        class: access
+      - if: { arg: input.networkIsolation, equals: PRIVATE }
+        class: access
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Create a sandbox in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Public domains expose the sandbox to the internet, and PRIVATE network
+      isolation lets it reach the environment's databases; both are access.
+    tests:
+      - fixture: fixtures/sandbox-create.http
+        expect: write
+        resource: env-production
+      - fixture: fixtures/sandbox-create-public.http
+        expect: access
+        resource: env-production
+      - fixture: fixtures/sandbox-create-private-network.http
+        expect: access
+        resource: env-production
+
+  - id: railway.sandbox.destroy
+    match: { graphql: { type: mutation, field: sandboxDestroy } }
+    class: irreversible
+    resource: { arg: id, kind: sandbox }
+    card: "Destroy sandbox {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The sandbox's disk is gone unless it was checkpointed first.
+    tests:
+      - fixture: fixtures/sandbox-destroy.http
+        expect: irreversible
+        resource: sbx-1
+
+  - id: railway.sandbox.exec
+    match: { graphql: { type: mutation, field: sandboxExec } }
+    class: irreversible
+    resource: { arg: id, kind: sandbox }
+    card: "Run {command} in sandbox {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Runs an arbitrary command (ARCHITECTURE 4.5); with PRIVATE isolation it
+      can reach the environment's databases.
+    tests:
+      - fixture: fixtures/sandbox-exec.http
+        expect: irreversible
+        resource: sbx-1
+
+  - id: railway.sandbox.heartbeat
+    match: { graphql: { type: mutation, field: sandboxHeartbeat } }
+    class: write
+    resource: { arg: id, kind: sandbox }
+    card: "Extend the lifetime of sandbox {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/sandbox-heartbeat.http
+        expect: write
+        resource: sbx-1
+
+  - id: railway.sandbox.template-build
+    match: { graphql: { type: mutation, field: sandboxTemplateBuild } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Build sandbox template {input.name} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The instructions run while building a new image, not in a running sandbox,
+      like a service's build command (write).
+    tests:
+      - fixture: fixtures/sandbox-template-build.http
+        expect: write
+        resource: env-production

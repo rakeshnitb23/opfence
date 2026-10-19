@@ -14,3 +14,51 @@ operations:
       - fixture: fixtures/deployment-trigger-delete.http
         expect: delete
         resource: trg-main
+
+  - id: railway.deployment-trigger.base-environment
+    match: { graphql: { type: mutation, field: baseEnvironmentOverride } }
+    class: write
+    resource: { arg: id, kind: deployment-trigger }
+    card: "Set the base environment of deployment trigger {id} to {input.baseEnvironmentOverrideId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-trigger-base-environment.http
+        expect: write
+        resource: trg-main
+
+  - id: railway.deployment-trigger.create
+    match: { graphql: { type: mutation, field: deploymentTriggerCreate } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Deploy service {input.serviceId} on every push to {input.repository}@{input.branch}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Connecting a branch makes every push deploy, which is the same power as
+      deploying (write).
+    tests:
+      - fixture: fixtures/deployment-trigger-create.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.deployment-trigger.update
+    match: { graphql: { type: mutation, field: deploymentTriggerUpdate } }
+    class: write
+    resource: { arg: id, kind: deployment-trigger }
+    card: "Change deployment trigger {id} to {input.repository}@{input.branch}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/deployment-trigger-update.http
+        expect: write
+        resource: trg-main

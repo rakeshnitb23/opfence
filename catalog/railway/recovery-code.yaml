@@ -1,0 +1,33 @@
+# Railway GraphQL API: recovery-code
+operations:
+  - id: railway.recovery-code.generate
+    match: { graphql: { type: mutation, field: recoveryCodeGenerate } }
+    class: credential
+    card: "Generate new two-factor recovery codes"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Returns new recovery codes (each one signs in without the second factor)
+      and invalidates the old ones.
+    tests:
+      - fixture: fixtures/recovery-code-generate.http
+        expect: credential
+
+  - id: railway.recovery-code.validate
+    match: { graphql: { type: mutation, field: recoveryCodeValidate } }
+    class: access
+    card: "Use a two-factor recovery code"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Completes a two-factor step with a recovery code, which signs a session
+      in; an authentication action.
+    tests:
+      - fixture: fixtures/recovery-code-validate.http
+        expect: access

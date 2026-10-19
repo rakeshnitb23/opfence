@@ -1,0 +1,7 @@
+# description: Add SSH key laptop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SshPublicKeyCreate($input: SshPublicKeyCreateInput!) { sshPublicKeyCreate(input: $input) { id } }","variables":{"input":{"name":"laptop","publicKey":"ssh-ed25519 AAAAEXAMPLE user@laptop","workspaceId":"ws-acme"}}}

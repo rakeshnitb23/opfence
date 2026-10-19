@@ -1,0 +1,7 @@
+# description: Collect the token of CLI login session word-word-word
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation LoginSessionConsume($code: String!) { loginSessionConsume(code: $code) }","variables":{"code":"word-word-word"}}

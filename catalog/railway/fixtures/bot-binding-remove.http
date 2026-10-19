@@ -1,0 +1,7 @@
+# description: Remove Railway agent chat binding bsb-slack
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation BotScopeBindingRemove($id: String!) { botScopeBindingRemove(id: $id) }","variables":{"id":"bsb-slack"}}

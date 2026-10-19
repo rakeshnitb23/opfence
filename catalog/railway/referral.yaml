@@ -1,0 +1,16 @@
+# Railway GraphQL API: referral
+operations:
+  - id: railway.referral.update
+    match: { graphql: { type: mutation, field: referralInfoUpdate } }
+    class: write
+    resource: { arg: input.workspaceId, kind: workspace }
+    card: "Set the referral code of workspace {input.workspaceId} to {input.code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/referral-update.http
+        expect: write
+        resource: ws-acme

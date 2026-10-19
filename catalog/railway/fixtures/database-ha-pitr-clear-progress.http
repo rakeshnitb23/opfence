@@ -1,0 +1,7 @@
+# description: Clear the finished PITR workflow status of HA cluster svc-pg
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ClearPitrHaWorkflowProgress($environmentId: String!, $rootServiceId: String!) { clearPitrHaWorkflowProgress(environmentId: $environmentId, rootServiceId: $rootServiceId) }","variables":{"environmentId":"env-production","rootServiceId":"svc-pg"}}

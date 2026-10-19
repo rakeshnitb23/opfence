@@ -1,0 +1,7 @@
+# description: Point custom domain cd-1 at port 8080
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CustomDomainUpdate($id: String!, $environmentId: String!, $targetPort: Int) { customDomainUpdate(id: $id, environmentId: $environmentId, targetPort: $targetPort) }","variables":{"id":"cd-1","environmentId":"env-production","targetPort":8080}}
