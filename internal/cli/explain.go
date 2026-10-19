@@ -150,6 +150,9 @@ func describeTransform(x *catalog.Response) string {
 	if len(x.Redact) > 0 {
 		parts = append(parts, "redacts "+strings.Join(x.Redact, ", "))
 	}
+	if len(x.Clear) > 0 {
+		parts = append(parts, "empties "+strings.Join(x.Clear, ", "))
+	}
 	if len(x.Mint) > 0 {
 		parts = append(parts, "holds the token at "+strings.Join(x.Mint, ", ")+" and hands out a placeholder")
 	}

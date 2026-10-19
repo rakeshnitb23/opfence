@@ -42,6 +42,7 @@
           "required": ["class"],
           "properties": {
             "redact": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
+            "clear": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
             "mint": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
             "class": { "$ref": "#/$defs/class" }
           }

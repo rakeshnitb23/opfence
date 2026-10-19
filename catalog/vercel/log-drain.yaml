@@ -29,14 +29,19 @@ operations:
   - id: vercel.log-drain.list
     match: { rest: { method: GET, path: "/{version}/log-drains" } }
     class: credential
-    card: "List log drains with their delivery secrets"
+    card: "List log drains"
     status: verified
     verified: 2026-10-19
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      redact: [drains.delivery.secret, drains.delivery.headers]
+      class: read
     notes: >-
       Each drain's delivery settings include its signing secret and custom
-      headers, which often carry an Authorization value.
+      headers, which often carry an Authorization value. Under opfence run the
+      proxy redacts both and the call is read; anywhere else it is credential.
     tests:
       - fixture: fixtures/log-drain-list.http
         expect: credential
+        response: fixtures/log-drain-list-response.json

@@ -44,31 +44,44 @@ operations:
 
   - id: vercel.microfrontends.project-update
     match: { rest: { method: PATCH, path: "/{version}/projects/{projectId}/microfrontends" } }
-    class: write
+    class: credential
     resource: { arg: projectId, kind: project }
     card: "Change microfrontends settings of project {projectId}"
     status: verified
     verified: 2026-10-19
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
+    notes: >-
+      The response is the project, whose protectionBypass map is keyed by its
+      Protection Bypass for Automation secrets. Map keys cannot be redacted, so
+      under opfence run the proxy empties the map and the call is write;
+      anywhere else it is credential.
     tests:
       - fixture: fixtures/microfrontends-project-update.http
-        expect: write
+        expect: credential
+        response: fixtures/microfrontends-project-update-response.json
         resource: prj_shop
 
   - id: vercel.microfrontends.group-projects
     match: { rest: { method: GET, path: "/{version}/microfrontends/groups/{groupId}/projects" } }
     class: credential
-    card: "List the projects of microfrontends group {groupId} with their bypass secrets"
+    card: "List the projects of microfrontends group {groupId}"
     status: verified
     verified: 2026-10-19
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [projects.protectionBypass]
+      class: read
     notes: >-
       Each project's protectionBypass map is keyed by its Protection Bypass for
-      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). The secrets
-      are map keys, which a response redact cannot hide, so the read stays
-      credential.
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). Map keys
+      cannot be redacted, so under opfence run the proxy empties the map and the
+      call is read; anywhere else it is credential.
     tests:
       - fixture: fixtures/microfrontends-group-projects.http
         expect: credential
+        response: fixtures/microfrontends-group-projects-response.json

@@ -24,8 +24,9 @@ type TransformResult struct {
 }
 
 // Transform applies a rule's response transform to a JSON body: every
-// string at or below a redact path becomes catalog.RedactedValue, and each
-// string at a mint path is replaced with what mint returns for it. A path
+// string at or below a redact path becomes catalog.RedactedValue, the value
+// at a clear path becomes the empty value of its type, and each string at
+// a mint path is replaced with what mint returns for it. A path
 // steps into every element of a list on its way, as rule conditions do.
 // The body is re-encoded; anything that is not one JSON value is an error.
 func Transform(body []byte, x *catalog.Response, mint func(value string) (string, error)) ([]byte, TransformResult, error) {
@@ -44,6 +45,12 @@ func Transform(body []byte, x *catalog.Response, mint func(value string) (string
 		v = walk(v, strings.Split(p, "."), func(at any) any {
 			res.Hits[p]++
 			return redact(at)
+		})
+	}
+	for _, p := range x.Clear {
+		v = walk(v, strings.Split(p, "."), func(at any) any {
+			res.Hits[p]++
+			return empty(at)
 		})
 	}
 	for _, p := range x.Mint {
@@ -88,6 +95,20 @@ func walk(v any, path []string, f func(any) any) any {
 		for i, el := range t {
 			t[i] = walk(el, path, f)
 		}
+	}
+	return v
+}
+
+// empty returns the empty value of v's type. Numbers, booleans and null
+// are kept: they cannot hold a token.
+func empty(v any) any {
+	switch v.(type) {
+	case string:
+		return ""
+	case map[string]any:
+		return map[string]any{}
+	case []any:
+		return []any{}
 	}
 	return v
 }

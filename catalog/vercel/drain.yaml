@@ -57,29 +57,39 @@ operations:
   - id: vercel.drain.list
     match: { rest: { method: GET, path: "/{version}/drains" } }
     class: credential
-    card: "List drains with their delivery secrets"
+    card: "List drains"
     status: verified
     verified: 2026-10-19
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      redact: [drains.delivery.secret, drains.delivery.headers]
+      class: read
     notes: >-
       Each drain's delivery settings include its signing secret and custom
-      headers, which often carry an Authorization value.
+      headers, which often carry an Authorization value. Under opfence run the
+      proxy redacts both and the call is read; anywhere else it is credential.
     tests:
       - fixture: fixtures/drain-list.http
         expect: credential
+        response: fixtures/drain-list-response.json
 
   - id: vercel.drain.read
     match: { rest: { method: GET, path: "/{version}/drains/{id}" } }
     class: credential
-    card: "Read drain {id} with its delivery secret"
+    card: "Read drain {id}"
     status: verified
     verified: 2026-10-19
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      redact: [delivery.secret, delivery.headers]
+      class: read
     notes: >-
       Each drain's delivery settings include its signing secret and custom
-      headers, which often carry an Authorization value.
+      headers, which often carry an Authorization value. Under opfence run the
+      proxy redacts both and the call is read; anywhere else it is credential.
     tests:
       - fixture: fixtures/drain-read.http
         expect: credential
+        response: fixtures/drain-read-response.json

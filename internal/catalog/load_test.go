@@ -153,7 +153,7 @@ func TestLoadInvalid(t *testing.T) {
 		{"two documents", replace("acme/db.yaml", "operations:", "operations: []\n---\noperations:"), "only one YAML document"},
 		{"empty rule file", func(m fstest.MapFS) { m["acme/empty.yaml"] = &fstest.MapFile{Data: []byte("")} }, "empty file"},
 		{"stray folder", func(m fstest.MapFS) { m["acme/tests/x.http"] = &fstest.MapFile{Data: []byte("x")} }, "unexpected folder"},
-		{"response without paths", responseRule(`{ class: read }`), "needs redact or mint"},
+		{"response without paths", responseRule(`{ class: read }`), "needs redact, clear or mint"},
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},
 		{"response bad path", responseRule(`{ redact: ["a b"], class: read }`), "not a dotted path"},
 		{"response untested", responseRule(`{ redact: [secret], class: read }`), "needs a test with a recorded response"},
