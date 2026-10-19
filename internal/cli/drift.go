@@ -18,7 +18,9 @@ func newCatalogCheckSourcesCmd(g *globalOptions) *cobra.Command {
 compares them with its rules. A rule whose operation is no longer in the
 schema is stale. An operation that is not a read and that no rule matches is
 uncovered; it fails the check unless the schema is marked coverage: partial.
-Rules marked "unlisted" are skipped, and reported once the schema has them.`,
+OpenAPI operations whose own servers are on hosts the provider does not list
+are skipped. Rules marked "unlisted" are skipped, and reported once the schema
+has them.`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			c, err := g.loadCatalog()
@@ -51,6 +53,9 @@ Rules marked "unlisted" are skipped, and reported once the schema has them.`,
 				if partial > 0 {
 					fmt.Fprintf(out, " (%d more not covered by design)", partial)
 				}
+				if r.Foreign > 0 {
+					fmt.Fprintf(out, "; %d served on other hosts skipped", r.Foreign)
+				}
 				fmt.Fprintln(out)
 				for _, f := range r.Stale {
 					stale++
@@ -63,7 +68,11 @@ Rules marked "unlisted" are skipped, and reported once the schema has them.`,
 					if !f.Partial {
 						uncovered++
 					}
-					fmt.Fprintf(out, "       uncovered  %s\n", f.Op)
+					if f.Note != "" {
+						fmt.Fprintf(out, "       uncovered  %s (%s)\n", f.Op, f.Note)
+					} else {
+						fmt.Fprintf(out, "       uncovered  %s\n", f.Op)
+					}
 				}
 				for _, f := range r.Listed {
 					fmt.Fprintf(out, "       listed     %s is marked unlisted, but %s\n", f.Rule.ID, f.Note)

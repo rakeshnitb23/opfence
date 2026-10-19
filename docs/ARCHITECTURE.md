@@ -49,6 +49,7 @@ internal/catalog/       rule model, YAML loader, validator, matcher, embedded sn
 internal/policy/        opfence.yaml model, environment resolver, decision table, merge
 internal/engine/        glue: Request → []Evaluation (decode + match + decide)
 internal/fixture/       `opfence test`: replay fixtures and compare expectations
+internal/drift/         `opfence catalog check-sources`: rules against providers' published schemas
 internal/export/        openshell, claudecode, mcpannotations
 internal/hook/          `opfence hook claude-code`: PreToolUse adapter
 internal/proxy/         CONNECT + SOCKS5 listeners, MITM, upstream transport
@@ -328,6 +329,28 @@ The catalog applies the same judgement everywhere, so a reviewer can check a rul
 
 `schema/provider.schema.json` and `schema/rules.schema.json` describe the same shapes for editors; a test validates every embedded catalog file against them, and checks that they reject the same mistakes the loader does.
 
+### 4.7 Drift against published schemas
+
+Fixtures prove a rule classifies the request it was written for; they cannot notice that the provider added a dangerous endpoint, or removed the one a rule describes. A provider names the machine-readable schemas its rules were built from, and `opfence catalog check-sources` downloads them and compares:
+
+```yaml
+# catalog/github/provider.yaml
+schemas:
+  - kind: openapi        # openapi (OpenAPI 3 or Swagger 2), graphql (SDL or introspection JSON),
+    url: https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
+    coverage: partial    #   heroku (JSON hyper-schema), botocore (AWS service model, needs service)
+  - kind: graphql
+    url: https://raw.githubusercontent.com/octokit/graphql-schema/main/schema.graphql
+    coverage: partial
+```
+
+- **Stale**: a REST, GraphQL or AWS rule that overlaps no operation in its provider's schemas (same method, and a path either side matches) fails the check. A rule the schemas leave out on purpose says why with `unlisted: <reason>` (an endpoint the official CLI calls but the spec omits, a removed endpoint older API versions still serve); when the schema later gains it, the check lists the rule so the reason can go.
+- **Uncovered**: an operation that is not a read (GET, HEAD, OPTIONS, a GraphQL query or subscription, an AWS read action, all of which provider defaults classify) and that no rule covers (the rule matches the operation's sample path) fails the check for `coverage: full` schemas, the default. `coverage: partial` lists them only with `-v`: the provider's rules cover the riskiest operations and the rest are `unknown`, which asks.
+- **Elsewhere**: an OpenAPI operation whose own `servers` (on the operation or its path, or in the file an operation `$ref` points to) are on hosts the provider does not list is served out of the provider's view and skipped. DigitalOcean's spec puts its inference and agent gateway hosts in one file this way.
+- MCP and git rules are not compared; an MCP server's tool list is read from its source when the rule is written.
+
+CI does not run the check (it needs the network and upstream schemas change under it); the nightly workflow does, so drift shows up as a red nightly run with the rules to fix. Its first run found DigitalOcean's new Insights signals endpoint, now `digitalocean.insights-resource.signals-update`.
+
 ## 5. Policy
 
 ### 5.1 Environment resolution
@@ -581,7 +604,7 @@ A forwarded request is logged when the upstream's response headers arrive, befor
 | Layer | Tests |
 | --- | --- |
 | decode, catalog, policy | table tests; Go native fuzzing (`FuzzGraphQL`, `FuzzMCP`, `FuzzHTTPFixture`, `FuzzSQL`) with seeds from fixtures; CI runs each fuzzer for a short budget, nightly for longer |
-| catalog content | `opfence test` replays every fixture; CI fails on any miss; a schema test validates every file |
+| catalog content | `opfence test` replays every fixture; CI fails on any miss; a schema test validates every file; `opfence catalog check-sources` runs nightly against the providers' published schemas, with unit tests over small schemas and a fake fetcher |
 | exporters | golden files for every target and environment; OpenShell output decoded into strict schema structs and checked by a model of OpenShell matching (never looser than the engine) |
 | hook | decision tests over the embedded catalog (SQL, aliases, plugin and claude.ai names, unknown servers and tools), bad input → error; CLI test that errors exit 2 |
 | proxy, CA, inject, approve | end-to-end tests with `httptest` TLS upstreams (HTTP/2 and HTTP/1.1, CONNECT and SOCKS5), an in-memory keyring and a scripted approver; a PocketOS replay test asserts the upstream is never contacted; tunnel tricks (server name mismatch, IP tunnels, Host mismatch, private addresses) each have a test |

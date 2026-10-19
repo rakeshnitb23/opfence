@@ -118,6 +118,11 @@ func TestLoadInvalid(t *testing.T) {
 			gitRule(`{ service: receive-pack, command: update, refs: ["refs/heads/*"] }`)(m)
 			m["acme/more.yaml"] = &fstest.MapFile{Data: []byte("operations:\n  - id: acme.git.main\n    match: { git: { service: receive-pack, command: update, refs: [refs/heads/main] } }\n    class: delete\n    card: x\n    status: draft\n")}
 		}, "can both match refs/heads/main"},
+		{"bad schema kind", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nschemas:\n  - kind: swagger\n    url: https://acme.dev/s.json"), "kind \"swagger\" must be one of"},
+		{"http schema url", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nschemas:\n  - kind: openapi\n    url: http://acme.dev/s.json"), "url must be an https URL"},
+		{"bad schema prefix", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nschemas:\n  - kind: openapi\n    url: https://acme.dev/s.json\n    prefix: /v1/"), "must start with / and not end with one"},
+		{"bad schema coverage", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nschemas:\n  - kind: openapi\n    url: https://acme.dev/s.json\n    coverage: most"), "coverage must be full or partial"},
+		{"botocore without service", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nschemas:\n  - kind: botocore\n    url: https://acme.dev/s.json"), "service is required for botocore"},
 		{"aws read default without sigv4", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  aws_read_actions: read"), "needs sigv4"},
 		{"bad class", replace("acme/db.yaml", "class: irreversible\n    resource", "class: dangerous\n    resource"), "unknown class \"dangerous\""},
 		{"bad when class", replace("acme/db.yaml", "        class: irreversible", "        class: fatal"), "when[0]: unknown class"},
