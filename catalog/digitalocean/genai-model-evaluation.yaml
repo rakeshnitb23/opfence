@@ -1,0 +1,87 @@
+# DigitalOcean REST API: genai-model-evaluation
+operations:
+  - id: digitalocean.genai-model-evaluation.dataset-upload-urls
+    match: { rest: { method: POST, path: /v2/gen-ai/model_evaluation/datasets/file_upload_presigned_urls } }
+    class: write
+    card: "Get upload URLs for model evaluation datasets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_model_eval_dataset_upload_presigned_urls.yml
+    tests:
+      - fixture: fixtures/genai-model-evaluation-dataset-upload-urls.http
+        expect: write
+
+  - id: digitalocean.genai-model-evaluation.delete-preset
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/model_evaluation_presets/{eval_preset_uuid}" } }
+    class: delete
+    resource: { arg: eval_preset_uuid, kind: genai-model-evaluation-preset }
+    card: "Delete model evaluation preset {eval_preset_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_model_evaluation_preset.yml
+    notes: >-
+      A saved configuration; runs that used it are unaffected.
+    tests:
+      - fixture: fixtures/genai-model-evaluation-delete-preset.http
+        expect: delete
+        resource: cef38195-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-model-evaluation.create-run
+    match: { rest: { method: POST, path: /v2/gen-ai/model_evaluation_runs } }
+    class: money
+    resource: { arg: body.name, kind: genai-model-evaluation }
+    card: "Start model evaluation run {body.name} for {body.candidate_model_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_model_evaluation_run.yml
+    notes: >-
+      Billed inference for the candidate and judge models.
+    tests:
+      - fixture: fixtures/genai-model-evaluation-create-run.http
+        expect: money
+        resource: "example name"
+
+  - id: digitalocean.genai-model-evaluation.delete-run
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/model_evaluation_runs/{eval_run_uuid}" } }
+    class: irreversible
+    resource: { arg: eval_run_uuid, kind: genai-model-evaluation-run }
+    card: "Delete model evaluation run {eval_run_uuid} and its results"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_model_evaluation_run.yml
+    tests:
+      - fixture: fixtures/genai-model-evaluation-delete-run.http
+        expect: irreversible
+        resource: d0049206-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-model-evaluation.rename-run
+    match: { rest: { method: PATCH, path: "/v2/gen-ai/model_evaluation_runs/{eval_run_uuid}" } }
+    class: write
+    resource: { arg: eval_run_uuid, kind: genai-model-evaluation-run }
+    card: "Rename model evaluation run {eval_run_uuid} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_model_evaluation_run.yml
+    tests:
+      - fixture: fixtures/genai-model-evaluation-rename-run.http
+        expect: write
+        resource: d0049206-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-model-evaluation.cancel-run
+    match: { rest: { method: PUT, path: "/v2/gen-ai/model_evaluation_runs/{eval_run_uuid}/cancel" } }
+    class: write
+    resource: { arg: eval_run_uuid, kind: genai-model-evaluation-run }
+    card: "Cancel model evaluation run {eval_run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_cancel_model_evaluation_run.yml
+    tests:
+      - fixture: fixtures/genai-model-evaluation-cancel-run.http
+        expect: write
+        resource: d0049206-b7d6-11ef-bf8f-4e013e2ddde4

@@ -1,0 +1,28 @@
+provider: digitalocean-mcp
+title: DigitalOcean MCP
+docs: https://github.com/digitalocean-labs/mcp-digitalocean
+# DigitalOcean hosts one remote endpoint per service of
+# github.com/digitalocean-labs/mcp-digitalocean: apps., databases., droplets.,
+# networking., doks., functions., genai-evaluation., ... each serving /mcp.
+hosts: ["*.mcp.digitalocean.com"]
+auth:
+  - header: Authorization
+    scheme: Bearer                 # a DigitalOcean API token (dop_v1_...)
+detect:
+  env: [DIGITALOCEAN_API_TOKEN]    # what the local server reads (README)
+  prefixes: [dop_v1_, doo_v1_, dor_v1_]
+mcp:
+  # The README registers the servers as digitalocean-<service> (claude mcp add
+  # --transport http digitalocean-apps ...); the other names follow the pattern.
+  names: [digitalocean, digitalocean-mcp, digitalocean-accounts, digitalocean-apps, digitalocean-databases,
+          digitalocean-dedicated-inference, digitalocean-docr, digitalocean-docs, digitalocean-doks,
+          digitalocean-droplets, digitalocean-functions, digitalocean-genai-batchinference,
+          digitalocean-genai-custom-models, digitalocean-genai-evaluation, digitalocean-genai-inferencerouter,
+          digitalocean-harness-runtime, digitalocean-inference-modelcatalog, digitalocean-insights,
+          digitalocean-marketplace, digitalocean-microvms, digitalocean-networking, digitalocean-nfs,
+          digitalocean-signals, digitalocean-spaces, digitalocean-vector-databases, digitalocean-volumes]
+  package: "@digitalocean/mcp"
+# Tools come from running the server's own registry at 38d769f4 (2026-10-14):
+# 399 tool names over 24 services; region-list is registered by every service.
+# The server returns godo objects unredacted, so reads that include passwords,
+# keys or tokens are credential.

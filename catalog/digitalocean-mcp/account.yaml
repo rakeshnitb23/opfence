@@ -1,0 +1,63 @@
+# DigitalOcean MCP server: account
+operations:
+  - id: digitalocean-mcp.account.get
+    match: { mcp: { tool: account-get-information } }
+    class: read
+    card: "Show the DigitalOcean account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/account_tools.go
+    tests:
+      - fixture: fixtures/account-get.http
+        expect: read
+
+  - id: digitalocean-mcp.account.get-balance
+    match: { mcp: { tool: balance-get } }
+    class: read
+    card: "Show the account balance"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/balance_tools.go
+    tests:
+      - fixture: fixtures/account-get-balance.http
+        expect: read
+
+  - id: digitalocean-mcp.account.list-billing-history
+    match: { mcp: { tool: billing-history-list } }
+    class: read
+    card: "List billing history"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/billing_tools.go
+    tests:
+      - fixture: fixtures/account-list-billing-history.http
+        expect: read
+
+  - id: digitalocean-mcp.account.list-invoices
+    match: { mcp: { tool: invoice-list } }
+    class: read
+    card: "List invoices"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/invoice_tools.go
+    tests:
+      - fixture: fixtures/account-list-invoices.http
+        expect: read
+
+  - id: digitalocean-mcp.account.get-invoice
+    match: { mcp: { tool: get-invoice } }
+    class: read
+    resource: { arg: InvoiceUUID, kind: invoice }
+    card: "Show invoice {InvoiceUUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/invoice_tools.go
+    tests:
+      - fixture: fixtures/account-get-invoice.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

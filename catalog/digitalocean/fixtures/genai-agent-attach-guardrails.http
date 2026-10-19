@@ -1,0 +1,7 @@
+# description: Attach guardrails to agent 1b418231-b7d6-11ef-bf8f-4e013e2ddde4
+POST /v2/gen-ai/agents/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/guardrails HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"agent_uuid": "\"12345678-1234-1234-1234-123456789012\""}

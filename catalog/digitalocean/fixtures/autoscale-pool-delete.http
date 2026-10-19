@@ -1,0 +1,5 @@
+# description: Delete autoscale pool 0d3db13e-a604-4944-9827-7ec2642d32ac
+DELETE /v2/droplets/autoscale/0d3db13e-a604-4944-9827-7ec2642d32ac HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

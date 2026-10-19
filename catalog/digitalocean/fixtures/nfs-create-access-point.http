@@ -1,0 +1,7 @@
+# description: Create access point other-vpc on NFS share 0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b
+POST /v2/nfs/shares/0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b/access_points HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "other-vpc", "path": "/other-vpc", "vpc_id": "3f34cdb2-1e4f-4100-b5c7-f55f2762085f", "access_policy": {"anonuid": 65534, "anongid": 65534, "protocols": ["NFS4", "NFS"], "squash_config": "ROOT_SQUASH", "identity_enforcement_enabled": false}}

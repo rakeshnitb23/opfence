@@ -1,0 +1,7 @@
+# description: Set rate-limit overrides of actor team-user-1234
+POST /v2/action-gateway/actors/team-user-1234/limits:set HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"overrides": [{"category": "LIMIT_CATEGORY_WEB_SEARCH_REQUESTS_PER_MINUTE", "requests_per_minute": "10"}]}

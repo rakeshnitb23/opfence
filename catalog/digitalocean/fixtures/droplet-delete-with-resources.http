@@ -1,0 +1,7 @@
+# description: Destroy Droplet 3164444 with the volumes, snapshots and IPs listed
+DELETE /v2/droplets/3164444/destroy_with_associated_resources/selective HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"floating_ips": ["6186916"], "reserved_ips": ["6186916"], "snapshots": ["61486916"], "volumes": ["ba49449a-7435-11ea-b89e-0a58ac14480f"], "volume_snapshots": ["edb0478d-7436-11ea-86e6-0a58ac144b91"]}

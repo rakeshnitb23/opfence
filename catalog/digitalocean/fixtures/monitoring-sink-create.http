@@ -1,0 +1,7 @@
+# description: Forward logs of resources to destination 9df2b7e9-3fb2-4577-b60a-e9c0d53f9a99
+POST /v2/monitoring/sinks HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"destination_uuid": "9df2b7e9-3fb2-4577-b60a-e9c0d53f9a99"}

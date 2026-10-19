@@ -1,0 +1,105 @@
+# DigitalOcean REST API: image
+operations:
+  - id: digitalocean.image.create
+    match: { rest: { method: POST, path: /v2/images } }
+    class: money
+    resource: { arg: body.name, kind: image }
+    card: "Import custom image {body.name} from {body.url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_create_custom.yml
+    notes: >-
+      Image storage is billed.
+    tests:
+      - fixture: fixtures/image-create.http
+        expect: money
+        resource: ubuntu-18.04-minimal
+
+  - id: digitalocean.image.update
+    match: { rest: { method: PUT, path: "/v2/images/{image_id}" } }
+    class: write
+    resource: { arg: image_id, kind: image }
+    card: "Rename image {image_id} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_update.yml
+    tests:
+      - fixture: fixtures/image-update.http
+        expect: write
+        resource: "7555620"
+
+  - id: digitalocean.image.delete
+    match: { rest: { method: DELETE, path: "/v2/images/{image_id}" } }
+    class: irreversible
+    resource: { arg: image_id, kind: image }
+    card: "Delete image {image_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_delete.yml
+    notes: >-
+      Snapshots, backups and custom images are data that cannot be recreated.
+    tests:
+      - fixture: fixtures/image-delete.http
+        expect: irreversible
+        resource: "7555620"
+
+  - id: digitalocean.image.transfer-to-account
+    match: { rest: { method: POST, path: "/v2/images/{image_id}/account_transfer" } }
+    class: access
+    resource: { arg: image_id, kind: image }
+    card: "Offer image {image_id} to account {body.recipient_email}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_post_account_transfer_create.yml
+    notes: >-
+      Gives another account a copy of the disk image.
+    tests:
+      - fixture: fixtures/image-transfer-to-account.http
+        expect: access
+        resource: "7555620"
+
+  - id: digitalocean.image.accept-transfer
+    match: { rest: { method: POST, path: "/v2/images/{image_id}/account_transfer/accept" } }
+    class: write
+    resource: { arg: image_id, kind: image }
+    card: "Accept image transfer {body.transfer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_post_account_transfer_accept.yml
+    tests:
+      - fixture: fixtures/image-accept-transfer.http
+        expect: write
+        resource: "7555620"
+
+  - id: digitalocean.image.cancel-transfer
+    match: { rest: { method: POST, path: "/v2/images/{image_id}/account_transfer/cancel" } }
+    class: write
+    resource: { arg: image_id, kind: image }
+    card: "Cancel image transfer {body.transfer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_post_account_transfer_cancel.yml
+    tests:
+      - fixture: fixtures/image-cancel-transfer.http
+        expect: write
+        resource: "7555620"
+
+  - id: digitalocean.image.decline-transfer
+    match: { rest: { method: POST, path: "/v2/images/{image_id}/account_transfer/decline" } }
+    class: write
+    resource: { arg: image_id, kind: image }
+    card: "Decline image transfer {body.transfer_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/images_post_account_transfer_decline.yml
+    tests:
+      - fixture: fixtures/image-decline-transfer.http
+        expect: write
+        resource: "7555620"

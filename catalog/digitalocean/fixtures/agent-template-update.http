@@ -1,0 +1,7 @@
+# description: Rebuild hosted agent template tpl-shop-agent from source_oci_ref
+PUT /v2/agents/templates/tpl-shop-agent HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{}

@@ -1,0 +1,370 @@
+# DigitalOcean MCP server: genai-evaluation
+operations:
+  - id: digitalocean-mcp.genai-evaluation.list-metrics
+    match: { mcp: { tool: genai-list-evaluation-metrics } }
+    class: read
+    card: "List agent evaluation metrics"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-metrics.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.list-test-cases
+    match: { mcp: { tool: genai-list-evaluation-test-cases } }
+    class: read
+    card: "List agent evaluation test cases"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-test-cases.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.get-run
+    match: { mcp: { tool: genai-get-evaluation-run } }
+    class: read
+    resource: { arg: evaluation_run_uuid, kind: genai-evaluation-run }
+    card: "Show agent evaluation run {evaluation_run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-get-run.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-evaluation.create-dataset
+    match: { mcp: { tool: genai-create-evaluation-dataset } }
+    class: write
+    resource: { arg: name, kind: genai-evaluation-dataset }
+    card: "Upload agent evaluation dataset {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-create-dataset.http
+        expect: write
+        resource: support-questions
+
+  - id: digitalocean-mcp.genai-evaluation.create-test-case
+    match: { mcp: { tool: genai-create-evaluation-test-case } }
+    class: write
+    resource: { arg: name, kind: genai-evaluation-test-case }
+    card: "Create agent evaluation test case {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-create-test-case.http
+        expect: write
+        resource: support-quality
+
+  - id: digitalocean-mcp.genai-evaluation.update-test-case
+    match: { mcp: { tool: genai-update-evaluation-test-case } }
+    class: write
+    resource: { arg: test_case_uuid, kind: genai-evaluation-test-case }
+    card: "Change agent evaluation test case {test_case_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-update-test-case.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.run-test-case
+    match: { mcp: { tool: genai-run-evaluation-test-case } }
+    class: money
+    resource: { arg: test_case_uuid, kind: genai-evaluation-test-case }
+    card: "Run evaluation test case {test_case_uuid} as {run_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    notes: >-
+      Runs the agents and a judge model; billed per token.
+    tests:
+      - fixture: fixtures/genai-evaluation-run-test-case.http
+        expect: money
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.run-workflow
+    match: { mcp: { tool: genai-run-evaluation-workflow } }
+    class: money
+    resource: { arg: test_case_name, kind: genai-evaluation-test-case }
+    card: "Run evaluation workflow {run_name} in workspace {workspace_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/evaluation_tools.go
+    notes: >-
+      Uploads a dataset, creates or updates a test case and runs it; the run
+      is billed per token.
+    tests:
+      - fixture: fixtures/genai-evaluation-run-workflow.http
+        expect: money
+        resource: support-quality
+
+  - id: digitalocean-mcp.genai-evaluation.list-model-datasets
+    match: { mcp: { tool: genai-model-eval-list-datasets } }
+    class: read
+    card: "List model evaluation datasets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-model-datasets.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.list-model-metrics
+    match: { mcp: { tool: genai-model-eval-list-metrics } }
+    class: read
+    card: "List model evaluation metrics"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-model-metrics.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.list-presets
+    match: { mcp: { tool: genai-model-eval-list-presets } }
+    class: read
+    card: "List model evaluation presets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-presets.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.get-preset
+    match: { mcp: { tool: genai-model-eval-get-preset } }
+    class: read
+    resource: { arg: eval_preset_uuid, kind: genai-evaluation-preset }
+    card: "Show model evaluation preset {eval_preset_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-get-preset.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.list-model-runs
+    match: { mcp: { tool: genai-model-eval-list-runs } }
+    class: read
+    card: "List model evaluation runs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-list-model-runs.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-evaluation.get-model-run
+    match: { mcp: { tool: genai-model-eval-get-run } }
+    class: read
+    resource: { arg: eval_run_uuid, kind: genai-evaluation-run }
+    card: "Show model evaluation run {eval_run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-get-model-run.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-evaluation.get-results-url
+    match: { mcp: { tool: genai-model-eval-get-results-download-url } }
+    class: read
+    resource: { arg: eval_run_uuid, kind: genai-evaluation-run }
+    card: "Get the results link of model evaluation run {eval_run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-get-results-url.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-evaluation.create-metric
+    match: { mcp: { tool: genai-model-eval-create-custom-metric } }
+    class: write
+    resource: { arg: metric_name, kind: genai-evaluation-metric }
+    card: "Create model evaluation metric {metric_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-create-metric.http
+        expect: write
+        resource: politeness
+
+  - id: digitalocean-mcp.genai-evaluation.update-metric
+    match: { mcp: { tool: genai-model-eval-update-custom-metric } }
+    class: write
+    resource: { arg: metric_uuid, kind: genai-evaluation-metric }
+    card: "Change model evaluation metric {metric_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-update-metric.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.delete-metric
+    match: { mcp: { tool: genai-model-eval-delete-custom-metric } }
+    class: delete
+    resource: { arg: metric_uuid, kind: genai-evaluation-metric }
+    card: "Delete model evaluation metric {metric_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      Completed runs keep their results; the prompt can be recreated.
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-metric.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.create-model-dataset
+    match: { mcp: { tool: genai-model-eval-create-dataset } }
+    class: write
+    resource: { arg: name, kind: genai-evaluation-dataset }
+    card: "Upload model evaluation dataset {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-create-model-dataset.http
+        expect: write
+        resource: support-prompts
+
+  - id: digitalocean-mcp.genai-evaluation.delete-dataset
+    match: { mcp: { tool: genai-model-eval-delete-dataset } }
+    class: irreversible
+    resource: { arg: dataset_uuid, kind: genai-evaluation-dataset }
+    card: "Delete evaluation dataset {dataset_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      The tool says the dataset cannot be recovered.
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-dataset.http
+        expect: irreversible
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-evaluation.delete-preset
+    match: { mcp: { tool: genai-model-eval-delete-preset } }
+    class: delete
+    resource: { arg: eval_preset_uuid, kind: genai-evaluation-preset }
+    card: "Delete model evaluation preset {eval_preset_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      A saved configuration; runs that used it are unaffected.
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-preset.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-evaluation.create-model-run
+    match: { mcp: { tool: genai-model-eval-create-run } }
+    class: money
+    resource: { arg: name, kind: genai-evaluation-run }
+    card: "Start model evaluation run {name} for {candidate_model_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      Runs the candidate and judge models; billed per token.
+    tests:
+      - fixture: fixtures/genai-evaluation-create-model-run.http
+        expect: money
+        resource: mistral-vs-baseline
+
+  - id: digitalocean-mcp.genai-evaluation.run-model-workflow
+    match: { mcp: { tool: genai-model-eval-run-workflow } }
+    class: money
+    resource: { arg: name, kind: genai-evaluation-run }
+    card: "Run model evaluation workflow {name} for {candidate_model_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      Uploads a dataset and runs an evaluation; billed per token.
+    tests:
+      - fixture: fixtures/genai-evaluation-run-model-workflow.http
+        expect: money
+        resource: mistral-vs-baseline
+
+  - id: digitalocean-mcp.genai-evaluation.update-model-run
+    match: { mcp: { tool: genai-model-eval-update-run } }
+    class: write
+    resource: { arg: eval_run_uuid, kind: genai-evaluation-run }
+    card: "Rename model evaluation run {eval_run_uuid} to {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-update-model-run.http
+        expect: write
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-evaluation.cancel-model-run
+    match: { mcp: { tool: genai-model-eval-cancel-run } }
+    class: write
+    resource: { arg: eval_run_uuid, kind: genai-evaluation-run }
+    card: "Cancel model evaluation run {eval_run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    tests:
+      - fixture: fixtures/genai-evaluation-cancel-model-run.http
+        expect: write
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-evaluation.delete-model-run
+    match: { mcp: { tool: genai-model-eval-delete-run } }
+    class: irreversible
+    resource: { arg: eval_run_uuid, kind: genai-evaluation-run }
+    card: "Delete model evaluation run {eval_run_uuid} and its results"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/model_evaluation_tools.go
+    notes: >-
+      The tool says the run and its results cannot be recovered.
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-model-run.http
+        expect: irreversible
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f

@@ -1,0 +1,5 @@
+# description: Start a security scan
+POST /v2/security/scans HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

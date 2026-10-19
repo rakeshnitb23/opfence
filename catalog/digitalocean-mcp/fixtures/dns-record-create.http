@@ -1,0 +1,8 @@
+# description: Add A record www to example.com
+POST /mcp HTTP/1.1
+Host: networking.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":308,"method":"tools/call","params":{"name":"domain-record-create","arguments":{"Domain":"example.com","Type":"A","Name":"www","Data":"203.0.113.10"}}}

@@ -1,0 +1,7 @@
+# description: Rename VPC peering 5a4981aa-9653-4bd1-bef5-d6bff52042e5 to nyc1-blr1-peering
+PATCH /v2/vpc_peerings/5a4981aa-9653-4bd1-bef5-d6bff52042e5 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "nyc1-blr1-peering"}

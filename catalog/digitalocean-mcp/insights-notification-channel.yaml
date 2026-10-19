@@ -1,0 +1,106 @@
+# DigitalOcean MCP server: insights-notification-channel
+operations:
+  - id: digitalocean-mcp.insights-notification-channel.list
+    match: { mcp: { tool: insights-notification-channel-list } }
+    class: read
+    card: "List notification channels"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/notification_channel_tools.go
+    notes: >-
+      Secrets are masked.
+    tests:
+      - fixture: fixtures/insights-notification-channel-list.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-notification-channel.get
+    match: { mcp: { tool: insights-notification-channel-get } }
+    class: read
+    resource: { arg: ID, kind: insights-notification-channel }
+    card: "Show notification channel {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/notification_channel_tools.go
+    notes: >-
+      The tool says secrets are masked.
+    tests:
+      - fixture: fixtures/insights-notification-channel-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-notification-channel.create
+    match: { mcp: { tool: insights-notification-channel-create } }
+    class: write
+    when:
+      - if: { arg: WebhookPassword, present: true }
+        class: credential
+      - if: { arg: WebhookBearerToken, present: true }
+        class: credential
+      - if: { arg: WebhookSignatureSecret, present: true }
+        class: credential
+      - if: { arg: SlackWebhookURL, present: true }
+        class: credential
+    resource: { arg: Name, kind: insights-notification-channel }
+    card: "Create notification channel {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/notification_channel_tools.go
+    notes: >-
+      Webhook passwords, bearer tokens, signing secrets and Slack webhook URLs
+      are secrets.
+    tests:
+      - fixture: fixtures/insights-notification-channel-create.http
+        expect: write
+        resource: ops-email
+      - fixture: fixtures/insights-notification-channel-create-slack.http
+        expect: credential
+        resource: ops-slack
+      - fixture: fixtures/insights-notification-channel-create-webhook.http
+        expect: credential
+        resource: ops-hook
+
+  - id: digitalocean-mcp.insights-notification-channel.update
+    match: { mcp: { tool: insights-notification-channel-update } }
+    class: write
+    when:
+      - if: { arg: WebhookPassword, present: true }
+        class: credential
+      - if: { arg: WebhookBearerToken, present: true }
+        class: credential
+      - if: { arg: WebhookSignatureSecret, present: true }
+        class: credential
+      - if: { arg: SlackWebhookURL, present: true }
+        class: credential
+    resource: { arg: ID, kind: insights-notification-channel }
+    card: "Change notification channel {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/notification_channel_tools.go
+    notes: >-
+      Webhook passwords, bearer tokens, signing secrets and Slack webhook URLs
+      are secrets.
+    tests:
+      - fixture: fixtures/insights-notification-channel-update.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+      - fixture: fixtures/insights-notification-channel-update-secret.http
+        expect: credential
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-notification-channel.delete
+    match: { mcp: { tool: insights-notification-channel-delete } }
+    class: delete
+    resource: { arg: ID, kind: insights-notification-channel }
+    card: "Delete notification channel {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/notification_channel_tools.go
+    tests:
+      - fixture: fixtures/insights-notification-channel-delete.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

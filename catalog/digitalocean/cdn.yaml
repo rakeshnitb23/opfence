@@ -1,0 +1,73 @@
+# DigitalOcean REST API: cdn
+operations:
+  - id: digitalocean.cdn.create
+    match: { rest: { method: POST, path: /v2/cdn/endpoints } }
+    class: write
+    when:
+      - if: { arg: body.custom_domain, present: true }
+        class: access
+    resource: { arg: body.origin, kind: cdn }
+    card: "Create a CDN endpoint for {body.origin}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/cdn/cdn_create_endpoint.yml
+    notes: >-
+      custom_domain serves the origin on a public name of your own.
+    tests:
+      - fixture: fixtures/cdn-create.http
+        expect: write
+        resource: static-images.nyc3.digitaloceanspaces.com
+      - fixture: fixtures/cdn-create-custom-domain.http
+        expect: access
+        resource: static-images.nyc3.digitaloceanspaces.com
+
+  - id: digitalocean.cdn.update
+    match: { rest: { method: PUT, path: "/v2/cdn/endpoints/{cdn_id}" } }
+    class: write
+    when:
+      - if: { arg: body.custom_domain, present: true }
+        class: access
+    resource: { arg: cdn_id, kind: cdn }
+    card: "Change CDN endpoint {cdn_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/cdn/cdn_update_endpoint.yml
+    tests:
+      - fixture: fixtures/cdn-update.http
+        expect: write
+        resource: "19f06b6a-3ace-4315-b086-499a0e521b76"
+      - fixture: fixtures/cdn-update-custom-domain.http
+        expect: access
+        resource: "19f06b6a-3ace-4315-b086-499a0e521b76"
+
+  - id: digitalocean.cdn.delete
+    match: { rest: { method: DELETE, path: "/v2/cdn/endpoints/{cdn_id}" } }
+    class: delete
+    resource: { arg: cdn_id, kind: cdn }
+    card: "Delete CDN endpoint {cdn_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/cdn/cdn_delete_endpoint.yml
+    notes: >-
+      The origin bucket is untouched.
+    tests:
+      - fixture: fixtures/cdn-delete.http
+        expect: delete
+        resource: "19f06b6a-3ace-4315-b086-499a0e521b76"
+
+  - id: digitalocean.cdn.purge
+    match: { rest: { method: DELETE, path: "/v2/cdn/endpoints/{cdn_id}/cache" } }
+    class: write
+    resource: { arg: cdn_id, kind: cdn }
+    card: "Purge {body.files} from CDN endpoint {cdn_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/cdn/cdn_purge_cache.yml
+    tests:
+      - fixture: fixtures/cdn-purge.http
+        expect: write
+        resource: "19f06b6a-3ace-4315-b086-499a0e521b76"

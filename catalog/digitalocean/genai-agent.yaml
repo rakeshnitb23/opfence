@@ -1,0 +1,368 @@
+# DigitalOcean REST API: genai-agent
+operations:
+  - id: digitalocean.genai-agent.create
+    match: { rest: { method: POST, path: /v2/gen-ai/agents } }
+    class: write
+    when:
+      - if: { arg: body.mcp_servers.authorization, present: true }
+        class: credential
+      - if: { arg: body.mcp_servers.headers, present: true }
+        class: credential
+    resource: { arg: body.name, kind: genai-agent }
+    card: "Create GenAI agent {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_agent.yml
+    notes: >-
+      MCP server authorization and headers store credentials for those
+      servers. Inference is billed per use, not on creation.
+    tests:
+      - fixture: fixtures/genai-agent-create.http
+        expect: write
+        resource: support-bot
+      - fixture: fixtures/genai-agent-create-mcp-auth.http
+        expect: credential
+        resource: support-bot
+
+  - id: digitalocean.genai-agent.create-api-key
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{agent_uuid}/api_keys" } }
+    class: credential
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Create API key {body.name} for agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_agent_api_key.yml
+    notes: >-
+      The key is returned in the response.
+    tests:
+      - fixture: fixtures/genai-agent-create-api-key.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.rename-api-key
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{agent_uuid}/api_keys/{api_key_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Rename API key {api_key_uuid} of agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agent_api_key.yml
+    tests:
+      - fixture: fixtures/genai-agent-rename-api-key.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.delete-api-key
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{agent_uuid}/api_keys/{api_key_uuid}" } }
+    class: access
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Revoke API key {api_key_uuid} of agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_agent_api_key.yml
+    tests:
+      - fixture: fixtures/genai-agent-delete-api-key.http
+        expect: access
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.regenerate-api-key
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{agent_uuid}/api_keys/{api_key_uuid}/regenerate" } }
+    class: credential
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Regenerate API key {api_key_uuid} of agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_regenerate_agent_api_key.yml
+    notes: >-
+      Returns the new key; the old one stops working.
+    tests:
+      - fixture: fixtures/genai-agent-regenerate-api-key.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.add-function
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{agent_uuid}/functions" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Let agent {agent_uuid} call function {body.faas_namespace}/{body.faas_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_attach_agent_function.yml
+    tests:
+      - fixture: fixtures/genai-agent-add-function.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.update-function
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{agent_uuid}/functions/{function_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Change function route {function_uuid} of agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agent_function.yml
+    tests:
+      - fixture: fixtures/genai-agent-update-function.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.remove-function
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{agent_uuid}/functions/{function_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Remove function route {function_uuid} from agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_detach_agent_function.yml
+    tests:
+      - fixture: fixtures/genai-agent-remove-function.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.attach-guardrails
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{agent_uuid}/guardrails" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Attach guardrails to agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_attach_agent_guardrails.yml
+    tests:
+      - fixture: fixtures/genai-agent-attach-guardrails.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.detach-guardrail
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{agent_uuid}/guardrails/{guardrail_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Detach guardrail {guardrail_uuid} from agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_detach_agent_guardrail.yml
+    tests:
+      - fixture: fixtures/genai-agent-detach-guardrail.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.attach-knowledge-bases
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{agent_uuid}/knowledge_bases" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Attach knowledge bases to agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_attach_knowledge_bases.yml
+    tests:
+      - fixture: fixtures/genai-agent-attach-knowledge-bases.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.attach-knowledge-base
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{agent_uuid}/knowledge_bases/{knowledge_base_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Attach knowledge base {knowledge_base_uuid} to agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_attach_knowledge_base.yml
+    tests:
+      - fixture: fixtures/genai-agent-attach-knowledge-base.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.detach-knowledge-base
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{agent_uuid}/knowledge_bases/{knowledge_base_uuid}" } }
+    class: write
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Detach knowledge base {knowledge_base_uuid} from agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_detach_knowledge_base.yml
+    tests:
+      - fixture: fixtures/genai-agent-detach-knowledge-base.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.add-route
+    match: { rest: { method: POST, path: "/v2/gen-ai/agents/{parent_agent_uuid}/child_agents/{child_agent_uuid}" } }
+    class: write
+    resource: { arg: parent_agent_uuid, kind: genai-agent }
+    card: "Route agent {parent_agent_uuid} to child agent {child_agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_attach_agent.yml
+    tests:
+      - fixture: fixtures/genai-agent-add-route.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.update-route
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{parent_agent_uuid}/child_agents/{child_agent_uuid}" } }
+    class: write
+    resource: { arg: parent_agent_uuid, kind: genai-agent }
+    card: "Change the route from agent {parent_agent_uuid} to {child_agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_attached_agent.yml
+    tests:
+      - fixture: fixtures/genai-agent-update-route.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.remove-route
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{parent_agent_uuid}/child_agents/{child_agent_uuid}" } }
+    class: write
+    resource: { arg: parent_agent_uuid, kind: genai-agent }
+    card: "Remove the route from agent {parent_agent_uuid} to {child_agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_detach_agent.yml
+    tests:
+      - fixture: fixtures/genai-agent-remove-route.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.update
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{uuid}" } }
+    class: write
+    when:
+      - if: { arg: body.mcp_servers.authorization, present: true }
+        class: credential
+      - if: { arg: body.mcp_servers.headers, present: true }
+        class: credential
+    resource: { arg: uuid, kind: genai-agent }
+    card: "Change GenAI agent {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agent.yml
+    notes: >-
+      MCP server authorization and headers store credentials for those
+      servers.
+    tests:
+      - fixture: fixtures/genai-agent-update.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+      - fixture: fixtures/genai-agent-update-mcp-headers.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/agents/{uuid}" } }
+    class: irreversible
+    resource: { arg: uuid, kind: genai-agent }
+    card: "Delete GenAI agent {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_agent.yml
+    notes: >-
+      Its endpoint, API keys, routes and conversation logs go with it.
+    tests:
+      - fixture: fixtures/genai-agent-delete.http
+        expect: irreversible
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.set-visibility
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{uuid}/deployment_visibility" } }
+    class: write
+    when:
+      - if: { arg: body.visibility, equals: "VISIBILITY_PUBLIC" }
+        class: access
+    resource: { arg: uuid, kind: genai-agent }
+    card: "Set visibility of agent {uuid} to {body.visibility}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agent_deployment_visibility.yml
+    notes: >-
+      VISIBILITY_PUBLIC lets anyone on the internet call the agent without a
+      key.
+    tests:
+      - fixture: fixtures/genai-agent-set-visibility.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+      - fixture: fixtures/genai-agent-set-visibility-public.http
+        expect: access
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.rollback
+    match: { rest: { method: PUT, path: "/v2/gen-ai/agents/{uuid}/versions" } }
+    class: write
+    resource: { arg: uuid, kind: genai-agent }
+    card: "Roll agent {uuid} back to version {body.version_hash}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_rollback_to_agent_version.yml
+    tests:
+      - fixture: fixtures/genai-agent-rollback.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.read
+    match: { rest: { method: GET, path: "/v2/gen-ai/agents/{uuid}" } }
+    class: credential
+    resource: { arg: uuid, kind: genai-agent }
+    card: "Read GenAI agent {uuid} with its API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_get_agent.yml
+    notes: >-
+      Agent objects include their API keys (api_keys[].api_key,
+      api_key_infos[].secret_key); the schema does not say they are masked.
+    tests:
+      - fixture: fixtures/genai-agent-read.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.list-api-keys
+    match: { rest: { method: GET, path: "/v2/gen-ai/agents/{agent_uuid}/api_keys" } }
+    class: credential
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "List API keys of agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_agent_api_keys.yml
+    notes: >-
+      Key infos include secret_key; the schema does not say it is masked.
+    tests:
+      - fixture: fixtures/genai-agent-list-api-keys.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-agent.list-routes
+    match: { rest: { method: GET, path: "/v2/gen-ai/agents/{uuid}/child_agents" } }
+    class: credential
+    resource: { arg: uuid, kind: genai-agent }
+    card: "List child agents of agent {uuid} with their API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_get_agent_children.yml
+    notes: >-
+      Agent objects include their API keys (api_keys[].api_key,
+      api_key_infos[].secret_key); the schema does not say they are masked.
+    tests:
+      - fixture: fixtures/genai-agent-list-routes.http
+        expect: credential
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"

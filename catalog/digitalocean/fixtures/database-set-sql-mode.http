@@ -1,0 +1,7 @@
+# description: Set the SQL mode of MySQL cluster 9cc10173-e9ea-4176-9dbc-a4cee4c4ff30
+PUT /v2/databases/9cc10173-e9ea-4176-9dbc-a4cee4c4ff30/sql_mode HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"sql_mode": "ANSI,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE"}

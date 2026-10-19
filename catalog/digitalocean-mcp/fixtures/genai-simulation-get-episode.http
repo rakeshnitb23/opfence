@@ -1,0 +1,8 @@
+# description: Show episode b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b of simulation run c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":214,"method":"tools/call","params":{"name":"genai-simulation-get-episode","arguments":{"run_uuid":"c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f","episode_uuid":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b"}}}

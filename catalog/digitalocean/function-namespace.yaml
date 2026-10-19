@@ -1,0 +1,67 @@
+# DigitalOcean REST API: function-namespace
+operations:
+  - id: digitalocean.function-namespace.create
+    match: { rest: { method: POST, path: /v2/functions/namespaces } }
+    class: credential
+    resource: { arg: body.label, kind: function-namespace }
+    card: "Create Functions namespace {body.label} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_create_namespace.yml
+    notes: >-
+      The response includes the namespace key. Namespace objects include the
+      key that, with the namespace UUID, authenticates doctl and the Functions
+      API.
+    tests:
+      - fixture: fixtures/function-namespace-create.http
+        expect: credential
+        resource: "my namespace"
+
+  - id: digitalocean.function-namespace.delete
+    match: { rest: { method: DELETE, path: "/v2/functions/namespaces/{namespace_id}" } }
+    class: irreversible
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Delete Functions namespace {namespace_id} with all its functions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_delete_namespace.yml
+    notes: >-
+      Functions, packages, triggers and activation records go with it.
+    tests:
+      - fixture: fixtures/function-namespace-delete.http
+        expect: irreversible
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f
+
+  - id: digitalocean.function-namespace.list
+    match: { rest: { method: GET, path: /v2/functions/namespaces } }
+    class: credential
+    card: "List Functions namespaces with their keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_list_namespaces.yml
+    notes: >-
+      Namespace objects include the key that, with the namespace UUID,
+      authenticates doctl and the Functions API.
+    tests:
+      - fixture: fixtures/function-namespace-list.http
+        expect: credential
+
+  - id: digitalocean.function-namespace.read
+    match: { rest: { method: GET, path: "/v2/functions/namespaces/{namespace_id}" } }
+    class: credential
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Read Functions namespace {namespace_id} with its key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_get_namespace.yml
+    notes: >-
+      Namespace objects include the key that, with the namespace UUID,
+      authenticates doctl and the Functions API.
+    tests:
+      - fixture: fixtures/function-namespace-read.http
+        expect: credential
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f

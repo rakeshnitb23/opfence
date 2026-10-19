@@ -1,0 +1,43 @@
+# DigitalOcean REST API: function-trigger
+operations:
+  - id: digitalocean.function-trigger.create
+    match: { rest: { method: POST, path: "/v2/functions/namespaces/{namespace_id}/triggers" } }
+    class: write
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Create trigger {body.name} for function {body.function}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_create_trigger.yml
+    tests:
+      - fixture: fixtures/function-trigger-create.http
+        expect: write
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f
+
+  - id: digitalocean.function-trigger.update
+    match: { rest: { method: PUT, path: "/v2/functions/namespaces/{namespace_id}/triggers/{trigger_name}" } }
+    class: write
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Change trigger {trigger_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_update_trigger.yml
+    tests:
+      - fixture: fixtures/function-trigger-update.http
+        expect: write
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f
+
+  - id: digitalocean.function-trigger.delete
+    match: { rest: { method: DELETE, path: "/v2/functions/namespaces/{namespace_id}/triggers/{trigger_name}" } }
+    class: delete
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Delete trigger {trigger_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_delete_trigger.yml
+    tests:
+      - fixture: fixtures/function-trigger-delete.http
+        expect: delete
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f

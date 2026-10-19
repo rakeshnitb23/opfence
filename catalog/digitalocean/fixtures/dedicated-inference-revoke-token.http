@@ -1,0 +1,5 @@
+# description: Revoke token b3c4d5e6-7f80-4912-ab3c-4d5e6f7a8b9c of Dedicated Inference a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+DELETE /v2/dedicated-inferences/a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b/tokens/b3c4d5e6-7f80-4912-ab3c-4d5e6f7a8b9c HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,27 @@
+# DigitalOcean MCP server: action
+operations:
+  - id: digitalocean-mcp.action.list
+    match: { mcp: { tool: action-list } }
+    class: read
+    card: "List account actions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/action_tools.go
+    tests:
+      - fixture: fixtures/action-list.http
+        expect: read
+
+  - id: digitalocean-mcp.action.get
+    match: { mcp: { tool: action-get } }
+    class: read
+    resource: { arg: ID, kind: action }
+    card: "Show action {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/action_tools.go
+    tests:
+      - fixture: fixtures/action-get.http
+        expect: read
+        resource: "36804636"

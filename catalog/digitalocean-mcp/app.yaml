@@ -1,0 +1,191 @@
+# DigitalOcean MCP server: app
+operations:
+  - id: digitalocean-mcp.app.list
+    match: { mcp: { tool: apps-list } }
+    class: read
+    card: "List App Platform apps"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      Returns a summary of each app, not the spec.
+    tests:
+      - fixture: fixtures/app-list.http
+        expect: read
+
+  - id: digitalocean-mcp.app.get
+    match: { mcp: { tool: apps-get-info } }
+    class: credential
+    resource: { arg: AppID, kind: app }
+    card: "Show app {AppID} with its spec"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      Returns the full app with its spec; the spec's log destinations hold API
+      keys and tokens that the API does not document as encrypted (same call
+      as the REST GET /v2/apps/{id}).
+    tests:
+      - fixture: fixtures/app-get.http
+        expect: credential
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+
+  - id: digitalocean-mcp.app.get-deployment-status
+    match: { mcp: { tool: apps-get-deployment-status } }
+    class: credential
+    resource: { arg: AppID, kind: app }
+    card: "Show the active deployment of app {AppID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      The deployment carries the full app spec, with log destination secrets.
+    tests:
+      - fixture: fixtures/app-get-deployment-status.http
+        expect: credential
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+
+  - id: digitalocean-mcp.app.get-logs
+    match: { mcp: { tool: apps-get-logs } }
+    class: read
+    resource: { arg: AppID, kind: app }
+    card: "Read {LogType} logs of component {Component} of app {AppID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    tests:
+      - fixture: fixtures/app-get-logs.http
+        expect: read
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+
+  - id: digitalocean-mcp.app.create
+    match: { mcp: { tool: apps-create-app-from-spec } }
+    class: money
+    when:
+      - if: { arg: spec, present: true }
+        class: money
+      - if: { arg: spec.services.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.workers.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.jobs.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.functions.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.static_sites.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: spec.services.log_destinations, present: true }
+        class: credential
+      - if: { arg: spec.workers.log_destinations, present: true }
+        class: credential
+      - if: { arg: spec.jobs.log_destinations, present: true }
+        class: credential
+      - if: { arg: spec.functions.log_destinations, present: true }
+        class: credential
+      - if: { arg: spec.services.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: spec.workers.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: spec.jobs.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: spec.domains, present: true }
+        class: access
+    resource: { arg: spec.name, kind: app }
+    card: "Create app {spec.name} from a spec"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      Billed app components. SECRET env vars, log destinations (API keys and
+      tokens) and registry credentials in the spec store secrets; domains put
+      the app on a public name.
+    tests:
+      - fixture: fixtures/app-create.http
+        expect: money
+        resource: shop-web
+      - fixture: fixtures/app-create-secret-env.http
+        expect: credential
+        resource: shop-web
+      - fixture: fixtures/app-create-domain.http
+        expect: money
+        resource: shop-web
+
+  - id: digitalocean-mcp.app.update
+    match: { mcp: { tool: apps-update } }
+    class: write
+    when:
+      - if: { arg: update.request, present: true }
+        class: money
+      - if: { arg: update.request.spec.services.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.workers.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.jobs.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.functions.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.static_sites.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: update.request.spec.services.log_destinations, present: true }
+        class: credential
+      - if: { arg: update.request.spec.workers.log_destinations, present: true }
+        class: credential
+      - if: { arg: update.request.spec.jobs.log_destinations, present: true }
+        class: credential
+      - if: { arg: update.request.spec.functions.log_destinations, present: true }
+        class: credential
+      - if: { arg: update.request.spec.services.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: update.request.spec.workers.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: update.request.spec.jobs.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: update.request.spec.domains, present: true }
+        class: access
+    resource: { arg: update.app_id, kind: app }
+    card: "Update app {update.app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      Without update.request the server only starts a forced rebuild of the
+      current spec (write). With a spec it replaces the app spec, which can
+      add billed components. SECRET env vars, log destinations (API keys and
+      tokens) and registry credentials in the spec store secrets; domains put
+      the app on a public name.
+    tests:
+      - fixture: fixtures/app-update.http
+        expect: money
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+      - fixture: fixtures/app-update-redeploy.http
+        expect: write
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+      - fixture: fixtures/app-update-secret-env.http
+        expect: credential
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5
+
+  - id: digitalocean-mcp.app.delete
+    match: { mcp: { tool: apps-delete } }
+    class: irreversible
+    resource: { arg: AppID, kind: app }
+    card: "Delete app {AppID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/apps/apps.go
+    notes: >-
+      The tool says the deletion cannot be undone.
+    tests:
+      - fixture: fixtures/app-delete.http
+        expect: irreversible
+        resource: c2a93513-8d9b-4223-9d61-5e7272c81cf5

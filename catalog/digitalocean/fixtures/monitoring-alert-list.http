@@ -1,0 +1,5 @@
+# description: List alert policies with their Slack webhook URLs
+GET /v2/monitoring/alerts HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

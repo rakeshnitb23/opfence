@@ -1,0 +1,7 @@
+# description: Reserve a floating IP
+POST /v2/floating_ips HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"droplet_id": 2457247, "region": "nyc3", "project_id": "746c6152-2fa2-11ed-92d3-27aaa54e4988"}

@@ -1,0 +1,134 @@
+# DigitalOcean REST API: uptime-check
+operations:
+  - id: digitalocean.uptime-check.create
+    match: { rest: { method: POST, path: /v2/uptime/checks } }
+    class: write
+    resource: { arg: body.name, kind: uptime-check }
+    card: "Create uptime check {body.name} for {body.target}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/create_check.yml
+    tests:
+      - fixture: fixtures/uptime-check-create.http
+        expect: write
+        resource: "Landing page check"
+
+  - id: digitalocean.uptime-check.update
+    match: { rest: { method: PUT, path: "/v2/uptime/checks/{check_id}" } }
+    class: write
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Change uptime check {check_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/update_check.yml
+    tests:
+      - fixture: fixtures/uptime-check-update.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.delete
+    match: { rest: { method: DELETE, path: "/v2/uptime/checks/{check_id}" } }
+    class: delete
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Delete uptime check {check_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/delete_check.yml
+    tests:
+      - fixture: fixtures/uptime-check-delete.http
+        expect: delete
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.create-alert
+    match: { rest: { method: POST, path: "/v2/uptime/checks/{check_id}/alerts" } }
+    class: write
+    when:
+      - if: { arg: body.notifications.slack.url, present: true }
+        class: credential
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Add alert {body.name} to uptime check {check_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/create_alert.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-create-alert.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+      - fixture: fixtures/uptime-check-create-alert-email-only.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.update-alert
+    match: { rest: { method: PUT, path: "/v2/uptime/checks/{check_id}/alerts/{alert_id}" } }
+    class: write
+    when:
+      - if: { arg: body.notifications.slack.url, present: true }
+        class: credential
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Change alert {alert_id} of uptime check {check_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/update_alert.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-update-alert.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.list-alerts
+    match: { rest: { method: GET, path: "/v2/uptime/checks/{check_id}/alerts" } }
+    class: credential
+    resource: { arg: check_id, kind: uptime-check }
+    card: "List alerts of uptime check {check_id} with their Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/list_alerts.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-list-alerts.http
+        expect: credential
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.get-alert
+    match: { rest: { method: GET, path: "/v2/uptime/checks/{check_id}/alerts/{alert_id}" } }
+    class: credential
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Read alert {alert_id} of uptime check {check_id} with its Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/get_alert.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-get-alert.http
+        expect: credential
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.uptime-check.delete-alert
+    match: { rest: { method: DELETE, path: "/v2/uptime/checks/{check_id}/alerts/{alert_id}" } }
+    class: delete
+    resource: { arg: check_id, kind: uptime-check }
+    card: "Delete alert {alert_id} of uptime check {check_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/uptime/delete_alert.yml
+    tests:
+      - fixture: fixtures/uptime-check-delete-alert.http
+        expect: delete
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"

@@ -1,0 +1,7 @@
+# description: Export Signals data for type 01a0f3d5-b58d-7c99-a743-7ca0397b7f5d
+POST /v1/signals/exports HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"agent_id": "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d", "signal_type": ["ExecutionFailureToolNotFound"]}

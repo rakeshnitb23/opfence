@@ -1,0 +1,85 @@
+# DigitalOcean REST API: kubernetes-node-pool
+operations:
+  - id: digitalocean.kubernetes-node-pool.create
+    match: { rest: { method: POST, path: "/v2/kubernetes/clusters/{cluster_id}/node_pools" } }
+    class: money
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Add node pool {body.name} ({body.count} x {body.size}) to cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_add_nodePool.yml
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-create.http
+        expect: money
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-node-pool.update
+    match: { rest: { method: PUT, path: "/v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}" } }
+    class: write
+    when:
+      - if: { arg: body.count, present: true }
+        class: money
+      - if: { arg: body.max_nodes, present: true }
+        class: money
+      - if: { arg: body.auto_scale, equals: "true" }
+        class: money
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Change node pool {node_pool_id} of cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_update_nodePool.yml
+    notes: >-
+      count, max_nodes and auto-scaling change how many billed nodes run.
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-update.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+      - fixture: fixtures/kubernetes-node-pool-update-count.http
+        expect: money
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-node-pool.delete
+    match: { rest: { method: DELETE, path: "/v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}" } }
+    class: delete
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Delete node pool {node_pool_id} of cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_delete_nodePool.yml
+    notes: >-
+      Nodes are rebuildable; workloads reschedule if other pools have room.
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-delete.http
+        expect: delete
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-node-pool.delete-node
+    match: { rest: { method: DELETE, path: "/v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}/nodes/{node_id}" } }
+    class: delete
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Delete node {node_id} from node pool {node_pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_delete_node.yml
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-delete-node.http
+        expect: delete
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-node-pool.recycle
+    match: { rest: { method: POST, path: "/v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}/recycle" } }
+    class: write
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Recycle nodes {body.nodes} of node pool {node_pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_recycle_nodePool.yml
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-recycle.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af

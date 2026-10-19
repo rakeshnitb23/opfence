@@ -1,0 +1,101 @@
+# DigitalOcean REST API: droplet-action
+operations:
+  - id: digitalocean.droplet-action.run
+    match: { rest: { method: POST, path: "/v2/droplets/{droplet_id}/actions" } }
+    class: irreversible
+    when:
+      - if: { arg: body.type, in: [reboot, power_cycle, shutdown, power_off, power_on, rename, change_kernel, enable_private_networking] }
+        class: write
+      - if: { arg: body.type, in: [restore, rebuild, disable_backups] }
+        class: irreversible
+      - if: { arg: body.type, in: [resize, enable_backups, change_backup_policy, snapshot] }
+        class: money
+      - if: { arg: body.type, equals: "password_reset" }
+        class: credential
+      - if: { arg: body.type, equals: "enable_ipv6" }
+        class: access
+    resource: { arg: droplet_id, kind: droplet }
+    card: "Run {body.type} on Droplet {droplet_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/dropletActions_post.yml
+    notes: >-
+      Classified by type. restore and rebuild overwrite the disk;
+      disable_backups is a safety net turned off (the reference does not say
+      existing backups survive); resize, enabling backups or a backup policy
+      and snapshots are billed; password_reset sets a new root password;
+      enable_ipv6 gives the Droplet a new public address and cannot be undone.
+      An unknown type gets the strictest class.
+    tests:
+      - fixture: fixtures/droplet-action-run.http
+        expect: write
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-power-off.http
+        expect: write
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-rebuild.http
+        expect: irreversible
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-restore.http
+        expect: irreversible
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-resize.http
+        expect: money
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-snapshot.http
+        expect: money
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-password-reset.http
+        expect: credential
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-disable-backups.http
+        expect: irreversible
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-enable-ipv6.http
+        expect: access
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-rename.http
+        expect: write
+        resource: "3164444"
+      - fixture: fixtures/droplet-action-run-unknown-type.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean.droplet-action.run-by-tag
+    match: { rest: { method: POST, path: /v2/droplets/actions } }
+    class: irreversible
+    when:
+      - if: { arg: body.type, in: [reboot, power_cycle, shutdown, power_off, power_on, rename, change_kernel, enable_private_networking] }
+        class: write
+      - if: { arg: body.type, in: [restore, rebuild, disable_backups] }
+        class: irreversible
+      - if: { arg: body.type, in: [resize, enable_backups, change_backup_policy, snapshot] }
+        class: money
+      - if: { arg: body.type, equals: "password_reset" }
+        class: credential
+      - if: { arg: body.type, equals: "enable_ipv6" }
+        class: access
+    resource: { arg: query.tag_name, kind: tag }
+    card: "Run {body.type} on every Droplet tagged {query.tag_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/dropletActions_post_byTag.yml
+    notes: >-
+      Classified by type. restore and rebuild overwrite the disk;
+      disable_backups is a safety net turned off (the reference does not say
+      existing backups survive); resize, enabling backups or a backup policy
+      and snapshots are billed; password_reset sets a new root password;
+      enable_ipv6 gives the Droplet a new public address and cannot be undone.
+      An unknown type gets the strictest class.
+    tests:
+      - fixture: fixtures/droplet-action-run-by-tag.http
+        expect: write
+        resource: web
+      - fixture: fixtures/droplet-action-run-by-tag-snapshot.http
+        expect: money
+        resource: web
+      - fixture: fixtures/droplet-action-run-by-tag-disable-backups.http
+        expect: irreversible
+        resource: web

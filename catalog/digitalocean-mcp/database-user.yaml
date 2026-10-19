@@ -1,0 +1,88 @@
+# DigitalOcean MCP server: database-user
+operations:
+  - id: digitalocean-mcp.database-user.list
+    match: { mcp: { tool: db-cluster-list-users } }
+    class: credential
+    resource: { arg: id, kind: database }
+    card: "List users of database cluster {id} with their passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/user.go
+    notes: >-
+      godo DatabaseUser objects carry each password.
+    tests:
+      - fixture: fixtures/database-user-list.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-user.get
+    match: { mcp: { tool: db-cluster-get-user } }
+    class: credential
+    resource: { arg: id, kind: database }
+    card: "Show database user {user} with its password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/user.go
+    notes: >-
+      Returns the user's password.
+    tests:
+      - fixture: fixtures/database-user-get.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-user.create
+    match: { mcp: { tool: db-cluster-create-user } }
+    class: credential
+    resource: { arg: id, kind: database }
+    card: "Create database user {name} in cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/user.go
+    notes: >-
+      Returns the new user's password; settings can also grant Kafka,
+      OpenSearch or MongoDB permissions.
+    tests:
+      - fixture: fixtures/database-user-create.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-user.update
+    match: { mcp: { tool: db-cluster-update-user } }
+    class: access
+    when:
+      - if: { arg: user, present: true }
+        class: access
+      - if: { arg: user, present: true }
+        class: credential
+    resource: { arg: id, kind: database }
+    card: "Change the permissions of database user {user}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/user.go
+    notes: >-
+      Sets Kafka, OpenSearch and MongoDB permissions (access); the returned
+      user includes its password (credential).
+    tests:
+      - fixture: fixtures/database-user-update.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-user.delete
+    match: { mcp: { tool: db-cluster-delete-user } }
+    class: access
+    resource: { arg: id, kind: database }
+    card: "Delete database user {user} from cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/user.go
+    notes: >-
+      Removes a login; the data stays.
+    tests:
+      - fixture: fixtures/database-user-delete.http
+        expect: access
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

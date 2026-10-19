@@ -1,0 +1,8 @@
+# description: Create 100 GiB NFS share shared-media in atl1
+POST /mcp HTTP/1.1
+Host: nfs.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":348,"method":"tools/call","params":{"name":"nfs-file-share-create","arguments":{"Name":"shared-media","SizeGibibytes":100,"Region":"atl1","VpcIds":["5a4981aa-9653-4bd1-bef5-d6bff52042e4"]}}}

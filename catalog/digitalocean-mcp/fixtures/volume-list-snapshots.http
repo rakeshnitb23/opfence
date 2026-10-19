@@ -1,0 +1,8 @@
+# description: List snapshots of volume 7724db7c-e098-11e5-b522-000f53304e51
+POST /mcp HTTP/1.1
+Host: volumes.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":396,"method":"tools/call","params":{"name":"volume-snapshot-list","arguments":{"VolumeID":"7724db7c-e098-11e5-b522-000f53304e51"}}}

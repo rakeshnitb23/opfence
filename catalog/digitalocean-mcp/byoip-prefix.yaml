@@ -1,0 +1,71 @@
+# DigitalOcean MCP server: byoip-prefix
+operations:
+  - id: digitalocean-mcp.byoip-prefix.list
+    match: { mcp: { tool: byoip-prefix-list } }
+    class: read
+    card: "List BYOIP prefixes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/byoip_prefix_tools.go
+    tests:
+      - fixture: fixtures/byoip-prefix-list.http
+        expect: read
+
+  - id: digitalocean-mcp.byoip-prefix.get
+    match: { mcp: { tool: byoip-prefix-get } }
+    class: read
+    resource: { arg: UUID, kind: byoip-prefix }
+    card: "Show BYOIP prefix {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/byoip_prefix_tools.go
+    tests:
+      - fixture: fixtures/byoip-prefix-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.byoip-prefix.list-resources
+    match: { mcp: { tool: byoip-prefix-resources-get } }
+    class: read
+    resource: { arg: UUID, kind: byoip-prefix }
+    card: "List resources using BYOIP prefix {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/byoip_prefix_tools.go
+    tests:
+      - fixture: fixtures/byoip-prefix-list-resources.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.byoip-prefix.create
+    match: { mcp: { tool: byoip-prefix-create } }
+    class: write
+    resource: { arg: Prefix, kind: byoip-prefix }
+    card: "Bring IP prefix {Prefix} to {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/byoip_prefix_tools.go
+    tests:
+      - fixture: fixtures/byoip-prefix-create.http
+        expect: write
+        resource: "203.0.113.0/24"
+
+  - id: digitalocean-mcp.byoip-prefix.delete
+    match: { mcp: { tool: byoip-prefix-delete } }
+    class: delete
+    resource: { arg: UUID, kind: byoip-prefix }
+    card: "Remove BYOIP prefix {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/byoip_prefix_tools.go
+    notes: >-
+      The prefix stays yours and can be brought again.
+    tests:
+      - fixture: fixtures/byoip-prefix-delete.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

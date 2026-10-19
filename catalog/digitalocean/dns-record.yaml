@@ -1,0 +1,59 @@
+# DigitalOcean REST API: dns-record
+operations:
+  - id: digitalocean.dns-record.create
+    match: { rest: { method: POST, path: "/v2/domains/{domain_name}/records" } }
+    class: write
+    resource: { arg: domain_name, kind: dns-record }
+    card: "Add {body.type} record {body.name} -> {body.data} to {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_create_record.yml
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean.dns-record.patch
+    match: { rest: { method: PATCH, path: "/v2/domains/{domain_name}/records/{domain_record_id}" } }
+    class: write
+    resource: { arg: domain_name, kind: dns-record }
+    card: "Change DNS record {domain_record_id} in {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_patch_record.yml
+    tests:
+      - fixture: fixtures/dns-record-patch.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean.dns-record.update
+    match: { rest: { method: PUT, path: "/v2/domains/{domain_name}/records/{domain_record_id}" } }
+    class: write
+    resource: { arg: domain_name, kind: dns-record }
+    card: "Replace DNS record {domain_record_id} in {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_update_record.yml
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean.dns-record.delete
+    match: { rest: { method: DELETE, path: "/v2/domains/{domain_name}/records/{domain_record_id}" } }
+    class: delete
+    resource: { arg: domain_name, kind: dns-record }
+    card: "Delete DNS record {domain_record_id} from {domain_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_delete_record.yml
+    notes: >-
+      A single record can be recreated.
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: example.com

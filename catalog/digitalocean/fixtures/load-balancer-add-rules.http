@@ -1,0 +1,7 @@
+# description: Open forwarding rules on load balancer 4de7ac8b-495b-4884-9a69-1050c6793cd6
+POST /v2/load_balancers/4de7ac8b-495b-4884-9a69-1050c6793cd6/forwarding_rules HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"forwarding_rules": [{"entry_protocol": "https", "entry_port": 443, "target_protocol": "http", "target_port": 80, "certificate_id": "892071a0-bb95-49bc-8021-3afd67a210bf", "tls_passthrough": false}]}

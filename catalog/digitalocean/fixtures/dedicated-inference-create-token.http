@@ -1,0 +1,7 @@
+# description: Create access token new-inference-token for Dedicated Inference a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+POST /v2/dedicated-inferences/a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b/tokens HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "new-inference-token"}

@@ -1,0 +1,5 @@
+# description: Cancel event a1b2c3d4-0000-4000-8000-0000000000e1 of app 4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf
+POST /v2/apps/4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf/events/a1b2c3d4-0000-4000-8000-0000000000e1/cancel HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

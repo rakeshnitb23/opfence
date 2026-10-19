@@ -1,0 +1,7 @@
+# description: Create Dedicated Inference llama-prod on GPUs in atl1
+POST /v2/dedicated-inferences HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"spec": {"version": 1, "name": "llama-prod", "region": "atl1", "vpc": {"uuid": "5a4981aa-9653-4bd1-bef5-d6bff52042e4"}, "enable_public_endpoint": false, "model_deployments": [{"model_slug": "meta-llama/Llama-3.1-8B-Instruct", "model_provider": "hugging_face", "accelerators": [{"scale": 1, "type": "prefill_decode", "accelerator_slug": "gpu-h100x1-80gb"}]}]}, "access_tokens": {"hugging_face_token": "opf_digitalocean_EXAMPLE"}}

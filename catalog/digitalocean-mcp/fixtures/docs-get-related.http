@@ -1,0 +1,8 @@
+# description: List pages linked from https://docs.digitalocean.com/products/droplets/
+POST /mcp HTTP/1.1
+Host: docs.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":85,"method":"tools/call","params":{"name":"docs-get-related","arguments":{"URL":"https://docs.digitalocean.com/products/droplets/"}}}

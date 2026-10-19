@@ -1,0 +1,8 @@
+# description: Copy library entry b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b into a scenario set
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":224,"method":"tools/call","params":{"name":"genai-simulation-create-scenario-set-from-library","arguments":{"library_scenario_uuid":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b","name":"refund-requests"}}}

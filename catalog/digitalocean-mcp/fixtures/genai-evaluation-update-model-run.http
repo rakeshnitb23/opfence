@@ -1,0 +1,8 @@
+# description: Rename model evaluation run c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f to mistral-baseline-oct
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":208,"method":"tools/call","params":{"name":"genai-model-eval-update-run","arguments":{"eval_run_uuid":"c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f","name":"mistral-baseline-oct"}}}

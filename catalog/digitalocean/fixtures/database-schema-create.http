@@ -1,0 +1,7 @@
+# description: Register Kafka schema customer-schema
+POST /v2/databases/9cc10173-e9ea-4176-9dbc-a4cee4c4ff30/schema-registry HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"subject_name": "customer-schema", "schema_type": "AVRO", "schema": "{\n  \"type\": \"record\",\n  \"name\": \"Customer\",\n  \"fields\": [\n    {\"name\": \"id\", \"type\": \"string\"},\n    {\"name\": \"name\", \"type\": \"string\"},\n    {\"name\": \"email\", \"type\": \"string\"},\n    {\"name\": \"created_at\", \"type\": \"long\"}\n  ]\n}\n"}

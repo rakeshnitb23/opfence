@@ -1,0 +1,7 @@
+# description: Delete collected Signals data for agent 01a10d3f-2c09-764f-99f8-458e521627f3
+POST /v1/signals/deletions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"type": "agent", "team_id": 12345678, "agent_id": "01a10d3f-2c09-764f-99f8-458e521627f3"}

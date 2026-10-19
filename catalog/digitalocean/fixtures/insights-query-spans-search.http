@@ -1,0 +1,7 @@
+# description: Search spans in nyc3
+POST /v2/insights/query/nyc3/spans/search HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"timeRange": {"from": {"relative": "1h", "absolute": "2026-09-30T00:00:00Z"}, "to": {"relative": "1h", "absolute": "2026-09-30T00:00:00Z"}}}

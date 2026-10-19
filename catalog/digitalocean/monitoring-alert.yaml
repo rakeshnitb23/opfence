@@ -1,0 +1,90 @@
+# DigitalOcean REST API: monitoring-alert
+operations:
+  - id: digitalocean.monitoring-alert.create
+    match: { rest: { method: POST, path: /v2/monitoring/alerts } }
+    class: write
+    when:
+      - if: { arg: body.alerts.slack.url, present: true }
+        class: credential
+    resource: { arg: body.description, kind: monitoring-alert }
+    card: "Create alert policy {body.description}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_create_alertPolicy.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/monitoring-alert-create.http
+        expect: credential
+        resource: "CPU Alert"
+      - fixture: fixtures/monitoring-alert-create-email-only.http
+        expect: write
+        resource: "CPU Alert"
+
+  - id: digitalocean.monitoring-alert.update
+    match: { rest: { method: PUT, path: "/v2/monitoring/alerts/{alert_uuid}" } }
+    class: write
+    when:
+      - if: { arg: body.alerts.slack.url, present: true }
+        class: credential
+    resource: { arg: alert_uuid, kind: monitoring-alert }
+    card: "Change alert policy {alert_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_update_alertPolicy.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/monitoring-alert-update.http
+        expect: credential
+        resource: "78b3da62-27e5-49ba-ac70-5db0b5935c64"
+
+  - id: digitalocean.monitoring-alert.list
+    match: { rest: { method: GET, path: /v2/monitoring/alerts } }
+    class: credential
+    card: "List alert policies with their Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_list_alertPolicy.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/monitoring-alert-list.http
+        expect: credential
+
+  - id: digitalocean.monitoring-alert.get
+    match: { rest: { method: GET, path: "/v2/monitoring/alerts/{alert_uuid}" } }
+    class: credential
+    resource: { arg: alert_uuid, kind: monitoring-alert }
+    card: "Read alert policy {alert_uuid} with its Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_get_alertPolicy.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/monitoring-alert-get.http
+        expect: credential
+        resource: "78b3da62-27e5-49ba-ac70-5db0b5935c64"
+
+  - id: digitalocean.monitoring-alert.delete
+    match: { rest: { method: DELETE, path: "/v2/monitoring/alerts/{alert_uuid}" } }
+    class: delete
+    resource: { arg: alert_uuid, kind: monitoring-alert }
+    card: "Delete alert policy {alert_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_delete_alertPolicy.yml
+    tests:
+      - fixture: fixtures/monitoring-alert-delete.http
+        expect: delete
+        resource: "78b3da62-27e5-49ba-ac70-5db0b5935c64"

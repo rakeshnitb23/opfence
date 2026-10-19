@@ -1,0 +1,87 @@
+# DigitalOcean MCP server: vector-database
+operations:
+  - id: digitalocean-mcp.vector-database.list
+    match: { mcp: { tool: vector-db-list } }
+    class: read
+    card: "List vector databases"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    tests:
+      - fixture: fixtures/vector-database-list.http
+        expect: read
+
+  - id: digitalocean-mcp.vector-database.get
+    match: { mcp: { tool: vector-db-get } }
+    class: read
+    resource: { arg: ID, kind: vector-database }
+    card: "Show vector database {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    tests:
+      - fixture: fixtures/vector-database-get.http
+        expect: read
+        resource: "1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a"
+
+  - id: digitalocean-mcp.vector-database.get-credentials
+    match: { mcp: { tool: vector-db-get-credentials } }
+    class: credential
+    resource: { arg: ID, kind: vector-database }
+    card: "Get admin credentials of vector database {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    notes: >-
+      Returns the admin user ID and API token.
+    tests:
+      - fixture: fixtures/vector-database-get-credentials.http
+        expect: credential
+        resource: "1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a"
+
+  - id: digitalocean-mcp.vector-database.create
+    match: { mcp: { tool: vector-db-create } }
+    class: money
+    resource: { arg: Name, kind: vector-database }
+    card: "Create vector database {Name} ({Size}) in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    tests:
+      - fixture: fixtures/vector-database-create.http
+        expect: money
+        resource: support-kb
+
+  - id: digitalocean-mcp.vector-database.resize
+    match: { mcp: { tool: vector-db-resize } }
+    class: money
+    resource: { arg: ID, kind: vector-database }
+    card: "Resize vector database {ID} to {Size}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    tests:
+      - fixture: fixtures/vector-database-resize.http
+        expect: money
+        resource: "1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a"
+
+  - id: digitalocean-mcp.vector-database.delete
+    match: { mcp: { tool: vector-db-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: vector-database }
+    card: "Delete vector database {ID} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/vectordb/vectordb.go
+    notes: >-
+      The tool says this is irreversible.
+    tests:
+      - fixture: fixtures/vector-database-delete.http
+        expect: irreversible
+        resource: "1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a"

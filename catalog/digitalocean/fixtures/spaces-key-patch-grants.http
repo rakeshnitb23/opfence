@@ -1,0 +1,7 @@
+# description: Change Spaces access key SPACESKEYEXAMPLE01
+PATCH /v2/spaces/keys/SPACESKEYEXAMPLE01 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"grants": [{"bucket": "assets", "permission": "readwrite"}]}

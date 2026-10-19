@@ -1,0 +1,61 @@
+# DigitalOcean REST API: monitoring-sink
+operations:
+  - id: digitalocean.monitoring-sink.create
+    match: { rest: { method: POST, path: /v2/monitoring/sinks } }
+    class: write
+    resource: { arg: body.destination_uuid, kind: monitoring-destination }
+    card: "Forward logs of {body.resources} to destination {body.destination_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_create_sink.yml
+    tests:
+      - fixture: fixtures/monitoring-sink-create.http
+        expect: write
+        resource: "9df2b7e9-3fb2-4577-b60a-e9c0d53f9a99"
+
+  - id: digitalocean.monitoring-sink.delete
+    match: { rest: { method: DELETE, path: "/v2/monitoring/sinks/{sink_uuid}" } }
+    class: delete
+    resource: { arg: sink_uuid, kind: monitoring-sink }
+    card: "Stop log sink {sink_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_delete_sink.yml
+    tests:
+      - fixture: fixtures/monitoring-sink-delete.http
+        expect: delete
+        resource: "78b172b6-52c3-4a2c-8fa0-8a6b0d7c1e2f"
+
+  - id: digitalocean.monitoring-sink.list
+    match: { rest: { method: GET, path: /v2/monitoring/sinks } }
+    class: credential
+    card: "List log sinks with their destination passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_list_sinks.yml
+    notes: >-
+      Each sink embeds its destination config, including OpenSearch
+      credentials.
+    tests:
+      - fixture: fixtures/monitoring-sink-list.http
+        expect: credential
+
+  - id: digitalocean.monitoring-sink.read
+    match: { rest: { method: GET, path: "/v2/monitoring/sinks/{sink_uuid}" } }
+    class: credential
+    resource: { arg: sink_uuid, kind: monitoring-sink }
+    card: "Read log sink {sink_uuid} with its destination password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_get_sink.yml
+    notes: >-
+      The sink embeds its destination config, including OpenSearch
+      credentials.
+    tests:
+      - fixture: fixtures/monitoring-sink-read.http
+        expect: credential
+        resource: "78b172b6-52c3-4a2c-8fa0-8a6b0d7c1e2f"

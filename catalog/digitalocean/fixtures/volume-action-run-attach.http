@@ -1,0 +1,7 @@
+# description: attach volume 7724db7c-e098-11e5-b522-000f53304e51
+POST /v2/volumes/7724db7c-e098-11e5-b522-000f53304e51/actions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"type": "attach", "droplet_id": 3164444, "region": "nyc3"}

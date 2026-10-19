@@ -1,0 +1,8 @@
+# description: Create pg database cluster shop-db (db-s-1vcpu-1gb x1) in nyc3
+POST /mcp HTTP/1.1
+Host: databases.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":41,"method":"tools/call","params":{"name":"db-cluster-create","arguments":{"name":"shop-db","engine":"pg","version":"17","region":"nyc3","size":"db-s-1vcpu-1gb","num_nodes":1}}}

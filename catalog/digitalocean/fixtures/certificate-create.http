@@ -1,0 +1,7 @@
+# description: Add lets_encrypt certificate web-cert-02
+POST /v2/certificates HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "web-cert-02", "type": "lets_encrypt", "dns_names": ["www.example.com", "example.com"]}

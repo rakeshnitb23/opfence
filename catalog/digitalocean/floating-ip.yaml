@@ -1,0 +1,47 @@
+# DigitalOcean REST API: floating-ip
+operations:
+  - id: digitalocean.floating-ip.create
+    match: { rest: { method: POST, path: /v2/floating_ips } }
+    class: money
+    card: "Reserve a floating IP"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/floating_ips/floatingIPs_create.yml
+    notes: >-
+      Floating IPs are the old name of reserved IPs; an unassigned one is
+      billed.
+    tests:
+      - fixture: fixtures/floating-ip-create.http
+        expect: money
+
+  - id: digitalocean.floating-ip.delete
+    match: { rest: { method: DELETE, path: "/v2/floating_ips/{floating_ip}" } }
+    class: delete
+    resource: { arg: floating_ip, kind: floating-ip }
+    card: "Release floating IP {floating_ip}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/floating_ips/floatingIPs_delete.yml
+    notes: >-
+      The address returns to DigitalOcean; DNS pointing at it must move to a
+      new one.
+    tests:
+      - fixture: fixtures/floating-ip-delete.http
+        expect: delete
+        resource: "45.55.96.47"
+
+  - id: digitalocean.floating-ip.action
+    match: { rest: { method: POST, path: "/v2/floating_ips/{floating_ip}/actions" } }
+    class: write
+    resource: { arg: floating_ip, kind: floating-ip }
+    card: "{body.type} floating IP {floating_ip}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/floating_ips/floatingIPsAction_post.yml
+    tests:
+      - fixture: fixtures/floating-ip-action.http
+        expect: write
+        resource: "45.55.96.47"

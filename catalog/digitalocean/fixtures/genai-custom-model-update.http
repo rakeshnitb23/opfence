@@ -1,0 +1,7 @@
+# description: Change metadata of custom model 1b418231-b7d6-11ef-bf8f-4e013e2ddde4
+PATCH /v2/gen-ai/custom_models/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/metadata HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"description": "example string", "input_modalities": ["example string"], "license": "example string", "name": "example name", "output_modalities": ["example string"], "parameters": "12345", "uuid": "a1b2c3d4-..."}

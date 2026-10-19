@@ -1,0 +1,5 @@
+# description: Delete hosted agent trigger trg-nightly
+DELETE /v2/agents/triggers/trg-nightly HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

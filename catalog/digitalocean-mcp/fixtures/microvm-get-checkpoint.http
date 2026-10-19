@@ -1,0 +1,8 @@
+# description: Show MicroVM checkpoint a7b6c5d4-e3f2-4a1b-9c8d-7e6f5a4b3c2d
+POST /mcp HTTP/1.1
+Host: microvms.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":289,"method":"tools/call","params":{"name":"microvm-checkpoint-get","arguments":{"id":"a7b6c5d4-e3f2-4a1b-9c8d-7e6f5a4b3c2d"}}}

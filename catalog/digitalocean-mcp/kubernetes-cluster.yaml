@@ -1,0 +1,146 @@
+# DigitalOcean MCP server: kubernetes-cluster
+operations:
+  - id: digitalocean-mcp.kubernetes-cluster.list
+    match: { mcp: { tool: doks-list-clusters } }
+    class: read
+    card: "List Kubernetes clusters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-list.http
+        expect: read
+
+  - id: digitalocean-mcp.kubernetes-cluster.list-options
+    match: { mcp: { tool: doks-list-options } }
+    class: read
+    card: "List Kubernetes versions, regions and sizes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-list-options.http
+        expect: read
+
+  - id: digitalocean-mcp.kubernetes-cluster.get
+    match: { mcp: { tool: doks-get-cluster } }
+    class: read
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Show Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-get.http
+        expect: read
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.get-upgrades
+    match: { mcp: { tool: doks-get-cluster-upgrades } }
+    class: read
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "List upgrades for Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-get-upgrades.http
+        expect: read
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.get-kubeconfig
+    match: { mcp: { tool: doks-get-kubeconfig } }
+    class: credential
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Get the kubeconfig of Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      The kubeconfig holds a cluster admin token.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-get-kubeconfig.http
+        expect: credential
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.get-credentials
+    match: { mcp: { tool: doks-get-credentials } }
+    class: credential
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Get admin credentials of Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      Returns a bearer token and client certificate data.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-get-credentials.http
+        expect: credential
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.create
+    match: { mcp: { tool: doks-create-cluster } }
+    class: money
+    resource: { arg: name, kind: kubernetes-cluster }
+    card: "Create Kubernetes cluster {name} in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-create.http
+        expect: money
+        resource: shop-k8s
+
+  - id: digitalocean-mcp.kubernetes-cluster.update
+    match: { mcp: { tool: doks-update-cluster } }
+    class: write
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Change Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      Name, tags, maintenance window and upgrade settings.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-update.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.upgrade
+    match: { mcp: { tool: doks-upgrade-cluster } }
+    class: write
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Upgrade Kubernetes cluster {ClusterID} to {VersionSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-cluster-upgrade.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-cluster.delete
+    match: { mcp: { tool: doks-delete-cluster } }
+    class: irreversible
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "Delete Kubernetes cluster {ClusterID} and its nodes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      Workloads and node local data are gone; volumes and load balancers
+      created by the cluster are left behind.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-delete.http
+        expect: irreversible
+        resource: bd5f5959-5e1e-4205-a714-a914373942af

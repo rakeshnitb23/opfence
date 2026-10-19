@@ -1,0 +1,8 @@
+# description: Enable private networking on every Droplet tagged web
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":124,"method":"tools/call","params":{"name":"enable-private-net-droplets-tag","arguments":{"Tag":"web"}}}

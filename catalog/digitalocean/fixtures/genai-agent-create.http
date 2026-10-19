@@ -1,0 +1,7 @@
+# description: Create GenAI agent support-bot
+POST /v2/gen-ai/agents HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "support-bot", "instruction": "Answer billing questions.", "model_uuid": "95ea6652-75ed-11ef-bf8f-4e013e2ddde4", "region": "tor1", "project_id": "4e1bfbc3-dc3e-41f2-a18f-1b4d7ba71679"}

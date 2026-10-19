@@ -1,0 +1,16 @@
+# DigitalOcean MCP server: region
+operations:
+  - id: digitalocean-mcp.region.list
+    match: { mcp: { tool: region-list } }
+    class: read
+    card: "List DigitalOcean regions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/common/region_tools.go
+    notes: >-
+      Registered by every service of the server, so it is the one tool name
+      each endpoint shares.
+    tests:
+      - fixture: fixtures/region-list.http
+        expect: read

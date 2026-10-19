@@ -1,0 +1,89 @@
+# DigitalOcean MCP server: function-action
+operations:
+  - id: digitalocean-mcp.function-action.list
+    match: { mcp: { tool: functions-list-actions } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "List functions in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/action_tools.go
+    tests:
+      - fixture: fixtures/function-action-list.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-action.get
+    match: { mcp: { tool: functions-get-action } }
+    class: credential
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Show function {ActionName} with its parameters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/action_tools.go
+    notes: >-
+      Returns the action's default parameters, which commonly hold API keys,
+      and optionally its code.
+    tests:
+      - fixture: fixtures/function-action-get.http
+        expect: credential
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-action.put
+    match: { mcp: { tool: functions-create-or-update-action } }
+    class: write
+    when:
+      - if: { arg: Parameters, present: true }
+        class: credential
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Create or overwrite function {ActionName} in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/action_tools.go
+    notes: >-
+      Deploys code, overwriting an existing action. Default parameters are
+      where function secrets usually live and their values cannot be told
+      apart, so any Parameters count as credential.
+    tests:
+      - fixture: fixtures/function-action-put.http
+        expect: write
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+      - fixture: fixtures/function-action-put-parameters.http
+        expect: credential
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-action.delete
+    match: { mcp: { tool: functions-delete-action } }
+    class: irreversible
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Delete function {ActionName} from namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/action_tools.go
+    notes: >-
+      DigitalOcean keeps no copy of the code; it may only exist in the
+      conversation that deployed it.
+    tests:
+      - fixture: fixtures/function-action-delete.http
+        expect: irreversible
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-action.invoke
+    match: { mcp: { tool: functions-invoke-action } }
+    class: write
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Run function {ActionName} in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/action_tools.go
+    notes: >-
+      Runs code the user deployed; what it does depends on that code.
+    tests:
+      - fixture: fixtures/function-action-invoke.http
+        expect: write
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397

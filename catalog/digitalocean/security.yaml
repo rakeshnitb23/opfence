@@ -1,0 +1,65 @@
+# DigitalOcean REST API: security
+operations:
+  - id: digitalocean.security.create-scan
+    match: { rest: { method: POST, path: /v2/security/scans } }
+    class: write
+    card: "Start a security scan"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/security/security_scans_create.yml
+    tests:
+      - fixture: fixtures/security-create-scan.http
+        expect: write
+
+  - id: digitalocean.security.create-scan-rule
+    match: { rest: { method: POST, path: /v2/security/scans/rules } }
+    class: write
+    card: "Create a security scan rule for {body.resource}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/security/security_scan_rule_create.yml
+    tests:
+      - fixture: fixtures/security-create-scan-rule.http
+        expect: write
+
+  - id: digitalocean.security.update-plan
+    match: { rest: { method: PUT, path: /v2/security/settings/plan } }
+    class: money
+    card: "Change the security scanning plan coverage"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/security/security_settings_plan_update.yml
+    notes: >-
+      Coverage decides what the scanning plan bills for.
+    tests:
+      - fixture: fixtures/security-update-plan.http
+        expect: money
+
+  - id: digitalocean.security.create-suppression
+    match: { rest: { method: POST, path: /v2/security/settings/suppressions } }
+    class: write
+    card: "Suppress finding rule {body.rule_uuid} for {body.resources}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/security/security_suppression_create.yml
+    tests:
+      - fixture: fixtures/security-create-suppression.http
+        expect: write
+
+  - id: digitalocean.security.delete-suppression
+    match: { rest: { method: DELETE, path: "/v2/security/settings/suppressions/{suppression_uuid}" } }
+    class: write
+    resource: { arg: suppression_uuid, kind: security }
+    card: "Remove suppression {suppression_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/security/security_suppression_delete.yml
+    tests:
+      - fixture: fixtures/security-delete-suppression.http
+        expect: write
+        resource: e1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b

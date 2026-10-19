@@ -1,0 +1,101 @@
+# DigitalOcean REST API: database-user
+operations:
+  - id: digitalocean.database-user.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/users" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Add database user {body.name} to cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_add_user.yml
+    notes: >-
+      Returns the new user's password.
+    tests:
+      - fixture: fixtures/database-user-create.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-user.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/users/{username}" } }
+    class: access
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Remove database user {username} from cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_user.yml
+    notes: >-
+      Anything connecting as that user loses access.
+    tests:
+      - fixture: fixtures/database-user-delete.http
+        expect: access
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-user.update
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/users/{username}" } }
+    class: access
+    when:
+      - if: { arg: username, present: true }
+        class: access
+      - if: { arg: username, present: true }
+        class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change the permissions of database user {username}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_user.yml
+    notes: >-
+      Sets Kafka and OpenSearch ACLs and Postgres replication rights (access);
+      the response returns the user with its password (credential).
+    tests:
+      - fixture: fixtures/database-user-update.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-user.reset-auth
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/users/{username}/reset_auth" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Reset the password of database user {username}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_reset_auth.yml
+    notes: >-
+      Returns the new password.
+    tests:
+      - fixture: fixtures/database-user-reset-auth.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-user.list
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/users" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "List users of cluster {database_cluster_uuid} with their passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_users.yml
+    notes: >-
+      User objects include password and, for Kafka, access keys.
+    tests:
+      - fixture: fixtures/database-user-list.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-user.read
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/users/{username}" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Read the password of database user {username}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_user.yml
+    tests:
+      - fixture: fixtures/database-user-read.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

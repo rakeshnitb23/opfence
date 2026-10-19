@@ -1,0 +1,7 @@
+# description: type floating IP 45.55.96.47
+POST /v2/floating_ips/45.55.96.47/actions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"droplet_id": 758604968}

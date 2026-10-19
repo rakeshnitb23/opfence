@@ -1,0 +1,43 @@
+# DigitalOcean REST API: volume
+operations:
+  - id: digitalocean.volume.create
+    match: { rest: { method: POST, path: /v2/volumes } }
+    class: money
+    resource: { arg: body.name, kind: volume }
+    card: "Create volume {body.name} ({body.size_gigabytes} GB) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumes_create.yml
+    tests:
+      - fixture: fixtures/volume-create.http
+        expect: money
+        resource: ext4-example
+
+  - id: digitalocean.volume.delete-by-name
+    match: { rest: { method: DELETE, path: /v2/volumes } }
+    class: irreversible
+    resource: { arg: query.name, kind: volume }
+    card: "Delete volume {query.name} in {query.region} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumes_delete_byName.yml
+    tests:
+      - fixture: fixtures/volume-delete-by-name.http
+        expect: irreversible
+        resource: pg-data
+
+  - id: digitalocean.volume.delete
+    match: { rest: { method: DELETE, path: "/v2/volumes/{volume_id}" } }
+    class: irreversible
+    resource: { arg: volume_id, kind: volume }
+    card: "Delete volume {volume_id} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumes_delete.yml
+    tests:
+      - fixture: fixtures/volume-delete.http
+        expect: irreversible
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"

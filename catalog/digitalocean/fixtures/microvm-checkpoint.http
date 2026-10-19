@@ -1,0 +1,7 @@
+# description: Checkpoint MicroVM mvm-7c1f2a9e as example-checkpoint
+POST /v2/microvms/mvm-7c1f2a9e/checkpoints HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "example-checkpoint"}

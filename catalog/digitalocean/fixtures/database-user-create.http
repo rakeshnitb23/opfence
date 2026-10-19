@@ -1,0 +1,7 @@
+# description: Add database user app-01 to cluster 9cc10173-e9ea-4176-9dbc-a4cee4c4ff30
+POST /v2/databases/9cc10173-e9ea-4176-9dbc-a4cee4c4ff30/users HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "app-01"}

@@ -1,0 +1,56 @@
+# DigitalOcean REST API: genai-custom-model
+operations:
+  - id: digitalocean.genai-custom-model.import
+    match: { rest: { method: POST, path: /v2/gen-ai/custom_models/import } }
+    class: money
+    when:
+      - if: { arg: body.source_type, present: true }
+        class: money
+      - if: { arg: body.source_ref.hf_token, present: true }
+        class: credential
+    resource: { arg: body.name, kind: genai-custom-model }
+    card: "Import custom model {body.name} from {body.source_ref.repo_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_import_custom_model.yml
+    notes: >-
+      Model storage and deployments are billed; hf_token passes a HuggingFace
+      secret.
+    tests:
+      - fixture: fixtures/genai-custom-model-import.http
+        expect: money
+        resource: support-llama
+      - fixture: fixtures/genai-custom-model-import-hf-token.http
+        expect: credential
+        resource: support-llama
+
+  - id: digitalocean.genai-custom-model.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/custom_models/{uuid}" } }
+    class: irreversible
+    resource: { arg: uuid, kind: genai-custom-model }
+    card: "Delete custom model {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_custom_model.yml
+    notes: >-
+      Models from an SDK upload or fine-tuning have no other copy.
+    tests:
+      - fixture: fixtures/genai-custom-model-delete.http
+        expect: irreversible
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-custom-model.update
+    match: { rest: { method: PATCH, path: "/v2/gen-ai/custom_models/{uuid}/metadata" } }
+    class: write
+    resource: { arg: uuid, kind: genai-custom-model }
+    card: "Change metadata of custom model {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_custom_model_metadata.yml
+    tests:
+      - fixture: fixtures/genai-custom-model-update.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"

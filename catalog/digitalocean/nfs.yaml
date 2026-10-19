@@ -1,0 +1,104 @@
+# DigitalOcean REST API: nfs
+operations:
+  - id: digitalocean.nfs.create
+    match: { rest: { method: POST, path: /v2/nfs } }
+    class: money
+    resource: { arg: body.name, kind: nfs }
+    card: "Create NFS share {body.name} ({body.size_gib} GiB) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_create.yml
+    tests:
+      - fixture: fixtures/nfs-create.http
+        expect: money
+        resource: sammy-share-drive
+
+  - id: digitalocean.nfs.delete
+    match: { rest: { method: DELETE, path: "/v2/nfs/{nfs_id}" } }
+    class: irreversible
+    resource: { arg: nfs_id, kind: nfs }
+    card: "Delete NFS share {nfs_id} and its files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_delete.yml
+    tests:
+      - fixture: fixtures/nfs-delete.http
+        expect: irreversible
+        resource: "0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b"
+
+  - id: digitalocean.nfs.action
+    match: { rest: { method: POST, path: "/v2/nfs/{nfs_id}/actions" } }
+    class: money
+    when:
+      - if: { arg: body.type, in: [resize, snapshot, switch_performance_tier] }
+        class: money
+      - if: { arg: body.type, in: [attach, reassign] }
+        class: access
+      - if: { arg: body.type, equals: "detach" }
+        class: write
+    resource: { arg: nfs_id, kind: nfs }
+    card: "{body.type} NFS share {nfs_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_actions_create.yml
+    notes: >-
+      Classified by type: resize, snapshot and performance tier are billed;
+      attach and reassign let a VPC mount the share. An unknown type gets
+      money.
+    tests:
+      - fixture: fixtures/nfs-action.http
+        expect: money
+        resource: "0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b"
+      - fixture: fixtures/nfs-action-attach.http
+        expect: access
+        resource: "0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b"
+      - fixture: fixtures/nfs-action-detach.http
+        expect: write
+        resource: "0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b"
+
+  - id: digitalocean.nfs.delete-snapshot
+    match: { rest: { method: DELETE, path: "/v2/nfs/snapshots/{nfs_snapshot_id}" } }
+    class: irreversible
+    resource: { arg: nfs_snapshot_id, kind: nfs-snapshot }
+    card: "Delete NFS snapshot {nfs_snapshot_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_snapshot_delete.yml
+    tests:
+      - fixture: fixtures/nfs-delete-snapshot.http
+        expect: irreversible
+        resource: "5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9"
+
+  - id: digitalocean.nfs.create-access-point
+    match: { rest: { method: POST, path: "/v2/nfs/shares/{share_id}/access_points" } }
+    class: access
+    resource: { arg: share_id, kind: nfs }
+    card: "Create access point {body.name} on NFS share {share_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_access_point_create.yml
+    notes: >-
+      An access point lets clients in a VPC mount a path of the share.
+    tests:
+      - fixture: fixtures/nfs-create-access-point.http
+        expect: access
+        resource: "0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b"
+
+  - id: digitalocean.nfs.delete-access-point
+    match: { rest: { method: DELETE, path: "/v2/nfs/access_points/{access_point_id}" } }
+    class: access
+    resource: { arg: access_point_id, kind: nfs-access-point }
+    card: "Delete NFS access point {access_point_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/nfs/nfs_access_point_delete.yml
+    tests:
+      - fixture: fixtures/nfs-delete-access-point.http
+        expect: access
+        resource: "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d"

@@ -1,0 +1,8 @@
+# description: Create Functions namespace shop-functions in nyc1
+POST /mcp HTTP/1.1
+Host: functions.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":149,"method":"tools/call","params":{"name":"functions-create-namespace","arguments":{"Label":"shop-functions","Region":"nyc1"}}}

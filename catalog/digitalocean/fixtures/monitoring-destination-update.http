@@ -1,0 +1,7 @@
+# description: Change logging destination 01f30bfa-319a-4769-ba95-8d43971fb6f8
+POST /v2/monitoring/sinks/destinations/01f30bfa-319a-4769-ba95-8d43971fb6f8 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "managed-logs", "type": "opensearch_dbaas", "config": {"cluster_uuid": "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30", "index_name": "droplet-logs", "retention_days": 14}}

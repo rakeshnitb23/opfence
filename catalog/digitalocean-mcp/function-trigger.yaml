@@ -1,0 +1,73 @@
+# DigitalOcean MCP server: function-trigger
+operations:
+  - id: digitalocean-mcp.function-trigger.list
+    match: { mcp: { tool: functions-list-triggers } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "List triggers in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/trigger_tools.go
+    tests:
+      - fixture: fixtures/function-trigger-list.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-trigger.get
+    match: { mcp: { tool: functions-get-trigger } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Show trigger {TriggerName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/trigger_tools.go
+    tests:
+      - fixture: fixtures/function-trigger-get.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-trigger.create
+    match: { mcp: { tool: functions-create-trigger } }
+    class: write
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Schedule function {Function} with trigger {Name} ({Cron})"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/trigger_tools.go
+    tests:
+      - fixture: fixtures/function-trigger-create.http
+        expect: write
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-trigger.update
+    match: { mcp: { tool: functions-update-trigger } }
+    class: write
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Change trigger {TriggerName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/trigger_tools.go
+    tests:
+      - fixture: fixtures/function-trigger-update.http
+        expect: write
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-trigger.delete
+    match: { mcp: { tool: functions-delete-trigger } }
+    class: delete
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Delete trigger {TriggerName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/trigger_tools.go
+    notes: >-
+      Only the schedule; the function stays.
+    tests:
+      - fixture: fixtures/function-trigger-delete.http
+        expect: delete
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397

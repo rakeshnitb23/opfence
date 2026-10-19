@@ -1,0 +1,7 @@
+# description: Set visibility of agent 1b418231-b7d6-11ef-bf8f-4e013e2ddde4 to VISIBILITY_PUBLIC
+PUT /v2/gen-ai/agents/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/deployment_visibility HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"uuid": "1b418231-b7d6-11ef-bf8f-4e013e2ddde4", "visibility": "VISIBILITY_PUBLIC"}

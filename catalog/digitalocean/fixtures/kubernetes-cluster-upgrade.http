@@ -1,0 +1,7 @@
+# description: Upgrade Kubernetes cluster bd5f5959-5e1e-4205-a714-a914373942af to 1.16.13-do.0
+POST /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/upgrade HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"version": "1.16.13-do.0"}

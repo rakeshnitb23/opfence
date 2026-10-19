@@ -1,0 +1,7 @@
+# description: Change the container registry tier to basic
+POST /v2/registry/subscription HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"tier_slug": "basic"}

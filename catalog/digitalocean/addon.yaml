@@ -1,0 +1,60 @@
+# DigitalOcean REST API: addon
+operations:
+  - id: digitalocean.addon.create
+    match: { rest: { method: POST, path: /v2/add-ons/saas } }
+    class: money
+    resource: { arg: body.name, kind: addon }
+    card: "Provision add-on {body.app_slug} on plan {body.plan_slug} as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/addons/addons_create.yml
+    tests:
+      - fixture: fixtures/addon-create.http
+        expect: money
+        resource: my-resource-01
+
+  - id: digitalocean.addon.delete
+    match: { rest: { method: DELETE, path: "/v2/add-ons/saas/{resource_uuid}" } }
+    class: irreversible
+    resource: { arg: resource_uuid, kind: addon }
+    card: "Deprovision add-on resource {resource_uuid} and its data at the provider"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/addons/addons_delete.yml
+    notes: >-
+      The schema says the resource cannot be retrieved after deletion; the
+      third-party provider deletes it.
+    tests:
+      - fixture: fixtures/addon-delete.http
+        expect: irreversible
+        resource: c0ffee00-1234-4abc-8def-0123456789ab
+
+  - id: digitalocean.addon.rename
+    match: { rest: { method: PATCH, path: "/v2/add-ons/saas/{resource_uuid}" } }
+    class: write
+    resource: { arg: resource_uuid, kind: addon }
+    card: "Rename add-on resource {resource_uuid} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/addons/addons_update.yml
+    tests:
+      - fixture: fixtures/addon-rename.http
+        expect: write
+        resource: c0ffee00-1234-4abc-8def-0123456789ab
+
+  - id: digitalocean.addon.change-plan
+    match: { rest: { method: PATCH, path: "/v2/add-ons/saas/{resource_uuid}/plan" } }
+    class: money
+    resource: { arg: resource_uuid, kind: addon }
+    card: "Move add-on resource {resource_uuid} to plan {body.plan_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/addons/addons_update_plan.yml
+    tests:
+      - fixture: fixtures/addon-change-plan.http
+        expect: money
+        resource: c0ffee00-1234-4abc-8def-0123456789ab

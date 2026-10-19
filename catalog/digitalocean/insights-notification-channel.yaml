@@ -1,0 +1,76 @@
+# DigitalOcean REST API: insights-notification-channel
+operations:
+  - id: digitalocean.insights-notification-channel.create
+    match: { rest: { method: POST, path: /v2/insights/notification-channels } }
+    class: write
+    when:
+      - if: { arg: body.webhook.basic_auth.password, present: true }
+        class: credential
+      - if: { arg: body.webhook.bearer_token, present: true }
+        class: credential
+      - if: { arg: body.webhook.signature.secret, present: true }
+        class: credential
+      - if: { arg: body.slack.webhook_url, present: true }
+        class: credential
+    resource: { arg: body.name, kind: insights-notification-channel }
+    card: "Create notification channel {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_create_notificationChannel.yml
+    notes: >-
+      Webhook passwords, bearer tokens, signing secrets and Slack webhook URLs
+      (anyone holding one can post) are secrets.
+    tests:
+      - fixture: fixtures/insights-notification-channel-create.http
+        expect: write
+        resource: ops-email
+      - fixture: fixtures/insights-notification-channel-create-webhook.http
+        expect: credential
+        resource: pager
+      - fixture: fixtures/insights-notification-channel-create-slack.http
+        expect: credential
+        resource: ops-slack
+
+  - id: digitalocean.insights-notification-channel.update
+    match: { rest: { method: PUT, path: "/v2/insights/notification-channels/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.webhook.basic_auth.password, present: true }
+        class: credential
+      - if: { arg: body.webhook.bearer_token, present: true }
+        class: credential
+      - if: { arg: body.webhook.signature.secret, present: true }
+        class: credential
+      - if: { arg: body.slack.webhook_url, present: true }
+        class: credential
+    resource: { arg: id, kind: insights-notification-channel }
+    card: "Change notification channel {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_update_notificationChannel.yml
+    notes: >-
+      Webhook passwords, bearer tokens, signing secrets and Slack webhook URLs
+      (anyone holding one can post) are secrets.
+    tests:
+      - fixture: fixtures/insights-notification-channel-update.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+      - fixture: fixtures/insights-notification-channel-update-webhook.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.insights-notification-channel.delete
+    match: { rest: { method: DELETE, path: "/v2/insights/notification-channels/{id}" } }
+    class: delete
+    resource: { arg: id, kind: insights-notification-channel }
+    card: "Delete notification channel {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_delete_notificationChannel.yml
+    tests:
+      - fixture: fixtures/insights-notification-channel-delete.http
+        expect: delete
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"

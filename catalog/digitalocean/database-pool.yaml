@@ -1,0 +1,77 @@
+# DigitalOcean REST API: database-pool
+operations:
+  - id: digitalocean.database-pool.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/pools" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Create connection pool {body.name} for user {body.user} on {body.db}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_add_connectionPool.yml
+    notes: >-
+      The response carries connection strings with the pool user's password.
+    tests:
+      - fixture: fixtures/database-pool-create.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-pool.update
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/pools/{pool_name}" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change connection pool {pool_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_connectionPool.yml
+    tests:
+      - fixture: fixtures/database-pool-update.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-pool.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/pools/{pool_name}" } }
+    class: delete
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Delete connection pool {pool_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_connectionPool.yml
+    notes: >-
+      Only the pool goes; the database and user stay.
+    tests:
+      - fixture: fixtures/database-pool-delete.http
+        expect: delete
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-pool.list
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/pools" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "List connection pools of cluster {database_cluster_uuid} with passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_connectionPools.yml
+    notes: >-
+      Pool connection strings include the password.
+    tests:
+      - fixture: fixtures/database-pool-list.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-pool.read
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/pools/{pool_name}" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Read connection pool {pool_name} with its password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_connectionPool.yml
+    tests:
+      - fixture: fixtures/database-pool-read.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

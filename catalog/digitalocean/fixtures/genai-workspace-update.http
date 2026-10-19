@@ -1,0 +1,7 @@
+# description: Change GenAI workspace 1448d64a-b7d7-11ef-bf8f-4e013e2ddde4
+PUT /v2/gen-ai/workspaces/1448d64a-b7d7-11ef-bf8f-4e013e2ddde4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"description": "example string", "name": "example name", "workspace_uuid": "123e4567-e89b-12d3-a456-426614174000"}

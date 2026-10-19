@@ -1,0 +1,8 @@
+# description: Create MicroVM sandbox-1 from registry.digitalocean.com/shop-registry/sandbox:latest
+POST /mcp HTTP/1.1
+Host: microvms.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":283,"method":"tools/call","params":{"name":"microvm-create","arguments":{"name":"sandbox-1","source":{"oci_ref":"registry.digitalocean.com/shop-registry/sandbox:latest"},"region":"nyc1","size":{"cpu":2,"memory":4096}}}}

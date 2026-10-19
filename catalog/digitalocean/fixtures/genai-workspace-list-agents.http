@@ -1,0 +1,5 @@
+# description: List agents of workspace 1448d64a-b7d7-11ef-bf8f-4e013e2ddde4 with their API keys
+GET /v2/gen-ai/workspaces/1448d64a-b7d7-11ef-bf8f-4e013e2ddde4/agents HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

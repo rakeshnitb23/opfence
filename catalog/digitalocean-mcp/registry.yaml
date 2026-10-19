@@ -1,0 +1,267 @@
+# DigitalOcean MCP server: registry
+operations:
+  - id: digitalocean-mcp.registry.list
+    match: { mcp: { tool: docr-list } }
+    class: read
+    card: "List container registries"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    tests:
+      - fixture: fixtures/registry-list.http
+        expect: read
+
+  - id: digitalocean-mcp.registry.get
+    match: { mcp: { tool: docr-get } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "Show container registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    tests:
+      - fixture: fixtures/registry-get.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.options
+    match: { mcp: { tool: docr-options } }
+    class: read
+    card: "List container registry tiers and regions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    tests:
+      - fixture: fixtures/registry-options.http
+        expect: read
+
+  - id: digitalocean-mcp.registry.get-subscription
+    match: { mcp: { tool: docr-subscription-get } }
+    class: read
+    card: "Show the container registry subscription"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/subscription_tools.go
+    tests:
+      - fixture: fixtures/registry-get-subscription.http
+        expect: read
+
+  - id: digitalocean-mcp.registry.validate-name
+    match: { mcp: { tool: docr-validate-name } }
+    class: read
+    resource: { arg: Name, kind: registry }
+    card: "Check whether registry name {Name} is free"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    tests:
+      - fixture: fixtures/registry-validate-name.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.docker-credentials
+    match: { mcp: { tool: docr-docker-credentials } }
+    class: credential
+    resource: { arg: RegistryName, kind: registry }
+    card: "Get Docker credentials for registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    notes: >-
+      Returns a Docker config with a registry token.
+    tests:
+      - fixture: fixtures/registry-docker-credentials.http
+        expect: credential
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.create
+    match: { mcp: { tool: docr-create } }
+    class: write
+    when:
+      - if: { arg: SubscriptionTierSlug, matches: '(?i)^(?:$|[^s]|s(?:$|[^t])|st(?:$|[^a])|sta(?:$|[^r])|star(?:$|[^t])|start(?:$|[^e])|starte(?:$|[^r])|starter.)' }
+        class: money
+      - if: { arg: SubscriptionTierSlug, absent: true }
+        class: money
+    resource: { arg: Name, kind: registry }
+    card: "Create container registry {Name} on tier {SubscriptionTierSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    notes: >-
+      Only the starter tier is free; any other tier, or none named, is assumed
+      billed.
+    tests:
+      - fixture: fixtures/registry-create.http
+        expect: write
+        resource: shop-registry
+      - fixture: fixtures/registry-create-paid.http
+        expect: money
+        resource: shop-registry
+      - fixture: fixtures/registry-create-no-tier.http
+        expect: money
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.delete
+    match: { mcp: { tool: docr-delete } }
+    class: irreversible
+    resource: { arg: RegistryName, kind: registry }
+    card: "Delete container registry {RegistryName} and every image in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/registry_tools.go
+    tests:
+      - fixture: fixtures/registry-delete.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.update-subscription
+    match: { mcp: { tool: docr-subscription-update } }
+    class: money
+    card: "Change the container registry tier to {TierSlug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/subscription_tools.go
+    tests:
+      - fixture: fixtures/registry-update-subscription.http
+        expect: money
+
+  - id: digitalocean-mcp.registry.list-garbage-collections
+    match: { mcp: { tool: docr-garbage-collection-list } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "List garbage collections of registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/garbage_collection_tools.go
+    tests:
+      - fixture: fixtures/registry-list-garbage-collections.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.get-garbage-collection
+    match: { mcp: { tool: docr-garbage-collection-get } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "Show the active garbage collection of registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/garbage_collection_tools.go
+    tests:
+      - fixture: fixtures/registry-get-garbage-collection.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.start-garbage-collection
+    match: { mcp: { tool: docr-garbage-collection-start } }
+    class: irreversible
+    resource: { arg: RegistryName, kind: registry }
+    card: "Garbage-collect registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/garbage_collection_tools.go
+    notes: >-
+      Permanently deletes untagged manifests and unreferenced layers.
+    tests:
+      - fixture: fixtures/registry-start-garbage-collection.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.update-garbage-collection
+    match: { mcp: { tool: docr-garbage-collection-update } }
+    class: write
+    resource: { arg: RegistryName, kind: registry }
+    card: "Cancel garbage collection {GarbageCollectionUUID} of registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/garbage_collection_tools.go
+    tests:
+      - fixture: fixtures/registry-update-garbage-collection.http
+        expect: write
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.list-repositories
+    match: { mcp: { tool: docr-repository-list } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "List repositories of registry {RegistryName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/repository_tools.go
+    tests:
+      - fixture: fixtures/registry-list-repositories.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.list-tags
+    match: { mcp: { tool: docr-repository-tag-list } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "List tags of repository {Repository}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/repository_tools.go
+    tests:
+      - fixture: fixtures/registry-list-tags.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.list-manifests
+    match: { mcp: { tool: docr-repository-manifest-list } }
+    class: read
+    resource: { arg: RegistryName, kind: registry }
+    card: "List manifests of repository {Repository}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/repository_tools.go
+    tests:
+      - fixture: fixtures/registry-list-manifests.http
+        expect: read
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.delete-tag
+    match: { mcp: { tool: docr-repository-tag-delete } }
+    class: delete
+    resource: { arg: RegistryName, kind: registry }
+    card: "Delete tag {Tag} of repository {Repository}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/repository_tools.go
+    notes: >-
+      Only the tag goes; the image stays until garbage collection.
+    tests:
+      - fixture: fixtures/registry-delete-tag.http
+        expect: delete
+        resource: shop-registry
+
+  - id: digitalocean-mcp.registry.delete-manifest
+    match: { mcp: { tool: docr-repository-manifest-delete } }
+    class: irreversible
+    resource: { arg: RegistryName, kind: registry }
+    card: "Delete image {Digest} of repository {Repository}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docr/repository_tools.go
+    notes: >-
+      Deletes the image manifest and every tag on it.
+    tests:
+      - fixture: fixtures/registry-delete-manifest.http
+        expect: irreversible
+        resource: shop-registry

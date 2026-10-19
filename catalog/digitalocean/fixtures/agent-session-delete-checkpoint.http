@@ -1,0 +1,5 @@
+# description: Delete checkpoint ckpt-3e8d1b20 of hosted agent session a1b2c3d4-e5f6-7890-abcd-ef1234567890
+DELETE /v2/agents/sessions/a1b2c3d4-e5f6-7890-abcd-ef1234567890/checkpoints/ckpt-3e8d1b20 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,195 @@
+# DigitalOcean REST API: genai-knowledge-base
+operations:
+  - id: digitalocean.genai-knowledge-base.start-indexing
+    match: { rest: { method: POST, path: /v2/gen-ai/indexing_jobs } }
+    class: money
+    resource: { arg: body.knowledge_base_uuid, kind: genai-knowledge-base }
+    card: "Index knowledge base {body.knowledge_base_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_indexing_job.yml
+    notes: >-
+      Embedding tokens are billed.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-start-indexing.http
+        expect: money
+        resource: "\"12345678-1234-1234-1234-123456789012\""
+
+  - id: digitalocean.genai-knowledge-base.cancel-indexing
+    match: { rest: { method: PUT, path: "/v2/gen-ai/indexing_jobs/{uuid}/cancel" } }
+    class: write
+    resource: { arg: uuid, kind: genai-indexing-job }
+    card: "Cancel indexing job {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_cancel_indexing_job.yml
+    tests:
+      - fixture: fixtures/genai-knowledge-base-cancel-indexing.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.create
+    match: { rest: { method: POST, path: /v2/gen-ai/knowledge_bases } }
+    class: money
+    when:
+      - if: { arg: body.name, present: true }
+        class: money
+      - if: { arg: body.datasources.aws_data_source.secret_key, present: true }
+        class: credential
+    resource: { arg: body.name, kind: genai-knowledge-base }
+    card: "Create knowledge base {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_knowledge_base.yml
+    notes: >-
+      Without database_id it provisions a billed OpenSearch cluster, and
+      indexing is billed; an S3 data source stores an AWS secret key.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-create.http
+        expect: money
+        resource: support-docs
+      - fixture: fixtures/genai-knowledge-base-create-aws-source.http
+        expect: credential
+        resource: support-docs
+
+  - id: digitalocean.genai-knowledge-base.data-source-upload-urls
+    match: { rest: { method: POST, path: /v2/gen-ai/knowledge_bases/data_sources/file_upload_presigned_urls } }
+    class: write
+    card: "Get upload URLs for knowledge base files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_data_source_file_upload_presigned_urls.yml
+    tests:
+      - fixture: fixtures/genai-knowledge-base-data-source-upload-urls.http
+        expect: write
+
+  - id: digitalocean.genai-knowledge-base.add-data-source
+    match: { rest: { method: POST, path: "/v2/gen-ai/knowledge_bases/{knowledge_base_uuid}/data_sources" } }
+    class: write
+    when:
+      - if: { arg: body.aws_data_source.secret_key, present: true }
+        class: credential
+    resource: { arg: knowledge_base_uuid, kind: genai-knowledge-base }
+    card: "Add a data source to knowledge base {knowledge_base_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_knowledge_base_data_source.yml
+    notes: >-
+      An S3 data source stores an AWS secret key.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-add-data-source.http
+        expect: write
+        resource: "8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4"
+      - fixture: fixtures/genai-knowledge-base-add-data-source-aws.http
+        expect: credential
+        resource: "8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.update-data-source
+    match: { rest: { method: PUT, path: "/v2/gen-ai/knowledge_bases/{knowledge_base_uuid}/data_sources/{data_source_uuid}" } }
+    class: write
+    resource: { arg: knowledge_base_uuid, kind: genai-knowledge-base }
+    card: "Change data source {data_source_uuid} of knowledge base {knowledge_base_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_knowledge_base_data_source.yml
+    tests:
+      - fixture: fixtures/genai-knowledge-base-update-data-source.http
+        expect: write
+        resource: "8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.delete-data-source
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/knowledge_bases/{knowledge_base_uuid}/data_sources/{data_source_uuid}" } }
+    class: delete
+    resource: { arg: knowledge_base_uuid, kind: genai-knowledge-base }
+    card: "Remove data source {data_source_uuid} from knowledge base {knowledge_base_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_knowledge_base_data_source.yml
+    notes: >-
+      The source documents stay where they are and can be added and indexed
+      again.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-delete-data-source.http
+        expect: delete
+        resource: "8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.update
+    match: { rest: { method: PUT, path: "/v2/gen-ai/knowledge_bases/{uuid}" } }
+    class: write
+    resource: { arg: uuid, kind: genai-knowledge-base }
+    card: "Change knowledge base {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_knowledge_base.yml
+    tests:
+      - fixture: fixtures/genai-knowledge-base-update.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/knowledge_bases/{uuid}" } }
+    class: irreversible
+    resource: { arg: uuid, kind: genai-knowledge-base }
+    card: "Delete knowledge base {uuid} and its index"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_knowledge_base.yml
+    notes: >-
+      Uploaded files and the index go with it.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-delete.http
+        expect: irreversible
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-knowledge-base.dropbox-tokens
+    match: { rest: { method: POST, path: /v2/gen-ai/oauth2/dropbox/tokens } }
+    class: credential
+    card: "Exchange a Dropbox OAuth code for tokens"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_oauth2_dropbox_tokens.yml
+    notes: >-
+      Returns Dropbox access and refresh tokens.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-dropbox-tokens.http
+        expect: credential
+
+  - id: digitalocean.genai-knowledge-base.schedule-indexing
+    match: { rest: { method: POST, path: /v2/gen-ai/scheduled-indexing } }
+    class: money
+    resource: { arg: body.knowledge_base_uuid, kind: genai-knowledge-base }
+    card: "Schedule indexing of knowledge base {body.knowledge_base_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_scheduled_indexing.yml
+    notes: >-
+      Every scheduled run bills embedding tokens.
+    tests:
+      - fixture: fixtures/genai-knowledge-base-schedule-indexing.http
+        expect: money
+        resource: "123e4567-e89b-12d3-a456-426614174000"
+
+  - id: digitalocean.genai-knowledge-base.delete-schedule
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/scheduled-indexing/{uuid}" } }
+    class: write
+    resource: { arg: uuid, kind: genai-indexing-schedule }
+    card: "Remove indexing schedule {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_scheduled_indexing.yml
+    tests:
+      - fixture: fixtures/genai-knowledge-base-delete-schedule.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"

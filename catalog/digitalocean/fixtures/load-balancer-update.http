@@ -1,0 +1,7 @@
+# description: Replace the settings of load balancer 4de7ac8b-495b-4884-9a69-1050c6793cd6
+PUT /v2/load_balancers/4de7ac8b-495b-4884-9a69-1050c6793cd6 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "web-lb", "region": "nyc3", "droplet_ids": [3164444, 3164445]}

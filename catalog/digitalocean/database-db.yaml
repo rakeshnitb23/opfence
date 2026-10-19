@@ -1,0 +1,29 @@
+# DigitalOcean REST API: database-db
+operations:
+  - id: digitalocean.database-db.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/dbs" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Create database {body.name} in cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_add.yml
+    tests:
+      - fixture: fixtures/database-db-create.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-db.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/dbs/{database_name}" } }
+    class: irreversible
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Drop database {database_name} in cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete.yml
+    tests:
+      - fixture: fixtures/database-db-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

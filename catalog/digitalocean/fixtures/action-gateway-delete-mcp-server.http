@@ -1,0 +1,5 @@
+# description: Remove MCP server jira-cloud
+DELETE /v2/action-gateway/mcp-servers/jira-cloud HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

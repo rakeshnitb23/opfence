@@ -1,0 +1,43 @@
+# DigitalOcean REST API: database-topic
+operations:
+  - id: digitalocean.database-topic.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/topics" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Create Kafka topic {body.name} in cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_create_kafka_topic.yml
+    tests:
+      - fixture: fixtures/database-topic-create.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-topic.update
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/topics/{topic_name}" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change Kafka topic {topic_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_kafka_topic.yml
+    tests:
+      - fixture: fixtures/database-topic-update.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-topic.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/topics/{topic_name}" } }
+    class: irreversible
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Delete Kafka topic {topic_name} and its messages"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_kafka_topic.yml
+    tests:
+      - fixture: fixtures/database-topic-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

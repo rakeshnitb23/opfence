@@ -1,0 +1,7 @@
+# description: Rename model evaluation run d0049206-b7d6-11ef-bf8f-4e013e2ddde4 to My evaluation run
+PATCH /v2/gen-ai/model_evaluation_runs/d0049206-b7d6-11ef-bf8f-4e013e2ddde4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"eval_run_uuid": "\"12345678-1234-1234-1234-123456789012\"", "name": "My evaluation run"}

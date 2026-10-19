@@ -1,0 +1,7 @@
+# description: Create partner attachment env.prod-partner-network-connect (1000 Mbps) via megaport
+POST /v2/partner_network_connect/attachments HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "env.prod-partner-network-connect", "connection_bandwidth_in_mbps": 1000, "region": "nyc", "naas_provider": "megaport", "vpc_ids": ["c140286f-e6ce-4131-8b7b-df4590ce8d6a", "994a2735-dc84-11e8-80bc-3cfdfea9fba1"], "parent_uuid": "d594cf8d-8c79-4bc5-aec1-6f9b211506b3", "redundancy_zone": "MEGAPORT_BLUE"}

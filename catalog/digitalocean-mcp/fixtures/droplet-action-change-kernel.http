@@ -1,0 +1,8 @@
+# description: Change the kernel of Droplet 3164444 to 7515
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":122,"method":"tools/call","params":{"name":"change-kernel-droplet","arguments":{"ID":3164444,"KernelID":7515}}}

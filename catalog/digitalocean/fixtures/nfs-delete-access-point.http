@@ -1,0 +1,5 @@
+# description: Delete NFS access point 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+DELETE /v2/nfs/access_points/9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

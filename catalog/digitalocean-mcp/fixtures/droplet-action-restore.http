@@ -1,0 +1,8 @@
+# description: Restore Droplet 3164444 from backup 7555620, overwriting its disk
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":127,"method":"tools/call","params":{"name":"restore-droplet","arguments":{"ID":3164444,"ImageID":7555620}}}

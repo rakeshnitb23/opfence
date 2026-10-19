@@ -1,0 +1,117 @@
+# DigitalOcean MCP server: image
+operations:
+  - id: digitalocean-mcp.image.list
+    match: { mcp: { tool: image-list } }
+    class: read
+    card: "List images"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/images_tools.go
+    tests:
+      - fixture: fixtures/image-list.http
+        expect: read
+
+  - id: digitalocean-mcp.image.get
+    match: { mcp: { tool: image-get } }
+    class: read
+    resource: { arg: ID, kind: image }
+    card: "Show image {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/images_tools.go
+    tests:
+      - fixture: fixtures/image-get.http
+        expect: read
+        resource: "7555620"
+
+  - id: digitalocean-mcp.image.get-action
+    match: { mcp: { tool: image-action-get } }
+    class: read
+    resource: { arg: ImageID, kind: image }
+    card: "Show action {ActionID} of image {ImageID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/image_actions_tools.go
+    tests:
+      - fixture: fixtures/image-get-action.http
+        expect: read
+        resource: "7555620"
+
+  - id: digitalocean-mcp.image.create
+    match: { mcp: { tool: image-create } }
+    class: money
+    resource: { arg: Name, kind: image }
+    card: "Import custom image {Name} from {Url}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/images_tools.go
+    notes: >-
+      Custom images are billed per GB.
+    tests:
+      - fixture: fixtures/image-create.http
+        expect: money
+        resource: ubuntu-custom
+
+  - id: digitalocean-mcp.image.update
+    match: { mcp: { tool: image-update } }
+    class: write
+    resource: { arg: ID, kind: image }
+    card: "Rename image {ID} to {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/images_tools.go
+    tests:
+      - fixture: fixtures/image-update.http
+        expect: write
+        resource: "7555620"
+
+  - id: digitalocean-mcp.image.delete
+    match: { mcp: { tool: image-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: image }
+    card: "Delete image or snapshot {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/images_tools.go
+    tests:
+      - fixture: fixtures/image-delete.http
+        expect: irreversible
+        resource: "7555620"
+
+  - id: digitalocean-mcp.image.convert
+    match: { mcp: { tool: image-action-convert } }
+    class: money
+    resource: { arg: ID, kind: image }
+    card: "Convert backup {ID} to a snapshot"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/image_actions_tools.go
+    notes: >-
+      Snapshots are billed per GB.
+    tests:
+      - fixture: fixtures/image-convert.http
+        expect: money
+        resource: "7555620"
+
+  - id: digitalocean-mcp.image.transfer
+    match: { mcp: { tool: image-action-transfer } }
+    class: money
+    resource: { arg: ID, kind: image }
+    card: "Copy image {ID} to region {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/image_actions_tools.go
+    notes: >-
+      The copy in the new region is billed storage.
+    tests:
+      - fixture: fixtures/image-transfer.http
+        expect: money
+        resource: "7555620"

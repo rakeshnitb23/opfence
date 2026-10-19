@@ -1,0 +1,19 @@
+# DigitalOcean REST API: one-click
+operations:
+  - id: digitalocean.one-click.install-kubernetes
+    match: { rest: { method: POST, path: /v2/1-clicks/kubernetes } }
+    class: money
+    resource: { arg: body.cluster_uuid, kind: kubernetes-cluster }
+    card: "Install 1-Click apps {body.addon_slugs} on Kubernetes cluster {body.cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/1-clicks/oneClicks_install_kubernetes.yml
+    notes: >-
+      Installs Marketplace charts into the cluster; several (ingress
+      controllers, databases) create billed load balancers or volumes, so
+      assume a cost.
+    tests:
+      - fixture: fixtures/one-click-install-kubernetes.http
+        expect: money
+        resource: "50a994b6-c303-438f-9495-7e896cfe6b08"

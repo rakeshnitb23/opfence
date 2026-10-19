@@ -1,0 +1,8 @@
+# description: Run evaluation workflow weekly-2026-10-18 in workspace support
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":192,"method":"tools/call","params":{"name":"genai-run-evaluation-workflow","arguments":{"workspace_name":"support","test_case_name":"support-quality","run_name":"weekly-2026-10-18","agent_uuids":["b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b"],"dataset_file_content":"query\n\"{\"\"q\"\":\"\"Where is my order?\"\"}\""}}}

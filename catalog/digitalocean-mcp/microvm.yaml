@@ -1,0 +1,158 @@
+# DigitalOcean MCP server: microvm
+operations:
+  - id: digitalocean-mcp.microvm.list
+    match: { mcp: { tool: microvm-list } }
+    class: read
+    card: "List MicroVMs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-list.http
+        expect: read
+
+  - id: digitalocean-mcp.microvm.get
+    match: { mcp: { tool: microvm-get } }
+    class: read
+    resource: { arg: id, kind: microvm }
+    card: "Show MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-get.http
+        expect: read
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.create
+    match: { mcp: { tool: microvm-create } }
+    class: money
+    resource: { arg: name, kind: microvm }
+    card: "Create MicroVM {name} from {source.oci_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-create.http
+        expect: money
+        resource: sandbox-1
+
+  - id: digitalocean-mcp.microvm.pause
+    match: { mcp: { tool: microvm-pause } }
+    class: write
+    resource: { arg: id, kind: microvm }
+    card: "Pause MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-pause.http
+        expect: write
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.resume
+    match: { mcp: { tool: microvm-resume } }
+    class: write
+    resource: { arg: id, kind: microvm }
+    card: "Resume MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-resume.http
+        expect: write
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.exec
+    match: { mcp: { tool: microvm-exec } }
+    class: irreversible
+    resource: { arg: id, kind: microvm }
+    card: "Run {argv} in MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    notes: >-
+      Runs an arbitrary command in the VM; it can destroy data and its effect
+      cannot be predicted from the arguments.
+    tests:
+      - fixture: fixtures/microvm-exec.http
+        expect: irreversible
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.delete
+    match: { mcp: { tool: microvm-delete } }
+    class: irreversible
+    resource: { arg: id, kind: microvm }
+    card: "Delete MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    notes: >-
+      The tool says this is irreversible; checkpoints are kept.
+    tests:
+      - fixture: fixtures/microvm-delete.http
+        expect: irreversible
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.list-checkpoints
+    match: { mcp: { tool: microvm-checkpoint-list } }
+    class: read
+    card: "List MicroVM checkpoints"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-list-checkpoints.http
+        expect: read
+
+  - id: digitalocean-mcp.microvm.get-checkpoint
+    match: { mcp: { tool: microvm-checkpoint-get } }
+    class: read
+    resource: { arg: id, kind: microvm-checkpoint }
+    card: "Show MicroVM checkpoint {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-get-checkpoint.http
+        expect: read
+        resource: a7b6c5d4-e3f2-4a1b-9c8d-7e6f5a4b3c2d
+
+  - id: digitalocean-mcp.microvm.checkpoint
+    match: { mcp: { tool: microvm-checkpoint-create } }
+    class: write
+    resource: { arg: id, kind: microvm }
+    card: "Checkpoint MicroVM {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    tests:
+      - fixture: fixtures/microvm-checkpoint.http
+        expect: write
+        resource: f3c1a2b4-6d7e-4f80-9a1b-2c3d4e5f6a7b
+
+  - id: digitalocean-mcp.microvm.delete-checkpoint
+    match: { mcp: { tool: microvm-checkpoint-delete } }
+    class: irreversible
+    resource: { arg: id, kind: microvm-checkpoint }
+    card: "Delete MicroVM checkpoint {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/microdroplet/microdroplet_tools.go
+    notes: >-
+      The tool says this is irreversible.
+    tests:
+      - fixture: fixtures/microvm-delete-checkpoint.http
+        expect: irreversible
+        resource: a7b6c5d4-e3f2-4a1b-9c8d-7e6f5a4b3c2d

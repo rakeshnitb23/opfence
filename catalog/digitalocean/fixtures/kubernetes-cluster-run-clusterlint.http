@@ -1,0 +1,7 @@
+# description: Run clusterlint checks on cluster bd5f5959-5e1e-4205-a714-a914373942af
+POST /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/clusterlint HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"include_groups": ["basic", "doks", "security"], "include_checks": ["bare-pods", "resource-requirements"], "exclude_groups": ["workload-health"], "exclude_checks": ["default-namespace"]}

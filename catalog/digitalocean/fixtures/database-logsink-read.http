@@ -1,0 +1,5 @@
+# description: Read log sink 50484ec3-19d6-4cd3-b56f-3b0381c289a6 with its keys
+GET /v2/databases/9cc10173-e9ea-4176-9dbc-a4cee4c4ff30/logsink/50484ec3-19d6-4cd3-b56f-3b0381c289a6 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

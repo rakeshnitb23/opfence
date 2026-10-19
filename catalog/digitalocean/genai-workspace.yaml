@@ -1,0 +1,109 @@
+# DigitalOcean REST API: genai-workspace
+operations:
+  - id: digitalocean.genai-workspace.create
+    match: { rest: { method: POST, path: /v2/gen-ai/workspaces } }
+    class: write
+    resource: { arg: body.name, kind: genai-workspace }
+    card: "Create GenAI workspace {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_workspace.yml
+    tests:
+      - fixture: fixtures/genai-workspace-create.http
+        expect: write
+        resource: "example name"
+
+  - id: digitalocean.genai-workspace.update
+    match: { rest: { method: PUT, path: "/v2/gen-ai/workspaces/{workspace_uuid}" } }
+    class: write
+    resource: { arg: workspace_uuid, kind: genai-workspace }
+    card: "Change GenAI workspace {workspace_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_workspace.yml
+    tests:
+      - fixture: fixtures/genai-workspace-update.http
+        expect: write
+        resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-workspace.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/workspaces/{workspace_uuid}" } }
+    class: irreversible
+    resource: { arg: workspace_uuid, kind: genai-workspace }
+    card: "Delete GenAI workspace {workspace_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_workspace.yml
+    notes: >-
+      The reference does not say whether the workspace's agents and test cases
+      survive; assume they go with it.
+    tests:
+      - fixture: fixtures/genai-workspace-delete.http
+        expect: irreversible
+        resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-workspace.move-agents
+    match: { rest: { method: PUT, path: "/v2/gen-ai/workspaces/{workspace_uuid}/agents" } }
+    class: write
+    resource: { arg: workspace_uuid, kind: genai-workspace }
+    card: "Move agents {body.agent_uuids} into workspace {workspace_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agents_workspace.yml
+    tests:
+      - fixture: fixtures/genai-workspace-move-agents.http
+        expect: write
+        resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-workspace.list
+    match: { rest: { method: GET, path: /v2/gen-ai/workspaces } }
+    class: credential
+    card: "List GenAI workspaces with their agents and API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_workspaces.yml
+    notes: >-
+      Agent objects include their API keys (api_keys[].api_key,
+      api_key_infos[].secret_key); the schema does not say they are masked.
+    tests:
+      - fixture: fixtures/genai-workspace-list.http
+        expect: credential
+
+  - id: digitalocean.genai-workspace.read
+    match: { rest: { method: GET, path: "/v2/gen-ai/workspaces/{workspace_uuid}" } }
+    class: credential
+    resource: { arg: workspace_uuid, kind: genai-workspace }
+    card: "Read GenAI workspace {workspace_uuid} with its agents and API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_get_workspace.yml
+    notes: >-
+      Agent objects include their API keys (api_keys[].api_key,
+      api_key_infos[].secret_key); the schema does not say they are masked.
+    tests:
+      - fixture: fixtures/genai-workspace-read.http
+        expect: credential
+        resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-workspace.list-agents
+    match: { rest: { method: GET, path: "/v2/gen-ai/workspaces/{workspace_uuid}/agents" } }
+    class: credential
+    resource: { arg: workspace_uuid, kind: genai-workspace }
+    card: "List agents of workspace {workspace_uuid} with their API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_agents_by_workspace.yml
+    notes: >-
+      Agent objects include their API keys (api_keys[].api_key,
+      api_key_infos[].secret_key); the schema does not say they are masked.
+    tests:
+      - fixture: fixtures/genai-workspace-list-agents.http
+        expect: credential
+        resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"

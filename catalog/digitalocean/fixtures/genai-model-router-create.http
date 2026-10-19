@@ -1,0 +1,7 @@
+# description: Create model router "my-model-router"
+POST /v2/gen-ai/models/routers HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"description": "\"My Model Router Description\"", "fallback_models": ["example string"], "name": "\"my-model-router\"", "regions": ["example string"]}

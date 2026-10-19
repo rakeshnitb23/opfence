@@ -1,0 +1,8 @@
+# description: Create Dedicated Inference llama-prod on GPUs in atl1
+POST /mcp HTTP/1.1
+Host: dedicated-inference.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":61,"method":"tools/call","params":{"name":"dedicated-inference-create","arguments":{"Name":"llama-prod","Region":"atl1","ModelDeployments":[{"ModelSlug":"meta-llama/Llama-3.1-8B-Instruct","ModelProvider":"hugging_face","Accelerators":[{"AcceleratorSlug":"gpu-h100x1-80gb","Scale":1,"Type":"prefill_decode"}]}],"EnablePublicEndpoint":true}}}

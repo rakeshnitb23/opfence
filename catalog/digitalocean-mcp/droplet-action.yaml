@@ -1,0 +1,394 @@
+# DigitalOcean MCP server: droplet-action
+operations:
+  - id: digitalocean-mcp.droplet-action.reboot
+    match: { mcp: { tool: reboot-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Reboot Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-reboot.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.power-cycle
+    match: { mcp: { tool: power-cycle-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Power cycle Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-cycle.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.power-off
+    match: { mcp: { tool: power-off-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Power off Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-off.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.power-on
+    match: { mcp: { tool: power-on-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Power on Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-on.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.shutdown
+    match: { mcp: { tool: shutdown-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Shut down Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-shutdown.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.power-cycle-by-tag
+    match: { mcp: { tool: power-cycle-droplets-tag } }
+    class: write
+    resource: { arg: Tag, kind: tag }
+    card: "Power cycle every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-cycle-by-tag.http
+        expect: write
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.power-off-by-tag
+    match: { mcp: { tool: power-off-droplets-tag } }
+    class: write
+    resource: { arg: Tag, kind: tag }
+    card: "Power off every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-off-by-tag.http
+        expect: write
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.power-on-by-tag
+    match: { mcp: { tool: power-on-droplets-tag } }
+    class: write
+    resource: { arg: Tag, kind: tag }
+    card: "Power on every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-power-on-by-tag.http
+        expect: write
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.shutdown-by-tag
+    match: { mcp: { tool: shutdown-droplets-tag } }
+    class: write
+    resource: { arg: Tag, kind: tag }
+    card: "Shut down every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-shutdown-by-tag.http
+        expect: write
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.rename
+    match: { mcp: { tool: rename-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Rename Droplet {ID} to {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-rename.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.change-kernel
+    match: { mcp: { tool: change-kernel-droplet } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Change the kernel of Droplet {ID} to {KernelID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-change-kernel.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-private-networking
+    match: { mcp: { tool: droplet-enable-private-net } }
+    class: write
+    resource: { arg: ID, kind: droplet }
+    card: "Enable private networking on Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-enable-private-networking.http
+        expect: write
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-private-networking-by-tag
+    match: { mcp: { tool: enable-private-net-droplets-tag } }
+    class: write
+    resource: { arg: Tag, kind: tag }
+    card: "Enable private networking on every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    tests:
+      - fixture: fixtures/droplet-action-enable-private-networking-by-tag.http
+        expect: write
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.rebuild
+    match: { mcp: { tool: rebuild-droplet } }
+    class: irreversible
+    resource: { arg: ID, kind: droplet }
+    card: "Rebuild Droplet {ID} from image {ImageID}, erasing its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Reinstalls the disk from the image; everything on it is gone.
+    tests:
+      - fixture: fixtures/droplet-action-rebuild.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.rebuild-by-slug
+    match: { mcp: { tool: rebuild-droplet-by-slug } }
+    class: irreversible
+    resource: { arg: ID, kind: droplet }
+    card: "Rebuild Droplet {ID} from {ImageSlug}, erasing its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Reinstalls the disk from the image; everything on it is gone.
+    tests:
+      - fixture: fixtures/droplet-action-rebuild-by-slug.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.restore
+    match: { mcp: { tool: restore-droplet } }
+    class: irreversible
+    resource: { arg: ID, kind: droplet }
+    card: "Restore Droplet {ID} from backup {ImageID}, overwriting its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Overwrites the disk with the backup; changes since the backup are gone.
+    tests:
+      - fixture: fixtures/droplet-action-restore.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.resize
+    match: { mcp: { tool: resize-droplet } }
+    class: money
+    resource: { arg: ID, kind: droplet }
+    card: "Resize Droplet {ID} to {Size}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      A bigger size costs more; with ResizeDisk the disk cannot shrink back.
+    tests:
+      - fixture: fixtures/droplet-action-resize.http
+        expect: money
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-backups
+    match: { mcp: { tool: enable-backups-droplet } }
+    class: money
+    resource: { arg: ID, kind: droplet }
+    card: "Enable backups on Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Backups are billed as a share of the Droplet price.
+    tests:
+      - fixture: fixtures/droplet-action-enable-backups.http
+        expect: money
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-backups-by-tag
+    match: { mcp: { tool: enable-backups-droplets-tag } }
+    class: money
+    resource: { arg: Tag, kind: tag }
+    card: "Enable backups on every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Backups are billed as a share of the Droplet price.
+    tests:
+      - fixture: fixtures/droplet-action-enable-backups-by-tag.http
+        expect: money
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.disable-backups
+    match: { mcp: { tool: disable-backups-droplet } }
+    class: irreversible
+    resource: { arg: ID, kind: droplet }
+    card: "Disable backups on Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Turns off the safety net; the API reference does not say existing
+      backups survive, so this is treated as losing them.
+    tests:
+      - fixture: fixtures/droplet-action-disable-backups.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.disable-backups-by-tag
+    match: { mcp: { tool: disable-backups-droplets-tag } }
+    class: irreversible
+    resource: { arg: Tag, kind: tag }
+    card: "Disable backups on every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Turns off the safety net; the API reference does not say existing
+      backups survive, so this is treated as losing them.
+    tests:
+      - fixture: fixtures/droplet-action-disable-backups-by-tag.http
+        expect: irreversible
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.snapshot
+    match: { mcp: { tool: snapshot-droplet } }
+    class: money
+    resource: { arg: ID, kind: droplet }
+    card: "Snapshot Droplet {ID} as {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Snapshots are billed per GB.
+    tests:
+      - fixture: fixtures/droplet-action-snapshot.http
+        expect: money
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.snapshot-by-tag
+    match: { mcp: { tool: snapshot-droplets-tag } }
+    class: money
+    resource: { arg: Tag, kind: tag }
+    card: "Snapshot every Droplet tagged {Tag} as {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Snapshots are billed per GB.
+    tests:
+      - fixture: fixtures/droplet-action-snapshot-by-tag.http
+        expect: money
+        resource: web
+
+  - id: digitalocean-mcp.droplet-action.reset-password
+    match: { mcp: { tool: reset-droplet-password } }
+    class: credential
+    resource: { arg: ID, kind: droplet }
+    card: "Reset the root password of Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Sets a new root password (emailed to the account owner); the old one
+      stops working.
+    tests:
+      - fixture: fixtures/droplet-action-reset-password.http
+        expect: credential
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-ipv6
+    match: { mcp: { tool: enable-ipv6-droplet } }
+    class: access
+    resource: { arg: ID, kind: droplet }
+    card: "Enable IPv6 on Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Gives the Droplet a new public address; it cannot be turned off again.
+    tests:
+      - fixture: fixtures/droplet-action-enable-ipv6.http
+        expect: access
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet-action.enable-ipv6-by-tag
+    match: { mcp: { tool: enable-ipv6-droplets-tag } }
+    class: access
+    resource: { arg: Tag, kind: tag }
+    card: "Enable IPv6 on every Droplet tagged {Tag}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_actions_tools.go
+    notes: >-
+      Gives each Droplet a new public address; it cannot be turned off again.
+    tests:
+      - fixture: fixtures/droplet-action-enable-ipv6-by-tag.http
+        expect: access
+        resource: web

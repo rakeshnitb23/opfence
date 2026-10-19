@@ -1,0 +1,8 @@
+# description: Show node pool cdda885e-7663-40c8-bc74-3a036c66545d
+POST /mcp HTTP/1.1
+Host: doks.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":98,"method":"tools/call","params":{"name":"doks-get-nodepool","arguments":{"ClusterID":"bd5f5959-5e1e-4205-a714-a914373942af","NodePoolID":"cdda885e-7663-40c8-bc74-3a036c66545d"}}}

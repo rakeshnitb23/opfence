@@ -1,0 +1,5 @@
+# description: List agents using Anthropic key 1b418231-b7d6-11ef-bf8f-4e013e2ddde4, with their API keys
+GET /v2/gen-ai/anthropic/keys/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/agents HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

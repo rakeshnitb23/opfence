@@ -1,0 +1,8 @@
+# description: Create 100 GB volume shop-data in nyc3
+POST /mcp HTTP/1.1
+Host: volumes.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":391,"method":"tools/call","params":{"name":"volume-create","arguments":{"Name":"shop-data","SizeGigaBytes":100,"Region":"nyc3"}}}

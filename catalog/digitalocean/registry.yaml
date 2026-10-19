@@ -1,0 +1,290 @@
+# DigitalOcean REST API: registry
+operations:
+  - id: digitalocean.registry.create
+    match: { rest: { method: POST, path: /v2/registries } }
+    class: write
+    when:
+      - if: { arg: body.subscription_tier_slug, matches: '(?i)^(?:$|[^s]|s(?:$|[^t])|st(?:$|[^a])|sta(?:$|[^r])|star(?:$|[^t])|start(?:$|[^e])|starte(?:$|[^r])|starter.)' }
+        class: money
+      - if: { arg: body.subscription_tier_slug, absent: true }
+        class: money
+    resource: { arg: body.name, kind: registry }
+    card: "Create container registry {body.name} on tier {body.subscription_tier_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_create.yml
+    notes: >-
+      Only the starter tier is free; any other tier, or none named, is assumed
+      billed.
+    tests:
+      - fixture: fixtures/registry-create.http
+        expect: write
+        resource: shop-registry
+      - fixture: fixtures/registry-create-paid.http
+        expect: money
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete
+    match: { rest: { method: DELETE, path: "/v2/registries/{registry_name}" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete container registry {registry_name} and every image in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_delete.yml
+    tests:
+      - fixture: fixtures/registry-delete.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.change-subscription
+    match: { rest: { method: POST, path: /v2/registries/subscription } }
+    class: money
+    card: "Change the container registry tier to {body.tier_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_update_subscription.yml
+    tests:
+      - fixture: fixtures/registry-change-subscription.http
+        expect: money
+
+  - id: digitalocean.registry.garbage-collect
+    match: { rest: { method: POST, path: "/v2/registries/{registry_name}/garbage-collection" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Start garbage collection in registry {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_run_garbageCollection.yml
+    notes: >-
+      Permanently removes untagged manifests and unreferenced blobs.
+    tests:
+      - fixture: fixtures/registry-garbage-collect.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.cancel-garbage-collection
+    match: { rest: { method: PUT, path: "/v2/registries/{registry_name}/garbage-collection/{garbage_collection_uuid}" } }
+    class: write
+    resource: { arg: registry_name, kind: registry }
+    card: "Cancel garbage collection {garbage_collection_uuid} in {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_update_garbageCollection.yml
+    tests:
+      - fixture: fixtures/registry-cancel-garbage-collection.http
+        expect: write
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete-repository
+    match: { rest: { method: DELETE, path: "/v2/registries/{registry_name}/repositories/{repository_name}" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete repository {repository_name} and its images from {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_delete_repository.yml
+    tests:
+      - fixture: fixtures/registry-delete-repository.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete-tag
+    match: { rest: { method: DELETE, path: "/v2/registries/{registry_name}/repositories/{repository_name}/tags/{repository_tag}" } }
+    class: delete
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete tag {repository_name}:{repository_tag} from {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_delete_repositoryTag.yml
+    notes: >-
+      Removes the tag; the manifest stays until garbage collection.
+    tests:
+      - fixture: fixtures/registry-delete-tag.http
+        expect: delete
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete-manifest
+    match: { rest: { method: DELETE, path: "/v2/registries/{registry_name}/repositories/{repository_name}/digests/{manifest_digest}" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete manifest {manifest_digest} of {repository_name} from {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_delete_repositoryManifest.yml
+    tests:
+      - fixture: fixtures/registry-delete-manifest.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.validate-name
+    match: { rest: { method: POST, path: /v2/registries/validate-name } }
+    class: read
+    card: "Check whether registry name {body.name} is free"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_validate_name.yml
+    tests:
+      - fixture: fixtures/registry-validate-name.http
+        expect: read
+
+  - id: digitalocean.registry.create-single
+    match: { rest: { method: POST, path: /v2/registry } }
+    class: write
+    when:
+      - if: { arg: body.subscription_tier_slug, matches: '(?i)^(?:$|[^s]|s(?:$|[^t])|st(?:$|[^a])|sta(?:$|[^r])|star(?:$|[^t])|start(?:$|[^e])|starte(?:$|[^r])|starter.)' }
+        class: money
+      - if: { arg: body.subscription_tier_slug, absent: true }
+        class: money
+    resource: { arg: body.name, kind: registry }
+    card: "Create container registry {body.name} on tier {body.subscription_tier_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_create.yml
+    notes: >-
+      Only the starter tier is free; any other tier, or none named, is assumed
+      billed.
+    tests:
+      - fixture: fixtures/registry-create-single.http
+        expect: write
+        resource: shop-registry
+      - fixture: fixtures/registry-create-single-paid.http
+        expect: money
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete-single
+    match: { rest: { method: DELETE, path: /v2/registry } }
+    class: irreversible
+    card: "Delete the container registry and every image in it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_delete.yml
+    tests:
+      - fixture: fixtures/registry-delete-single.http
+        expect: irreversible
+
+  - id: digitalocean.registry.change-subscription-single
+    match: { rest: { method: POST, path: /v2/registry/subscription } }
+    class: money
+    card: "Change the container registry tier to {body.tier_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_update_subscription.yml
+    tests:
+      - fixture: fixtures/registry-change-subscription-single.http
+        expect: money
+
+  - id: digitalocean.registry.validate-name-single
+    match: { rest: { method: POST, path: /v2/registry/validate-name } }
+    class: read
+    card: "Check whether registry name {body.name} is free"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_validate_name.yml
+    tests:
+      - fixture: fixtures/registry-validate-name-single.http
+        expect: read
+
+  - id: digitalocean.registry.delete-tag-single
+    match: { rest: { method: DELETE, path: "/v2/registry/{registry_name}/repositories/{repository_name}/tags/{repository_tag}" } }
+    class: delete
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete tag {repository_name}:{repository_tag} from {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_delete_repositoryTag.yml
+    notes: >-
+      Removes the tag; the manifest stays until garbage collection.
+    tests:
+      - fixture: fixtures/registry-delete-tag-single.http
+        expect: delete
+        resource: shop-registry
+
+  - id: digitalocean.registry.delete-manifest-single
+    match: { rest: { method: DELETE, path: "/v2/registry/{registry_name}/repositories/{repository_name}/digests/{manifest_digest}" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Delete manifest {manifest_digest} of {repository_name} from {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_delete_repositoryManifest.yml
+    tests:
+      - fixture: fixtures/registry-delete-manifest-single.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.garbage-collect-single
+    match: { rest: { method: POST, path: "/v2/registry/{registry_name}/garbage-collection" } }
+    class: irreversible
+    resource: { arg: registry_name, kind: registry }
+    card: "Start garbage collection in registry {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_run_garbageCollection.yml
+    notes: >-
+      Permanently removes untagged manifests and unreferenced blobs.
+    tests:
+      - fixture: fixtures/registry-garbage-collect-single.http
+        expect: irreversible
+        resource: shop-registry
+
+  - id: digitalocean.registry.cancel-garbage-collection-single
+    match: { rest: { method: PUT, path: "/v2/registry/{registry_name}/garbage-collection/{garbage_collection_uuid}" } }
+    class: write
+    resource: { arg: registry_name, kind: registry }
+    card: "Cancel garbage collection {garbage_collection_uuid} in {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_update_garbageCollection.yml
+    tests:
+      - fixture: fixtures/registry-cancel-garbage-collection-single.http
+        expect: write
+        resource: shop-registry
+
+  - id: digitalocean.registry.docker-credentials
+    match: { rest: { method: GET, path: "/v2/registries/{registry_name}/docker-credentials" } }
+    class: credential
+    resource: { arg: registry_name, kind: registry }
+    card: "Get Docker credentials for registry {registry_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registries_get_dockerCredentials.yml
+    notes: >-
+      Returns a Docker config with a registry token (read-write with
+      read_write=true).
+    tests:
+      - fixture: fixtures/registry-docker-credentials.http
+        expect: credential
+        resource: shop-registry
+
+  - id: digitalocean.registry.docker-credentials-single
+    match: { rest: { method: GET, path: /v2/registry/docker-credentials } }
+    class: credential
+    card: "Get Docker credentials for the container registry"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/registry/registry_get_dockerCredentials.yml
+    notes: >-
+      Returns a Docker config with a registry token.
+    tests:
+      - fixture: fixtures/registry-docker-credentials-single.http
+        expect: credential

@@ -1,0 +1,8 @@
+# description: Create Droplet web-1 (s-1vcpu-1gb) in nyc3
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":110,"method":"tools/call","params":{"name":"droplet-create","arguments":{"Name":"web-1","Size":"s-1vcpu-1gb","Region":"nyc3","ImageSlug":"ubuntu-24-04-x64"}}}

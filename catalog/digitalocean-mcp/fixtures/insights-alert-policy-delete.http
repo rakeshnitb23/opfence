@@ -1,0 +1,8 @@
+# description: Delete legacy alert policy b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":246,"method":"tools/call","params":{"name":"alert-policy-delete","arguments":{"UUID":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b"}}}

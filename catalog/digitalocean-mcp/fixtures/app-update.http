@@ -1,0 +1,8 @@
+# description: Update app c2a93513-8d9b-4223-9d61-5e7272c81cf5
+POST /mcp HTTP/1.1
+Host: apps.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":18,"method":"tools/call","params":{"name":"apps-update","arguments":{"update":{"app_id":"c2a93513-8d9b-4223-9d61-5e7272c81cf5","request":{"spec":{"name":"shop-web","region":"nyc","services":[{"name":"web","github":{"repo":"example/shop-web","branch":"main","deploy_on_push":true},"instance_size_slug":"apps-s-1vcpu-1gb","instance_count":1,"http_port":8080}]}}}}}}

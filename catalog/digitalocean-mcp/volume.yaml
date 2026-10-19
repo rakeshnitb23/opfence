@@ -1,0 +1,185 @@
+# DigitalOcean MCP server: volume
+operations:
+  - id: digitalocean-mcp.volume.list
+    match: { mcp: { tool: volume-list } }
+    class: read
+    card: "List volumes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-list.http
+        expect: read
+
+  - id: digitalocean-mcp.volume.get
+    match: { mcp: { tool: volume-get } }
+    class: read
+    resource: { arg: ID, kind: volume }
+    card: "Show volume {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-get.http
+        expect: read
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.list-actions
+    match: { mcp: { tool: volume-action-list } }
+    class: read
+    resource: { arg: VolumeID, kind: volume }
+    card: "List actions of volume {VolumeID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume_actions.go
+    tests:
+      - fixture: fixtures/volume-list-actions.http
+        expect: read
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.get-action
+    match: { mcp: { tool: volume-action-get } }
+    class: read
+    resource: { arg: VolumeID, kind: volume }
+    card: "Show action {ActionID} of volume {VolumeID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume_actions.go
+    tests:
+      - fixture: fixtures/volume-get-action.http
+        expect: read
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.create
+    match: { mcp: { tool: volume-create } }
+    class: money
+    resource: { arg: Name, kind: volume }
+    card: "Create {SizeGigaBytes} GB volume {Name} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-create.http
+        expect: money
+        resource: shop-data
+
+  - id: digitalocean-mcp.volume.delete
+    match: { mcp: { tool: volume-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: volume }
+    card: "Delete volume {ID} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-delete.http
+        expect: irreversible
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.attach
+    match: { mcp: { tool: volume-attach } }
+    class: write
+    resource: { arg: VolumeID, kind: volume }
+    card: "Attach volume {VolumeID} to Droplet {DropletID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume_actions.go
+    tests:
+      - fixture: fixtures/volume-attach.http
+        expect: write
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.detach
+    match: { mcp: { tool: volume-detach } }
+    class: write
+    resource: { arg: VolumeID, kind: volume }
+    card: "Detach volume {VolumeID} from Droplet {DropletID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume_actions.go
+    tests:
+      - fixture: fixtures/volume-detach.http
+        expect: write
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.resize
+    match: { mcp: { tool: volume-resize } }
+    class: money
+    resource: { arg: VolumeID, kind: volume }
+    card: "Grow volume {VolumeID} to {SizeGigaBytes} GB"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume_actions.go
+    notes: >-
+      Bigger volumes cost more and cannot shrink.
+    tests:
+      - fixture: fixtures/volume-resize.http
+        expect: money
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.list-snapshots
+    match: { mcp: { tool: volume-snapshot-list } }
+    class: read
+    resource: { arg: VolumeID, kind: volume }
+    card: "List snapshots of volume {VolumeID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-list-snapshots.http
+        expect: read
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.get-snapshot
+    match: { mcp: { tool: volume-snapshot-get } }
+    class: read
+    resource: { arg: ID, kind: snapshot }
+    card: "Show volume snapshot {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-get-snapshot.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.volume.snapshot
+    match: { mcp: { tool: volume-snapshot-create } }
+    class: money
+    resource: { arg: VolumeID, kind: volume }
+    card: "Snapshot volume {VolumeID} as {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    notes: >-
+      Snapshots are billed per GB.
+    tests:
+      - fixture: fixtures/volume-snapshot.http
+        expect: money
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+
+  - id: digitalocean-mcp.volume.delete-snapshot
+    match: { mcp: { tool: volume-snapshot-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: snapshot }
+    card: "Delete volume snapshot {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/volumes/volume.go
+    tests:
+      - fixture: fixtures/volume-delete-snapshot.http
+        expect: irreversible
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

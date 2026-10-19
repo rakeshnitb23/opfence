@@ -1,0 +1,57 @@
+# DigitalOcean MCP server: function-activation
+operations:
+  - id: digitalocean-mcp.function-activation.list
+    match: { mcp: { tool: functions-list-activations } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "List function runs in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/activation_tools.go
+    tests:
+      - fixture: fixtures/function-activation-list.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-activation.get
+    match: { mcp: { tool: functions-get-activation } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Show function run {ActivationID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/activation_tools.go
+    tests:
+      - fixture: fixtures/function-activation-get.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-activation.get-logs
+    match: { mcp: { tool: functions-get-activation-logs } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Read logs of function run {ActivationID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/activation_tools.go
+    tests:
+      - fixture: fixtures/function-activation-get-logs.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-activation.get-result
+    match: { mcp: { tool: functions-get-activation-result } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Read the result of function run {ActivationID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/activation_tools.go
+    tests:
+      - fixture: fixtures/function-activation-get-result.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397

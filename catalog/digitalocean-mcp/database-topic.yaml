@@ -1,0 +1,71 @@
+# DigitalOcean MCP server: database-topic
+operations:
+  - id: digitalocean-mcp.database-topic.list
+    match: { mcp: { tool: db-cluster-list-topics } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "List Kafka topics of cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-topic-list.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-topic.get
+    match: { mcp: { tool: db-cluster-get-topic } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show Kafka topic {name} of cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-topic-get.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-topic.create
+    match: { mcp: { tool: db-cluster-create-topic } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Create Kafka topic {name} in cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-topic-create.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-topic.update
+    match: { mcp: { tool: db-cluster-update-topic } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change Kafka topic {name} of cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-topic-update.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database-topic.delete
+    match: { mcp: { tool: db-cluster-delete-topic } }
+    class: irreversible
+    resource: { arg: id, kind: database }
+    card: "Delete Kafka topic {name} and its messages"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-topic-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

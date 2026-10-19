@@ -1,0 +1,77 @@
+# DigitalOcean MCP server: spaces-key
+operations:
+  - id: digitalocean-mcp.spaces-key.list
+    match: { mcp: { tool: spaces-key-list } }
+    class: read
+    card: "List Spaces access keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/keys_tools.go
+    notes: >-
+      Returns access key IDs, not secrets.
+    tests:
+      - fixture: fixtures/spaces-key-list.http
+        expect: read
+
+  - id: digitalocean-mcp.spaces-key.get
+    match: { mcp: { tool: spaces-key-get } }
+    class: read
+    resource: { arg: AccessKey, kind: spaces-key }
+    card: "Show Spaces access key {AccessKey}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/keys_tools.go
+    notes: >-
+      The secret is not returned.
+    tests:
+      - fixture: fixtures/spaces-key-get.http
+        expect: read
+        resource: SPACESKEYEXAMPLE01
+
+  - id: digitalocean-mcp.spaces-key.create
+    match: { mcp: { tool: spaces-key-create } }
+    class: credential
+    resource: { arg: Name, kind: spaces-key }
+    card: "Create Spaces access key {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/keys_tools.go
+    notes: >-
+      The secret key is returned once.
+    tests:
+      - fixture: fixtures/spaces-key-create.http
+        expect: credential
+        resource: backup-writer
+
+  - id: digitalocean-mcp.spaces-key.update
+    match: { mcp: { tool: spaces-key-update } }
+    class: write
+    resource: { arg: AccessKey, kind: spaces-key }
+    card: "Rename Spaces access key {AccessKey} to {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/keys_tools.go
+    tests:
+      - fixture: fixtures/spaces-key-update.http
+        expect: write
+        resource: SPACESKEYEXAMPLE01
+
+  - id: digitalocean-mcp.spaces-key.delete
+    match: { mcp: { tool: spaces-key-delete } }
+    class: access
+    resource: { arg: AccessKey, kind: spaces-key }
+    card: "Delete Spaces access key {AccessKey}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/keys_tools.go
+    notes: >-
+      Whoever used the key loses access.
+    tests:
+      - fixture: fixtures/spaces-key-delete.http
+        expect: access
+        resource: SPACESKEYEXAMPLE01

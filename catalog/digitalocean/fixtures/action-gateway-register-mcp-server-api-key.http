@@ -1,0 +1,7 @@
+# description: Register MCP server jira-cloud at https://mcp.example.com/mcp
+POST /v2/action-gateway/mcp-servers HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"serverRef": "jira-cloud", "endpoint": "https://mcp.example.com/mcp", "transport": "streamable_http", "credentialRefSource": "secret", "api_key": "opf_digitalocean_EXAMPLE"}

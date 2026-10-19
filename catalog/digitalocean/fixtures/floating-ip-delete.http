@@ -1,0 +1,5 @@
+# description: Release floating IP 45.55.96.47
+DELETE /v2/floating_ips/45.55.96.47 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

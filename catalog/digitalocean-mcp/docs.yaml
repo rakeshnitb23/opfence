@@ -1,0 +1,73 @@
+# DigitalOcean MCP server: docs
+operations:
+  - id: digitalocean-mcp.docs.search
+    match: { mcp: { tool: docs-search } }
+    class: read
+    card: "Search DigitalOcean docs for {Query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read
+
+  - id: digitalocean-mcp.docs.find-for-service
+    match: { mcp: { tool: docs-find-for-service } }
+    class: read
+    card: "Find docs for {Service}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-find-for-service.http
+        expect: read
+
+  - id: digitalocean-mcp.docs.get-page
+    match: { mcp: { tool: docs-get-page } }
+    class: read
+    card: "Read docs page {URL}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-get-page.http
+        expect: read
+
+  - id: digitalocean-mcp.docs.get-quickstart
+    match: { mcp: { tool: docs-get-quickstart } }
+    class: read
+    card: "Read the quickstart for {Service}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-get-quickstart.http
+        expect: read
+
+  - id: digitalocean-mcp.docs.get-related
+    match: { mcp: { tool: docs-get-related } }
+    class: read
+    card: "List pages linked from {URL}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-get-related.http
+        expect: read
+
+  - id: digitalocean-mcp.docs.troubleshoot
+    match: { mcp: { tool: docs-troubleshoot } }
+    class: read
+    card: "Find troubleshooting pages for {Symptom}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/docs/docs_tools.go
+    tests:
+      - fixture: fixtures/docs-troubleshoot.http
+        expect: read

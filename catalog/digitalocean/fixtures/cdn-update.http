@@ -1,0 +1,7 @@
+# description: Change CDN endpoint 19f06b6a-3ace-4315-b086-499a0e521b76
+PUT /v2/cdn/endpoints/19f06b6a-3ace-4315-b086-499a0e521b76 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"ttl": 600}

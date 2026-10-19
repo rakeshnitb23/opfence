@@ -1,0 +1,25 @@
+# DigitalOcean MCP server: model-catalog
+operations:
+  - id: digitalocean-mcp.model-catalog.search
+    match: { mcp: { tool: inference-model-catalog-search } }
+    class: read
+    card: "Search the model catalog for {SearchQuery}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/inference-modelcatalog/model_tools.go
+    tests:
+      - fixture: fixtures/model-catalog-search.http
+        expect: read
+
+  - id: digitalocean-mcp.model-catalog.get
+    match: { mcp: { tool: inference-model-catalog-get-card } }
+    class: read
+    card: "Show model {ModelUUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/inference-modelcatalog/model_tools.go
+    tests:
+      - fixture: fixtures/model-catalog-get.http
+        expect: read

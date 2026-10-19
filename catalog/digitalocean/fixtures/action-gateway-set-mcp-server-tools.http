@@ -1,0 +1,7 @@
+# description: Choose which tools of MCP server jira-cloud are enabled
+PUT /v2/action-gateway/mcp-servers/jira-cloud/tools HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"enabledToolSlugs": ["docs_get_page"]}

@@ -1,0 +1,7 @@
+# description: Provision add-on example-app on plan basic_plan as my-resource-01
+POST /v2/add-ons/saas HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"app_slug": "example-app", "plan_slug": "basic_plan", "name": "my-resource-01", "metadata": [{"name": "property_name", "value": "example_value"}], "linked_droplet_id": 12345678, "fleet_uuid": "f1234567-89ab-cdef-0123-456789abcdef01"}

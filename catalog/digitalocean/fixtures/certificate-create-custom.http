@@ -1,0 +1,7 @@
+# description: Add custom certificate web-cert-01
+POST /v2/certificates HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "web-cert-01", "type": "custom", "private_key": "opf_digitalocean_EXAMPLE", "leaf_certificate": "opf_digitalocean_EXAMPLE", "certificate_chain": "opf_digitalocean_EXAMPLE"}

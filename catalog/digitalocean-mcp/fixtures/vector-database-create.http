@@ -1,0 +1,8 @@
+# description: Create vector database support-kb (vdb-s-2vcpu-4gb) in nyc3
+POST /mcp HTTP/1.1
+Host: vector-databases.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":384,"method":"tools/call","params":{"name":"vector-db-create","arguments":{"Name":"support-kb","Region":"nyc3","Size":"vdb-s-2vcpu-4gb","ProjectId":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b"}}}

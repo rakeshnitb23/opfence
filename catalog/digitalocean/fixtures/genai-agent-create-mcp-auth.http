@@ -1,0 +1,7 @@
+# description: Create GenAI agent support-bot
+POST /v2/gen-ai/agents HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "support-bot", "model_uuid": "95ea6652-75ed-11ef-bf8f-4e013e2ddde4", "mcp_servers": [{"server_label": "jira", "server_url": "https://mcp.example.com/mcp", "authorization": "opf_digitalocean_EXAMPLE"}]}

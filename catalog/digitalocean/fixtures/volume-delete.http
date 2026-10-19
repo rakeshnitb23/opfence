@@ -1,0 +1,5 @@
+# description: Delete volume 7724db7c-e098-11e5-b522-000f53304e51 and its data
+DELETE /v2/volumes/7724db7c-e098-11e5-b522-000f53304e51 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,8 @@
+# description: Generate scenario set refund-requests from a goal
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":225,"method":"tools/call","params":{"name":"genai-simulation-generate-scenario-set","arguments":{"name":"refund-requests","goal_description":"Customers asking for refunds on late orders","num_scenarios":20}}}

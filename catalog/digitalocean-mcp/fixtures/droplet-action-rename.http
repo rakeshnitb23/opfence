@@ -1,0 +1,8 @@
+# description: Rename Droplet 3164444 to web-1-old
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":121,"method":"tools/call","params":{"name":"rename-droplet","arguments":{"ID":3164444,"Name":"web-1-old"}}}

@@ -1,0 +1,8 @@
+# description: Show scenario set d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":218,"method":"tools/call","params":{"name":"genai-simulation-get-scenario-set","arguments":{"scenario_set_uuid":"d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a"}}}

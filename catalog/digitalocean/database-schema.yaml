@@ -1,0 +1,59 @@
+# DigitalOcean REST API: database-schema
+operations:
+  - id: digitalocean.database-schema.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/schema-registry" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Register Kafka schema {body.subject_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_create_kafka_schema.yml
+    tests:
+      - fixture: fixtures/database-schema-create.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-schema.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/schema-registry/{subject_name}" } }
+    class: irreversible
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Delete Kafka schema subject {subject_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_kafka_schema.yml
+    notes: >-
+      Every version of the subject goes.
+    tests:
+      - fixture: fixtures/database-schema-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-schema.set-compatibility
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/schema-registry/config" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database-schema }
+    card: "Set schema compatibility of cluster {database_cluster_uuid} to {body.compatibility_level}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_kafka_schema_config.yml
+    tests:
+      - fixture: fixtures/database-schema-set-compatibility.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-schema.set-subject-compatibility
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/schema-registry/config/{subject_name}" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Set schema compatibility of subject {subject_name} to {body.compatibility_level}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_kafka_schema_subject_config.yml
+    tests:
+      - fixture: fixtures/database-schema-set-subject-compatibility.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

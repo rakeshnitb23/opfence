@@ -1,0 +1,7 @@
+# description: Roll agent 1b418231-b7d6-11ef-bf8f-4e013e2ddde4 back to version c3658d8b5c05494cd03ce042926ef08157889ed54b1b74b5ee0b3d66dcee4b73
+PUT /v2/gen-ai/agents/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/versions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"uuid": "\"12345678-1234-1234-1234-123456789012\"", "version_hash": "c3658d8b5c05494cd03ce042926ef08157889ed54b1b74b5ee0b3d66dcee4b73"}

@@ -1,0 +1,7 @@
+# description: Apply firewall bb4b2611-3d72-467b-8602-280330ecd65c to Droplets droplet_ids
+POST /v2/firewalls/bb4b2611-3d72-467b-8602-280330ecd65c/droplets HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"droplet_ids": [49696269]}

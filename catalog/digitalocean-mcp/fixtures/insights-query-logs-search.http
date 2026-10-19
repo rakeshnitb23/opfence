@@ -1,0 +1,8 @@
+# description: Search logs in nyc3
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":264,"method":"tools/call","params":{"name":"insights-logs-search","arguments":{"Region":"nyc3","From":"2026-10-17T00:00:00Z","To":"2026-10-18T00:00:00Z","Query":"level:error"}}}

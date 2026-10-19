@@ -1,0 +1,7 @@
+# description: Schedule indexing of knowledge base 123e4567-e89b-12d3-a456-426614174000
+POST /v2/gen-ai/scheduled-indexing HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"knowledge_base_uuid": "123e4567-e89b-12d3-a456-426614174000", "time": "example string"}

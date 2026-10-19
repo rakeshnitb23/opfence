@@ -1,0 +1,108 @@
+# DigitalOcean MCP server: dedicated-inference
+operations:
+  - id: digitalocean-mcp.dedicated-inference.list
+    match: { mcp: { tool: dedicated-inference-list } }
+    class: read
+    card: "List Dedicated Inference instances"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dedicated-inference/dedicated_inference_tools.go
+    tests:
+      - fixture: fixtures/dedicated-inference-list.http
+        expect: read
+
+  - id: digitalocean-mcp.dedicated-inference.get
+    match: { mcp: { tool: dedicated-inference-get } }
+    class: read
+    resource: { arg: DedicatedInferenceID, kind: dedicated-inference }
+    card: "Show Dedicated Inference {DedicatedInferenceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dedicated-inference/dedicated_inference_tools.go
+    notes: >-
+      Access token values are only returned on create.
+    tests:
+      - fixture: fixtures/dedicated-inference-get.http
+        expect: read
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"
+
+  - id: digitalocean-mcp.dedicated-inference.create
+    match: { mcp: { tool: dedicated-inference-create } }
+    class: credential
+    when:
+      - if: { arg: Name, present: true }
+        class: money
+      - if: { arg: Name, present: true }
+        class: credential
+      - if: { arg: EnablePublicEndpoint, equals: "true" }
+        class: access
+    resource: { arg: Name, kind: dedicated-inference }
+    card: "Create Dedicated Inference {Name} on GPUs in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dedicated-inference/dedicated_inference_tools.go
+    notes: >-
+      Billed GPUs (money), and the result includes the first access token
+      (credential); a public endpoint is reachable from the internet;
+      HuggingFaceToken stores a secret.
+    tests:
+      - fixture: fixtures/dedicated-inference-create.http
+        expect: credential
+        resource: llama-prod
+      - fixture: fixtures/dedicated-inference-create-public.http
+        expect: credential
+        resource: llama-prod
+
+  - id: digitalocean-mcp.dedicated-inference.update
+    match: { mcp: { tool: dedicated-inference-update } }
+    class: write
+    when:
+      - if: { arg: ModelDeployments, present: true }
+        class: money
+      - if: { arg: HuggingFaceToken, present: true }
+        class: credential
+      - if: { arg: EnablePublicEndpoint, equals: "true" }
+        class: access
+    resource: { arg: DedicatedInferenceID, kind: dedicated-inference }
+    card: "Change Dedicated Inference {DedicatedInferenceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dedicated-inference/dedicated_inference_tools.go
+    notes: >-
+      New model deployments or accelerators change the GPU bill;
+      HuggingFaceToken stores a secret; a public endpoint is reachable from
+      the internet. A rename alone is write.
+    tests:
+      - fixture: fixtures/dedicated-inference-update.http
+        expect: write
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"
+      - fixture: fixtures/dedicated-inference-update-models.http
+        expect: money
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"
+      - fixture: fixtures/dedicated-inference-update-hf-token.http
+        expect: credential
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"
+      - fixture: fixtures/dedicated-inference-update-public.http
+        expect: access
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"
+
+  - id: digitalocean-mcp.dedicated-inference.delete
+    match: { mcp: { tool: dedicated-inference-delete } }
+    class: delete
+    resource: { arg: DedicatedInferenceID, kind: dedicated-inference }
+    card: "Delete Dedicated Inference {DedicatedInferenceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dedicated-inference/dedicated_inference_tools.go
+    notes: >-
+      A model deployment; it can be recreated from the model source, but its
+      access tokens stop working.
+    tests:
+      - fixture: fixtures/dedicated-inference-delete.http
+        expect: delete
+        resource: "6b5c619c-359c-44ca-87e2-47e98170c01d"

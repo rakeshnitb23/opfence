@@ -1,0 +1,75 @@
+# DigitalOcean MCP server: function-package
+operations:
+  - id: digitalocean-mcp.function-package.list
+    match: { mcp: { tool: functions-list-packages } }
+    class: read
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "List packages in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/package_tools.go
+    tests:
+      - fixture: fixtures/function-package-list.http
+        expect: read
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-package.get
+    match: { mcp: { tool: functions-get-package } }
+    class: credential
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Show package {PackageName} with its parameters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/package_tools.go
+    notes: >-
+      Returns the package's default parameters, which commonly hold API keys.
+    tests:
+      - fixture: fixtures/function-package-get.http
+        expect: credential
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-package.put
+    match: { mcp: { tool: functions-create-or-update-package } }
+    class: write
+    when:
+      - if: { arg: Parameters, present: true }
+        class: credential
+      - if: { arg: Publish, equals: "true" }
+        class: access
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Create or update package {PackageName} in namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/package_tools.go
+    notes: >-
+      Default parameters are where function secrets usually live, so any
+      Parameters count as credential; Publish makes the package public.
+    tests:
+      - fixture: fixtures/function-package-put.http
+        expect: write
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+      - fixture: fixtures/function-package-put-parameters.http
+        expect: credential
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+      - fixture: fixtures/function-package-put-publish.http
+        expect: access
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-package.delete
+    match: { mcp: { tool: functions-delete-package } }
+    class: irreversible
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Delete package {PackageName} from namespace {NamespaceID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/package_tools.go
+    notes: >-
+      With Force it also deletes the functions in it.
+    tests:
+      - fixture: fixtures/function-package-delete.http
+        expect: irreversible
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397

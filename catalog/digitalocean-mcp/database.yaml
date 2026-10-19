@@ -1,0 +1,416 @@
+# DigitalOcean MCP server: database
+operations:
+  - id: digitalocean-mcp.database.list
+    match: { mcp: { tool: db-cluster-list } }
+    class: credential
+    card: "List database clusters with their connection details"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      godo Database objects carry connection.password and the connection URI;
+      the server returns them unredacted.
+    tests:
+      - fixture: fixtures/database-list.http
+        expect: credential
+
+  - id: digitalocean-mcp.database.get
+    match: { mcp: { tool: db-cluster-get } }
+    class: credential
+    resource: { arg: id, kind: database }
+    card: "Show database cluster {id} with its connection details"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      Returns connection.password, private_connection.password and the URIs.
+    tests:
+      - fixture: fixtures/database-get.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.list-options
+    match: { mcp: { tool: db-cluster-list-options } }
+    class: read
+    card: "List database engines, versions, sizes and regions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-list-options.http
+        expect: read
+
+  - id: digitalocean-mcp.database.get-ca
+    match: { mcp: { tool: db-cluster-get-ca } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the CA certificate of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      The public CA certificate, not a secret.
+    tests:
+      - fixture: fixtures/database-get-ca.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.list-backups
+    match: { mcp: { tool: db-cluster-list-backups } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "List backups of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-list-backups.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-firewall-rules
+    match: { mcp: { tool: db-cluster-get-firewall-rules } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show trusted sources of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/firewall.go
+    tests:
+      - fixture: fixtures/database-get-firewall-rules.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-migration
+    match: { mcp: { tool: db-cluster-get-migration } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the online migration status of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-get-migration.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-sql-mode
+    match: { mcp: { tool: db-cluster-get-sql-mode } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the SQL mode of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mysql.go
+    tests:
+      - fixture: fixtures/database-get-sql-mode.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-kafka-config
+    match: { mcp: { tool: db-cluster-get-kafka-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the Kafka settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-get-kafka-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-mongodb-config
+    match: { mcp: { tool: db-cluster-get-mongodb-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the MongoDB settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mongo.go
+    tests:
+      - fixture: fixtures/database-get-mongodb-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-mysql-config
+    match: { mcp: { tool: db-cluster-get-mysql-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the MySQL settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mysql.go
+    tests:
+      - fixture: fixtures/database-get-mysql-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-opensearch-config
+    match: { mcp: { tool: db-cluster-get-opensearch-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the OpenSearch settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/opensearch.go
+    tests:
+      - fixture: fixtures/database-get-opensearch-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-postgresql-config
+    match: { mcp: { tool: db-cluster-get-postgresql-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the PostgreSQL settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/postgres.go
+    tests:
+      - fixture: fixtures/database-get-postgresql-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.get-redis-config
+    match: { mcp: { tool: db-cluster-get-redis-config } }
+    class: read
+    resource: { arg: id, kind: database }
+    card: "Show the Redis settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/redis.go
+    tests:
+      - fixture: fixtures/database-get-redis-config.http
+        expect: read
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-kafka-config
+    match: { mcp: { tool: db-cluster-update-kafka-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the Kafka settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/kafka.go
+    tests:
+      - fixture: fixtures/database-update-kafka-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-mongodb-config
+    match: { mcp: { tool: db-cluster-update-mongodb-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the MongoDB settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mongo.go
+    tests:
+      - fixture: fixtures/database-update-mongodb-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-mysql-config
+    match: { mcp: { tool: db-cluster-update-mysql-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the MySQL settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mysql.go
+    tests:
+      - fixture: fixtures/database-update-mysql-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-opensearch-config
+    match: { mcp: { tool: db-cluster-update-os-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the OpenSearch settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/opensearch.go
+    tests:
+      - fixture: fixtures/database-update-opensearch-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-postgresql-config
+    match: { mcp: { tool: db-cluster-update-psql-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the PostgreSQL settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/postgres.go
+    tests:
+      - fixture: fixtures/database-update-postgresql-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-redis-config
+    match: { mcp: { tool: db-cluster-update-redis-config } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Change the Redis settings of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/redis.go
+    tests:
+      - fixture: fixtures/database-update-redis-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.set-sql-mode
+    match: { mcp: { tool: db-cluster-set-sql-mode } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Set the SQL mode of database cluster {id} to {modes}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/mysql.go
+    tests:
+      - fixture: fixtures/database-set-sql-mode.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.create
+    match: { mcp: { tool: db-cluster-create } }
+    class: credential
+    when:
+      - if: { arg: name, present: true }
+        class: money
+      - if: { arg: name, present: true }
+        class: credential
+    resource: { arg: name, kind: database }
+    card: "Create {engine} database cluster {name} ({size} x{num_nodes}) in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      A billed cluster (money), and the returned cluster carries the admin
+      password and connection URIs (credential).
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: credential
+        resource: shop-db
+
+  - id: digitalocean-mcp.database.delete
+    match: { mcp: { tool: db-cluster-delete } }
+    class: irreversible
+    resource: { arg: id, kind: database }
+    card: "Destroy database cluster {id} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.resize
+    match: { mcp: { tool: db-cluster-resize } }
+    class: money
+    resource: { arg: id, kind: database }
+    card: "Resize database cluster {id} to {size} x{num_nodes}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-resize.http
+        expect: money
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.update-firewall-rules
+    match: { mcp: { tool: db-cluster-update-firewall-rules } }
+    class: access
+    resource: { arg: id, kind: database }
+    card: "Replace the trusted sources of database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/firewall.go
+    notes: >-
+      Trusted sources decide who can connect to the database.
+    tests:
+      - fixture: fixtures/database-update-firewall-rules.http
+        expect: access
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.upgrade
+    match: { mcp: { tool: db-cluster-upgrade-major-version } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Upgrade database cluster {id} to version {version}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      An in-place engine upgrade; DigitalOcean takes a backup first.
+    tests:
+      - fixture: fixtures/database-upgrade.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.start-online-migration
+    match: { mcp: { tool: db-cluster-start-online-migration } }
+    class: irreversible
+    when:
+      - if: { arg: id, present: true }
+        class: irreversible
+      - if: { arg: source.password, present: true }
+        class: credential
+    resource: { arg: id, kind: database }
+    card: "Migrate {source.dbname} from {source.host} into database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    notes: >-
+      Copies the source database over the target cluster's data, which cannot
+      be undone; source.password is a secret.
+    tests:
+      - fixture: fixtures/database-start-online-migration.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean-mcp.database.stop-online-migration
+    match: { mcp: { tool: db-cluster-stop-online-migration } }
+    class: write
+    resource: { arg: id, kind: database }
+    card: "Stop migration {migration_id} into database cluster {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/dbaas/cluster.go
+    tests:
+      - fixture: fixtures/database-stop-online-migration.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

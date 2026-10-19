@@ -1,0 +1,43 @@
+# DigitalOcean REST API: insights-alert-rule
+operations:
+  - id: digitalocean.insights-alert-rule.create
+    match: { rest: { method: POST, path: /v2/insights/alert-rules } }
+    class: write
+    resource: { arg: body.spec.name, kind: insights-alert-rule }
+    card: "Create alert rule {body.spec.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_create_alertRule.yml
+    tests:
+      - fixture: fixtures/insights-alert-rule-create.http
+        expect: write
+        resource: "High CPU"
+
+  - id: digitalocean.insights-alert-rule.update
+    match: { rest: { method: PUT, path: "/v2/insights/alert-rules/{id}" } }
+    class: write
+    resource: { arg: id, kind: insights-alert-rule }
+    card: "Change alert rule {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_update_alertRule.yml
+    tests:
+      - fixture: fixtures/insights-alert-rule-update.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.insights-alert-rule.delete
+    match: { rest: { method: DELETE, path: "/v2/insights/alert-rules/{id}" } }
+    class: delete
+    resource: { arg: id, kind: insights-alert-rule }
+    card: "Delete alert rule {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_delete_alertRule.yml
+    tests:
+      - fixture: fixtures/insights-alert-rule-delete.http
+        expect: delete
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"

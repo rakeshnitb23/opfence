@@ -1,0 +1,5 @@
+# description: Delete volume snapshot fbe805e8-866b-11e6-96bf-000f53315a41
+DELETE /v2/volumes/snapshots/fbe805e8-866b-11e6-96bf-000f53315a41 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

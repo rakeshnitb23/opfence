@@ -1,0 +1,488 @@
+# DigitalOcean REST API: app
+operations:
+  - id: digitalocean.app.create
+    match: { rest: { method: POST, path: /v2/apps } }
+    class: money
+    when:
+      - if: { arg: body.spec, present: true }
+        class: money
+      - if: { arg: body.spec.services.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.workers.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.jobs.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.functions.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.static_sites.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.services.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.workers.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.jobs.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.functions.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.services.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.workers.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.jobs.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.domains, present: true }
+        class: access
+    resource: { arg: body.spec.name, kind: app }
+    card: "Create App Platform app {body.spec.name} in {body.spec.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_create.yml
+    notes: >-
+      The spec sets instance sizes and counts and can add dev databases, so
+      any change can change the bill. SECRET env vars, log-destination keys
+      and image registry credentials store secrets; domains put the app on a
+      public name.
+    tests:
+      - fixture: fixtures/app-create.http
+        expect: money
+        resource: shop-web
+      - fixture: fixtures/app-create-secret.http
+        expect: credential
+        resource: shop-web
+      - fixture: fixtures/app-create-domain.http
+        expect: money
+        resource: shop-web
+      - fixture: fixtures/app-create-log-destination.http
+        expect: credential
+        resource: shop-web
+
+  - id: digitalocean.app.delete
+    match: { rest: { method: DELETE, path: "/v2/apps/{id}" } }
+    class: irreversible
+    resource: { arg: id, kind: app }
+    card: "Delete App Platform app {id} with its dev databases and secrets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_delete.yml
+    notes: >-
+      Dev databases and SECRET env values go with the app.
+    tests:
+      - fixture: fixtures/app-delete.http
+        expect: irreversible
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.update
+    match: { rest: { method: PUT, path: "/v2/apps/{id}" } }
+    class: money
+    when:
+      - if: { arg: body.spec, present: true }
+        class: money
+      - if: { arg: body.spec.services.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.workers.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.jobs.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.functions.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.static_sites.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.envs.type, equals: "SECRET" }
+        class: credential
+      - if: { arg: body.spec.services.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.workers.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.jobs.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.functions.log_destinations, present: true }
+        class: credential
+      - if: { arg: body.spec.services.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.workers.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.jobs.image.registry_credentials, present: true }
+        class: credential
+      - if: { arg: body.spec.domains, present: true }
+        class: access
+    resource: { arg: id, kind: app }
+    card: "Replace the spec of App Platform app {id} ({body.spec.name})"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_update.yml
+    notes: >-
+      The spec sets instance sizes and counts and can add dev databases, so
+      any change can change the bill. SECRET env vars, log-destination keys
+      and image registry credentials store secrets; domains put the app on a
+      public name.
+    tests:
+      - fixture: fixtures/app-update.http
+        expect: money
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+      - fixture: fixtures/app-update-secret.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+      - fixture: fixtures/app-update-domain.http
+        expect: money
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.restart
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/restart" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Restart App Platform app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_restart.yml
+    tests:
+      - fixture: fixtures/app-restart.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.deploy
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/deployments" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Deploy App Platform app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_create_deployment.yml
+    tests:
+      - fixture: fixtures/app-deploy.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.cancel-deployment
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/deployments/{deployment_id}/cancel" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Cancel deployment {deployment_id} of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_cancel_deployment.yml
+    tests:
+      - fixture: fixtures/app-cancel-deployment.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.cancel-job
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/job-invocations/{job_invocation_id}/cancel" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Cancel job run {job_invocation_id} of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_cancel_job_invocation.yml
+    tests:
+      - fixture: fixtures/app-cancel-job.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.cancel-event
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/events/{event_id}/cancel" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Cancel event {event_id} of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_cancel_event.yml
+    tests:
+      - fixture: fixtures/app-cancel-event.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.propose
+    match: { rest: { method: POST, path: /v2/apps/propose } }
+    class: read
+    resource: { arg: body.spec.name, kind: app }
+    card: "Validate an app spec and price it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_validate_appSpec.yml
+    notes: >-
+      Validates the spec and returns its cost; nothing is created.
+    tests:
+      - fixture: fixtures/app-propose.http
+        expect: read
+        resource: shop-web
+
+  - id: digitalocean.app.set-alert-destinations
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/alerts/{alert_id}/destinations" } }
+    class: write
+    when:
+      - if: { arg: body.slack_webhooks.url, present: true }
+        class: credential
+    resource: { arg: app_id, kind: app }
+    card: "Set where alert {alert_id} of app {app_id} is sent"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_assign_alertDestinations.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/app-set-alert-destinations.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+      - fixture: fixtures/app-set-alert-destinations-email-only.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.list-alerts
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/alerts" } }
+    class: credential
+    resource: { arg: app_id, kind: app }
+    card: "List alerts of app {app_id} with their Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list_alerts.yml
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/app-list-alerts.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.rollback
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/rollback" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Roll app {app_id} back to deployment {body.deployment_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_create_rollback.yml
+    notes: >-
+      A previous deployment is redeployed; the current one can be redeployed
+      again.
+    tests:
+      - fixture: fixtures/app-rollback.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.validate-rollback
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/rollback/validate" } }
+    class: read
+    resource: { arg: app_id, kind: app }
+    card: "Check whether app {app_id} can roll back to {body.deployment_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_validate_rollback.yml
+    tests:
+      - fixture: fixtures/app-validate-rollback.http
+        expect: read
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.commit-rollback
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/rollback/commit" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Keep the rollback of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_commit_rollback.yml
+    tests:
+      - fixture: fixtures/app-commit-rollback.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.revert-rollback
+    match: { rest: { method: POST, path: "/v2/apps/{app_id}/rollback/revert" } }
+    class: write
+    resource: { arg: app_id, kind: app }
+    card: "Undo the rollback of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_revert_rollback.yml
+    tests:
+      - fixture: fixtures/app-revert-rollback.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.bandwidth-metrics
+    match: { rest: { method: POST, path: /v2/apps/metrics/bandwidth_daily } }
+    class: read
+    card: "Read several apps' daily bandwidth"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list_metrics_bandwidth_usage.yml
+    tests:
+      - fixture: fixtures/app-bandwidth-metrics.http
+        expect: read
+
+  - id: digitalocean.app.list
+    match: { rest: { method: GET, path: /v2/apps } }
+    class: credential
+    card: "List App Platform apps with their specs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-list.http
+        expect: credential
+
+  - id: digitalocean.app.list-regions
+    match: { rest: { method: GET, path: /v2/apps/regions } }
+    class: read
+    card: "List App Platform regions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list_regions.yml
+    notes: >-
+      Listed so that /v2/apps/{id} does not claim it.
+    tests:
+      - fixture: fixtures/app-list-regions.http
+        expect: read
+
+  - id: digitalocean.app.read
+    match: { rest: { method: GET, path: "/v2/apps/{id}" } }
+    class: credential
+    resource: { arg: id, kind: app }
+    card: "Read App Platform app {id} with its spec"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_get.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-read.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.list-deployments
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/deployments" } }
+    class: credential
+    resource: { arg: app_id, kind: app }
+    card: "List deployments of app {app_id} with their specs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list_deployments.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-list-deployments.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.read-deployment
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/deployments/{deployment_id}" } }
+    class: credential
+    resource: { arg: app_id, kind: app }
+    card: "Read deployment {deployment_id} of app {app_id} with its spec"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_get_deployment.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-read-deployment.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.list-events
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/events" } }
+    class: credential
+    resource: { arg: app_id, kind: app }
+    card: "List events of app {app_id} with their deployment specs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_list_events.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-list-events.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.read-event
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/events/{event_id}" } }
+    class: credential
+    resource: { arg: app_id, kind: app }
+    card: "Read event {event_id} of app {app_id} with its deployment spec"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_get_event.yml
+    notes: >-
+      The app spec carries log-destination secrets (Datadog API key, Logtail
+      token, OpenSearch password) that the schema, unlike for SECRET env vars
+      and registry_credentials, does not say are encrypted; assume they come
+      back in clear.
+    tests:
+      - fixture: fixtures/app-read-event.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.exec-url
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/components/{component_name}/exec" } }
+    class: irreversible
+    resource: { arg: app_id, kind: app }
+    card: "Get a shell URL for component {component_name} of app {app_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_get_exec_active_deployment.yml
+    notes: >-
+      Returns a WebSocket URL that opens a shell in a running container:
+      running arbitrary commands, like SSM StartSession.
+    tests:
+      - fixture: fixtures/app-exec-url.http
+        expect: irreversible
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.app.exec-url-deployment
+    match: { rest: { method: GET, path: "/v2/apps/{app_id}/deployments/{deployment_id}/components/{component_name}/exec" } }
+    class: irreversible
+    resource: { arg: app_id, kind: app }
+    card: "Get a shell URL for component {component_name} of deployment {deployment_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/apps/apps_get_exec.yml
+    notes: >-
+      Returns a WebSocket URL that opens a shell in a running container.
+    tests:
+      - fixture: fixtures/app-exec-url-deployment.http
+        expect: irreversible
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"

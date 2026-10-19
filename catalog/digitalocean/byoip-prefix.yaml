@@ -1,0 +1,51 @@
+# DigitalOcean REST API: byoip-prefix
+operations:
+  - id: digitalocean.byoip-prefix.create
+    match: { rest: { method: POST, path: /v2/byoip_prefixes } }
+    class: write
+    resource: { arg: body.prefix, kind: byoip-prefix }
+    card: "Register BYOIP prefix {body.prefix} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/byoip_prefixes/byoip_prefixes_create.yml
+    tests:
+      - fixture: fixtures/byoip-prefix-create.http
+        expect: write
+        resource: "203.11.13.0/24"
+
+  - id: digitalocean.byoip-prefix.delete
+    match: { rest: { method: DELETE, path: "/v2/byoip_prefixes/{byoip_prefix_uuid}" } }
+    class: delete
+    resource: { arg: byoip_prefix_uuid, kind: byoip-prefix }
+    card: "Delete BYOIP prefix {byoip_prefix_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/byoip_prefixes/byoip_prefixes_delete.yml
+    tests:
+      - fixture: fixtures/byoip-prefix-delete.http
+        expect: delete
+        resource: f00d1e0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b
+
+  - id: digitalocean.byoip-prefix.update
+    match: { rest: { method: PATCH, path: "/v2/byoip_prefixes/{byoip_prefix_uuid}" } }
+    class: write
+    when:
+      - if: { arg: body.advertise, equals: "true" }
+        class: access
+    resource: { arg: byoip_prefix_uuid, kind: byoip-prefix }
+    card: "Change BYOIP prefix {byoip_prefix_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/byoip_prefixes/byoip_prefixes_update.yml
+    notes: >-
+      advertise=true announces the prefix to the internet.
+    tests:
+      - fixture: fixtures/byoip-prefix-update.http
+        expect: write
+        resource: f00d1e0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b
+      - fixture: fixtures/byoip-prefix-update-advertise.http
+        expect: access
+        resource: f00d1e0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b

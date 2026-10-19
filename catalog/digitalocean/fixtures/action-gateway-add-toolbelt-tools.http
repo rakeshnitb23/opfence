@@ -1,0 +1,7 @@
+# description: Add tools tools to toolbelt support-tools
+POST /v2/action-gateway/toolbelts/support-tools/tools/add HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"tools": ["jira_create_issue"]}

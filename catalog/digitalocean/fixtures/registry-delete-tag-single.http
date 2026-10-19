@@ -1,0 +1,5 @@
+# description: Delete tag api:v1.4.2 from shop-registry
+DELETE /v2/registry/shop-registry/repositories/api/tags/v1.4.2 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

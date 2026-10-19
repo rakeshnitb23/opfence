@@ -1,0 +1,97 @@
+# DigitalOcean REST API: agent-trigger
+operations:
+  - id: digitalocean.agent-trigger.create
+    match: { rest: { method: POST, path: /v2/agents/triggers } }
+    class: credential
+    when:
+      - if: { arg: body.name, present: true }
+        class: money
+      - if: { arg: body.name, present: true }
+        class: credential
+    resource: { arg: body.name, kind: agent-trigger }
+    card: "Create {body.kind} trigger {body.name} that starts hosted agent sessions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_trigger.yml
+    notes: >-
+      Each firing starts a billed agent session without anyone watching
+      (money), and the response carries the webhook_secret (credential).
+    tests:
+      - fixture: fixtures/agent-trigger-create.http
+        expect: credential
+        resource: nightly-deploy-check
+
+  - id: digitalocean.agent-trigger.update
+    match: { rest: { method: PATCH, path: "/v2/agents/triggers/{trigger_id}" } }
+    class: write
+    resource: { arg: trigger_id, kind: agent-trigger }
+    card: "Change hosted agent trigger {trigger_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_update_trigger.yml
+    tests:
+      - fixture: fixtures/agent-trigger-update.http
+        expect: write
+        resource: trg-nightly
+
+  - id: digitalocean.agent-trigger.delete
+    match: { rest: { method: DELETE, path: "/v2/agents/triggers/{trigger_id}" } }
+    class: delete
+    resource: { arg: trigger_id, kind: agent-trigger }
+    card: "Delete hosted agent trigger {trigger_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_delete_trigger.yml
+    tests:
+      - fixture: fixtures/agent-trigger-delete.http
+        expect: delete
+        resource: trg-nightly
+
+  - id: digitalocean.agent-trigger.cancel-execution
+    match: { rest: { method: POST, path: "/v2/agents/triggers/{trigger_id}/executions/{execution_id}/cancel" } }
+    class: write
+    resource: { arg: trigger_id, kind: agent-trigger }
+    card: "Cancel execution {execution_id} of trigger {trigger_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_cancel_trigger_execution.yml
+    tests:
+      - fixture: fixtures/agent-trigger-cancel-execution.http
+        expect: write
+        resource: trg-nightly
+
+  - id: digitalocean.agent-trigger.rotate-secret
+    match: { rest: { method: POST, path: "/v2/agents/triggers/{trigger_id}/rotate-secret" } }
+    class: credential
+    resource: { arg: trigger_id, kind: agent-trigger }
+    card: "Issue a new webhook secret for trigger {trigger_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_rotate_trigger_secret.yml
+    notes: >-
+      Returns the new signing secret.
+    tests:
+      - fixture: fixtures/agent-trigger-rotate-secret.http
+        expect: credential
+        resource: trg-nightly
+
+  - id: digitalocean.agent-trigger.deliver-webhook
+    match: { rest: { method: POST, path: "/v2/agents/triggers/{trigger_id}/webhook" } }
+    class: money
+    resource: { arg: trigger_id, kind: agent-trigger }
+    card: "Deliver a webhook to trigger {trigger_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_receive_trigger_webhook.yml
+    notes: >-
+      Starts a billed agent session that acts on the payload.
+    tests:
+      - fixture: fixtures/agent-trigger-deliver-webhook.http
+        expect: money
+        resource: trg-nightly

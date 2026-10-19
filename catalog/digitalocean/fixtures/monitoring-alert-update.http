@@ -1,0 +1,7 @@
+# description: Change alert policy 78b3da62-27e5-49ba-ac70-5db0b5935c64
+PUT /v2/monitoring/alerts/78b3da62-27e5-49ba-ac70-5db0b5935c64 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"alerts": {"email": ["bob@exmaple.com"], "slack": [{"channel": "Production Alerts", "url": "https://hooks.slack.com/services/EXAMPLE"}]}, "compare": "GreaterThan", "description": "CPU Alert", "enabled": true, "entities": ["192018292"], "tags": ["droplet_tag"], "type": "v1/insights/droplet/cpu", "value": 80, "window": "5m"}

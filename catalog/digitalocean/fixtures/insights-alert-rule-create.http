@@ -1,0 +1,7 @@
+# description: Create alert rule High CPU
+POST /v2/insights/alert-rules HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"spec": {"name": "High CPU", "query": {"metric": "do.droplets.cpu_utilization", "resource_urns": ["do:droplet:12345"], "tags": ["env:prod"]}, "condition": {"window": "EVALUATION_WINDOW_5M"}, "thresholds": {"warning": 80, "critical": 95, "operator": "THRESHOLD_OPERATOR_GREATER_THAN"}, "notification_channels": [{"notification_channel_id": "550e8400-e29b-41d4-a716-446655440000", "notify_on": ["SEVERITY_CRITICAL"]}], "re_alert_duration": "RE_ALERT_DURATION_4H"}}

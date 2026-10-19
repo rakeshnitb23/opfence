@@ -1,0 +1,43 @@
+# DigitalOcean REST API: vpc-subnet
+operations:
+  - id: digitalocean.vpc-subnet.create
+    match: { rest: { method: POST, path: "/v2/vpcs/{vpc_uuid}/subnets" } }
+    class: write
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Create subnet {body.name} ({body.ip_range}) in VPC {vpc_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_subnets/vpc_subnets_create.yml
+    tests:
+      - fixture: fixtures/vpc-subnet-create.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-subnet.rename
+    match: { rest: { method: PATCH, path: "/v2/vpcs/{vpc_uuid}/subnets/{subnet_uuid}" } }
+    class: write
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Rename subnet {subnet_uuid} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_subnets/vpc_subnets_update.yml
+    tests:
+      - fixture: fixtures/vpc-subnet-rename.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-subnet.delete
+    match: { rest: { method: DELETE, path: "/v2/vpcs/{vpc_uuid}/subnets/{subnet_uuid}" } }
+    class: delete
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Delete subnet {subnet_uuid} of VPC {vpc_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_subnets/vpc_subnets_delete.yml
+    tests:
+      - fixture: fixtures/vpc-subnet-delete.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

@@ -1,0 +1,155 @@
+# DigitalOcean MCP server: firewall
+operations:
+  - id: digitalocean-mcp.firewall.list
+    match: { mcp: { tool: firewall-list } }
+    class: read
+    card: "List firewalls"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    tests:
+      - fixture: fixtures/firewall-list.http
+        expect: read
+
+  - id: digitalocean-mcp.firewall.get
+    match: { mcp: { tool: firewall-get } }
+    class: read
+    resource: { arg: ID, kind: firewall }
+    card: "Show firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    tests:
+      - fixture: fixtures/firewall-get.http
+        expect: read
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.create
+    match: { mcp: { tool: firewall-create } }
+    class: access
+    resource: { arg: Name, kind: firewall }
+    card: "Create firewall {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-create.http
+        expect: access
+        resource: web
+
+  - id: digitalocean-mcp.firewall.delete
+    match: { mcp: { tool: firewall-delete } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Delete firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Removing a firewall opens the Droplets it protected.
+    tests:
+      - fixture: fixtures/firewall-delete.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.add-rules
+    match: { mcp: { tool: firewall-add-rules } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Add rules to firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-add-rules.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.remove-rules
+    match: { mcp: { tool: firewall-remove-rules } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Remove rules from firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-remove-rules.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.add-droplets
+    match: { mcp: { tool: firewall-add-droplets } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Put Droplets {DropletIDs} behind firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-add-droplets.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.remove-droplets
+    match: { mcp: { tool: firewall-remove-droplets } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Take Droplets {DropletIDs} out of firewall {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-remove-droplets.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.add-tags
+    match: { mcp: { tool: firewall-add-tags } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Apply firewall {ID} to tags {Tags}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-add-tags.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean-mcp.firewall.remove-tags
+    match: { mcp: { tool: firewall-remove-tags } }
+    class: access
+    resource: { arg: ID, kind: firewall }
+    card: "Stop applying firewall {ID} to tags {Tags}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/firewall_tools.go
+    notes: >-
+      Cloud firewalls decide what can reach Droplets.
+    tests:
+      - fixture: fixtures/firewall-remove-tags.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c

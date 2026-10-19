@@ -1,0 +1,295 @@
+# DigitalOcean MCP server: genai-simulation
+operations:
+  - id: digitalocean-mcp.genai-simulation.list-runs
+    match: { mcp: { tool: genai-simulation-list-runs } }
+    class: read
+    card: "List simulation runs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-runs.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-simulation.get-run
+    match: { mcp: { tool: genai-simulation-get-run } }
+    class: read
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Show simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-run.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.list-episodes
+    match: { mcp: { tool: genai-simulation-list-episodes } }
+    class: read
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "List episodes of simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-episodes.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.get-episode
+    match: { mcp: { tool: genai-simulation-get-episode } }
+    class: read
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Show episode {episode_uuid} of simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-episode.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.get-episode-trajectory
+    match: { mcp: { tool: genai-simulation-get-episode-trajectory } }
+    class: read
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Read the trajectory of episode {episode_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-episode-trajectory.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.get-episode-trajectory-url
+    match: { mcp: { tool: genai-simulation-get-episode-trajectory-url } }
+    class: read
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Get a download link for the trajectory of episode {episode_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-episode-trajectory-url.http
+        expect: read
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.list-scenario-sets
+    match: { mcp: { tool: genai-simulation-list-scenario-sets } }
+    class: read
+    card: "List simulation scenario sets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-scenario-sets.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-simulation.get-scenario-set
+    match: { mcp: { tool: genai-simulation-get-scenario-set } }
+    class: read
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Show scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-scenario-set.http
+        expect: read
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-simulation.get-scenario-set-url
+    match: { mcp: { tool: genai-simulation-get-scenario-set-download-url } }
+    class: read
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Get a download link for scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-get-scenario-set-url.http
+        expect: read
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-simulation.list-scenarios
+    match: { mcp: { tool: genai-simulation-list-scenarios } }
+    class: read
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "List scenarios of scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-scenarios.http
+        expect: read
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-simulation.list-library
+    match: { mcp: { tool: genai-simulation-list-scenario-library } }
+    class: read
+    card: "List the scenario library"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-library.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-simulation.list-library-scenarios
+    match: { mcp: { tool: genai-simulation-list-scenario-library-scenarios } }
+    class: read
+    card: "List scenarios of library entry {library_scenario_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-list-library-scenarios.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-simulation.create-scenario-set
+    match: { mcp: { tool: genai-simulation-create-scenario-set } }
+    class: write
+    resource: { arg: name, kind: genai-scenario-set }
+    card: "Create scenario set {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-create-scenario-set.http
+        expect: write
+        resource: refund-requests
+
+  - id: digitalocean-mcp.genai-simulation.create-scenario-set-from-library
+    match: { mcp: { tool: genai-simulation-create-scenario-set-from-library } }
+    class: write
+    resource: { arg: name, kind: genai-scenario-set }
+    card: "Copy library entry {library_scenario_uuid} into a scenario set"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-create-scenario-set-from-library.http
+        expect: write
+        resource: refund-requests
+
+  - id: digitalocean-mcp.genai-simulation.generate-scenario-set
+    match: { mcp: { tool: genai-simulation-generate-scenario-set } }
+    class: money
+    resource: { arg: name, kind: genai-scenario-set }
+    card: "Generate scenario set {name} from a goal"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    notes: >-
+      A generator model writes the scenarios; billed per token.
+    tests:
+      - fixture: fixtures/genai-simulation-generate-scenario-set.http
+        expect: money
+        resource: refund-requests
+
+  - id: digitalocean-mcp.genai-simulation.update-scenario-set
+    match: { mcp: { tool: genai-simulation-update-scenario-set } }
+    class: write
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Change scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-update-scenario-set.http
+        expect: write
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-simulation.delete-scenario-set
+    match: { mcp: { tool: genai-simulation-delete-scenario-set } }
+    class: irreversible
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Delete scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    notes: >-
+      The tool says deletion is permanent.
+    tests:
+      - fixture: fixtures/genai-simulation-delete-scenario-set.http
+        expect: irreversible
+        resource: d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a
+
+  - id: digitalocean-mcp.genai-simulation.create-run
+    match: { mcp: { tool: genai-simulation-create-run } }
+    class: money
+    resource: { arg: agent_uuid, kind: genai-agent }
+    card: "Run scenario set {scenario_set_uuid} against agent {agent_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    notes: >-
+      Runs the agent, a user simulator and a judge; billed per token.
+    tests:
+      - fixture: fixtures/genai-simulation-create-run.http
+        expect: money
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-simulation.update-run
+    match: { mcp: { tool: genai-simulation-update-run } }
+    class: write
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Rename simulation run {run_uuid} to {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-update-run.http
+        expect: write
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.cancel-run
+    match: { mcp: { tool: genai-simulation-cancel-run } }
+    class: write
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Cancel simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    tests:
+      - fixture: fixtures/genai-simulation-cancel-run.http
+        expect: write
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+
+  - id: digitalocean-mcp.genai-simulation.delete-run
+    match: { mcp: { tool: genai-simulation-delete-run } }
+    class: irreversible
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Delete simulation run {run_uuid} and its results"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai/simulation_tools.go
+    notes: >-
+      The tool says deletion is permanent.
+    tests:
+      - fixture: fixtures/genai-simulation-delete-run.http
+        expect: irreversible
+        resource: c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f

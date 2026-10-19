@@ -1,0 +1,71 @@
+# DigitalOcean MCP server: vpc
+operations:
+  - id: digitalocean-mcp.vpc.list
+    match: { mcp: { tool: vpc-list } }
+    class: read
+    card: "List VPCs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_tools.go
+    tests:
+      - fixture: fixtures/vpc-list.http
+        expect: read
+
+  - id: digitalocean-mcp.vpc.get
+    match: { mcp: { tool: vpc-get } }
+    class: read
+    resource: { arg: ID, kind: vpc }
+    card: "Show VPC {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_tools.go
+    tests:
+      - fixture: fixtures/vpc-get.http
+        expect: read
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.vpc.list-members
+    match: { mcp: { tool: vpc-list-members } }
+    class: read
+    resource: { arg: ID, kind: vpc }
+    card: "List resources in VPC {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_tools.go
+    tests:
+      - fixture: fixtures/vpc-list-members.http
+        expect: read
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.vpc.create
+    match: { mcp: { tool: vpc-create } }
+    class: write
+    resource: { arg: Name, kind: vpc }
+    card: "Create VPC {Name} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_tools.go
+    tests:
+      - fixture: fixtures/vpc-create.http
+        expect: write
+        resource: shop-vpc
+
+  - id: digitalocean-mcp.vpc.delete
+    match: { mcp: { tool: vpc-delete } }
+    class: delete
+    resource: { arg: ID, kind: vpc }
+    card: "Delete VPC {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_tools.go
+    notes: >-
+      Only an empty VPC can be deleted.
+    tests:
+      - fixture: fixtures/vpc-delete.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

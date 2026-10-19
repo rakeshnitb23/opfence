@@ -1,0 +1,145 @@
+# DigitalOcean REST API: firewall
+operations:
+  - id: digitalocean.firewall.create
+    match: { rest: { method: POST, path: /v2/firewalls } }
+    class: access
+    resource: { arg: body.name, kind: firewall }
+    card: "Create firewall {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_create.yml
+    notes: >-
+      Cloud firewalls decide which traffic reaches Droplets.
+    tests:
+      - fixture: fixtures/firewall-create.http
+        expect: access
+        resource: firewall
+
+  - id: digitalocean.firewall.update
+    match: { rest: { method: PUT, path: "/v2/firewalls/{firewall_id}" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Replace the rules of firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_update.yml
+    notes: >-
+      Cloud firewalls decide which traffic reaches Droplets.
+    tests:
+      - fixture: fixtures/firewall-update.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.delete
+    match: { rest: { method: DELETE, path: "/v2/firewalls/{firewall_id}" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Delete firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_delete.yml
+    notes: >-
+      Droplets it protected are open to whatever their other firewalls allow.
+    tests:
+      - fixture: fixtures/firewall-delete.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.add-droplets
+    match: { rest: { method: POST, path: "/v2/firewalls/{firewall_id}/droplets" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Apply firewall {firewall_id} to Droplets {body.droplet_ids}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_assign_droplets.yml
+    notes: >-
+      Cloud firewalls decide which traffic reaches Droplets.
+    tests:
+      - fixture: fixtures/firewall-add-droplets.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.remove-droplets
+    match: { rest: { method: DELETE, path: "/v2/firewalls/{firewall_id}/droplets" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Remove Droplets {body.droplet_ids} from firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_delete_droplets.yml
+    notes: >-
+      The Droplets lose its protection.
+    tests:
+      - fixture: fixtures/firewall-remove-droplets.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.add-tags
+    match: { rest: { method: POST, path: "/v2/firewalls/{firewall_id}/tags" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Apply firewall {firewall_id} to tags {body.tags}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_add_tags.yml
+    notes: >-
+      Cloud firewalls decide which traffic reaches Droplets.
+    tests:
+      - fixture: fixtures/firewall-add-tags.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.remove-tags
+    match: { rest: { method: DELETE, path: "/v2/firewalls/{firewall_id}/tags" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Remove tags {body.tags} from firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_delete_tags.yml
+    notes: >-
+      Droplets with those tags lose its protection.
+    tests:
+      - fixture: fixtures/firewall-remove-tags.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.add-rules
+    match: { rest: { method: POST, path: "/v2/firewalls/{firewall_id}/rules" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Add rules to firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_add_rules.yml
+    notes: >-
+      Inbound rules open ports.
+    tests:
+      - fixture: fixtures/firewall-add-rules.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c
+
+  - id: digitalocean.firewall.remove-rules
+    match: { rest: { method: DELETE, path: "/v2/firewalls/{firewall_id}/rules" } }
+    class: access
+    resource: { arg: firewall_id, kind: firewall }
+    card: "Remove rules from firewall {firewall_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/firewalls/firewalls_delete_rules.yml
+    notes: >-
+      Cloud firewalls decide which traffic reaches Droplets.
+    tests:
+      - fixture: fixtures/firewall-remove-rules.http
+        expect: access
+        resource: bb4b2611-3d72-467b-8602-280330ecd65c

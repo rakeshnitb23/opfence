@@ -1,0 +1,7 @@
+# description: Add node pool new-pool (3 x s-1vcpu-2gb) to cluster bd5f5959-5e1e-4205-a714-a914373942af
+POST /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/node_pools HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"size": "s-1vcpu-2gb", "count": 3, "name": "new-pool", "tags": ["frontend"], "auto_scale": true, "min_nodes": 3, "max_nodes": 6}

@@ -1,0 +1,8 @@
+# description: List MicroVM checkpoints
+POST /mcp HTTP/1.1
+Host: microvms.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":288,"method":"tools/call","params":{"name":"microvm-checkpoint-list","arguments":{}}}

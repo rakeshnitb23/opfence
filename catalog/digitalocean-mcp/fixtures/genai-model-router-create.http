@@ -1,0 +1,8 @@
+# description: Create model router support-router
+POST /mcp HTTP/1.1
+Host: genai-inferencerouter.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":235,"method":"tools/call","params":{"name":"genai-inference-router-create","arguments":{"Name":"support-router","FallbackModels":["llama3.3-70b-instruct"]}}}

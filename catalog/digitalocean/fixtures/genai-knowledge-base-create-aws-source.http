@@ -1,0 +1,7 @@
+# description: Create knowledge base support-docs
+POST /v2/gen-ai/knowledge_bases HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "support-docs", "embedding_model_uuid": "22653204-79ed-11ef-bf8f-4e013e2ddde4", "datasources": [{"aws_data_source": {"bucket_name": "acme-docs", "region": "us-east-1", "key_id": "EXAMPLEKEYID", "secret_key": "opf_digitalocean_EXAMPLE"}}]}

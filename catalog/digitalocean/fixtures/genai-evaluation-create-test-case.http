@@ -1,0 +1,7 @@
+# description: Create evaluation test case example name
+POST /v2/gen-ai/evaluation_test_cases HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"agent_workspace_name": "example name", "dataset_uuid": "123e4567-e89b-12d3-a456-426614174000", "description": "example string", "metrics": ["example string"], "name": "example name", "workspace_uuid": "123e4567-e89b-12d3-a456-426614174000"}

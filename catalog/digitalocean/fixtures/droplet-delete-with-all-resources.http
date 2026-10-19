@@ -1,0 +1,5 @@
+# description: Destroy Droplet 3164444 and every volume, snapshot and IP attached to it
+DELETE /v2/droplets/3164444/destroy_with_associated_resources/dangerous HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,31 @@
+# DigitalOcean REST API: volume-snapshot
+operations:
+  - id: digitalocean.volume-snapshot.delete
+    match: { rest: { method: DELETE, path: "/v2/volumes/snapshots/{snapshot_id}" } }
+    class: irreversible
+    resource: { arg: snapshot_id, kind: volume-snapshot }
+    card: "Delete volume snapshot {snapshot_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumeSnapshots_delete_byId.yml
+    tests:
+      - fixture: fixtures/volume-snapshot-delete.http
+        expect: irreversible
+        resource: fbe805e8-866b-11e6-96bf-000f53315a41
+
+  - id: digitalocean.volume-snapshot.create
+    match: { rest: { method: POST, path: "/v2/volumes/{volume_id}/snapshots" } }
+    class: money
+    resource: { arg: volume_id, kind: volume }
+    card: "Snapshot volume {volume_id} as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumeSnapshots_create.yml
+    notes: >-
+      Snapshot storage is billed.
+    tests:
+      - fixture: fixtures/volume-snapshot-create.http
+        expect: money
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"

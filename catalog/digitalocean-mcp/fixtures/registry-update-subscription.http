@@ -1,0 +1,8 @@
+# description: Change the container registry tier to professional
+POST /mcp HTTP/1.1
+Host: docr.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":71,"method":"tools/call","params":{"name":"docr-subscription-update","arguments":{"TierSlug":"professional"}}}

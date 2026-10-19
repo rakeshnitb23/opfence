@@ -1,0 +1,130 @@
+# DigitalOcean REST API: genai-evaluation
+operations:
+  - id: digitalocean.genai-evaluation.create-dataset
+    match: { rest: { method: POST, path: /v2/gen-ai/evaluation_datasets } }
+    class: write
+    resource: { arg: body.name, kind: genai-evaluation }
+    card: "Create evaluation dataset {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_evaluation_dataset.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-create-dataset.http
+        expect: write
+        resource: "example name"
+
+  - id: digitalocean.genai-evaluation.dataset-upload-urls
+    match: { rest: { method: POST, path: /v2/gen-ai/evaluation_datasets/file_upload_presigned_urls } }
+    class: write
+    card: "Get upload URLs for evaluation dataset files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_evaluation_dataset_file_upload_presigned_urls.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-dataset-upload-urls.http
+        expect: write
+
+  - id: digitalocean.genai-evaluation.delete-dataset
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/evaluation_datasets/{dataset_uuid}" } }
+    class: irreversible
+    resource: { arg: dataset_uuid, kind: genai-evaluation-dataset }
+    card: "Delete evaluation dataset {dataset_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_evaluation_dataset.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-dataset.http
+        expect: irreversible
+        resource: "9bc05e62-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-evaluation.create-metric
+    match: { rest: { method: POST, path: /v2/gen-ai/custom_evaluation_metrics } }
+    class: write
+    resource: { arg: body.metric_name, kind: genai-evaluation }
+    card: "Create evaluation metric {body.metric_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_custom_evaluation_metric.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-create-metric.http
+        expect: write
+        resource: "\"My domain tone metric\""
+
+  - id: digitalocean.genai-evaluation.update-metric
+    match: { rest: { method: PUT, path: "/v2/gen-ai/custom_evaluation_metrics/{metric_uuid}" } }
+    class: write
+    resource: { arg: metric_uuid, kind: genai-evaluation-metric }
+    card: "Change evaluation metric {metric_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_custom_evaluation_metric.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-update-metric.http
+        expect: write
+        resource: acd16f73-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-evaluation.delete-metric
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/custom_evaluation_metrics/{metric_uuid}" } }
+    class: delete
+    resource: { arg: metric_uuid, kind: genai-evaluation-metric }
+    card: "Delete evaluation metric {metric_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_custom_evaluation_metric.yml
+    notes: >-
+      A scoring prompt that can be recreated; completed runs keep their
+      results.
+    tests:
+      - fixture: fixtures/genai-evaluation-delete-metric.http
+        expect: delete
+        resource: acd16f73-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-evaluation.run
+    match: { rest: { method: POST, path: /v2/gen-ai/evaluation_runs } }
+    class: money
+    resource: { arg: body.run_name, kind: genai-evaluation }
+    card: "Run evaluation test case {body.test_case_uuid} as {body.run_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_run_evaluation_test_case.yml
+    notes: >-
+      Billed inference for every prompt and judge call.
+    tests:
+      - fixture: fixtures/genai-evaluation-run.http
+        expect: money
+        resource: "Evaluation Run Name"
+
+  - id: digitalocean.genai-evaluation.create-test-case
+    match: { rest: { method: POST, path: /v2/gen-ai/evaluation_test_cases } }
+    class: write
+    resource: { arg: body.name, kind: genai-evaluation }
+    card: "Create evaluation test case {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_evaluation_test_case.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-create-test-case.http
+        expect: write
+        resource: "example name"
+
+  - id: digitalocean.genai-evaluation.update-test-case
+    match: { rest: { method: PUT, path: "/v2/gen-ai/evaluation_test_cases/{test_case_uuid}" } }
+    class: write
+    resource: { arg: test_case_uuid, kind: genai-evaluation-test-case }
+    card: "Change evaluation test case {test_case_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_evaluation_test_case.yml
+    tests:
+      - fixture: fixtures/genai-evaluation-update-test-case.http
+        expect: write
+        resource: "2559e75b-b7d7-11ef-bf8f-4e013e2ddde4"

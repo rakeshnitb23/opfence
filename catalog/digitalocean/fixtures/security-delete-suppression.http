@@ -1,0 +1,5 @@
+# description: Remove suppression e1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b
+DELETE /v2/security/settings/suppressions/e1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,8 @@
+# description: Change DNS record 28448429 of example.com
+POST /mcp HTTP/1.1
+Host: networking.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":309,"method":"tools/call","params":{"name":"domain-record-edit","arguments":{"Domain":"example.com","RecordID":28448429,"Type":"A","Name":"www","Data":"203.0.113.11"}}}

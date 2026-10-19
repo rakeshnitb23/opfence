@@ -1,0 +1,7 @@
+# description: Create MicroVM example-microvm
+POST /v2/microvms HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "example-microvm", "region": "mkc1", "size": {"cpu": 1, "memory": 2048}, "source": {"oci_ref": "docker.io/library/nginx:latest"}, "http_port": 80, "http_protocol": "http", "auto_pause": {"idle_timeout": "5m"}, "tags": ["example"]}

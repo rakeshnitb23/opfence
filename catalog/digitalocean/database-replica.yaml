@@ -1,0 +1,87 @@
+# DigitalOcean REST API: database-replica
+operations:
+  - id: digitalocean.database-replica.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/replicas" } }
+    class: credential
+    when:
+      - if: { arg: database_cluster_uuid, present: true }
+        class: money
+      - if: { arg: database_cluster_uuid, present: true }
+        class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Create read replica {body.name} of database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_create_replica.yml
+    notes: >-
+      A billed node (money), and the response carries the connection password
+      (credential).
+    tests:
+      - fixture: fixtures/database-replica-create.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-replica.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/replicas/{replica_name}" } }
+    class: delete
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Destroy read replica {replica_name} of database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_destroy_replica.yml
+    notes: >-
+      A replica can be rebuilt from its primary.
+    tests:
+      - fixture: fixtures/database-replica-delete.http
+        expect: delete
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-replica.promote
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/replicas/{replica_name}/promote" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Promote read replica {replica_name} to a standalone cluster"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_promote_replica.yml
+    notes: >-
+      The replica stops following the primary; no data is removed.
+    tests:
+      - fixture: fixtures/database-replica-promote.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-replica.list
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/replicas" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "List replicas of cluster {database_cluster_uuid} with their passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_replicas.yml
+    notes: >-
+      Replica connection strings include the password.
+    tests:
+      - fixture: fixtures/database-replica-list.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-replica.read
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/replicas/{replica_name}" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Read replica {replica_name} with its password"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_replica.yml
+    notes: >-
+      Replica connection strings include the password.
+    tests:
+      - fixture: fixtures/database-replica-read.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

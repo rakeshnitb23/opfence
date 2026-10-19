@@ -1,0 +1,157 @@
+# DigitalOcean REST API: genai-simulation
+operations:
+  - id: digitalocean.genai-simulation.create-scenario-set-from-library
+    match: { rest: { method: POST, path: "/v2/gen-ai/scenario_library/{library_scenario_uuid}/create_scenario_set" } }
+    class: write
+    resource: { arg: library_scenario_uuid, kind: genai-scenario-library }
+    card: "Create scenario set {body.name} from library entry {library_scenario_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_scenario_set_from_library.yml
+    tests:
+      - fixture: fixtures/genai-simulation-create-scenario-set-from-library.http
+        expect: write
+        resource: e115a317-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-simulation.create-scenario-set
+    match: { rest: { method: POST, path: /v2/gen-ai/scenario_sets } }
+    class: write
+    resource: { arg: body.name, kind: genai-simulation }
+    card: "Create scenario set {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_scenario_set.yml
+    tests:
+      - fixture: fixtures/genai-simulation-create-scenario-set.http
+        expect: write
+        resource: support-agent-scenarios
+
+  - id: digitalocean.genai-simulation.scenario-set-upload-urls
+    match: { rest: { method: POST, path: /v2/gen-ai/scenario_sets/file_upload_presigned_urls } }
+    class: write
+    card: "Get upload URLs for scenario set files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_scenario_set_upload_presigned_urls.yml
+    tests:
+      - fixture: fixtures/genai-simulation-scenario-set-upload-urls.http
+        expect: write
+
+  - id: digitalocean.genai-simulation.generate-scenario-set
+    match: { rest: { method: POST, path: /v2/gen-ai/scenario_sets/generate } }
+    class: money
+    resource: { arg: body.name, kind: genai-simulation }
+    card: "Generate {body.num_scenarios} scenarios as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_generate_scenario_set.yml
+    notes: >-
+      Generation runs billed inference.
+    tests:
+      - fixture: fixtures/genai-simulation-generate-scenario-set.http
+        expect: money
+        resource: billing-support-generated
+
+  - id: digitalocean.genai-simulation.update-scenario-set
+    match: { rest: { method: PUT, path: "/v2/gen-ai/scenario_sets/{scenario_set_uuid}" } }
+    class: write
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Change scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_scenario_set.yml
+    tests:
+      - fixture: fixtures/genai-simulation-update-scenario-set.http
+        expect: write
+        resource: f226b428-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-simulation.delete-scenario-set
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/scenario_sets/{scenario_set_uuid}" } }
+    class: irreversible
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Delete scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_scenario_set.yml
+    tests:
+      - fixture: fixtures/genai-simulation-delete-scenario-set.http
+        expect: irreversible
+        resource: f226b428-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-simulation.duplicate-scenario-set
+    match: { rest: { method: POST, path: "/v2/gen-ai/scenario_sets/{scenario_set_uuid}/duplicate" } }
+    class: write
+    resource: { arg: scenario_set_uuid, kind: genai-scenario-set }
+    card: "Duplicate scenario set {scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_duplicate_scenario_set.yml
+    tests:
+      - fixture: fixtures/genai-simulation-duplicate-scenario-set.http
+        expect: write
+        resource: f226b428-b7d6-11ef-bf8f-4e013e2ddde4
+
+  - id: digitalocean.genai-simulation.create-run
+    match: { rest: { method: POST, path: /v2/gen-ai/simulation_runs } }
+    class: money
+    resource: { arg: body.scenario_set_uuid, kind: genai-scenario-set }
+    card: "Start simulation run {body.name} of scenario set {body.scenario_set_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_simulation_run.yml
+    notes: >-
+      Billed inference for the agent, simulator and judge.
+    tests:
+      - fixture: fixtures/genai-simulation-create-run.http
+        expect: money
+        resource: "123e4567-e89b-12d3-a456-426614174000"
+
+  - id: digitalocean.genai-simulation.rename-run
+    match: { rest: { method: PUT, path: "/v2/gen-ai/simulation_runs/{run_uuid}" } }
+    class: write
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Rename simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_simulation_run.yml
+    tests:
+      - fixture: fixtures/genai-simulation-rename-run.http
+        expect: write
+        resource: "0337c539-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-simulation.delete-run
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/simulation_runs/{run_uuid}" } }
+    class: irreversible
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Delete simulation run {run_uuid} and its results"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_simulation_run.yml
+    tests:
+      - fixture: fixtures/genai-simulation-delete-run.http
+        expect: irreversible
+        resource: "0337c539-b7d7-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-simulation.cancel-run
+    match: { rest: { method: PATCH, path: "/v2/gen-ai/simulation_runs/{run_uuid}/cancel" } }
+    class: write
+    resource: { arg: run_uuid, kind: genai-simulation-run }
+    card: "Cancel simulation run {run_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_cancel_simulation_run.yml
+    tests:
+      - fixture: fixtures/genai-simulation-cancel-run.http
+        expect: write
+        resource: "0337c539-b7d7-11ef-bf8f-4e013e2ddde4"

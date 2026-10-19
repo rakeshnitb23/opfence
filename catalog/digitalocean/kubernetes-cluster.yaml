@@ -1,0 +1,147 @@
+# DigitalOcean REST API: kubernetes-cluster
+operations:
+  - id: digitalocean.kubernetes-cluster.create
+    match: { rest: { method: POST, path: /v2/kubernetes/clusters } }
+    class: money
+    resource: { arg: body.name, kind: kubernetes-cluster }
+    card: "Create Kubernetes cluster {body.name} {body.version} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_create_cluster.yml
+    tests:
+      - fixture: fixtures/kubernetes-cluster-create.http
+        expect: money
+        resource: prod-cluster-01
+
+  - id: digitalocean.kubernetes-cluster.update
+    match: { rest: { method: PUT, path: "/v2/kubernetes/clusters/{cluster_id}" } }
+    class: write
+    when:
+      - if: { arg: body.ha, equals: "true" }
+        class: money
+      - if: { arg: body.control_plane_firewall, present: true }
+        class: access
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Change Kubernetes cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_update_cluster.yml
+    notes: >-
+      ha adds a billed high-availability control plane; control_plane_firewall
+      decides who can reach the Kubernetes API.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-update.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+      - fixture: fixtures/kubernetes-cluster-update-ha.http
+        expect: money
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+      - fixture: fixtures/kubernetes-cluster-update-firewall.http
+        expect: access
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.delete
+    match: { rest: { method: DELETE, path: "/v2/kubernetes/clusters/{cluster_id}" } }
+    class: irreversible
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Delete Kubernetes cluster {cluster_id} and everything deployed to it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_delete_cluster.yml
+    tests:
+      - fixture: fixtures/kubernetes-cluster-delete.http
+        expect: irreversible
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.delete-with-resources
+    match: { rest: { method: DELETE, path: "/v2/kubernetes/clusters/{cluster_id}/destroy_with_associated_resources/selective" } }
+    class: irreversible
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Delete Kubernetes cluster {cluster_id} with the load balancers, volumes and snapshots listed"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_destroy_associatedResourcesSelective.yml
+    tests:
+      - fixture: fixtures/kubernetes-cluster-delete-with-resources.http
+        expect: irreversible
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.delete-with-all-resources
+    match: { rest: { method: DELETE, path: "/v2/kubernetes/clusters/{cluster_id}/destroy_with_associated_resources/dangerous" } }
+    class: irreversible
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Delete Kubernetes cluster {cluster_id} with every load balancer, volume and snapshot it created"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_destroy_associatedResourcesDangerous.yml
+    tests:
+      - fixture: fixtures/kubernetes-cluster-delete-with-all-resources.http
+        expect: irreversible
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.upgrade
+    match: { rest: { method: POST, path: "/v2/kubernetes/clusters/{cluster_id}/upgrade" } }
+    class: write
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Upgrade Kubernetes cluster {cluster_id} to {body.version}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_upgrade_cluster.yml
+    tests:
+      - fixture: fixtures/kubernetes-cluster-upgrade.http
+        expect: write
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.run-clusterlint
+    match: { rest: { method: POST, path: "/v2/kubernetes/clusters/{cluster_id}/clusterlint" } }
+    class: read
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Run clusterlint checks on cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_run_clusterLint.yml
+    notes: >-
+      Diagnostics only.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-run-clusterlint.http
+        expect: read
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.kubeconfig
+    match: { rest: { method: GET, path: "/v2/kubernetes/clusters/{cluster_id}/kubeconfig" } }
+    class: credential
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Download the kubeconfig of cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_get_kubeconfig.yml
+    notes: >-
+      The kubeconfig carries a token with admin access to the cluster.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-kubeconfig.http
+        expect: credential
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean.kubernetes-cluster.credentials
+    match: { rest: { method: GET, path: "/v2/kubernetes/clusters/{cluster_id}/credentials" } }
+    class: credential
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Read the API credentials of cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_get_credentials.yml
+    notes: >-
+      Returns a bearer token or client certificate and key.
+    tests:
+      - fixture: fixtures/kubernetes-cluster-credentials.http
+        expect: credential
+        resource: bd5f5959-5e1e-4205-a714-a914373942af

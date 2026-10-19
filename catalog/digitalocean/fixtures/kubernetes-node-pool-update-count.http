@@ -1,0 +1,7 @@
+# description: Change node pool cdda885e-7663-40c8-bc74-3a036c66545d of cluster bd5f5959-5e1e-4205-a714-a914373942af
+PUT /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/node_pools/cdda885e-7663-40c8-bc74-3a036c66545d HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "workers", "count": 5}

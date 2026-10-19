@@ -1,0 +1,15 @@
+# DigitalOcean REST API: snapshot
+operations:
+  - id: digitalocean.snapshot.delete
+    match: { rest: { method: DELETE, path: "/v2/snapshots/{snapshot_id}" } }
+    class: irreversible
+    resource: { arg: snapshot_id, kind: snapshot }
+    card: "Delete snapshot {snapshot_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/snapshots/snapshots_delete.yml
+    tests:
+      - fixture: fixtures/snapshot-delete.http
+        expect: irreversible
+        resource: "6372321"
