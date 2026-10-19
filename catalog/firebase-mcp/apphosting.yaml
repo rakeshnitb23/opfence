@@ -1,0 +1,27 @@
+# Firebase MCP server: App Hosting tools (apphosting_ prefix)
+operations:
+  - id: firebase-mcp.apphosting.fetch-logs
+    match: { mcp: { tool: apphosting_fetch_logs } }
+    class: read
+    resource: { arg: backendId, kind: backend }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/apphosting/fetch_logs.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/apphosting-fetch-logs.json
+        expect: read
+        resource: "shop-web"
+
+  - id: firebase-mcp.apphosting-backend.list
+    match: { mcp: { tool: apphosting_list_backends } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/apphosting/list_backends.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/apphosting-backend-list.json
+        expect: read

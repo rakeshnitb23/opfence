@@ -1,0 +1,11 @@
+{
+  "description": "Schedule daily backups kept for 14 days",
+  "tool": "firestore_create_backup_schedule",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)",
+    "backupSchedule": {
+      "retention": "1209600s",
+      "dailyRecurrence": {}
+    }
+  }
+}

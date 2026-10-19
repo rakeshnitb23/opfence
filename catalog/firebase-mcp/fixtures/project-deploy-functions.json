@@ -1,0 +1,7 @@
+{
+  "description": "Deploy Cloud Functions",
+  "tool": "firebase_deploy",
+  "arguments": {
+    "only": "functions"
+  }
+}

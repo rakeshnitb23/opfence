@@ -1,0 +1,8 @@
+{
+  "description": "Set a user's plan",
+  "tool": "realtimedatabase_set_data",
+  "arguments": {
+    "path": "/users/u7Hk2LmQ9xYz/plan",
+    "data": "\"pro\""
+  }
+}

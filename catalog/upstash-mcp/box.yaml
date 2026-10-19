@@ -1,0 +1,224 @@
+# Upstash MCP server: Upstash Box containers
+operations:
+  - id: upstash-mcp.box.manage
+    match: { mcp: { tool: box_manage } }
+    class: irreversible
+    when:
+      - if: { arg: action, equals: "create" }
+        class: money
+      - if: { arg: action, equals: "fork" }
+        class: money
+      - if: { arg: action, equals: "resume" }
+        class: money
+      - if: { arg: action, equals: "pause" }
+        class: write
+      - if: { arg: action, in: [list, get] }
+        class: credential
+      - if: { arg: action, equals: "delete" }
+        class: irreversible
+      - if: { arg: env_vars, present: true }
+        class: credential
+      - if: { arg: clone_token, present: true }
+        class: credential
+      - if: { arg: agent_api_key, present: true }
+        class: credential
+    resource: { arg: box_id, kind: box }
+    card: "{action} Upstash Box {box_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/manage.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      One tool for seven actions. create, fork and resume start billed
+      containers with an LLM agent (money); delete destroys the box's
+      filesystem (irreversible); pause is a write. env_vars, clone_token and
+      agent_api_key hand secrets to the box (credential). list and get return
+      box objects whose shape the server does not pin down (they may carry the
+      env_vars set at create), so they are credential. Any other value keeps
+      irreversible. Upstash Box tools call us-east-1.box.upstash.com with the
+      server's --box-api-key or a box_api_key argument.
+    tests:
+      - fixture: fixtures/box-create.json
+        expect: money
+      - fixture: fixtures/box-create-secrets.json
+        expect: credential
+      - fixture: fixtures/box-delete.json
+        expect: irreversible
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-pause.json
+        expect: write
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-get.json
+        expect: credential
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.exec
+    match: { mcp: { tool: box_exec } }
+    class: irreversible
+    resource: { arg: box_id, kind: box }
+    card: "Run {command} in Upstash Box {box_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/exec.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Runs any shell command in the box, which may hold cloned repositories,
+      tokens and environment secrets. Upstash Box tools call
+      us-east-1.box.upstash.com with the server's --box-api-key or a
+      box_api_key argument.
+    tests:
+      - fixture: fixtures/box-exec.json
+        expect: irreversible
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.agent-run
+    match: { mcp: { tool: box_agent_run } }
+    class: irreversible
+    when:
+      - if: { arg: box_id, present: true }
+        class: irreversible
+      - if: { arg: box_id, present: true }
+        class: money
+    resource: { arg: box_id, kind: box }
+    card: "Run an AI agent in Upstash Box {box_id}: {prompt}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/agent-run.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      The box's agent runs shell, filesystem and git commands of its own
+      choosing until the prompt is done (irreversible) and its LLM tokens are
+      billed (money). Upstash Box tools call us-east-1.box.upstash.com with
+      the server's --box-api-key or a box_api_key argument.
+    tests:
+      - fixture: fixtures/box-agent-run.json
+        expect: irreversible
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-agent-run.json
+        expect: money
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.logs
+    match: { mcp: { tool: box_logs } }
+    class: read
+    resource: { arg: box_id, kind: box }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/logs.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Upstash Box tools call us-east-1.box.upstash.com with the server's
+      --box-api-key or a box_api_key argument.
+    tests:
+      - fixture: fixtures/box-logs.json
+        expect: read
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.runs
+    match: { mcp: { tool: box_runs } }
+    class: write
+    when:
+      - if: { arg: action, in: [list, get] }
+        class: read
+      - if: { arg: action, equals: "cancel" }
+        class: write
+    resource: { arg: box_id, kind: box }
+    card: "{action} run {run_id} of Upstash Box {box_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/runs.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      list and get read run history; cancel stops a running agent or command.
+      Upstash Box tools call us-east-1.box.upstash.com with the server's
+      --box-api-key or a box_api_key argument.
+    tests:
+      - fixture: fixtures/box-runs-list.json
+        expect: read
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-runs-cancel.json
+        expect: write
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.preview
+    match: { mcp: { tool: box_preview } }
+    class: access
+    when:
+      - if: { arg: action, equals: "create" }
+        class: access
+      - if: { arg: basic_auth, equals: "true" }
+        class: credential
+      - if: { arg: bearer_token, equals: "true" }
+        class: credential
+      - if: { arg: action, equals: "list" }
+        class: credential
+      - if: { arg: action, equals: "delete" }
+        class: delete
+    resource: { arg: box_id, kind: box }
+    card: "{action} a public preview URL for port {port} of Upstash Box {box_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/preview.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      create publishes a service in the box on a public URL (access); with
+      basic_auth or bearer_token the response carries the generated password
+      or token (credential), and list may return them too. delete takes the
+      URL down. Upstash Box tools call us-east-1.box.upstash.com with the
+      server's --box-api-key or a box_api_key argument.
+    tests:
+      - fixture: fixtures/box-preview-create.json
+        expect: access
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-preview-create-auth.json
+        expect: credential
+        resource: "box_7Kp2Qx9Lm4"
+      - fixture: fixtures/box-preview-delete.json
+        expect: delete
+        resource: "box_7Kp2Qx9Lm4"
+
+  - id: upstash-mcp.box.snapshots
+    match: { mcp: { tool: box_snapshots } }
+    class: irreversible
+    when:
+      - if: { arg: action, equals: "create" }
+        class: money
+      - if: { arg: action, in: [list, list_all] }
+        class: read
+      - if: { arg: action, equals: "delete" }
+        class: irreversible
+      - if: { arg: action, equals: "restore" }
+        class: money
+      - if: { arg: env_vars, present: true }
+        class: credential
+    resource: { arg: snapshot_id, kind: snapshot }
+    card: "{action} snapshot {snapshot_id} of Upstash Box {box_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/box/snapshots.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      create keeps a billed filesystem snapshot and restore starts a new
+      billed box from one (money); delete removes a snapshot for good
+      (irreversible); env_vars for the restored box are secrets (credential).
+      Any other value keeps irreversible. Upstash Box tools call
+      us-east-1.box.upstash.com with the server's --box-api-key or a
+      box_api_key argument.
+    tests:
+      - fixture: fixtures/box-snapshots-create.json
+        expect: money
+      - fixture: fixtures/box-snapshots-list.json
+        expect: read
+      - fixture: fixtures/box-snapshots-delete.json
+        expect: irreversible
+        resource: "snap_9Wd4Hc2Tx7"
+      - fixture: fixtures/box-snapshots-restore.json
+        expect: money
+        resource: "snap_9Wd4Hc2Tx7"

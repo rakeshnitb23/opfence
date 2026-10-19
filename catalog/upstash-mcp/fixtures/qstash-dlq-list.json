@@ -1,0 +1,7 @@
+{
+  "description": "List QStash DLQ messages",
+  "tool": "qstash_dlq_list",
+  "arguments": {
+    "count": 10
+  }
+}

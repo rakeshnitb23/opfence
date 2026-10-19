@@ -1,0 +1,7 @@
+{
+  "description": "Get the default Firestore database",
+  "tool": "firestore_get_database",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Initialize Data Connect and provision Cloud SQL",
+  "tool": "firebase_init",
+  "arguments": {
+    "features": {
+      "dataconnect": {
+        "service_id": "shop",
+        "location_id": "us-central1",
+        "provision_cloudsql": true
+      }
+    }
+  }
+}

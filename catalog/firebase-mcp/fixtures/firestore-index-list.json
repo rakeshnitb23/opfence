@@ -1,0 +1,7 @@
+{
+  "description": "List indexes on orders",
+  "tool": "firestore_list_indexes",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)/collectionGroups/orders"
+  }
+}

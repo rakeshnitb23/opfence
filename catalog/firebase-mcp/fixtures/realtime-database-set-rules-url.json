@@ -1,0 +1,9 @@
+{
+  "description": "Replace the database rules through databaseUrl",
+  "tool": "realtimedatabase_set_data",
+  "arguments": {
+    "databaseUrl": "https://shop-prod-default-rtdb.firebaseio.com/.settings",
+    "path": "/rules",
+    "data": "{\"rules\": {\".read\": true, \".write\": true}}"
+  }
+}

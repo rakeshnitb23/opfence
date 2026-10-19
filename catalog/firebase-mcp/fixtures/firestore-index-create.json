@@ -1,0 +1,20 @@
+{
+  "description": "Create an index on orders",
+  "tool": "firestore_create_index",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)/collectionGroups/orders",
+    "index": {
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  }
+}

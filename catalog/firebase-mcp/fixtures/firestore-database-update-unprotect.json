@@ -1,0 +1,11 @@
+{
+  "description": "Turn off delete protection",
+  "tool": "firestore_update_database",
+  "arguments": {
+    "database": {
+      "name": "projects/shop-prod/databases/(default)",
+      "deleteProtectionState": "DELETE_PROTECTION_DISABLED"
+    },
+    "updateMask": "deleteProtectionState"
+  }
+}

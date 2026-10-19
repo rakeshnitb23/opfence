@@ -1,0 +1,11 @@
+{
+  "description": "Make a user an admin with a custom claim",
+  "tool": "auth_update_user",
+  "arguments": {
+    "uid": "u7Hk2LmQ9xYz",
+    "claim": {
+      "key": "admin",
+      "value": true
+    }
+  }
+}

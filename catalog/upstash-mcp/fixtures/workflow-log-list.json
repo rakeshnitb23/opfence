@@ -1,0 +1,8 @@
+{
+  "description": "List failed workflow runs",
+  "tool": "workflow_logs_list",
+  "arguments": {
+    "state": "RUN_FAILED",
+    "count": 10
+  }
+}

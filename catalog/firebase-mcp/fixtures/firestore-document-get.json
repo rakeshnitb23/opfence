@@ -1,0 +1,7 @@
+{
+  "description": "Get an order document",
+  "tool": "firestore_get_document",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)/documents/orders/A1b2C3"
+  }
+}

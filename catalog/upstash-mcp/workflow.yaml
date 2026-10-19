@@ -1,0 +1,98 @@
+# Upstash MCP server: Upstash Workflow logs and DLQ
+operations:
+  - id: upstash-mcp.workflow-log.list
+    match: { mcp: { tool: workflow_logs_list } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/workflow.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      The tool drops each run's steps, which hold the step requests and their
+      headers. Uses the QStash token the server fetches with the account's
+      management API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/workflow-log-list.json
+        expect: read
+
+  - id: upstash-mcp.workflow-log.get
+    match: { mcp: { tool: workflow_logs_get } }
+    class: credential
+    resource: { arg: workflowRunId, kind: workflow-run }
+    card: "Read workflow run {workflowRunId} with its step headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/workflow.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns the run with every step, including the headers each step was
+      called with. Uses the QStash token the server fetches with the account's
+      management API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/workflow-log-get.json
+        expect: credential
+        resource: "wfr_4f1c9a2b-7d3e-4b6a-9c8d-2e1f0a9b8c7d"
+
+  - id: upstash-mcp.workflow-dlq.list
+    match: { mcp: { tool: workflow_dlq_list } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/workflow.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      The tool drops every field whose name contains header. Uses the QStash
+      token the server fetches with the account's management API key (or
+      qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/workflow-dlq-list.json
+        expect: read
+
+  - id: upstash-mcp.workflow-dlq.get
+    match: { mcp: { tool: workflow_dlq_get } }
+    class: credential
+    resource: { arg: dlqId, kind: dlq-message }
+    card: "Read failed workflow run {dlqId} with its headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/workflow.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns the DLQ entry whole, headers included. Uses the QStash token the
+      server fetches with the account's management API key (or qstash_creds /
+      the local dev server when given).
+    tests:
+      - fixture: fixtures/workflow-dlq-get.json
+        expect: credential
+        resource: "1760870400000-1"
+
+  - id: upstash-mcp.workflow-dlq.manage
+    match: { mcp: { tool: workflow_dlq_manage } }
+    class: irreversible
+    when:
+      - if: { arg: action, in: [restart, resume] }
+        class: write
+    resource: { arg: dlqId, kind: dlq-message }
+    card: "{action} failed workflow run {dlqId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/workflow.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      delete drops the failed run and the state needed to resume it
+      (irreversible). restart and resume run the workflow again, calling the
+      app's endpoint (write). Uses the QStash token the server fetches with
+      the account's management API key (or qstash_creds / the local dev server
+      when given).
+    tests:
+      - fixture: fixtures/workflow-dlq-delete.json
+        expect: irreversible
+        resource: "1760870400000-1"
+      - fixture: fixtures/workflow-dlq-resume.json
+        expect: write
+        resource: "1760870400000-1"

@@ -1,0 +1,7 @@
+{
+  "description": "List root collections",
+  "tool": "firestore_list_collections",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)/documents"
+  }
+}

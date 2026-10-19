@@ -1,0 +1,10 @@
+{
+  "description": "Draft a query from a schema",
+  "tool": "dataconnect_generate_query_from_schema",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "schema": "type Product @table { name: String! }",
+    "prompt": "List product names"
+  }
+}

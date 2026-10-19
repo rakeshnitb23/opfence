@@ -1,0 +1,11 @@
+{
+  "description": "Create Redis database sessions",
+  "tool": "redis_database_create_new",
+  "arguments": {
+    "name": "sessions",
+    "primary_region": "us-east-1",
+    "read_regions": [
+      "eu-west-1"
+    ]
+  }
+}

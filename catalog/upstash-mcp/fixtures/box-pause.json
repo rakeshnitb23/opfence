@@ -1,0 +1,8 @@
+{
+  "description": "Pause an Upstash Box",
+  "tool": "box_manage",
+  "arguments": {
+    "action": "pause",
+    "box_id": "box_7Kp2Qx9Lm4"
+  }
+}

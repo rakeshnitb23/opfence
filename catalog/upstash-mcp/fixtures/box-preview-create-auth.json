@@ -1,0 +1,10 @@
+{
+  "description": "Expose port 3000 behind basic auth",
+  "tool": "box_preview",
+  "arguments": {
+    "action": "create",
+    "box_id": "box_7Kp2Qx9Lm4",
+    "port": 3000,
+    "basic_auth": true
+  }
+}

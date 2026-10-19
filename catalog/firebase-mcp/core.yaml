@@ -1,0 +1,321 @@
+# Firebase MCP server (firebase mcp, firebase-tools): core tools (firebase_ prefix)
+operations:
+  - id: firebase-mcp.account.login
+    match: { mcp: { tool: firebase_login } }
+    class: read
+    when:
+      - if: { arg: authCode, present: true }
+        class: credential
+    card: "Sign the Firebase CLI in with an authorization code"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/login.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Without authCode it reports who is signed in or returns a sign-in URL
+      for the user, which changes nothing. With authCode it completes the
+      OAuth flow and stores a new refresh token for the CLI and every later
+      tool call, so it is credential.
+    tests:
+      - fixture: fixtures/login-status.json
+        expect: read
+      - fixture: fixtures/login-code.json
+        expect: credential
+
+  - id: firebase-mcp.account.logout
+    match: { mcp: { tool: firebase_logout } }
+    class: delete
+    resource: { arg: email, kind: account }
+    card: "Sign {email} out of the Firebase CLI"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/logout.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Revokes the stored refresh tokens (every account when email is omitted).
+      Signing in again restores access, so it is a delete, not irreversible.
+    tests:
+      - fixture: fixtures/logout.json
+        expect: delete
+        resource: "dev@example.com"
+
+  - id: firebase-mcp.security-rules.validate
+    match: { mcp: { tool: firebase_validate_security_rules } }
+    class: read
+    resource: { arg: type, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/validate_security_rules.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Sends the rules to the Rules API's test endpoint; nothing is released.
+    tests:
+      - fixture: fixtures/security-rules-validate.json
+        expect: read
+        resource: "firestore"
+
+  - id: firebase-mcp.project.get
+    match: { mcp: { tool: firebase_get_project } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/get_project.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/project-get.json
+        expect: read
+
+  - id: firebase-mcp.app.list
+    match: { mcp: { tool: firebase_list_apps } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/list_apps.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/app-list.json
+        expect: read
+
+  - id: firebase-mcp.project.list
+    match: { mcp: { tool: firebase_list_projects } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/list_projects.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/project-list.json
+        expect: read
+
+  - id: firebase-mcp.app.get-sdk-config
+    match: { mcp: { tool: firebase_get_sdk_config } }
+    class: read
+    resource: { arg: app_id, kind: app }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/get_sdk_config.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Returns the app's client config (google-services.json,
+      GoogleService-Info.plist or the web config object). Its apiKey is a
+      public identifier that ships inside every client app, not a secret, so
+      this stays a read.
+    tests:
+      - fixture: fixtures/app-get-sdk-config.json
+        expect: read
+        resource: "1:123456789012:web:abc123def456"
+
+  - id: firebase-mcp.project.create
+    match: { mcp: { tool: firebase_create_project } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Create Firebase project {project_id} (or add Firebase to that Google Cloud project)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/create_project.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Creates a Google Cloud project with Firebase, or adds Firebase to an
+      existing one. A new project starts on the no-cost Spark plan, so it is a
+      write, not money.
+    tests:
+      - fixture: fixtures/project-create.json
+        expect: write
+        resource: "shop-staging"
+
+  - id: firebase-mcp.app.create
+    match: { mcp: { tool: firebase_create_app } }
+    class: write
+    resource: { arg: platform, kind: platform }
+    card: "Create a {platform} app {display_name} in the active Firebase project"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/create_app.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/app-create.json
+        expect: write
+        resource: "android"
+
+  - id: firebase-mcp.app.add-sha
+    match: { mcp: { tool: firebase_create_android_sha } }
+    class: access
+    resource: { arg: app_id, kind: app }
+    card: "Trust signing certificate {sha_hash} for Android app {app_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/create_android_sha.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      A SHA certificate fingerprint tells Google which signing key may act as
+      the app (Google Sign-In, phone auth, Dynamic Links, API key
+      restrictions), so adding one grants access.
+    tests:
+      - fixture: fixtures/app-add-sha.json
+        expect: access
+        resource: "1:123456789012:android:abc123def456"
+
+  - id: firebase-mcp.environment.get
+    match: { mcp: { tool: firebase_get_environment } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/get_environment.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Shows the project directory, active project, signed-in accounts and
+      firebase.json.
+    tests:
+      - fixture: fixtures/environment-get.json
+        expect: read
+
+  - id: firebase-mcp.environment.update
+    match: { mcp: { tool: firebase_update_environment } }
+    class: write
+    resource: { arg: active_project, kind: project }
+    card: "Switch the Firebase environment to project {active_project}, directory {project_dir}, account {active_user_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/update_environment.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Changes local CLI state only (.firebaserc and the CLI's account choice);
+      later tools then act on the new project or account.
+    tests:
+      - fixture: fixtures/environment-update.json
+        expect: write
+        resource: "shop-prod"
+
+  - id: firebase-mcp.workspace.init
+    match: { mcp: { tool: firebase_init } }
+    class: write
+    when:
+      - if: { arg: features.dataconnect.provision_cloudsql, equals: "true" }
+        class: money
+    card: "Initialize Firebase features in the project directory"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/init.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Writes firebase.json, .firebaserc and rules files locally; nothing
+      reaches the project until a deploy (classified on its own). Two parts
+      act at once: hosting.site_id creates a Hosting site and ailogic enables
+      the AI Logic API (writes), and dataconnect.provision_cloudsql creates a
+      Cloud SQL instance, a billed resource after the one-instance trial, so
+      it is money.
+    tests:
+      - fixture: fixtures/workspace-init.json
+        expect: write
+      - fixture: fixtures/workspace-init-cloudsql.json
+        expect: money
+
+  - id: firebase-mcp.security-rules.get
+    match: { mcp: { tool: firebase_get_security_rules } }
+    class: read
+    resource: { arg: type, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/get_security_rules.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/security-rules-get.json
+        expect: read
+        resource: "storage"
+
+  - id: firebase-mcp.resources.read
+    match: { mcp: { tool: firebase_read_resources } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/read_resources.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Reads the server's bundled firebase:// guides.
+    tests:
+      - fixture: fixtures/resources-read.json
+        expect: read
+
+  - id: firebase-mcp.project.deploy
+    match: { mcp: { tool: firebase_deploy } }
+    class: access
+    when:
+      - if: { arg: only, empty: true }
+        class: access
+      - if: { arg: only, empty: true }
+        class: money
+      - if: { arg: only, empty: true }
+        class: credential
+      - if: { arg: only, matches: '(?i)(functions|extensions|apphosting|dataconnect)' }
+        class: money
+      - if: { arg: only, matches: '(?i)extensions' }
+        class: credential
+      - if: { arg: only, matches: '(?i)(firestore|storage|database|auth|hosting|functions|apphosting|dataconnect)' }
+        class: access
+    resource: { arg: only, kind: targets }
+    card: "Deploy {only} from firebase.json to the active Firebase project"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/deploy.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Runs firebase deploy in the background (no only means every target).
+      Releasing Firestore, Storage or Realtime Database rules, auth providers,
+      a public Hosting site, HTTP functions or Data Connect connectors changes
+      who can reach data (access); functions, extensions, App Hosting and Data
+      Connect (Cloud SQL) create billed resources (money); extensions store
+      secret parameters in Secret Manager (credential). Remote Config alone is
+      a versioned write, still given access by default. The tool runs
+      non-interactively without --force, so function and extension deletions
+      and destructive Data Connect migrations abort instead of running.
+      predeploy/postdeploy hooks in firebase.json run as local shell commands
+      that the Bash hook never sees.
+    tests:
+      - fixture: fixtures/project-deploy.json
+        expect: access
+      - fixture: fixtures/project-deploy.json
+        expect: money
+      - fixture: fixtures/project-deploy.json
+        expect: credential
+      - fixture: fixtures/project-deploy-rules.json
+        expect: access
+        resource: "firestore,storage"
+      - fixture: fixtures/project-deploy-functions.json
+        expect: money
+        resource: "functions"
+      - fixture: fixtures/project-deploy-functions.json
+        expect: access
+        resource: "functions"
+      - fixture: fixtures/project-deploy-remoteconfig.json
+        expect: access
+        resource: "remoteconfig"
+
+  - id: firebase-mcp.deploy.status
+    match: { mcp: { tool: firebase_deploy_status } }
+    class: read
+    resource: { arg: jobId, kind: job }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/core/deploy_status.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/deploy-status.json
+        expect: read
+        resource: "1760870400000"

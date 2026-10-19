@@ -1,0 +1,17 @@
+{
+  "description": "Query paid orders",
+  "tool": "firestore_query_collection",
+  "arguments": {
+    "collection_path": "orders",
+    "filters": [
+      {
+        "field": "status",
+        "op": "EQUAL",
+        "compare_value": {
+          "string_value": "paid"
+        }
+      }
+    ],
+    "limit": 10
+  }
+}

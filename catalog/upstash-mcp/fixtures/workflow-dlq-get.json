@@ -1,0 +1,7 @@
+{
+  "description": "Get a failed workflow run",
+  "tool": "workflow_dlq_get",
+  "arguments": {
+    "dlqId": "1760870400000-1"
+  }
+}

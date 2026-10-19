@@ -1,0 +1,34 @@
+# Firebase MCP server: Remote Config tools (remoteconfig_ prefix)
+operations:
+  - id: firebase-mcp.remoteconfig-template.get
+    match: { mcp: { tool: remoteconfig_get_template } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/remoteconfig/get_template.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/remoteconfig-template-get.json
+        expect: read
+
+  - id: firebase-mcp.remoteconfig-template.update
+    match: { mcp: { tool: remoteconfig_update_template } }
+    class: write
+    resource: { arg: version_number, kind: version }
+    card: "Publish a Remote Config template, or roll back to version {version_number}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/remoteconfig/update_template.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Publishing or rolling back changes what every app client receives, but
+      Remote Config keeps earlier template versions and can roll back to them,
+      so it is a write.
+    tests:
+      - fixture: fixtures/remoteconfig-template-update.json
+        expect: write
+      - fixture: fixtures/remoteconfig-template-rollback.json
+        expect: write
+        resource: "41"

@@ -1,0 +1,5 @@
+{
+  "description": "Check which account the Firebase CLI is signed in as",
+  "tool": "firebase_login",
+  "arguments": {}
+}

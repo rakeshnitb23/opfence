@@ -1,0 +1,29 @@
+# Upstash MCP server: local utility tools
+operations:
+  - id: upstash-mcp.util.timestamps-to-date
+    match: { mcp: { tool: util_timestamps_to_date } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/utils.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Local conversion; no API call.
+    tests:
+      - fixture: fixtures/util-timestamps-to-date.json
+        expect: read
+
+  - id: upstash-mcp.util.dates-to-timestamps
+    match: { mcp: { tool: util_dates_to_timestamps } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/utils.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Local conversion; no API call.
+    tests:
+      - fixture: fixtures/util-dates-to-timestamps.json
+        expect: read

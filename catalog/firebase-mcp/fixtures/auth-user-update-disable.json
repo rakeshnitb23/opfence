@@ -1,0 +1,8 @@
+{
+  "description": "Disable a Firebase Auth user",
+  "tool": "auth_update_user",
+  "arguments": {
+    "uid": "u7Hk2LmQ9xYz",
+    "disabled": true
+  }
+}

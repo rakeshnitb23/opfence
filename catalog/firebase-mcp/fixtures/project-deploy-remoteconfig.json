@@ -1,0 +1,7 @@
+{
+  "description": "Deploy the Remote Config template",
+  "tool": "firebase_deploy",
+  "arguments": {
+    "only": "remoteconfig"
+  }
+}

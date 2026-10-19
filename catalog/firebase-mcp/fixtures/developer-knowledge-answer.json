@@ -1,0 +1,7 @@
+{
+  "description": "Ask the docs a question",
+  "tool": "developerknowledge_answer_query",
+  "arguments": {
+    "query": "How do I enable App Check for Cloud Functions?"
+  }
+}

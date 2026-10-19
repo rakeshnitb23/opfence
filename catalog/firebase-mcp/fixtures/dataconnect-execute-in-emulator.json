@@ -1,0 +1,8 @@
+{
+  "description": "Insert a row in the local emulator",
+  "tool": "dataconnect_execute_in_emulator",
+  "arguments": {
+    "query": "mutation { product_insert(data: {name: \"Mug\"}) }",
+    "service_id": "shop"
+  }
+}

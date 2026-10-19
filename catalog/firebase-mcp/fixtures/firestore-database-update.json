@@ -1,0 +1,11 @@
+{
+  "description": "Turn on point-in-time recovery",
+  "tool": "firestore_update_database",
+  "arguments": {
+    "database": {
+      "name": "projects/shop-prod/databases/(default)",
+      "pointInTimeRecoveryEnablement": "POINT_IN_TIME_RECOVERY_ENABLED"
+    },
+    "updateMask": "pointInTimeRecoveryEnablement"
+  }
+}

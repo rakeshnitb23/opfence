@@ -1,0 +1,11 @@
+{
+  "description": "Keep scheduled backups for 7 days",
+  "tool": "firestore_update_backup_schedule",
+  "arguments": {
+    "backupSchedule": {
+      "name": "projects/shop-prod/databases/(default)/backupSchedules/3b8d2f1a-9c4e-4d7a-b6e5-1f2a3b4c5d6e",
+      "retention": "604800s"
+    },
+    "updateMask": "retention"
+  }
+}

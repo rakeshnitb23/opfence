@@ -1,0 +1,13 @@
+{
+  "description": "Run tests in a box",
+  "tool": "box_exec",
+  "arguments": {
+    "box_id": "box_7Kp2Qx9Lm4",
+    "command": [
+      "bash",
+      "-c",
+      "npm test"
+    ],
+    "folder": "/workspace/shop"
+  }
+}

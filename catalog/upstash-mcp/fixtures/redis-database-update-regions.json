@@ -1,0 +1,11 @@
+{
+  "description": "Add a read region",
+  "tool": "redis_database_update_regions",
+  "arguments": {
+    "id": "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c",
+    "read_regions": [
+      "eu-west-1",
+      "ap-southeast-1"
+    ]
+  }
+}

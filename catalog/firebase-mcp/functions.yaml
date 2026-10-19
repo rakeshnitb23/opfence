@@ -1,0 +1,28 @@
+# Firebase MCP server: Cloud Functions tools (functions_ prefix)
+operations:
+  - id: firebase-mcp.functions.get-logs
+    match: { mcp: { tool: functions_get_logs } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/functions/get_logs.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/functions-get-logs.json
+        expect: read
+
+  - id: firebase-mcp.functions.list
+    match: { mcp: { tool: functions_list_functions } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/functions/list_functions.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Returns names, triggers, regions, memory and runtimes only, not
+      environment variables.
+    tests:
+      - fixture: fixtures/functions-list.json
+        expect: read

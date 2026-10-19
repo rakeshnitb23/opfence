@@ -1,0 +1,7 @@
+{
+  "description": "Get the active Storage rules",
+  "tool": "firebase_get_security_rules",
+  "arguments": {
+    "type": "storage"
+  }
+}

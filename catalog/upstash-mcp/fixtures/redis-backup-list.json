@@ -1,0 +1,7 @@
+{
+  "description": "List a Redis database's backups",
+  "tool": "redis_database_list_backups",
+  "arguments": {
+    "database_id": "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+  }
+}

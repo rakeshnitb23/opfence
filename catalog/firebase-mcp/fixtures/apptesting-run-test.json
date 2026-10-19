@@ -1,0 +1,15 @@
+{
+  "description": "Run an App Testing agent against a release APK",
+  "tool": "apptesting_run_test",
+  "arguments": {
+    "appId": "1:123456789012:android:abc123def456",
+    "releaseBinaryFile": "app/build/outputs/apk/release/app-release.apk",
+    "testCase": {
+      "steps": [
+        {
+          "goal": "Sign in and add an item to the cart"
+        }
+      ]
+    }
+  }
+}

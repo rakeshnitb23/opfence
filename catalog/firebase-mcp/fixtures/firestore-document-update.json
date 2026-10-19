@@ -1,0 +1,19 @@
+{
+  "description": "Mark an order shipped",
+  "tool": "firestore_update_document",
+  "arguments": {
+    "document": {
+      "name": "projects/shop-prod/databases/(default)/documents/orders/A1b2C3",
+      "fields": {
+        "status": {
+          "stringValue": "shipped"
+        }
+      }
+    },
+    "updateMask": {
+      "fieldPaths": [
+        "status"
+      ]
+    }
+  }
+}

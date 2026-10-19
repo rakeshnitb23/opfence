@@ -1,0 +1,7 @@
+{
+  "description": "List Firestore backups",
+  "tool": "firestore_list_backups",
+  "arguments": {
+    "parent": "projects/shop-prod/locations/-"
+  }
+}

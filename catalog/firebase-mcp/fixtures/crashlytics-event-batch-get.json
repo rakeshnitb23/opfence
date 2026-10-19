@@ -1,0 +1,10 @@
+{
+  "description": "Get sample crash events",
+  "tool": "crashlytics_batch_get_events",
+  "arguments": {
+    "appId": "1:123456789012:android:abc123def456",
+    "names": [
+      "projects/123456789012/apps/1:123456789012:android:abc123def456/events/abc123"
+    ]
+  }
+}

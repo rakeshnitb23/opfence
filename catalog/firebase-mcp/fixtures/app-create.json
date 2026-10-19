@@ -1,0 +1,11 @@
+{
+  "description": "Create an Android app in the active project",
+  "tool": "firebase_create_app",
+  "arguments": {
+    "platform": "android",
+    "display_name": "Shop Android",
+    "android_config": {
+      "package_name": "com.example.shop"
+    }
+  }
+}

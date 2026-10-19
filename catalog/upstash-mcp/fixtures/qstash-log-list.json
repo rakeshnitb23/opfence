@@ -1,0 +1,8 @@
+{
+  "description": "List failed QStash messages",
+  "tool": "qstash_logs_list",
+  "arguments": {
+    "state": "FAILED",
+    "count": 20
+  }
+}

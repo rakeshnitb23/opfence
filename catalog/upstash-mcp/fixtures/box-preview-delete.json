@@ -1,0 +1,9 @@
+{
+  "description": "Remove a box preview URL",
+  "tool": "box_preview",
+  "arguments": {
+    "action": "delete",
+    "box_id": "box_7Kp2Qx9Lm4",
+    "port": 3000
+  }
+}

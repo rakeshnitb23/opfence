@@ -1,0 +1,7 @@
+{
+  "description": "List failed workflow runs in the DLQ",
+  "tool": "workflow_dlq_list",
+  "arguments": {
+    "count": 10
+  }
+}

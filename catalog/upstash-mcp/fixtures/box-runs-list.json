@@ -1,0 +1,8 @@
+{
+  "description": "List a box's runs",
+  "tool": "box_runs",
+  "arguments": {
+    "action": "list",
+    "box_id": "box_7Kp2Qx9Lm4"
+  }
+}

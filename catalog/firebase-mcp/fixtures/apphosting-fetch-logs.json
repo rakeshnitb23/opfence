@@ -1,0 +1,9 @@
+{
+  "description": "Fetch App Hosting build logs",
+  "tool": "apphosting_fetch_logs",
+  "arguments": {
+    "backendId": "shop-web",
+    "location": "us-central1",
+    "buildLogs": true
+  }
+}

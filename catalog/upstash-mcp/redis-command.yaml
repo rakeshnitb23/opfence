@@ -1,0 +1,31 @@
+# Upstash MCP server: Redis commands
+operations:
+  - id: upstash-mcp.redis.run-commands
+    match: { mcp: { tool: redis_database_run_redis_commands } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Run Redis commands {commands} on Upstash database {database_id} {database_rest_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/command.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Sends any Redis commands (a pipeline when there are several) to the
+      database's REST endpoint: FLUSHALL, FLUSHDB, DEL, EVAL scripts and ACL
+      SETUSER as easily as GET. Redis is not SQL, so classify.sql does not
+      apply, and commands is a list of lists the condition engine cannot look
+      inside, so the tool is always irreversible. The server marks it
+      readonly, which only means it stays listed with a read-only API key,
+      where it uses read_only_rest_token; a call cannot show which key the
+      server has, and database_rest_url/database_rest_token can target any
+      database with full rights.
+    tests:
+      - fixture: fixtures/redis-run-commands.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-run-commands-flushall.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-run-commands-url.json
+        expect: irreversible

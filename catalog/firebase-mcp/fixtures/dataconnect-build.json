@@ -1,0 +1,7 @@
+{
+  "description": "Compile the shop Data Connect service",
+  "tool": "dataconnect_build",
+  "arguments": {
+    "service_id": "shop"
+  }
+}

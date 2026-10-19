@@ -1,0 +1,9 @@
+{
+  "description": "Start a box from a snapshot",
+  "tool": "box_snapshots",
+  "arguments": {
+    "action": "restore",
+    "snapshot_id": "snap_9Wd4Hc2Tx7",
+    "model": "claude/sonnet_4_6"
+  }
+}

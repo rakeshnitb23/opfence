@@ -1,0 +1,7 @@
+{
+  "description": "Delete a Firestore index",
+  "tool": "firestore_delete_index",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)/collectionGroups/orders/indexes/CICAgOjXh4EK"
+  }
+}

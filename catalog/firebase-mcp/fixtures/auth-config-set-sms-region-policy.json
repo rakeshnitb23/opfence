@@ -1,0 +1,11 @@
+{
+  "description": "Allow SMS sign-in only from the US and Canada",
+  "tool": "auth_set_sms_region_policy",
+  "arguments": {
+    "policy_type": "ALLOW",
+    "country_codes": [
+      "US",
+      "CA"
+    ]
+  }
+}

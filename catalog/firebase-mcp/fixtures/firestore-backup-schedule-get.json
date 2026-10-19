@@ -1,0 +1,7 @@
+{
+  "description": "Get a backup schedule",
+  "tool": "firestore_get_backup_schedule",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)/backupSchedules/3b8d2f1a-9c4e-4d7a-b6e5-1f2a3b4c5d6e"
+  }
+}

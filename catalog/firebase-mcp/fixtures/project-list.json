@@ -1,0 +1,7 @@
+{
+  "description": "List Firebase projects",
+  "tool": "firebase_list_projects",
+  "arguments": {
+    "page_size": 20
+  }
+}

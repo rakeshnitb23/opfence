@@ -1,0 +1,15 @@
+{
+  "description": "Add an order document",
+  "tool": "firestore_add_document",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)/documents",
+    "collectionId": "orders",
+    "document": {
+      "fields": {
+        "status": {
+          "stringValue": "new"
+        }
+      }
+    }
+  }
+}

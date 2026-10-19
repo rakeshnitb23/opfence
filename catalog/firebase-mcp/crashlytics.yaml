@@ -1,0 +1,119 @@
+# Firebase MCP server: Crashlytics tools (crashlytics_ prefix)
+operations:
+  - id: firebase-mcp.crashlytics-note.create
+    match: { mcp: { tool: crashlytics_create_note } }
+    class: write
+    resource: { arg: issueId, kind: issue }
+    card: "Add a note to Crashlytics issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/notes.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-note-create.json
+        expect: write
+        resource: "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b"
+
+  - id: firebase-mcp.crashlytics-note.delete
+    match: { mcp: { tool: crashlytics_delete_note } }
+    class: delete
+    resource: { arg: noteId, kind: note }
+    card: "Delete note {noteId} from Crashlytics issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/notes.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      A short comment on an issue; classified like
+      github.issue-comment.delete.
+    tests:
+      - fixture: fixtures/crashlytics-note-delete.json
+        expect: delete
+        resource: "1760870400123"
+
+  - id: firebase-mcp.crashlytics-issue.get
+    match: { mcp: { tool: crashlytics_get_issue } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/issues.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-issue-get.json
+        expect: read
+        resource: "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b"
+
+  - id: firebase-mcp.crashlytics-event.list
+    match: { mcp: { tool: crashlytics_list_events } }
+    class: read
+    resource: { arg: appId, kind: app }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/events.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-event-list.json
+        expect: read
+        resource: "1:123456789012:android:abc123def456"
+
+  - id: firebase-mcp.crashlytics-event.batch-get
+    match: { mcp: { tool: crashlytics_batch_get_events } }
+    class: read
+    resource: { arg: appId, kind: app }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/events.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-event-batch-get.json
+        expect: read
+        resource: "1:123456789012:android:abc123def456"
+
+  - id: firebase-mcp.crashlytics-note.list
+    match: { mcp: { tool: crashlytics_list_notes } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/notes.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-note-list.json
+        expect: read
+        resource: "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b"
+
+  - id: firebase-mcp.crashlytics-report.get
+    match: { mcp: { tool: crashlytics_get_report } }
+    class: read
+    resource: { arg: appId, kind: app }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/reports.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-report-get.json
+        expect: read
+        resource: "1:123456789012:android:abc123def456"
+
+  - id: firebase-mcp.crashlytics-issue.update
+    match: { mcp: { tool: crashlytics_update_issue } }
+    class: write
+    resource: { arg: issueId, kind: issue }
+    card: "Set Crashlytics issue {issueId} to {state}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/crashlytics/issues.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/crashlytics-issue-update.json
+        expect: write
+        resource: "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b"

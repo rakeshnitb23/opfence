@@ -1,0 +1,7 @@
+{
+  "description": "Complete the Firebase CLI sign-in with an authorization code",
+  "tool": "firebase_login",
+  "arguments": {
+    "authCode": "4/0EXAMPLE-auth-code"
+  }
+}

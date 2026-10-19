@@ -1,0 +1,5 @@
+{
+  "description": "List QStash schedules",
+  "tool": "qstash_schedules_list",
+  "arguments": {}
+}

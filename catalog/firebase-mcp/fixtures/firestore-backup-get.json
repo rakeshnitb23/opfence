@@ -1,0 +1,7 @@
+{
+  "description": "Get a Firestore backup",
+  "tool": "firestore_get_backup",
+  "arguments": {
+    "name": "projects/shop-prod/locations/nam5/backups/7a1f9c2e-0b3d-4e5f-8a9b-0c1d2e3f4a5b"
+  }
+}

@@ -1,0 +1,138 @@
+# Upstash MCP server (@upstash/mcp-server): Redis databases
+operations:
+  - id: upstash-mcp.redis-database.create
+    match: { mcp: { tool: redis_database_create_new } }
+    class: money
+    resource: { arg: name, kind: database }
+    card: "Create Upstash Redis database {name} in {primary_region}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Creates a global database in the user's account; beyond the free
+      database Upstash bills per request and storage, and each read region
+      adds cost.
+    tests:
+      - fixture: fixtures/redis-database-create.json
+        expect: money
+        resource: "sessions"
+
+  - id: upstash-mcp.redis-database.delete
+    match: { mcp: { tool: redis_database_delete } }
+    class: irreversible
+    resource: { arg: database_id, kind: database }
+    card: "Delete Upstash Redis database {database_id} and all its data"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Upstash cannot restore a deleted database; its backups go with it.
+    tests:
+      - fixture: fixtures/redis-database-delete.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-database.list
+    match: { mcp: { tool: redis_database_list_databases } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      The tool keeps only each database's id, name and state.
+    tests:
+      - fixture: fixtures/redis-database-list.json
+        expect: read
+
+  - id: upstash-mcp.redis-database.get
+    match: { mcp: { tool: redis_database_get_details } }
+    class: credential
+    resource: { arg: database_id, kind: database }
+    card: "Read the details and passwords of Upstash Redis database {database_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns the whole database object from GET /v2/redis/database/{id},
+      which includes password, rest_token and read_only_rest_token.
+    tests:
+      - fixture: fixtures/redis-database-get.json
+        expect: credential
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-database.update-regions
+    match: { mcp: { tool: redis_database_update_regions } }
+    class: money
+    resource: { arg: id, kind: database }
+    card: "Set the read regions of Upstash Redis database {id} to {read_regions}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Replaces the read regions; each region is billed. Removing one drops a
+      replica, not data.
+    tests:
+      - fixture: fixtures/redis-database-update-regions.json
+        expect: money
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-database.reset-password
+    match: { mcp: { tool: redis_database_reset_password } }
+    class: credential
+    resource: { arg: id, kind: database }
+    card: "Reset the password of Upstash Redis database {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Rotates the password and tokens (every client using the old ones fails)
+      and returns the new database object with them.
+    tests:
+      - fixture: fixtures/redis-database-reset-password.json
+        expect: credential
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-database.get-statistics
+    match: { mcp: { tool: redis_database_get_statistics } }
+    class: read
+    resource: { arg: id, kind: database }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/db.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    tests:
+      - fixture: fixtures/redis-database-get-statistics.json
+        expect: read
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-database.start-free
+    match: { mcp: { tool: redis_database_start_free } }
+    class: credential
+    resource: { arg: database_id, kind: database }
+    card: "Start or re-fetch a free temporary Upstash Redis database"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/start-redis.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      POSTs to https://upstash.com/start-redis without an account; the
+      markdown response carries the endpoint and a live token (the server
+      marks the tool sensitive). The database expires in 72 hours unless
+      claimed.
+    tests:
+      - fixture: fixtures/redis-database-start-free.json
+        expect: credential

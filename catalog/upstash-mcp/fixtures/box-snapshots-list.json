@@ -1,0 +1,8 @@
+{
+  "description": "List a box's snapshots",
+  "tool": "box_snapshots",
+  "arguments": {
+    "action": "list",
+    "box_id": "box_7Kp2Qx9Lm4"
+  }
+}

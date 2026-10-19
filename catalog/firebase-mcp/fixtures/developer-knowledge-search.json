@@ -1,0 +1,7 @@
+{
+  "description": "Search Firebase docs",
+  "tool": "developerknowledge_search_documents",
+  "arguments": {
+    "query": "Firestore TTL policies"
+  }
+}

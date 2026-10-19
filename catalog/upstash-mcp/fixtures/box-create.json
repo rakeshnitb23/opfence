@@ -1,0 +1,9 @@
+{
+  "description": "Create an Upstash Box",
+  "tool": "box_manage",
+  "arguments": {
+    "action": "create",
+    "name": "scratch",
+    "model": "claude/sonnet_4_6"
+  }
+}

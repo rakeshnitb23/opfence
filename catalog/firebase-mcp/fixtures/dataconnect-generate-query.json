@@ -1,0 +1,10 @@
+{
+  "description": "Draft a query for recent orders",
+  "tool": "dataconnect_generate_query",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "serviceId": "shop",
+    "prompt": "List the ten most recent orders"
+  }
+}

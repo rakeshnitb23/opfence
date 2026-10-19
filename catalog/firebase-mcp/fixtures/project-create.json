@@ -1,0 +1,8 @@
+{
+  "description": "Create Firebase project shop-staging",
+  "tool": "firebase_create_project",
+  "arguments": {
+    "project_id": "shop-staging",
+    "display_name": "Shop Staging"
+  }
+}

@@ -1,0 +1,27 @@
+provider: firebase-mcp
+title: Firebase MCP
+docs: https://firebase.google.com/docs/ai-assistance/mcp-server
+# The Firebase CLI's MCP server (`firebase mcp`, or `npx -y firebase-tools
+# mcp`), read from firebase-tools 15.34.0 (src/mcp in
+# github.com/firebase/firebase-tools). It runs locally over stdio and
+# prefixes each tool with its feature group (firebase_, auth_, firestore_,
+# dataconnect_, storage_, messaging_, remoteconfig_, crashlytics_,
+# apphosting_, apptesting_, functions_, realtimedatabase_,
+# developerknowledge_). Most tools call Google APIs with the CLI's own login.
+# The firestore_ tools other than query_collection, the dataconnect_
+# execute_graphql*, generate_* and list_locations tools and the
+# developerknowledge_ tools are not in the package: the server lists them at
+# startup from Google's remote MCP servers (firestore.googleapis.com/mcp,
+# firebasedataconnect.googleapis.com/mcp,
+# developerknowledge.googleapis.com/mcp; src/mcp/onemcp) and proxies calls to
+# them. Their names and arguments were read from those servers' tools/list
+# on 2026-10-19. The proxied calls leave the machine from the local server
+# with the CLI's Google credentials, and those hosts are Google APIs rather
+# than a Firebase MCP host, so no hosts are claimed here; the agent hook sees
+# every tool call. The docs and `firebase init` name the server "firebase".
+# No detect or auth block: the server uses the CLI's login or Application
+# Default Credentials.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [firebase, firebase-mcp, firebase-tools]
+  package: "firebase-tools"

@@ -1,0 +1,8 @@
+{
+  "description": "Snapshot a box",
+  "tool": "box_snapshots",
+  "arguments": {
+    "action": "create",
+    "box_id": "box_7Kp2Qx9Lm4"
+  }
+}

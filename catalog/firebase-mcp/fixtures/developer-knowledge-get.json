@@ -1,0 +1,9 @@
+{
+  "description": "Fetch documentation pages",
+  "tool": "developerknowledge_get_documents",
+  "arguments": {
+    "names": [
+      "documents/firebase.google.com/docs/firestore/ttl"
+    ]
+  }
+}

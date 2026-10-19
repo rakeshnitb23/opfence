@@ -1,0 +1,5 @@
+{
+  "description": "List Redis databases",
+  "tool": "redis_database_list_databases",
+  "arguments": {}
+}

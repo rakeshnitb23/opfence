@@ -1,0 +1,5 @@
+{
+  "description": "Get the active Firebase project",
+  "tool": "firebase_get_project",
+  "arguments": {}
+}

@@ -1,0 +1,119 @@
+# Firebase MCP server: Firestore database tools (remote, proxied)
+operations:
+  - id: firebase-mcp.firestore-database.create
+    match: { mcp: { tool: firestore_create_database } }
+    class: money
+    resource: { arg: databaseId, kind: database }
+    card: "Create Firestore database {databaseId} in {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. A database is billed for storage and operations
+      beyond the free quota, which covers only one database per project.
+    tests:
+      - fixture: fixtures/firestore-database-create.json
+        expect: money
+        resource: "analytics"
+
+  - id: firebase-mcp.firestore-database.get
+    match: { mcp: { tool: firestore_get_database } }
+    class: read
+    resource: { arg: name, kind: database }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-database-get.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)"
+
+  - id: firebase-mcp.firestore-database.list
+    match: { mcp: { tool: firestore_list_databases } }
+    class: read
+    resource: { arg: parent, kind: project }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-database-list.json
+        expect: read
+        resource: "projects/shop-prod"
+
+  - id: firebase-mcp.firestore-database.update
+    match: { mcp: { tool: firestore_update_database } }
+    class: write
+    when:
+      - if: { arg: database.pointInTimeRecoveryEnablement, equals: "POINT_IN_TIME_RECOVERY_DISABLED" }
+        class: irreversible
+      - if: { arg: database.deleteProtectionState, equals: "DELETE_PROTECTION_DISABLED" }
+        class: irreversible
+      - if: { arg: database.firestoreDataAccessMode, present: true }
+        class: access
+      - if: { arg: database.mongodbCompatibleDataAccessMode, present: true }
+        class: access
+    resource: { arg: database.name, kind: database }
+    card: "Change Firestore database {database.name} ({updateMask})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Turning point-in-time recovery off discards the
+      7-day recovery window and turning delete protection off removes the
+      guard against deleting the database, so both are irreversible like the
+      safety nets they remove. The data access modes switch the Firestore and
+      MongoDB-compatible APIs on or off (access).
+    tests:
+      - fixture: fixtures/firestore-database-update.json
+        expect: write
+        resource: "projects/shop-prod/databases/(default)"
+      - fixture: fixtures/firestore-database-update-pitr-off.json
+        expect: irreversible
+        resource: "projects/shop-prod/databases/(default)"
+      - fixture: fixtures/firestore-database-update-unprotect.json
+        expect: irreversible
+        resource: "projects/shop-prod/databases/(default)"
+
+  - id: firebase-mcp.firestore-database.delete
+    match: { mcp: { tool: firestore_delete_database } }
+    class: irreversible
+    resource: { arg: name, kind: database }
+    card: "Delete Firestore database {name} and all its documents"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-database-delete.json
+        expect: irreversible
+        resource: "projects/shop-prod/databases/analytics"

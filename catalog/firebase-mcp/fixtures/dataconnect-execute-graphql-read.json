@@ -1,0 +1,10 @@
+{
+  "description": "Query products",
+  "tool": "dataconnect_execute_graphql_read",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "serviceId": "shop",
+    "query": "query { products { id name } }"
+  }
+}

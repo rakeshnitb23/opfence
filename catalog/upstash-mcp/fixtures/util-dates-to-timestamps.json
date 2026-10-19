@@ -1,0 +1,9 @@
+{
+  "description": "Convert dates to timestamps",
+  "tool": "util_dates_to_timestamps",
+  "arguments": {
+    "dates": [
+      "2026-10-19T00:00:00Z"
+    ]
+  }
+}

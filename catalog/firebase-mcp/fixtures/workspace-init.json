@@ -1,0 +1,12 @@
+{
+  "description": "Initialize Firestore in the project directory",
+  "tool": "firebase_init",
+  "arguments": {
+    "features": {
+      "firestore": {
+        "database_id": "(default)",
+        "location_id": "nam5"
+      }
+    }
+  }
+}

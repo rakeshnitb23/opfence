@@ -1,0 +1,7 @@
+{
+  "description": "Sign dev@example.com out of the Firebase CLI",
+  "tool": "firebase_logout",
+  "arguments": {
+    "email": "dev@example.com"
+  }
+}

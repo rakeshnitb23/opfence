@@ -1,0 +1,7 @@
+{
+  "description": "Check an App Testing run",
+  "tool": "apptesting_check_status",
+  "arguments": {
+    "release_test_name": "projects/123456789012/apps/1:123456789012:android:abc123def456/releases/r1/tests/t1"
+  }
+}

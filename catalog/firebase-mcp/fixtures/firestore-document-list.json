@@ -1,0 +1,9 @@
+{
+  "description": "List order documents",
+  "tool": "firestore_list_documents",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)/documents",
+    "collectionId": "orders",
+    "pageSize": 20
+  }
+}

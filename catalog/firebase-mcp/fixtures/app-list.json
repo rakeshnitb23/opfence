@@ -1,0 +1,7 @@
+{
+  "description": "List the Android apps of the active project",
+  "tool": "firebase_list_apps",
+  "arguments": {
+    "platform": "android"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Get an emulator download URL",
+  "tool": "storage_get_object_download_url",
+  "arguments": {
+    "object_path": "invoices/2026/10/inv-1042.pdf",
+    "use_emulator": true
+  }
+}
