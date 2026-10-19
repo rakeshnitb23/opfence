@@ -1,0 +1,35 @@
+# GitHub MCP server: custom property
+operations:
+  - id: github-mcp.custom-property.read
+    match: { mcp: { tool: custom_properties_read } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read custom properties at {level} level"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/custom_properties.go
+    notes: >-
+      Toolset governance (not enabled by default).
+    tests:
+      - fixture: fixtures/custom-property-read.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.custom-property.write
+    match: { mcp: { tool: custom_properties_write } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Set custom properties at {level} level"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/custom_properties.go
+    notes: >-
+      Toolset governance (not enabled by default). Organization and enterprise rulesets can
+      target repositories by property value, so changing a value or definition can move a
+      repository out of a ruleset.
+    tests:
+      - fixture: fixtures/custom-property-write.http
+        expect: access
+        resource: shop

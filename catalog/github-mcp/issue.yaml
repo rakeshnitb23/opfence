@@ -1,0 +1,246 @@
+# GitHub MCP server: issue
+operations:
+  - id: github-mcp.issue.read
+    match: { mcp: { tool: issue_read } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-read.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.issue.list
+    match: { mcp: { tool: list_issues } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List issues of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.issue.search
+    match: { mcp: { tool: search_issues } }
+    class: read
+    card: "Search issues: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-search.http
+        expect: read
+
+  - id: github-mcp.issue.list-types
+    match: { mcp: { tool: list_issue_types } }
+    class: read
+    resource: { arg: owner, kind: owner }
+    card: "List issue types of {owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-list-types.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.issue.list-fields
+    match: { mcp: { tool: list_issue_fields } }
+    class: read
+    resource: { arg: owner, kind: owner }
+    card: "List issue fields of {owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issue_fields.go
+    tests:
+      - fixture: fixtures/issue-list-fields.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.issue.find-duplicates
+    match: { mcp: { tool: find_duplicate } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Find duplicates of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/find_duplicate.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/feature_flags.go
+    notes: >-
+      Feature flag duplicate_detection.
+    tests:
+      - fixture: fixtures/issue-find-duplicates.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.issue.write
+    match: { mcp: { tool: issue_write } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create or change an issue in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    notes: >-
+      method create or update; closing an issue can be undone.
+    tests:
+      - fixture: fixtures/issue-write.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.create
+    match: { mcp: { tool: create_issue } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Open issue {title} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-create.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-title
+    match: { mcp: { tool: update_issue_title } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-title.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-body
+    match: { mcp: { tool: update_issue_body } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-body.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-assignees
+    match: { mcp: { tool: update_issue_assignees } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-assignees.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-labels
+    match: { mcp: { tool: update_issue_labels } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-labels.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-milestone
+    match: { mcp: { tool: update_issue_milestone } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-milestone.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-type
+    match: { mcp: { tool: update_issue_type } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-type.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.update-state
+    match: { mcp: { tool: update_issue_state } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-update-state.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue.set-fields
+    match: { mcp: { tool: set_issue_fields } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-set-fields.http
+        expect: write
+        resource: shop

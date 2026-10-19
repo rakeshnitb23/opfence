@@ -1,0 +1,62 @@
+# GitHub MCP server: security advisory
+operations:
+  - id: github-mcp.global-advisory.list
+    match: { mcp: { tool: list_global_security_advisories } }
+    class: read
+    card: "List global security advisories"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/security_advisories.go
+    notes: >-
+      Toolset security_advisories (not enabled by default).
+    tests:
+      - fixture: fixtures/global-advisory-list.http
+        expect: read
+
+  - id: github-mcp.global-advisory.get
+    match: { mcp: { tool: get_global_security_advisory } }
+    class: read
+    card: "Show advisory {ghsaId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/security_advisories.go
+    notes: >-
+      Toolset security_advisories (not enabled by default).
+    tests:
+      - fixture: fixtures/global-advisory-get.http
+        expect: read
+
+  - id: github-mcp.repository-advisory.list
+    match: { mcp: { tool: list_repository_security_advisories } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List security advisories of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/security_advisories.go
+    notes: >-
+      Toolset security_advisories (not enabled by default). Draft and triage advisories
+      describe unpublished vulnerabilities, but hold no credentials.
+    tests:
+      - fixture: fixtures/repository-advisory-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.repository-advisory.list-for-org
+    match: { mcp: { tool: list_org_repository_security_advisories } }
+    class: read
+    resource: { arg: org, kind: organization }
+    card: "List repository security advisories of {org}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/security_advisories.go
+    notes: >-
+      Toolset security_advisories (not enabled by default).
+    tests:
+      - fixture: fixtures/repository-advisory-list-for-org.http
+        expect: read
+        resource: acme

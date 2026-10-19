@@ -1,0 +1,47 @@
+# GitHub MCP server: star
+operations:
+  - id: github-mcp.star.list
+    match: { mcp: { tool: list_starred_repositories } }
+    class: read
+    card: "List repositories starred by {username}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      Toolset stargazers (not enabled by default).
+    tests:
+      - fixture: fixtures/star-list.http
+        expect: read
+
+  - id: github-mcp.star.add
+    match: { mcp: { tool: star_repository } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Star {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      Toolset stargazers (not enabled by default).
+    tests:
+      - fixture: fixtures/star-add.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.star.remove
+    match: { mcp: { tool: unstar_repository } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Unstar {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      Toolset stargazers (not enabled by default).
+    tests:
+      - fixture: fixtures/star-remove.http
+        expect: write
+        resource: shop

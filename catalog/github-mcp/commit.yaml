@@ -1,0 +1,41 @@
+# GitHub MCP server: commit
+operations:
+  - id: github-mcp.commit.list
+    match: { mcp: { tool: list_commits } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List commits of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/commit-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.commit.get
+    match: { mcp: { tool: get_commit } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show commit {sha} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/commit-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.commit.search
+    match: { mcp: { tool: search_commits } }
+    class: read
+    card: "Search commits: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/search.go
+    tests:
+      - fixture: fixtures/commit-search.http
+        expect: read

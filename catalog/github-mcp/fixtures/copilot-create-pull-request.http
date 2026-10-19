@@ -1,0 +1,8 @@
+# description: Ask Copilot coding agent to open a pull request in acme/shop
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"create_pull_request_with_copilot","arguments":{"owner":"acme","repo":"shop","title":"Add cart totals","problem_statement":"Show the cart total with tax on the checkout page.","base_ref":"main"}}}

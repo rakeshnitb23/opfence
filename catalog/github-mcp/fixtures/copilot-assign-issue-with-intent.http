@@ -1,0 +1,8 @@
+# description: Assign Copilot to issue 42 of acme/shop with intent metadata
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"assign_copilot_to_issue_with_intent","arguments":{"owner":"acme","repo":"shop","issue_number":42,"rationale":"Small, well-specified bug","confidence":"HIGH","is_suggestion":false}}}

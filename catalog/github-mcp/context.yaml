@@ -1,0 +1,82 @@
+# GitHub MCP server: context
+operations:
+  - id: github-mcp.user.get-me
+    match: { mcp: { tool: get_me } }
+    class: read
+    card: "Show the authenticated GitHub user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/context_tools.go
+    tests:
+      - fixture: fixtures/user-get-me.http
+        expect: read
+
+  - id: github-mcp.team.list
+    match: { mcp: { tool: get_teams } }
+    class: read
+    card: "List teams of {user}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/context_tools.go
+    tests:
+      - fixture: fixtures/team-list.http
+        expect: read
+
+  - id: github-mcp.team.list-members
+    match: { mcp: { tool: get_team_members } }
+    class: read
+    resource: { arg: org, kind: organization }
+    card: "List members of team {team_slug} in {org}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/context_tools.go
+    tests:
+      - fixture: fixtures/team-list-members.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.user.search
+    match: { mcp: { tool: search_users } }
+    class: read
+    card: "Search users: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/search.go
+    tests:
+      - fixture: fixtures/user-search.http
+        expect: read
+
+  - id: github-mcp.org.search
+    match: { mcp: { tool: search_orgs } }
+    class: read
+    card: "Search organizations: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/search.go
+    notes: >-
+      Toolset orgs (not enabled by default).
+    tests:
+      - fixture: fixtures/org-search.http
+        expect: read
+
+  - id: github-mcp.ui.get
+    match: { mcp: { tool: ui_get } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Load {method} for a form in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/ui_tools.go
+    notes: >-
+      Backs MCP App form views; app-only visibility keeps it out of the agent's tool list, but
+      it is callable.
+    tests:
+      - fixture: fixtures/ui-get.http
+        expect: read
+        resource: shop

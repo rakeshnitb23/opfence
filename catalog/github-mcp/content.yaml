@@ -1,0 +1,138 @@
+# GitHub MCP server: content
+operations:
+  - id: github-mcp.content.get
+    match: { mcp: { tool: get_file_contents } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read {path} from {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/content-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.content.put
+    match: { mcp: { tool: create_or_update_file } }
+    class: write
+    when:
+      - if: { arg: path, matches: '(?i)(^|/)\.github/workflows/' }
+        class: access
+    resource: { arg: repo, kind: repository }
+    card: "Commit {path} to {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      Writes go through the contents or Git Data API with force false, so a commit on any
+      branch, the default branch included, is a fast-forward that can be reverted
+      (catalog/github classes a git push to main as delete only because a push can be forced).
+      A path under .github/workflows/ is access: GitHub requires the separate workflow scope
+      for it, because a workflow runs with the repository's secrets and GITHUB_TOKEN
+      permissions.
+    tests:
+      - fixture: fixtures/content-put.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/content-put-workflow.http
+        expect: access
+        resource: shop
+
+  - id: github-mcp.content.push
+    match: { mcp: { tool: push_files } }
+    class: write
+    when:
+      - if: { arg: files.path, matches: '(?i)(^|/)\.github/workflows/' }
+        class: access
+    resource: { arg: repo, kind: repository }
+    card: "Commit {message} to {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repository_tool_types.go
+    notes: >-
+      Writes go through the contents or Git Data API with force false, so a commit on any
+      branch, the default branch included, is a fast-forward that can be reverted
+      (catalog/github classes a git push to main as delete only because a push can be forced).
+      A path under .github/workflows/ is access: GitHub requires the separate workflow scope
+      for it, because a workflow runs with the repository's secrets and GITHUB_TOKEN
+      permissions. Creates the branch from the default branch when it does not exist.
+    tests:
+      - fixture: fixtures/content-push.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/content-push-workflow.http
+        expect: access
+        resource: shop
+
+  - id: github-mcp.content.delete
+    match: { mcp: { tool: delete_file } }
+    class: delete
+    when:
+      - if: { arg: path, matches: '(?i)(^|/)\.github/workflows/' }
+        class: access
+    resource: { arg: repo, kind: repository }
+    card: "Delete {path} from {branch} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      Commits the deletion with force false; the file stays in history. Deleting a workflow
+      file can turn off a check or scan, and needs the workflow scope, so it is access.
+    tests:
+      - fixture: fixtures/content-delete.http
+        expect: delete
+        resource: shop
+      - fixture: fixtures/content-delete-workflow.http
+        expect: access
+        resource: shop
+
+  - id: github-mcp.content.blame
+    match: { mcp: { tool: get_file_blame } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show blame of {path} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/feature_flags.go
+    notes: >-
+      Feature flag file_blame (or insiders mode).
+    tests:
+      - fixture: fixtures/content-blame.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.tree.get
+    match: { mcp: { tool: get_repository_tree } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List the tree of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/git.go
+    notes: >-
+      Toolset git (not enabled by default).
+    tests:
+      - fixture: fixtures/tree-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.code.search
+    match: { mcp: { tool: search_code } }
+    class: read
+    card: "Search code: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/search.go
+    tests:
+      - fixture: fixtures/code-search.http
+        expect: read

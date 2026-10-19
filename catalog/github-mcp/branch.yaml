@@ -1,0 +1,29 @@
+# GitHub MCP server: branch
+operations:
+  - id: github-mcp.branch.list
+    match: { mcp: { tool: list_branches } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List branches of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/branch-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.branch.create
+    match: { mcp: { tool: create_branch } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Create branch {branch} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/branch-create.http
+        expect: write
+        resource: shop

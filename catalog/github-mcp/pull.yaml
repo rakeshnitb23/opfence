@@ -1,0 +1,190 @@
+# GitHub MCP server: pull
+operations:
+  - id: github-mcp.pull.read
+    match: { mcp: { tool: pull_request_read } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-read.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.pull.list
+    match: { mcp: { tool: list_pull_requests } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List pull requests of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.pull.search
+    match: { mcp: { tool: search_pull_requests } }
+    class: read
+    card: "Search pull requests: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-search.http
+        expect: read
+
+  - id: github-mcp.pull.create
+    match: { mcp: { tool: create_pull_request } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Open pull request {title} from {head} into {base}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-create.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update
+    match: { mcp: { tool: update_pull_request } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    notes: >-
+      Can change title, body, state, base and reviewers; closing can be undone.
+    tests:
+      - fixture: fixtures/pull-update.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.merge
+    match: { mcp: { tool: merge_pull_request } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Merge pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    notes: >-
+      Same class as catalog/github's merge endpoint. The server takes no force option and the
+      merge goes through branch protection; merge, squash and rebase only change how the
+      commits land on the base branch, and the merge can be reverted.
+    tests:
+      - fixture: fixtures/pull-merge.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update-branch
+    match: { mcp: { tool: update_pull_request_branch } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Update the branch of pull request {pullNumber} from its base"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    notes: >-
+      Merges the base branch into the head branch.
+    tests:
+      - fixture: fixtures/pull-update-branch.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update-title
+    match: { mcp: { tool: update_pull_request_title } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-update-title.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update-body
+    match: { mcp: { tool: update_pull_request_body } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-update-body.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update-state
+    match: { mcp: { tool: update_pull_request_state } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-update-state.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.update-draft-state
+    match: { mcp: { tool: update_pull_request_draft_state } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-update-draft-state.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull.request-reviewers
+    match: { mcp: { tool: request_pull_request_reviewers } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-request-reviewers.http
+        expect: write
+        resource: shop

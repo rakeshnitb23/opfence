@@ -1,0 +1,43 @@
+# GitHub MCP server: release
+operations:
+  - id: github-mcp.release.list
+    match: { mcp: { tool: list_releases } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List releases of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/release-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.release.get-latest
+    match: { mcp: { tool: get_latest_release } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show the latest release of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/release-get-latest.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.release.get-by-tag
+    match: { mcp: { tool: get_release_by_tag } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show release {tag} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/release-get-by-tag.http
+        expect: read
+        resource: shop

@@ -1,0 +1,122 @@
+# GitHub MCP server: copilot
+operations:
+  - id: github-mcp.copilot.assign-issue
+    match: { mcp: { tool: assign_copilot_to_issue } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Assign Copilot to issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/copilot.go
+    notes: >-
+      Starts the Copilot coding agent, which works on a branch and opens a pull request; it
+      uses Actions minutes and Copilot premium requests within the account's plan, like a
+      workflow run (write in catalog/github).
+    tests:
+      - fixture: fixtures/copilot-assign-issue.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.copilot.assign-issue-with-intent
+    match: { mcp: { tool: assign_copilot_to_issue_with_intent } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Assign Copilot to issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/copilot.go
+    notes: >-
+      Toolset copilot_issue_intents (not enabled by default). Starts the Copilot coding agent,
+      which works on a branch and opens a pull request; it uses Actions minutes and Copilot
+      premium requests within the account's plan, like a workflow run (write in
+      catalog/github).
+    tests:
+      - fixture: fixtures/copilot-assign-issue-with-intent.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.copilot.request-review
+    match: { mcp: { tool: request_copilot_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Request a Copilot review of pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/copilot.go
+    tests:
+      - fixture: fixtures/copilot-request-review.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.copilot.create-pull-request
+    match: { mcp: { tool: create_pull_request_with_copilot } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Ask Copilot to open pull request {title} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/README.md
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md
+    notes: >-
+      Remote server only (api.githubcopilot.com); its source is not published, so the class
+      rests on the documented arguments. Starts the Copilot coding agent, which works on a
+      branch and opens a pull request; it uses Actions minutes and Copilot premium requests
+      within the account's plan, like a workflow run (write in catalog/github).
+    tests:
+      - fixture: fixtures/copilot-create-pull-request.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.copilot-space.get
+    match: { mcp: { tool: get_copilot_space } }
+    class: read
+    resource: { arg: owner, kind: owner }
+    card: "Show Copilot Space {name} of {owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/README.md
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md
+    notes: >-
+      Remote server only (copilot_spaces toolset); documented in the README, source not
+      published.
+    tests:
+      - fixture: fixtures/copilot-space-get.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.copilot-space.list
+    match: { mcp: { tool: list_copilot_spaces } }
+    class: read
+    card: "List Copilot Spaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/README.md
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md
+    notes: >-
+      Remote server only (copilot_spaces toolset); documented in the README, source not
+      published.
+    tests:
+      - fixture: fixtures/copilot-space-list.http
+        expect: read
+
+  - id: github-mcp.support-docs.search
+    match: { mcp: { tool: github_support_docs_search } }
+    class: read
+    card: "Search GitHub support docs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/README.md
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md
+    notes: >-
+      Remote server only (github_support_docs_search toolset); documented in the README,
+      source not published.
+    tests:
+      - fixture: fixtures/support-docs-search.http
+        expect: read

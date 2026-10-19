@@ -1,0 +1,84 @@
+# GitHub MCP server: repo
+operations:
+  - id: github-mcp.repo.search
+    match: { mcp: { tool: search_repositories } }
+    class: read
+    card: "Search repositories: {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/search.go
+    tests:
+      - fixture: fixtures/repo-search.http
+        expect: read
+
+  - id: github-mcp.repo.create
+    match: { mcp: { tool: create_repository } }
+    class: write
+    when:
+      - if: { arg: private, equals: "false" }
+        class: access
+    resource: { arg: name, kind: repository }
+    card: "Create repository {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      private defaults to true in the server; private: false creates a public repository,
+      which publishes whatever is pushed to it.
+    tests:
+      - fixture: fixtures/repo-create.http
+        expect: write
+        resource: billing-service
+      - fixture: fixtures/repo-create-public.http
+        expect: access
+        resource: billing-service
+
+  - id: github-mcp.repo.delete
+    match: { mcp: { tool: delete_repository } }
+    class: irreversible
+    resource: { arg: repo, kind: repository }
+    card: "Delete repository {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      The server asks the user to type owner/repo through form elicitation before deleting.
+      Only an organization owner can restore a deleted repository, from the web UI, and not
+      always.
+    tests:
+      - fixture: fixtures/repo-delete.http
+        expect: irreversible
+        resource: shop
+
+  - id: github-mcp.repo.fork
+    match: { mcp: { tool: fork_repository } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Fork {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    notes: >-
+      A fork keeps the visibility of its parent.
+    tests:
+      - fixture: fixtures/repo-fork.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.collaborator.list
+    match: { mcp: { tool: list_repository_collaborators } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List collaborators of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/collaborator-list.http
+        expect: read
+        resource: shop

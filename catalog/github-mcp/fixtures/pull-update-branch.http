@@ -1,0 +1,8 @@
+# description: Update pull request 17 of acme/shop with its base branch
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"update_pull_request_branch","arguments":{"owner":"acme","repo":"shop","pullNumber":17,"expectedHeadSha":"6dcb09b5b57875f334f61aebed695e2e4193db5e"}}}

@@ -1,0 +1,8 @@
+# description: List open critical Dependabot alerts in acme/shop
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_dependabot_alerts","arguments":{"owner":"acme","repo":"shop","state":"open","severity":"critical"}}}
