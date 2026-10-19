@@ -1,0 +1,89 @@
+# Railway MCP server: storage
+operations:
+  - id: railway-mcp.storage.create-bucket
+    match: { mcp: { tool: create_bucket } }
+    class: write
+    resource: { arg: name, kind: bucket }
+    card: "Create bucket {name} in project {project_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/storage.rs
+    tests:
+      - fixture: fixtures/storage-create-bucket.json
+        expect: write
+        resource: assets
+
+  - id: railway-mcp.storage.remove-bucket
+    match: { mcp: { tool: remove_bucket } }
+    class: irreversible
+    resource: { arg: bucket_id, kind: bucket }
+    card: "Delete bucket {bucket_id} and every object in it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/storage.rs
+    notes: >-
+      Local server only (railway mcp local). Without confirm: true it only
+      returns a preview. The objects are gone with the bucket.
+    tests:
+      - fixture: fixtures/storage-remove-bucket.json
+        expect: irreversible
+        resource: bkt-assets
+
+  - id: railway-mcp.storage.create-volume
+    match: { mcp: { tool: create_volume } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Create a volume at {mount_path} on service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/storage.rs
+    notes: >-
+      Local server only (railway mcp local). As railway.volume.create.
+    tests:
+      - fixture: fixtures/storage-create-volume.json
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.storage.update-volume
+    match: { mcp: { tool: update_volume } }
+    class: write
+    resource: { arg: volume_id, kind: volume }
+    card: "Change volume {volume_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/storage.rs
+    tests:
+      - fixture: fixtures/storage-update-volume.json
+        expect: write
+        resource: vol-pg-data
+
+  - id: railway-mcp.storage.remove-volume
+    match: { mcp: { tool: remove_volume } }
+    class: irreversible
+    resource: { arg: volume_id, kind: volume }
+    card: "Delete volume {volume_id} and all data on it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/storage.rs
+    notes: >-
+      Local server only (railway mcp local). Without confirm: true it only
+      returns a preview. Irreversible as railway.volume.delete.
+    tests:
+      - fixture: fixtures/storage-remove-volume.json
+        expect: irreversible
+        resource: vol-pg-data

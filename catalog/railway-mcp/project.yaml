@@ -1,0 +1,101 @@
+# Railway MCP server: project
+operations:
+  - id: railway-mcp.project.list-hosted
+    match: { mcp: { tool: list-projects } }
+    class: read
+    card: "List Railway projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/list-projects.ts
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      @railway/mcp-server 0.1.x registered a tool with the same name.
+    tests:
+      - fixture: fixtures/project-list-hosted.http
+        expect: read
+
+  - id: railway-mcp.project.create-hosted
+    match: { mcp: { tool: create-project } }
+    class: write
+    resource: { arg: name, kind: project }
+    card: "Create Railway project {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      Creating a project is a write, as railway.project.create.
+    tests:
+      - fixture: fixtures/project-create-hosted.http
+        expect: write
+        resource: shop-api
+
+  - id: railway-mcp.project.list
+    match: { mcp: { tool: list_projects } }
+    class: read
+    card: "List Railway projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/project-list.json
+        expect: read
+
+  - id: railway-mcp.project.list-workspaces
+    match: { mcp: { tool: list_workspaces } }
+    class: read
+    card: "List Railway workspaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/project-list-workspaces.json
+        expect: read
+
+  - id: railway-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: write
+    resource: { arg: name, kind: project }
+    card: "Create Railway project {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    tests:
+      - fixture: fixtures/project-create.json
+        expect: write
+        resource: shop-api
+
+  - id: railway-mcp.project.link-service
+    match: { mcp: { tool: link_service } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Link service {service_id} to this directory"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Writes the CLI's link for the
+      working directory, which later tools and railway commands target when they
+      name no service.
+    tests:
+      - fixture: fixtures/project-link-service.json
+        expect: write
+        resource: svc-api

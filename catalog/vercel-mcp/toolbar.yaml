@@ -1,0 +1,83 @@
+# Vercel MCP server (mcp.vercel.com): toolbar
+operations:
+  - id: vercel-mcp.toolbar.list
+    match: { mcp: { tool: list_toolbar_threads } }
+    class: read
+    card: "List toolbar threads"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-list.http
+        expect: read
+
+  - id: vercel-mcp.toolbar.get
+    match: { mcp: { tool: get_toolbar_thread } }
+    class: read
+    resource: { arg: threadId, kind: toolbar-thread }
+    card: "Show toolbar thread {threadId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-get.http
+        expect: read
+        resource: tbt_123
+
+  - id: vercel-mcp.toolbar.reply
+    match: { mcp: { tool: reply_to_toolbar_thread } }
+    class: write
+    resource: { arg: threadId, kind: toolbar-thread }
+    card: "Reply to toolbar thread {threadId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-reply.http
+        expect: write
+        resource: tbt_123
+
+  - id: vercel-mcp.toolbar.edit
+    match: { mcp: { tool: edit_toolbar_message } }
+    class: write
+    resource: { arg: threadId, kind: toolbar-thread }
+    card: "Edit message {messageId} in toolbar thread {threadId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-edit.http
+        expect: write
+        resource: tbt_123
+
+  - id: vercel-mcp.toolbar.react
+    match: { mcp: { tool: add_toolbar_reaction } }
+    class: write
+    resource: { arg: threadId, kind: toolbar-thread }
+    card: "React {emoji} to message {messageId} in toolbar thread {threadId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-react.http
+        expect: write
+        resource: tbt_123
+
+  - id: vercel-mcp.toolbar.resolve
+    match: { mcp: { tool: change_toolbar_thread_resolve_status } }
+    class: write
+    resource: { arg: threadId, kind: toolbar-thread }
+    card: "Set toolbar thread {threadId} resolved={resolved}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/toolbar
+    tests:
+      - fixture: fixtures/toolbar-resolve.http
+        expect: write
+        resource: tbt_123

@@ -1,0 +1,43 @@
+# Vercel MCP server (mcp.vercel.com): microfrontends
+operations:
+  - id: vercel-mcp.microfrontends.deployment-config
+    match: { mcp: { tool: get_microfrontends_config } }
+    class: read
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Show the microfrontends config of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/microfrontends
+    tests:
+      - fixture: fixtures/microfrontends-deployment-config.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.microfrontends.project-config
+    match: { mcp: { tool: get_microfrontends_config_for_project } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Show the microfrontends config of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/microfrontends
+    tests:
+      - fixture: fixtures/microfrontends-project-config.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.microfrontends.group-projects
+    match: { mcp: { tool: list_microfrontends_group_projects } }
+    class: read
+    resource: { arg: groupId, kind: microfrontends-group }
+    card: "List projects in microfrontends group {groupId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/microfrontends
+    tests:
+      - fixture: fixtures/microfrontends-group-projects.http
+        expect: read
+        resource: mfe_123

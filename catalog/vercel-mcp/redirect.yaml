@@ -1,0 +1,71 @@
+# Vercel MCP server (mcp.vercel.com): redirect
+operations:
+  - id: vercel-mcp.redirect.list
+    match: { mcp: { tool: list_bulk_redirects } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List redirects of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/redirect-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.redirect.list-versions
+    match: { mcp: { tool: list_bulk_redirect_versions } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List redirect versions of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/redirect-list-versions.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.redirect.stage
+    match: { mcp: { tool: stage_redirects } }
+    class: write
+    resource: { arg: requestBody.projectId, kind: project }
+    card: "Stage redirects for {requestBody.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/redirect-stage.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.redirect.restore
+    match: { mcp: { tool: restore_redirects } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Restore staged redirects of {projectId} to production"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/redirect-restore.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.redirect.promote-version
+    match: { mcp: { tool: update_bulk_redirect_version } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Promote or restore a redirect version of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/redirect-promote-version.http
+        expect: write
+        resource: prj_shopweb

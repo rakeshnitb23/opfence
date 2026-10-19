@@ -1,0 +1,146 @@
+# Vercel MCP server (mcp.vercel.com): rolling-release
+operations:
+  - id: vercel-mcp.rolling-release.get
+    match: { mcp: { tool: get_rolling_release } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show the rolling release of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-get.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.get-config
+    match: { mcp: { tool: get_rolling_release_config } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show the rolling release settings of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-get-config.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.billing-status
+    match: { mcp: { tool: get_rolling_release_billing_status } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show rolling release billing status of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-billing-status.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.list-promote-aliases
+    match: { mcp: { tool: list_promote_aliases } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List aliases of the current promote of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-list-promote-aliases.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.start
+    match: { mcp: { tool: start_rolling_release } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Start a rolling release of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-start.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.approve-stage
+    match: { mcp: { tool: approve_rolling_release_stage } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Advance the rolling release of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-approve-stage.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.complete
+    match: { mcp: { tool: complete_rolling_release } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Send all traffic of {idOrName} to the canary"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-complete.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.update-config
+    match: { mcp: { tool: update_rolling_release_config } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Change rolling release settings of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    tests:
+      - fixture: fixtures/rolling-release-update-config.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.promote
+    match: { mcp: { tool: request_promote } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Point production of {projectId} to deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    notes: >-
+      As vercel.project.promote: the previous production deployment stays and
+      can be promoted back.
+    tests:
+      - fixture: fixtures/rolling-release-promote.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.rolling-release.rollback
+    match: { mcp: { tool: request_rollback } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Roll production of {projectId} back to deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/rolling-releases
+    notes: >-
+      As vercel.project.rollback.
+    tests:
+      - fixture: fixtures/rolling-release-rollback.http
+        expect: write
+        resource: prj_shopweb

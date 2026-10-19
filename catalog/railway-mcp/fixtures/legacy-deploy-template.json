@@ -1,0 +1,9 @@
+{
+  "description": "Deploy the template matching postgres",
+  "tool": "deploy-template",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "searchQuery": "postgres",
+    "templateIndex": 0
+  }
+}

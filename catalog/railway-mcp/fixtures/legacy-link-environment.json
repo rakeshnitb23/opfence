@@ -1,0 +1,8 @@
+{
+  "description": "Link environment production",
+  "tool": "link-environment",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "environmentName": "production"
+  }
+}

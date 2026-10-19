@@ -1,0 +1,102 @@
+# Railway MCP server: domain
+operations:
+  - id: railway-mcp.domain.generate
+    match: { mcp: { tool: generate_domain } }
+    class: access
+    resource: { arg: service_id, kind: service }
+    card: "Expose service {service_id} on a public domain"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Creates a Railway service domain or
+      a custom domain, which makes the service reachable from the internet (as
+      railway.service-domain.create).
+    tests:
+      - fixture: fixtures/domain-generate.json
+        expect: access
+        resource: svc-api
+
+  - id: railway-mcp.domain.list
+    match: { mcp: { tool: list_domains } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "List domains of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/domain-list.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.domain.status
+    match: { mcp: { tool: domain_status } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Show status of domain {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/domain-status.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.domain.update
+    match: { mcp: { tool: update_domain } }
+    class: access
+    resource: { arg: service_id, kind: service }
+    card: "Change domain {domain} of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Changes which application port a
+      public domain reaches, or renames a service domain, so it is access.
+    tests:
+      - fixture: fixtures/domain-update.json
+        expect: access
+        resource: svc-api
+
+  - id: railway-mcp.domain.retry-certificate
+    match: { mcp: { tool: retry_domain_certificate } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Retry the certificate of domain {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/domain-retry-certificate.json
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.domain.delete
+    match: { mcp: { tool: delete_domain } }
+    class: delete
+    resource: { arg: service_id, kind: service }
+    card: "Delete domain {domain} of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Without confirm: true it only
+      returns a preview. A domain can be added again, so it is delete as
+      railway.service-domain.delete and railway.custom-domain.delete.
+    tests:
+      - fixture: fixtures/domain-delete.json
+        expect: delete
+        resource: svc-api

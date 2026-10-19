@@ -1,0 +1,197 @@
+# Vercel MCP server (mcp.vercel.com): edge-config
+operations:
+  - id: vercel-mcp.edge-config.list
+    match: { mcp: { tool: get_edge_configs } }
+    class: read
+    card: "List Global Configs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-list.http
+        expect: read
+
+  - id: vercel-mcp.edge-config.get
+    match: { mcp: { tool: get_edge_config } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Show Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-get.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.list-items
+    match: { mcp: { tool: get_edge_config_items } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "List items of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-list-items.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.get-item
+    match: { mcp: { tool: get_edge_config_item } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Read item {edgeConfigItemKey} of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-get-item.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.list-backups
+    match: { mcp: { tool: get_edge_config_backups } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "List backups of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-list-backups.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.get-backup
+    match: { mcp: { tool: get_edge_config_backup } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Read backup {edgeConfigBackupVersionId} of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-get-backup.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.create
+    match: { mcp: { tool: create_edge_config } }
+    class: write
+    card: "Create Global Config {requestBody.slug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-create.http
+        expect: write
+
+  - id: vercel-mcp.edge-config.update
+    match: { mcp: { tool: update_edge_config } }
+    class: write
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Update Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-update.http
+        expect: write
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.patch-items
+    match: { mcp: { tool: patch_edge_config_items } }
+    class: write
+    when:
+      - if: { arg: requestBody.items.operation, equals: delete }
+        class: delete
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Change items of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    notes: >-
+      Global Config keeps backups of earlier versions (get_edge_config_backups,
+      restore_edge_config_backup), so a delete operation can be undone: delete,
+      not irreversible.
+    tests:
+      - fixture: fixtures/edge-config-patch-items.http
+        expect: write
+        resource: ecfg_shop
+      - fixture: fixtures/edge-config-patch-items-delete.http
+        expect: delete
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.restore-backup
+    match: { mcp: { tool: restore_edge_config_backup } }
+    class: delete
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Restore Global Config {edgeConfigId} to backup {edgeConfigBackupVersionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    notes: >-
+      Replaces every current item with the backup's, removing items added since;
+      the current version is itself kept as a backup, so it is delete rather
+      than irreversible.
+    tests:
+      - fixture: fixtures/edge-config-restore-backup.http
+        expect: delete
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.list-tokens
+    match: { mcp: { tool: get_edge_config_tokens } }
+    class: credential
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "List read tokens of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    notes: >-
+      The listing returns the token values (as vercel.edge-config-token.list).
+    tests:
+      - fixture: fixtures/edge-config-list-tokens.http
+        expect: credential
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.get-token
+    match: { mcp: { tool: get_edge_config_token } }
+    class: read
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Show metadata of a token of Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    notes: >-
+      Takes the token as an argument and returns its metadata.
+    tests:
+      - fixture: fixtures/edge-config-get-token.http
+        expect: read
+        resource: ecfg_shop
+
+  - id: vercel-mcp.edge-config.create-token
+    match: { mcp: { tool: create_edge_config_token } }
+    class: credential
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Create a read token for Global Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/global-config
+    tests:
+      - fixture: fixtures/edge-config-create-token.http
+        expect: credential
+        resource: ecfg_shop

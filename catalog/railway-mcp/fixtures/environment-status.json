@@ -1,0 +1,8 @@
+{
+  "description": "Show deployment status of environment env-production",
+  "tool": "environment_status",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "environment_id": "env-production"
+  }
+}

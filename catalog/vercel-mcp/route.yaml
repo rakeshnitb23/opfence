@@ -1,0 +1,104 @@
+# Vercel MCP server (mcp.vercel.com): route
+operations:
+  - id: vercel-mcp.route.list
+    match: { mcp: { tool: list_project_routes } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List routing rules of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/route-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.list-versions
+    match: { mcp: { tool: list_project_route_versions } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List routing rule versions of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/route-list-versions.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.add
+    match: { mcp: { tool: add_route } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Add a routing rule to {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/route-add.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.edit
+    match: { mcp: { tool: edit_route } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Edit routing rule {routeId} of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/route-edit.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.generate
+    match: { mcp: { tool: generate_route } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Generate a routing rule for {projectId} from a description"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    notes: >-
+      Docs say only that it generates a rule from natural language, not whether
+      it stages it; it is a write in case it does.
+    tests:
+      - fixture: fixtures/route-generate.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.stage
+    match: { mcp: { tool: stage_routes } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Stage routing rules for {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/route-stage.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.route.promote-version
+    match: { mcp: { tool: update_route_versions } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Promote, restore or discard routing rules of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    notes: >-
+      Routing versions are kept, so a promoted version can be restored.
+    tests:
+      - fixture: fixtures/route-promote-version.http
+        expect: write
+        resource: prj_shopweb

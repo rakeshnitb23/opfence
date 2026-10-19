@@ -1,0 +1,75 @@
+# Vercel MCP server (mcp.vercel.com): alias
+operations:
+  - id: vercel-mcp.alias.list
+    match: { mcp: { tool: list_aliases } }
+    class: read
+    card: "List aliases"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/alias-list.http
+        expect: read
+
+  - id: vercel-mcp.alias.get
+    match: { mcp: { tool: get_alias } }
+    class: read
+    resource: { arg: idOrAlias, kind: alias }
+    card: "Show alias {idOrAlias}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/alias-get.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.alias.list-for-deployment
+    match: { mcp: { tool: list_deployment_aliases } }
+    class: read
+    resource: { arg: id, kind: deployment }
+    card: "List aliases of deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    tests:
+      - fixture: fixtures/alias-list-for-deployment.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.alias.assign
+    match: { mcp: { tool: assign_alias } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Point {requestBody.alias} at deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    notes: >-
+      Moves a hostname to another deployment; the previous one can be aliased
+      back.
+    tests:
+      - fixture: fixtures/alias-assign.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.alias.protection-bypass
+    match: { mcp: { tool: patch_url_protection_bypass } }
+    class: access
+    resource: { arg: id, kind: deployment }
+    card: "Change the protection bypass of {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/routing
+    notes: >-
+      Creates or revokes a shareable link that opens a protected URL, so it is
+      access like get_access_to_vercel_url.
+    tests:
+      - fixture: fixtures/alias-protection-bypass.http
+        expect: access
+        resource: dpl_7Hq2shopweb

@@ -1,0 +1,29 @@
+# Vercel MCP server (mcp.vercel.com): custom-environment
+operations:
+  - id: vercel-mcp.custom-environment.list
+    match: { mcp: { tool: list_project_custom_environments } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "List custom environments of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/environment-variables
+    tests:
+      - fixture: fixtures/custom-environment-list.http
+        expect: read
+        resource: shop-web
+
+  - id: vercel-mcp.custom-environment.get
+    match: { mcp: { tool: get_custom_environment } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show custom environment {environmentSlugOrId} of {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/environment-variables
+    tests:
+      - fixture: fixtures/custom-environment-get.http
+        expect: read
+        resource: shop-web

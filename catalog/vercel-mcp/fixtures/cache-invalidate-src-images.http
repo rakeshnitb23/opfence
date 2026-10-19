@@ -1,0 +1,8 @@
+# description: Invalidate optimized images from ["/hero.png"] in project prj_shopweb
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"invalidate_by_src_images","arguments":{"teamId":"team_acme","requestBody":{"srcImages":["/hero.png"]},"projectIdOrName":"prj_shopweb"}}}

@@ -1,0 +1,7 @@
+{
+  "description": "List services of project 9a8b7c6d-1111-4222-8333-444455556666",
+  "tool": "list_services",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666"
+  }
+}

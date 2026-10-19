@@ -1,0 +1,10 @@
+{
+  "description": "Create bucket assets in project 9a8b7c6d-1111-4222-8333-444455556666",
+  "tool": "create_bucket",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "environment_id": "env-production",
+    "region": "sjc",
+    "name": "assets"
+  }
+}

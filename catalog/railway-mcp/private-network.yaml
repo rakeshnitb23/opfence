@@ -1,0 +1,37 @@
+# Railway MCP server: private-network
+operations:
+  - id: railway-mcp.private-network.status
+    match: { mcp: { tool: private_network_status } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Show private networking of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/private_network.rs
+    tests:
+      - fixture: fixtures/private-network-status.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.private-network.update
+    match: { mcp: { tool: private_network_update } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Rename the private endpoint of service {service_id} to {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/private_network.rs
+    notes: >-
+      Local server only (railway mcp local). Renames the service's .internal
+      hostname; other services that use the old name stop reaching it until they
+      are changed.
+    tests:
+      - fixture: fixtures/private-network-update.json
+        expect: write
+        resource: svc-api

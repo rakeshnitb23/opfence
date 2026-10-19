@@ -1,0 +1,41 @@
+# Vercel MCP server (mcp.vercel.com): cert
+operations:
+  - id: vercel-mcp.cert.list
+    match: { mcp: { tool: list_certs } }
+    class: read
+    card: "List certificates"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/cert-list.http
+        expect: read
+
+  - id: vercel-mcp.cert.get
+    match: { mcp: { tool: get_cert_by_id } }
+    class: read
+    resource: { arg: id, kind: cert }
+    card: "Show certificate {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    notes: >-
+      Docs: the response does not include the private key.
+    tests:
+      - fixture: fixtures/cert-get.http
+        expect: read
+        resource: cert_123
+
+  - id: vercel-mcp.cert.issue
+    match: { mcp: { tool: issue_cert } }
+    class: write
+    card: "Issue a certificate for {requestBody.cns}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/cert-issue.http
+        expect: write

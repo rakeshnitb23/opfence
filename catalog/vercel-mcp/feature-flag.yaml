@@ -1,0 +1,230 @@
+# Vercel MCP server (mcp.vercel.com): feature-flag
+operations:
+  - id: vercel-mcp.feature-flag.list
+    match: { mcp: { tool: list_flags } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List feature flags of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.list-v2
+    match: { mcp: { tool: list_flags_v2 } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List feature flags of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-list-v2.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.list-team
+    match: { mcp: { tool: list_team_flags } }
+    class: read
+    card: "List feature flags of the team"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags/list_team_flags
+    tests:
+      - fixture: fixtures/feature-flag-list-team.http
+        expect: read
+
+  - id: vercel-mcp.feature-flag.list-team-v2
+    match: { mcp: { tool: list_team_flags_v2 } }
+    class: read
+    card: "List feature flags of the team"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags/list_team_flags_v2
+    tests:
+      - fixture: fixtures/feature-flag-list-team-v2.http
+        expect: read
+
+  - id: vercel-mcp.feature-flag.list-team-settings
+    match: { mcp: { tool: list_team_flag_settings } }
+    class: read
+    card: "List flag settings of the team's projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags/list_team_flag_settings
+    tests:
+      - fixture: fixtures/feature-flag-list-team-settings.http
+        expect: read
+
+  - id: vercel-mcp.feature-flag.get
+    match: { mcp: { tool: get_flag } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Show flag {flagIdOrSlug} of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-get.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.list-versions
+    match: { mcp: { tool: list_flag_versions } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List versions of flag {flagIdOrSlug} in {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags/list_flag_versions
+    tests:
+      - fixture: fixtures/feature-flag-list-versions.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.create
+    match: { mcp: { tool: create_flag } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create flag {requestBody.slug} in {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-create.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.update
+    match: { mcp: { tool: update_flag } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Update flag {flagIdOrSlug} in {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    notes: >-
+      Changes a flag's rules or archives it; Vercel keeps flag versions
+      (list_flag_versions), and only DELETE removes a flag (vercel.feature-
+      flag.delete).
+    tests:
+      - fixture: fixtures/feature-flag-update.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.get-segment
+    match: { mcp: { tool: get_flag_segment } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Show segment {segmentIdOrSlug} of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-get-segment.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.list-segments
+    match: { mcp: { tool: list_flag_segments } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List segments of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags/list_flag_segments
+    notes: >-
+      Named on the docs page for list_flag_versions; its own page was not
+      fetched, so the arguments follow the other segment tools.
+    tests:
+      - fixture: fixtures/feature-flag-list-segments.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.update-segment
+    match: { mcp: { tool: update_flag_segment } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Update segment {segmentIdOrSlug} of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-update-segment.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.get-settings
+    match: { mcp: { tool: get_flag_settings } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Show flag settings of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-get-settings.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.update-settings
+    match: { mcp: { tool: update_flag_settings } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Update flag settings of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-update-settings.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.list-sdk-keys
+    match: { mcp: { tool: list_feature_flag_sdk_keys } }
+    class: credential
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List flag SDK keys of {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    notes: >-
+      Vercel does not say whether the listing includes key values; SDK keys
+      grant read access to flag configuration, so the listing is treated as
+      revealing them.
+    tests:
+      - fixture: fixtures/feature-flag-list-sdk-keys.http
+        expect: credential
+        resource: prj_shopweb
+
+  - id: vercel-mcp.feature-flag.create-sdk-key
+    match: { mcp: { tool: create_sdk_key } }
+    class: credential
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create a flag SDK key for {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/feature-flags
+    tests:
+      - fixture: fixtures/feature-flag-create-sdk-key.http
+        expect: credential
+        resource: prj_shopweb

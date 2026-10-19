@@ -1,0 +1,141 @@
+# Vercel MCP server (mcp.vercel.com): kms
+operations:
+  - id: vercel-mcp.kms.get-issuer
+    match: { mcp: { tool: get_kms_issuer } }
+    class: read
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Show KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    tests:
+      - fixture: fixtures/kms-get-issuer.http
+        expect: read
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.update-issuer
+    match: { mcp: { tool: update_kms_issuer } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Update KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      Issuer settings decide which tokens Vercel KMS signs and who trusts them,
+      so changing them is access.
+    tests:
+      - fixture: fixtures/kms-update-issuer.http
+        expect: access
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.create-policy
+    match: { mcp: { tool: create_kms_issuer_policy } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Create a policy on KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      A project-grant policy lets a project sign with the issuer's keys.
+    tests:
+      - fixture: fixtures/kms-create-policy.http
+        expect: access
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.update-policy
+    match: { mcp: { tool: update_kms_issuer_policy } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Update policy {policyKey} on KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    tests:
+      - fixture: fixtures/kms-update-policy.http
+        expect: access
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.create-key
+    match: { mcp: { tool: create_kms_signing_key } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Create a signing key for KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    tests:
+      - fixture: fixtures/kms-create-key.http
+        expect: credential
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.activate-key
+    match: { mcp: { tool: activate_kms_signing_key } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Activate signing key {keyId} of KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      Makes the issuer sign with a different key.
+    tests:
+      - fixture: fixtures/kms-activate-key.http
+        expect: credential
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.revoke-key
+    match: { mcp: { tool: revoke_kms_signing_key } }
+    class: irreversible
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Revoke signing key {keyId} of KMS issuer {issuerId} now"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      A revoked key cannot be restored and tokens it signed stop verifying, like
+      deleting a secret.
+    tests:
+      - fixture: fixtures/kms-revoke-key.http
+        expect: irreversible
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.sign-message
+    match: { mcp: { tool: sign_kms_message } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Sign a message with KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      Produces a signature with the team's key, which other systems trust.
+    tests:
+      - fixture: fixtures/kms-sign-message.http
+        expect: credential
+        resource: iss_shop
+
+  - id: vercel-mcp.kms.sign-token
+    match: { mcp: { tool: sign_kms_token } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Sign a token with KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/key-management
+    notes: >-
+      Mints a signed token, so it is credential like creating an API token.
+    tests:
+      - fixture: fixtures/kms-sign-token.http
+        expect: credential
+        resource: iss_shop

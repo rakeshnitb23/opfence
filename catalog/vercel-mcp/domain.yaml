@@ -1,0 +1,283 @@
+# Vercel MCP server (mcp.vercel.com): domain
+operations:
+  - id: vercel-mcp.domain.buy-many
+    match: { mcp: { tool: buy_domains } }
+    class: money
+    card: "Buy domains (legacy tool)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    notes: >-
+      Docs say this tool no longer executes purchases and points to
+      get_purchase_quote and buy_domain. It stays money because its name and the
+      REST call it was built on (POST /v1/registrar/domains/buy) buy domains,
+      and the hosted server can change without notice.
+    tests:
+      - fixture: fixtures/domain-buy-many.http
+        expect: money
+
+  - id: vercel-mcp.domain.buy-single
+    match: { mcp: { tool: buy_single_domain } }
+    class: money
+    resource: { arg: domain, kind: domain }
+    card: "Buy domain {domain} (legacy tool)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    notes: >-
+      Docs say this tool no longer executes purchases and points to
+      get_purchase_quote and buy_domain. It stays money because its name and the
+      REST call it was built on buy a domain, and the hosted server can change
+      without notice.
+    tests:
+      - fixture: fixtures/domain-buy-single.http
+        expect: money
+        resource: shop-example.com
+
+  - id: vercel-mcp.domain.check-availability
+    match: { mcp: { tool: check_domain_availability_and_price } }
+    class: read
+    card: "Check availability and price of {names}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-check-availability.http
+        expect: read
+
+  - id: vercel-mcp.domain.search
+    match: { mcp: { tool: search_domains } }
+    class: read
+    card: "Check availability and prices of domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-search.http
+        expect: read
+
+  - id: vercel-mcp.domain.bulk-availability
+    match: { mcp: { tool: get_bulk_availability } }
+    class: read
+    card: "Check availability of several domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-bulk-availability.http
+        expect: read
+
+  - id: vercel-mcp.domain.bulk-price
+    match: { mcp: { tool: get_bulk_price } }
+    class: read
+    card: "Get prices of several domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-bulk-price.http
+        expect: read
+
+  - id: vercel-mcp.domain.availability
+    match: { mcp: { tool: get_domain_availability } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Check whether {domain} is available"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-availability.http
+        expect: read
+        resource: shop-example.com
+
+  - id: vercel-mcp.domain.price
+    match: { mcp: { tool: get_domain_price } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Get the price of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-price.http
+        expect: read
+        resource: shop-example.com
+
+  - id: vercel-mcp.domain.get-tld
+    match: { mcp: { tool: get_tld } }
+    class: read
+    card: "Show TLD {tld}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-get-tld.http
+        expect: read
+
+  - id: vercel-mcp.domain.tld-price
+    match: { mcp: { tool: get_tld_price } }
+    class: read
+    card: "Get the price of TLD {tld}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-tld-price.http
+        expect: read
+
+  - id: vercel-mcp.domain.list-tlds
+    match: { mcp: { tool: list_supported_tlds } }
+    class: read
+    card: "List supported TLDs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-list-tlds.http
+        expect: read
+
+  - id: vercel-mcp.domain.contact-schema
+    match: { mcp: { tool: get_contact_info_schema } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Get the contact schema for {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-contact-schema.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.domain.contact-verification
+    match: { mcp: { tool: get_domain_contact_verification } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Show contact verification of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-contact-verification.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.domain.get-order
+    match: { mcp: { tool: get_order } }
+    class: read
+    resource: { arg: orderId, kind: order }
+    card: "Show domain order {orderId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-get-order.http
+        expect: read
+        resource: ord_123
+
+  - id: vercel-mcp.domain.list
+    match: { mcp: { tool: list_domains } }
+    class: read
+    card: "List domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-list.http
+        expect: read
+
+  - id: vercel-mcp.domain.get
+    match: { mcp: { tool: get_domain } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Show domain {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-get.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.domain.config
+    match: { mcp: { tool: get_domain_config } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Show the configuration of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-config.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.domain.project-domains
+    match: { mcp: { tool: get_domain_project_domains } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "List project domains under {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-project-domains.http
+        expect: read
+        resource: example.com
+
+  - id: vercel-mcp.domain.verification-record
+    match: { mcp: { tool: get_domain_verification_record } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Get the verification record of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/domain-verification-record.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.domain.add
+    match: { mcp: { tool: create_or_transfer_domain } }
+    class: write
+    when:
+      - if: { arg: requestBody.method, equals: transfer-in }
+        class: money
+    resource: { arg: requestBody.name, kind: domain }
+    card: "Add domain {requestBody.name} ({requestBody.method})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    notes: >-
+      Adding a domain the team already controls is a write. method transfer-in
+      transfers the registration to Vercel and charges for it, like
+      vercel.domain.transfer-in.
+    tests:
+      - fixture: fixtures/domain-add.http
+        expect: write
+        resource: shop.example.com
+      - fixture: fixtures/domain-add-transfer.http
+        expect: money
+        resource: shop.example.com

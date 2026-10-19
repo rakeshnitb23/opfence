@@ -1,0 +1,8 @@
+# description: Update drain drn_123
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"update_drain","arguments":{"teamId":"team_acme","requestBody":{"delivery":{"type":"http","endpoint":"https://logs.example.com/ingest"}},"id":"drn_123"}}}

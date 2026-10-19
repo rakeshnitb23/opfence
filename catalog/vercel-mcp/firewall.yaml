@@ -1,0 +1,93 @@
+# Vercel MCP server (mcp.vercel.com): firewall
+operations:
+  - id: vercel-mcp.firewall.get
+    match: { mcp: { tool: get_firewall_config } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Read the firewall configuration of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    tests:
+      - fixture: fixtures/firewall-get.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.firewall.attack-status
+    match: { mcp: { tool: get_active_attack_status } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Read active attack data of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    tests:
+      - fixture: fixtures/firewall-attack-status.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.firewall.list-bypass
+    match: { mcp: { tool: get_bypass_ip } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List firewall bypass rules of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    tests:
+      - fixture: fixtures/firewall-list-bypass.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.firewall.put
+    match: { mcp: { tool: put_firewall_config } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Replace the firewall configuration of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    notes: >-
+      Replaces every firewall rule, which can open the project to traffic it
+      blocked (as vercel.firewall.put).
+    tests:
+      - fixture: fixtures/firewall-put.http
+        expect: access
+        resource: prj_shopweb
+
+  - id: vercel-mcp.firewall.update
+    match: { mcp: { tool: update_firewall_config } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Update the firewall configuration of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    notes: >-
+      As vercel.firewall.update.
+    tests:
+      - fixture: fixtures/firewall-update.http
+        expect: access
+        resource: prj_shopweb
+
+  - id: vercel-mcp.firewall.attack-mode
+    match: { mcp: { tool: update_attack_challenge_mode } }
+    class: access
+    resource: { arg: requestBody.projectId, kind: project }
+    card: "Set Attack Challenge mode of {requestBody.projectId} to {requestBody.attackModeEnabled}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/firewall
+    notes: >-
+      Turning Attack Challenge mode off during an attack lets the traffic
+      through; it changes who can reach the project.
+    tests:
+      - fixture: fixtures/firewall-attack-mode.http
+        expect: access
+        resource: prj_shopweb

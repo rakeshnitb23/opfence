@@ -1,0 +1,55 @@
+# Railway MCP server: environment
+operations:
+  - id: railway-mcp.environment.link
+    match: { mcp: { tool: link_environment } }
+    class: write
+    resource: { arg: environment_name, kind: environment }
+    card: "Link environment {environment_name} to this directory"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Writes the CLI's link; later calls
+      that name no environment then act on it.
+    tests:
+      - fixture: fixtures/environment-link.json
+        expect: write
+        resource: production
+
+  - id: railway-mcp.environment.create
+    match: { mcp: { tool: create_environment } }
+    class: write
+    resource: { arg: name, kind: environment }
+    card: "Create environment {name} in project {project_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    notes: >-
+      Local server only (railway mcp local). Forking an environment copies its
+      services and variables into a new one; it is a write as
+      railway.environment.create.
+    tests:
+      - fixture: fixtures/environment-create.json
+        expect: write
+        resource: staging
+
+  - id: railway-mcp.environment.status
+    match: { mcp: { tool: environment_status } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "Show deployment status of environment {environment_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    tests:
+      - fixture: fixtures/environment-status.json
+        expect: read
+        resource: 9a8b7c6d-1111-4222-8333-444455556666

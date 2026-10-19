@@ -1,0 +1,146 @@
+# Vercel MCP server (mcp.vercel.com): check
+operations:
+  - id: vercel-mcp.check.create
+    match: { mcp: { tool: create_check } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Create check {requestBody.name} on deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-create.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.get
+    match: { mcp: { tool: get_check } }
+    class: read
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Show check {checkId} of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-get.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.update
+    match: { mcp: { tool: update_check } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Update check {checkId} of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    notes: >-
+      Setting a blocking check's conclusion can let a deployment through its
+      gate; it changes no data.
+    tests:
+      - fixture: fixtures/check-update.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.rerequest
+    match: { mcp: { tool: rerequest_check } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Rerun check {checkId} of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-rerequest.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.create-run
+    match: { mcp: { tool: create_deployment_check_run } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Create a check run on deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-create-run.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.get-run
+    match: { mcp: { tool: get_deployment_check_run } }
+    class: read
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Show check run {checkRunId} of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-get-run.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.update-run
+    match: { mcp: { tool: update_deployment_check_run } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Update check run {checkRunId} of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-update-run.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.check.get-project-check
+    match: { mcp: { tool: get_project_check } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Show check {checkId} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-get-project-check.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.check.list-runs
+    match: { mcp: { tool: list_check_runs } }
+    class: read
+    resource: { arg: projectIdOrName, kind: project }
+    card: "List runs of check {checkId} in project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    tests:
+      - fixture: fixtures/check-list-runs.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.check.update-project-check
+    match: { mcp: { tool: update_project_check } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Update check {checkId} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/checks
+    notes: >-
+      Can stop a check from blocking deployments; it changes no data.
+    tests:
+      - fixture: fixtures/check-update-project-check.http
+        expect: write
+        resource: prj_shopweb

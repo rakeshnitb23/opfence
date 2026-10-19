@@ -1,0 +1,126 @@
+# Vercel MCP server (mcp.vercel.com): connector
+operations:
+  - id: vercel-mcp.connector.list
+    match: { mcp: { tool: list_connectors } }
+    class: read
+    card: "List connectors"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/list_connectors
+    tests:
+      - fixture: fixtures/connector-list.http
+        expect: read
+
+  - id: vercel-mcp.connector.get
+    match: { mcp: { tool: get_connector } }
+    class: read
+    resource: { arg: connector, kind: connector }
+    card: "Show connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/get_connector
+    notes: >-
+      Docs describe the connector record; secrets are exchanged through POST
+      /v1/connect/token (vercel.connector-token.create), which this server does
+      not expose.
+    tests:
+      - fixture: fixtures/connector-get.http
+        expect: read
+        resource: scl_abc123
+
+  - id: vercel-mcp.connector.create
+    match: { mcp: { tool: create_connector } }
+    class: credential
+    card: "Create connector {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking
+    notes: >-
+      Connectors hold the credentials for a third-party service (OAuth grants,
+      API keys), so creating one stores a secret.
+    tests:
+      - fixture: fixtures/connector-create.http
+        expect: credential
+
+  - id: vercel-mcp.connector.update
+    match: { mcp: { tool: update_connector } }
+    class: credential
+    resource: { arg: connector, kind: connector }
+    card: "Update connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/update_connector
+    notes: >-
+      Can replace the credentials a connector holds.
+    tests:
+      - fixture: fixtures/connector-update.http
+        expect: credential
+        resource: scl_abc123
+
+  - id: vercel-mcp.connector.connect-project
+    match: { mcp: { tool: upsert_connector_project_connection } }
+    class: access
+    resource: { arg: connector, kind: connector }
+    card: "Let project {projectId} use connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/upsert_connector_project_connection
+    notes: >-
+      Grants a project the use of the connector's credentials.
+    tests:
+      - fixture: fixtures/connector-connect-project.http
+        expect: access
+        resource: scl_abc123
+
+  - id: vercel-mcp.connector.get-project-connection
+    match: { mcp: { tool: get_connector_project_connection } }
+    class: read
+    resource: { arg: connector, kind: connector }
+    card: "Show the connection of connector {connector} to project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/get_connector_project_connection
+    tests:
+      - fixture: fixtures/connector-get-project-connection.http
+        expect: read
+        resource: scl_abc123
+
+  - id: vercel-mcp.connector.list-project-connections
+    match: { mcp: { tool: list_connector_project_connections } }
+    class: read
+    resource: { arg: connector, kind: connector }
+    card: "List projects connected to connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/list_connector_project_connections
+    notes: >-
+      Named on the docs pages for the other connector tools; its own page was
+      not fetched, so the arguments follow get_connector.
+    tests:
+      - fixture: fixtures/connector-list-project-connections.http
+        expect: read
+        resource: scl_abc123
+
+  - id: vercel-mcp.connector.list-for-project
+    match: { mcp: { tool: list_project_connector_connections } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List connectors connected to project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking/list_project_connector_connections
+    notes: >-
+      Named on the docs pages for the other connector tools; its own page was
+      not fetched, so the arguments follow list_connectors.
+    tests:
+      - fixture: fixtures/connector-list-for-project.http
+        expect: read
+        resource: prj_shopweb

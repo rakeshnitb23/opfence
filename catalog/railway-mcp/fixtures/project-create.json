@@ -1,0 +1,8 @@
+{
+  "description": "Create Railway project shop-api",
+  "tool": "create_project",
+  "arguments": {
+    "workspace_id": "ws-acme",
+    "name": "shop-api"
+  }
+}

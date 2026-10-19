@@ -1,0 +1,76 @@
+# Vercel MCP server (mcp.vercel.com): dns-record
+operations:
+  - id: vercel-mcp.dns-record.list
+    match: { mcp: { tool: get_records } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "List DNS records of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/dns-record-list.http
+        expect: read
+        resource: shop.example.com
+
+  - id: vercel-mcp.dns-record.get
+    match: { mcp: { tool: get_domains_records_by_record_id } }
+    class: read
+    resource: { arg: recordId, kind: dns-record }
+    card: "Show DNS record {recordId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/dns-record-get.http
+        expect: read
+        resource: rec_123
+
+  - id: vercel-mcp.dns-record.create
+    match: { mcp: { tool: create_record } }
+    class: write
+    resource: { arg: domain, kind: domain }
+    card: "Create {requestBody.type} record {requestBody.name} on {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: shop.example.com
+
+  - id: vercel-mcp.dns-record.update
+    match: { mcp: { tool: update_record } }
+    class: write
+    resource: { arg: recordId, kind: dns-record }
+    card: "Update DNS record {recordId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: write
+        resource: rec_123
+
+  - id: vercel-mcp.dns-record.replace-all
+    match: { mcp: { tool: replace_domain_dns_records } }
+    class: delete
+    resource: { arg: domain, kind: domain }
+    card: "Replace every DNS record of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/domains
+    notes: >-
+      Replaces the zone with the file sent, so any record missing from it is
+      deleted. Deleting a DNS record is delete in catalog/vercel (vercel.dns-
+      record.delete): records can be recreated, but only by someone who still
+      has their values.
+    tests:
+      - fixture: fixtures/dns-record-replace-all.http
+        expect: delete
+        resource: shop.example.com

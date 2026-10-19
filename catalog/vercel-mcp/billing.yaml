@@ -1,0 +1,73 @@
+# Vercel MCP server (mcp.vercel.com): billing
+operations:
+  - id: vercel-mcp.billing.get-quote
+    match: { mcp: { tool: get_purchase_quote } }
+    class: read
+    resource: { arg: domain, kind: domain }
+    card: "Get a registration quote for {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/billing
+    notes: >-
+      Docs: returns a signed quote and does not register, reserve or charge.
+    tests:
+      - fixture: fixtures/billing-get-quote.http
+        expect: read
+        resource: shop-example.com
+
+  - id: vercel-mcp.billing.buy-domain
+    match: { mcp: { tool: buy_domain } }
+    class: money
+    resource: { arg: domain, kind: domain }
+    card: "Buy domain {domain} for {years} year(s) at {expectedPrice} USD"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/billing
+    notes: >-
+      Registers and charges for the domain on confirm. Without confirm it only
+      quotes, but the class does not depend on that flag, so a confirm the hook
+      cannot see never lowers it.
+    tests:
+      - fixture: fixtures/billing-buy-domain.http
+        expect: money
+        resource: shop-example.com
+
+  - id: vercel-mcp.billing.get-domain-order
+    match: { mcp: { tool: get_domain_order } }
+    class: read
+    resource: { arg: orderId, kind: order }
+    card: "Show domain order {orderId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/billing
+    tests:
+      - fixture: fixtures/billing-get-domain-order.http
+        expect: read
+        resource: ord_123
+
+  - id: vercel-mcp.billing.list-charges
+    match: { mcp: { tool: list_billing_charges } }
+    class: read
+    card: "List billing charges from {from} to {to}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/billing
+    tests:
+      - fixture: fixtures/billing-list-charges.http
+        expect: read
+
+  - id: vercel-mcp.billing.list-commitments
+    match: { mcp: { tool: list_contract_commitments } }
+    class: read
+    card: "List contract commitments"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/billing
+    tests:
+      - fixture: fixtures/billing-list-commitments.http
+        expect: read

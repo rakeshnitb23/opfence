@@ -1,0 +1,10 @@
+{
+  "description": "Expose port 5432 of service svc-api through a public TCP proxy",
+  "tool": "create_tcp_proxy",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "service_id": "svc-api",
+    "environment_id": "env-production",
+    "application_port": 5432
+  }
+}

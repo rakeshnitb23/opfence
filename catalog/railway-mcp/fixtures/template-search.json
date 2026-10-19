@@ -1,0 +1,7 @@
+{
+  "description": "Search Railway templates for postgres",
+  "tool": "search_templates",
+  "arguments": {
+    "query": "postgres"
+  }
+}

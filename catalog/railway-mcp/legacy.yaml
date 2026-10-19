@@ -1,0 +1,296 @@
+# Railway MCP server: legacy
+operations:
+  - id: railway-mcp.legacy.check-status
+    match: { mcp: { tool: check-railway-status } }
+    class: read
+    card: "Check the Railway CLI and login"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/check-railway-status.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead.
+    tests:
+      - fixture: fixtures/legacy-check-status.json
+        expect: read
+
+  - id: railway-mcp.legacy.create-project
+    match: { mcp: { tool: create-project-and-link } }
+    class: write
+    when:
+      - if: { arg: projectName, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: projectName, kind: project }
+    card: "Create Railway project {projectName} and link it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/create-project-and-link.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Runs
+      railway init and railway link. @railway/mcp-server 0.1.0 to 0.1.8 built
+      each Railway CLI command as one string and ran it with exec(), so a shell
+      metacharacter in projectName ran a command of its own (fixed in 0.1.11,
+      which passes argv arrays); such a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-create-project.json
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/legacy-create-project-injection.json
+        expect: irreversible
+        resource: shop-api; rm -rf ~
+
+  - id: railway-mcp.legacy.create-environment
+    match: { mcp: { tool: create-environment } }
+    class: write
+    when:
+      - if: { arg: environmentName, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: duplicateEnvironment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: serviceVariables.service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: serviceVariables.variable, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: environmentName, kind: environment }
+    card: "Create environment {environmentName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/create-environment.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in
+      environmentName, duplicateEnvironment, serviceVariables.service,
+      serviceVariables.variable ran a command of its own (fixed in 0.1.11, which
+      passes argv arrays); such a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-create-environment.json
+        expect: write
+        resource: staging
+      - fixture: fixtures/legacy-create-environment-injection.json
+        expect: irreversible
+        resource: staging
+
+  - id: railway-mcp.legacy.link-environment
+    match: { mcp: { tool: link-environment } }
+    class: write
+    when:
+      - if: { arg: environmentName, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: environmentName, kind: environment }
+    card: "Link environment {environmentName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/link-environment.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in environmentName
+      ran a command of its own (fixed in 0.1.11, which passes argv arrays); such
+      a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-link-environment.json
+        expect: write
+        resource: production
+
+  - id: railway-mcp.legacy.link-service
+    match: { mcp: { tool: link-service } }
+    class: write
+    when:
+      - if: { arg: serviceName, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: serviceName, kind: service }
+    card: "Link service {serviceName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/link-service.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Without
+      serviceName it only lists services. @railway/mcp-server 0.1.0 to 0.1.8
+      built each Railway CLI command as one string and ran it with exec(), so a
+      shell metacharacter in serviceName ran a command of its own (fixed in
+      0.1.11, which passes argv arrays); such a value makes the call
+      irreversible.
+    tests:
+      - fixture: fixtures/legacy-link-service.json
+        expect: write
+        resource: api
+
+  - id: railway-mcp.legacy.deploy-template
+    match: { mcp: { tool: deploy-template } }
+    class: write
+    card: "Deploy the template matching {searchQuery}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/deploy-template.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/api/deploy-template.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Calls the
+      Railway API directly (src/api/deploy-template.ts) to create the template's
+      services.
+    tests:
+      - fixture: fixtures/legacy-deploy-template.json
+        expect: write
+
+  - id: railway-mcp.legacy.generate-domain
+    match: { mcp: { tool: generate-domain } }
+    class: access
+    when:
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: service, kind: service }
+    card: "Expose service {service} on a public domain"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/generate-domain.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Runs
+      railway domain, which makes the service reachable from the internet.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in service ran a
+      command of its own (fixed in 0.1.11, which passes argv arrays); such a
+      value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-generate-domain.json
+        expect: access
+        resource: api
+
+  - id: railway-mcp.legacy.get-logs
+    match: { mcp: { tool: get-logs } }
+    class: read
+    when:
+      - if: { arg: deploymentId, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: environment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: filter, matches: '[`"]|\$\(' }
+        class: irreversible
+    resource: { arg: service, kind: service }
+    card: "Read {logType} logs of service {service}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/get-logs.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in deploymentId,
+      service, environment, filter ran a command of its own (fixed in 0.1.11,
+      which passes argv arrays); such a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-get-logs.json
+        expect: read
+        resource: api
+      - fixture: fixtures/legacy-get-logs-injection.json
+        expect: irreversible
+        resource: api
+
+  - id: railway-mcp.legacy.list-deployments
+    match: { mcp: { tool: list-deployments } }
+    class: read
+    when:
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: environment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: service, kind: service }
+    card: "List deployments of service {service}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/list-deployments.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in service,
+      environment ran a command of its own (fixed in 0.1.11, which passes argv
+      arrays); such a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-list-deployments.json
+        expect: read
+        resource: api
+
+  - id: railway-mcp.legacy.list-variables
+    match: { mcp: { tool: list-variables } }
+    class: credential
+    when:
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: environment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: service, kind: service }
+    card: "Read variables of service {service}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/list-variables.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Runs
+      railway variables, which prints values. @railway/mcp-server 0.1.0 to 0.1.8
+      built each Railway CLI command as one string and ran it with exec(), so a
+      shell metacharacter in service, environment ran a command of its own
+      (fixed in 0.1.11, which passes argv arrays); such a value makes the call
+      irreversible.
+    tests:
+      - fixture: fixtures/legacy-list-variables.json
+        expect: credential
+        resource: api
+
+  - id: railway-mcp.legacy.set-variables
+    match: { mcp: { tool: set-variables } }
+    class: write
+    when:
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: environment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: variables, matches: '[`"]|\$\(' }
+        class: irreversible
+    resource: { arg: service, kind: service }
+    card: "Set variables {variables} on service {service}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/set-variables.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by @railway/mcp-server 0.1.x, which runs the Railway CLI in
+      workspacePath; 0.1.12 is a shim that starts railway mcp instead. Railway
+      variables are not marked as secrets, so setting one is a write.
+      @railway/mcp-server 0.1.0 to 0.1.8 built each Railway CLI command as one
+      string and ran it with exec(), so a shell metacharacter in service,
+      environment, variables ran a command of its own (fixed in 0.1.11, which
+      passes argv arrays); such a value makes the call irreversible.
+    tests:
+      - fixture: fixtures/legacy-set-variables.json
+        expect: write
+        resource: api
+      - fixture: fixtures/legacy-set-variables-injection.json
+        expect: irreversible
+        resource: api

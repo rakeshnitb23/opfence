@@ -1,0 +1,69 @@
+# Vercel MCP server (mcp.vercel.com): access-group
+operations:
+  - id: vercel-mcp.access-group.list
+    match: { mcp: { tool: list_access_groups } }
+    class: read
+    card: "List access groups"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/access-groups
+    tests:
+      - fixture: fixtures/access-group-list.http
+        expect: read
+
+  - id: vercel-mcp.access-group.get
+    match: { mcp: { tool: read_access_group } }
+    class: read
+    resource: { arg: idOrName, kind: access-group }
+    card: "Show access group {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/access-groups
+    tests:
+      - fixture: fixtures/access-group-get.http
+        expect: read
+        resource: frontend
+
+  - id: vercel-mcp.access-group.list-members
+    match: { mcp: { tool: list_access_group_members } }
+    class: read
+    resource: { arg: idOrName, kind: access-group }
+    card: "List members of access group {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/access-groups
+    tests:
+      - fixture: fixtures/access-group-list-members.http
+        expect: read
+        resource: frontend
+
+  - id: vercel-mcp.access-group.list-projects
+    match: { mcp: { tool: list_access_group_projects } }
+    class: read
+    resource: { arg: idOrName, kind: access-group }
+    card: "List projects of access group {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/access-groups
+    tests:
+      - fixture: fixtures/access-group-list-projects.http
+        expect: read
+        resource: frontend
+
+  - id: vercel-mcp.access-group.get-project
+    match: { mcp: { tool: read_access_group_project } }
+    class: read
+    resource: { arg: accessGroupIdOrName, kind: access-group }
+    card: "Show project {projectId} in access group {accessGroupIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/access-groups
+    tests:
+      - fixture: fixtures/access-group-get-project.http
+        expect: read
+        resource: frontend

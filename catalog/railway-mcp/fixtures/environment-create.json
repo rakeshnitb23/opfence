@@ -1,0 +1,9 @@
+{
+  "description": "Create environment staging in project 9a8b7c6d-1111-4222-8333-444455556666",
+  "tool": "create_environment",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "source_environment_id": "env-production",
+    "name": "staging"
+  }
+}

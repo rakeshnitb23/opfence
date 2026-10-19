@@ -1,0 +1,97 @@
+# Vercel MCP server (mcp.vercel.com): observability
+operations:
+  - id: vercel-mcp.observability.runtime-logs
+    match: { mcp: { tool: get_runtime_logs } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Read runtime logs of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    tests:
+      - fixture: fixtures/observability-runtime-logs.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.observability.runtime-errors
+    match: { mcp: { tool: get_runtime_errors } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Read runtime errors of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    tests:
+      - fixture: fixtures/observability-runtime-errors.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.observability.trace
+    match: { mcp: { tool: get_project_trace } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Read trace {requestId} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    tests:
+      - fixture: fixtures/observability-trace.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.observability.query
+    match: { mcp: { tool: create_observability_query } }
+    class: read
+    card: "Query observability data"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    notes: >-
+      A POST that runs a structured query over observability data; it stores
+      nothing.
+    tests:
+      - fixture: fixtures/observability-query.http
+        expect: read
+
+  - id: vercel-mcp.observability.schema
+    match: { mcp: { tool: get_observability_schema } }
+    class: read
+    card: "Read the observability query schema"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    tests:
+      - fixture: fixtures/observability-schema.http
+        expect: read
+
+  - id: vercel-mcp.observability.disabled-projects
+    match: { mcp: { tool: get_observability_configuration_projects } }
+    class: read
+    card: "List projects with Observability Plus disabled"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    tests:
+      - fixture: fixtures/observability-disabled-projects.http
+        expect: read
+
+  - id: vercel-mcp.observability.trace-session
+    match: { mcp: { tool: create_trace_session } }
+    class: credential
+    card: "Mint a trace session token for {requestBody.hostname}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/observability
+    notes: >-
+      Mints a short-lived JWT that the Vercel proxy accepts, so it is credential
+      like creating a token.
+    tests:
+      - fixture: fixtures/observability-trace-session.http
+        expect: credential

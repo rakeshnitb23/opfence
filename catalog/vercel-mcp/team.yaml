@@ -1,0 +1,107 @@
+# Vercel MCP server (mcp.vercel.com): team
+operations:
+  - id: vercel-mcp.team.get-user
+    match: { mcp: { tool: get_auth_user } }
+    class: read
+    card: "Show the signed-in user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-get-user.http
+        expect: read
+
+  - id: vercel-mcp.team.list
+    match: { mcp: { tool: list_teams } }
+    class: read
+    card: "List teams"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-list.http
+        expect: read
+
+  - id: vercel-mcp.team.get
+    match: { mcp: { tool: get_team } }
+    class: read
+    resource: { arg: teamId, kind: team }
+    card: "Show team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-get.http
+        expect: read
+        resource: team_acme
+
+  - id: vercel-mcp.team.list-members
+    match: { mcp: { tool: list_team_members } }
+    class: read
+    resource: { arg: teamId, kind: team }
+    card: "List members of team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-list-members.http
+        expect: read
+        resource: team_acme
+
+  - id: vercel-mcp.team.access-request
+    match: { mcp: { tool: get_team_access_request } }
+    class: read
+    resource: { arg: teamId, kind: team }
+    card: "Show the join request of user {userId} to team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-access-request.http
+        expect: read
+        resource: team_acme
+
+  - id: vercel-mcp.team.join
+    match: { mcp: { tool: join_team } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Join team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    notes: >-
+      Adds the signed-in user to a team.
+    tests:
+      - fixture: fixtures/team-join.http
+        expect: access
+        resource: team_acme
+
+  - id: vercel-mcp.team.event-types
+    match: { mcp: { tool: list_event_types } }
+    class: read
+    card: "List event types"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-event-types.http
+        expect: read
+
+  - id: vercel-mcp.team.events
+    match: { mcp: { tool: list_user_events } }
+    class: read
+    card: "List user events"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/teams
+    tests:
+      - fixture: fixtures/team-events.http
+        expect: read

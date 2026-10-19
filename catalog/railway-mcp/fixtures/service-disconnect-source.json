@@ -1,0 +1,9 @@
+{
+  "description": "Disconnect service svc-api from its source",
+  "tool": "disconnect_service_source",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "service_id": "svc-api",
+    "environment_id": "env-production"
+  }
+}

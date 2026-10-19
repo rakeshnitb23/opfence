@@ -1,0 +1,8 @@
+{
+  "description": "Link service svc-api to this directory",
+  "tool": "link_service",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "service_id": "svc-api"
+  }
+}

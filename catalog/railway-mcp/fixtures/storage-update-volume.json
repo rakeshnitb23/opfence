@@ -1,0 +1,10 @@
+{
+  "description": "Change volume vol-pg-data",
+  "tool": "update_volume",
+  "arguments": {
+    "mount_path": "/var/lib/postgresql/data",
+    "service_id": "svc-api",
+    "environment_id": "env-production",
+    "volume_id": "vol-pg-data"
+  }
+}

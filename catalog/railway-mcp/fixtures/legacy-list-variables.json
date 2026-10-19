@@ -1,0 +1,9 @@
+{
+  "description": "Read variables of service api",
+  "tool": "list-variables",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "kv": true,
+    "service": "api"
+  }
+}

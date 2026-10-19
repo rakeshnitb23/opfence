@@ -1,0 +1,32 @@
+# Vercel MCP server (mcp.vercel.com): network
+operations:
+  - id: vercel-mcp.network.get
+    match: { mcp: { tool: read_network } }
+    class: read
+    resource: { arg: networkId, kind: network }
+    card: "Show Secure Compute network {networkId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking
+    tests:
+      - fixture: fixtures/network-get.http
+        expect: read
+        resource: net_123
+
+  - id: vercel-mcp.network.update
+    match: { mcp: { tool: update_network } }
+    class: access
+    resource: { arg: networkId, kind: network }
+    card: "Update Secure Compute network {networkId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/networking
+    notes: >-
+      Secure Compute networks decide which private networks and static IPs
+      projects reach and come from, so changing one is access.
+    tests:
+      - fixture: fixtures/network-update.http
+        expect: access
+        resource: net_123

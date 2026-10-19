@@ -1,0 +1,184 @@
+# Railway MCP server: service
+operations:
+  - id: railway-mcp.service.list-hosted
+    match: { mcp: { tool: list-services } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List services of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/list-services.ts
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      @railway/mcp-server 0.1.x registered a tool with the same name.
+    tests:
+      - fixture: fixtures/service-list-hosted.http
+        expect: read
+        resource: 9a8b7c6d-1111-4222-8333-444455556666
+
+  - id: railway-mcp.service.list
+    match: { mcp: { tool: list_services } }
+    class: read
+    resource: { arg: project_id, kind: project }
+    card: "List services of project {project_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/service-list.json
+        expect: read
+        resource: 9a8b7c6d-1111-4222-8333-444455556666
+
+  - id: railway-mcp.service.create
+    match: { mcp: { tool: create_service } }
+    class: write
+    resource: { arg: name, kind: service }
+    card: "Create service {name} in project {project_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    tests:
+      - fixture: fixtures/service-create.json
+        expect: write
+        resource: worker
+
+  - id: railway-mcp.service.connect-source
+    match: { mcp: { tool: connect_service_source } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Connect service {service_id} to {source_repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    tests:
+      - fixture: fixtures/service-connect-source.json
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.service.disconnect-source
+    match: { mcp: { tool: disconnect_service_source } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Disconnect service {service_id} from its source"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    notes: >-
+      Local server only (railway mcp local). As railway.service.disconnect.
+    tests:
+      - fixture: fixtures/service-disconnect-source.json
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.service.remove
+    match: { mcp: { tool: remove_service } }
+    class: irreversible
+    resource: { arg: service_id, kind: service }
+    card: "Delete service {service_id} and all its deployments"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    notes: >-
+      Local server only (railway mcp local). Without confirm: true it only
+      returns a preview; the class does not depend on confirm. Deleting a
+      service is irreversible, as railway.service.delete.
+    tests:
+      - fixture: fixtures/service-remove.json
+        expect: irreversible
+        resource: svc-api
+
+  - id: railway-mcp.service.get-config
+    match: { mcp: { tool: get_service_config } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Show the configuration of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/service.rs
+    notes: >-
+      Local server only (railway mcp local). Prints build and deploy settings
+      and the number of variables, not their values.
+    tests:
+      - fixture: fixtures/service-get-config.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.service.update
+    match: { mcp: { tool: update_service } }
+    class: write
+    when:
+      - if: { arg: start_command, present: true }
+        class: irreversible
+      - if: { arg: build_command, present: true }
+        class: irreversible
+      - if: { arg: pre_deploy_command, present: true }
+        class: irreversible
+      - if: { arg: num_replicas, present: true }
+        class: money
+    resource: { arg: service_id, kind: service }
+    card: "Change settings of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/project.rs
+    notes: >-
+      Local server only (railway mcp local). Settings are a write (as
+      railway.service-instance.update). A start, build or pre-deploy command is
+      an arbitrary command that Railway runs on the next deploy with the
+      service's variables (and, for the start command, its volume), so setting
+      one is irreversible. num_replicas multiplies what the service bills, so it
+      is money like scale_service.
+    tests:
+      - fixture: fixtures/service-update.json
+        expect: write
+        resource: svc-api
+      - fixture: fixtures/service-update-start-command.json
+        expect: irreversible
+        resource: svc-api
+      - fixture: fixtures/service-update-replicas.json
+        expect: money
+        resource: svc-api
+
+  - id: railway-mcp.service.scale
+    match: { mcp: { tool: scale_service } }
+    class: money
+    resource: { arg: service_id, kind: service }
+    card: "Scale service {service_id} to {replicas}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/service.rs
+    notes: >-
+      Local server only (railway mcp local). Replicas multiply what the service
+      bills (up to 50), like raising its limits (railway.service-
+      instance.limits).
+    tests:
+      - fixture: fixtures/service-scale.json
+        expect: money
+        resource: svc-api

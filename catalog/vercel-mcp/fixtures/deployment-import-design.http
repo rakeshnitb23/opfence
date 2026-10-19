@@ -1,0 +1,8 @@
+# description: Import a Claude Design from https://claudeusercontent.com/example/design.html and deploy it
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"import-claude-design-from-url","arguments":{"title":"Landing page","url":"https://claudeusercontent.com/example/design.html"}}}

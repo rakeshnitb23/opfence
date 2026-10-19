@@ -1,0 +1,11 @@
+{
+  "description": "Set variables [\"LOG_LEVEL=debug\"] on service api",
+  "tool": "set-variables",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "variables": [
+      "LOG_LEVEL=debug"
+    ],
+    "service": "api"
+  }
+}

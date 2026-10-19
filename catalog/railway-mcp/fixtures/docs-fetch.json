@@ -1,0 +1,7 @@
+{
+  "description": "Read Railway docs page guides/volumes",
+  "tool": "docs_fetch",
+  "arguments": {
+    "url": "guides/volumes"
+  }
+}

@@ -1,0 +1,74 @@
+# Vercel MCP server (mcp.vercel.com): drain
+operations:
+  - id: vercel-mcp.drain.list
+    match: { mcp: { tool: list_drains } }
+    class: read
+    card: "List drains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/drains
+    tests:
+      - fixture: fixtures/drain-list.http
+        expect: read
+
+  - id: vercel-mcp.drain.get
+    match: { mcp: { tool: get_drain } }
+    class: read
+    resource: { arg: id, kind: drain }
+    card: "Show drain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/drains
+    tests:
+      - fixture: fixtures/drain-get.http
+        expect: read
+        resource: drn_123
+
+  - id: vercel-mcp.drain.create
+    match: { mcp: { tool: create_drain } }
+    class: access
+    card: "Send observability data to {requestBody.delivery.endpoint}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/drains
+    notes: >-
+      A drain forwards logs, traces and analytics, which can carry request data
+      and secrets, to an endpoint outside Vercel, so creating one shares data
+      externally (access).
+    tests:
+      - fixture: fixtures/drain-create.http
+        expect: access
+
+  - id: vercel-mcp.drain.update
+    match: { mcp: { tool: update_drain } }
+    class: access
+    resource: { arg: id, kind: drain }
+    card: "Update drain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/drains
+    notes: >-
+      Can point an existing drain at a new external endpoint, so it is access
+      like create.
+    tests:
+      - fixture: fixtures/drain-update.http
+        expect: access
+        resource: drn_123
+
+  - id: vercel-mcp.drain.test
+    match: { mcp: { tool: test_drain } }
+    class: write
+    card: "Send a test delivery to {requestBody.delivery.endpoint}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/drains
+    notes: >-
+      Sends a sample payload, not project data.
+    tests:
+      - fixture: fixtures/drain-test.http
+        expect: write

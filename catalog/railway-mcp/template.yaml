@@ -1,0 +1,34 @@
+# Railway MCP server: template
+operations:
+  - id: railway-mcp.template.search
+    match: { mcp: { tool: search_templates } }
+    class: read
+    card: "Search Railway templates for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/service.rs
+    tests:
+      - fixture: fixtures/template-search.json
+        expect: read
+
+  - id: railway-mcp.template.deploy
+    match: { mcp: { tool: deploy_template } }
+    class: write
+    resource: { arg: template_code, kind: template }
+    card: "Deploy template {template_code} into project {project_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/service.rs
+    notes: >-
+      Local server only (railway mcp local). Creates the template's services,
+      like railway.service.create.
+    tests:
+      - fixture: fixtures/template-deploy.json
+        expect: write
+        resource: postgres
