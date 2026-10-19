@@ -86,7 +86,7 @@ func TestDenyNamesThePolicy(t *testing.T) {
 func TestNoOutput(t *testing.T) {
 	for name, in := range map[string]string{
 		"built-in tool":   toolCall("Bash", `{"command":"ls"}`),
-		"unknown server":  toolCall("mcp__notion__search", `{}`),
+		"unknown server":  toolCall("mcp__acme-wiki__search", `{}`),
 		"other event":     `{"hook_event_name":"PostToolUse","tool_name":"mcp__supabase__execute_sql","tool_input":{}}`,
 		"malformed name":  toolCall("mcp__supabase", `{}`),
 		"empty tool part": toolCall("mcp__supabase__", `{}`),
