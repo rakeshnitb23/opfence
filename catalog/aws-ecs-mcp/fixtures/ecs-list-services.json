@@ -1,0 +1,10 @@
+{
+  "description": "List services in cluster shop",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "ListServices",
+    "api_params": {
+      "cluster": "shop"
+    }
+  }
+}

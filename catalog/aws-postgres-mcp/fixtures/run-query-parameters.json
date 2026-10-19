@@ -1,0 +1,19 @@
+{
+  "description": "Delete order 42 with a bound parameter",
+  "tool": "run_query",
+  "arguments": {
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "database": "shop",
+    "sql": "DELETE FROM orders WHERE id = :order_id",
+    "query_parameters": [
+      {
+        "name": "order_id",
+        "value": {
+          "longValue": 42
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "Check the cluster creation job",
+  "tool": "get_job_status",
+  "arguments": {
+    "job_id": "create-cluster-shop-aurora-2026-10-19T09:30:00.000"
+  }
+}

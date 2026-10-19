@@ -1,0 +1,109 @@
+# AWS Cloud Control API MCP server (awslabs.ccapi-mcp-server): workflow, templates and session
+operations:
+  - id: aws-ccapi-mcp.code.generate
+    match: { mcp: { tool: generate_infrastructure_code } }
+    class: read
+    when:
+      - if: { arg: resource_type, matches: "^AWS::(Lambda::Function|ECS::TaskDefinition|SSM::Parameter|AppRunner::Service|Batch::JobDefinition|CodeBuild::Project|Amplify::(App|Branch)|ElasticBeanstalk::Environment)$" }
+        class: credential
+    card: "Prepare properties for {resource_type} {identifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/infrastructure_generation.py
+    notes: >-
+      Builds the properties and template for a later create or update and stores them behind a
+      token; changes nothing. With identifier it first reads the resource's current properties
+      and returns them merged with the patch, so the same environment-bearing types as get_resource
+      are credential. Opfence cannot combine that with identifier, so generating properties for a
+      new resource of those types is credential too (stricter than needed).
+    tests:
+      - fixture: fixtures/generate-infrastructure-code.json
+        expect: read
+      - fixture: fixtures/generate-infrastructure-code-lambda.json
+        expect: credential
+
+  - id: aws-ccapi-mcp.code.explain
+    match: { mcp: { tool: explain } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/explanation.py
+    notes: >-
+      Formats content (or the content behind generated_code_token) for the user and returns an
+      explained_token that create, update and delete require.
+    tests:
+      - fixture: fixtures/explain.json
+        expect: read
+
+  - id: aws-ccapi-mcp.code.checkov
+    match: { mcp: { tool: run_checkov } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/security_scanning.py
+    notes: >-
+      Runs the Checkov scanner locally on the template stored behind explained_token.
+    tests:
+      - fixture: fixtures/run-checkov.json
+        expect: read
+
+  - id: aws-ccapi-mcp.template.create
+    match: { mcp: { tool: create_template } }
+    class: write
+    card: "Generate a CloudFormation template {template_name} from existing resources"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/iac_generator.py
+    notes: >-
+      Starts a CloudFormation IaC generator template (CreateGeneratedTemplate) for the listed
+      resources, or with template_id reads its status and template. The generated template
+      record is the only thing it creates; no stack is deployed.
+    tests:
+      - fixture: fixtures/create-template.json
+        expect: write
+
+  - id: aws-ccapi-mcp.session.check-env
+    match: { mcp: { tool: check_environment_variables } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/session_management.py
+    tests:
+      - fixture: fixtures/check-environment-variables.json
+        expect: read
+
+  - id: aws-ccapi-mcp.session.info
+    match: { mcp: { tool: get_aws_session_info } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/session_management.py
+    notes: >-
+      Returns profile, account, region and, when credentials come from environment variables,
+      the access key id and secret key masked to their last four characters.
+    tests:
+      - fixture: fixtures/get-aws-session-info.json
+        expect: read
+
+  - id: aws-ccapi-mcp.session.account
+    match: { mcp: { tool: get_aws_account_info } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-aws-account-info.json
+        expect: read

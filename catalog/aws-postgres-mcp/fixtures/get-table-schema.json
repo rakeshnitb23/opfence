@@ -1,0 +1,11 @@
+{
+  "description": "Read the columns of table orders",
+  "tool": "get_table_schema",
+  "arguments": {
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "database": "shop",
+    "table_name": "orders"
+  }
+}

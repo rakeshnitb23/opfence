@@ -1,0 +1,18 @@
+{
+  "description": "Turn off versioning on bucket shop-assets",
+  "tool": "update_resource",
+  "arguments": {
+    "resource_type": "AWS::S3::Bucket",
+    "identifier": "shop-assets",
+    "patch_document": [
+      {
+        "op": "replace",
+        "path": "/VersioningConfiguration/Status",
+        "value": "Suspended"
+      }
+    ],
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE",
+    "explained_token": "explained-token-EXAMPLE"
+  }
+}

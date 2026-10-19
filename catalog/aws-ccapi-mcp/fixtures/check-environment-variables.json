@@ -1,0 +1,5 @@
+{
+  "description": "Check the server's AWS environment variables",
+  "tool": "check_environment_variables",
+  "arguments": {}
+}

@@ -1,0 +1,27 @@
+{
+  "description": "Create Iceberg table retail_data.customers",
+  "tool": "create_table",
+  "arguments": {
+    "table_bucket_arn": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "namespace": "retail_data",
+    "name": "customers",
+    "format": "ICEBERG",
+    "metadata": {
+      "iceberg": {
+        "schema": {
+          "fields": [
+            {
+              "name": "customer_id",
+              "type": "long",
+              "required": true
+            },
+            {
+              "name": "customer_name",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+# AWS API MCP server (awslabs.aws-api-mcp-server): AWS CLI commands
+operations:
+  - id: aws-api-mcp.cli.call
+    match: { mcp: { tool: call_aws } }
+    class: irreversible
+    card: "Run AWS CLI command(s) {cli_command}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/security/policy.py
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/common/config.py
+    notes: >-
+      cli_command is one AWS CLI command or a list of them, run with the user's AWS credentials
+      (any service, any operation, including aws s3 rm --recursive, aws iam create-access-key,
+      aws secretsmanager get-secret-value and aws ssm send-command), and "--region *" repeats a
+      command in every enabled region. Opfence cannot yet map a CLI command onto the catalog/aws
+      rules, so every call gets the strictest class a command can reach. The server's own guards
+      are invisible to Opfence and do not lower the class: READ_OPERATIONS_ONLY=true denies
+      operations that the AWS service reference does not mark read-only (but reads that return
+      secrets, such as get-secret-value, still pass), REQUIRE_MUTATION_CONSENT=true asks the
+      user through MCP elicitation before a non-read operation, and
+      ~/.aws/aws-api-mcp/mcp-security-policy.json can deny or ask for listed commands.
+      max_results only limits pagination.
+    tests:
+      - fixture: fixtures/call-aws.json
+        expect: irreversible
+      - fixture: fixtures/call-aws-batch.json
+        expect: irreversible
+      - fixture: fixtures/call-aws-delete.json
+        expect: irreversible
+
+  - id: aws-api-mcp.cli.suggest
+    match: { mcp: { tool: suggest_aws_commands } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/server.py
+    notes: >-
+      Sends the natural-language query to AWS's suggestion endpoint and returns candidate CLI
+      commands; it runs nothing.
+    tests:
+      - fixture: fixtures/suggest-aws-commands.json
+        expect: read
+
+  - id: aws-api-mcp.plan.get
+    match: { mcp: { tool: get_execution_plan } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/agent_scripts/manager.py
+    notes: >-
+      Only registered with EXPERIMENTAL_AGENT_SCRIPTS=true. Returns the text of a bundled or
+      AWS_API_MCP_AGENT_SCRIPTS_DIR script plan; the agent then runs its steps through call_aws.
+    tests:
+      - fixture: fixtures/get-execution-plan.json
+        expect: read

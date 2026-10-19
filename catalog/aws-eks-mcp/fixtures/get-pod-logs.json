@@ -1,0 +1,10 @@
+{
+  "description": "Read the last 100 log lines of a shop-api pod",
+  "tool": "get_pod_logs",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "namespace": "shop",
+    "pod_name": "shop-api-7d9f8b6c4-x2k5q",
+    "tail_lines": 100
+  }
+}

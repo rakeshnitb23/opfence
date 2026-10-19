@@ -1,0 +1,9 @@
+{
+  "description": "Build and push the shop-api image to a new ECR repository",
+  "tool": "build_and_push_image_to_ecr",
+  "arguments": {
+    "app_name": "shop-api",
+    "app_path": "/home/dev/shop/api",
+    "tag": "1.4.2"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "description": "Create Aurora PostgreSQL cluster shop-aurora",
+  "tool": "create_cluster",
+  "arguments": {
+    "region": "us-east-1",
+    "cluster_identifier": "shop-aurora",
+    "database": "shop",
+    "engine_version": "17.5"
+  }
+}

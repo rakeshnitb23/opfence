@@ -1,0 +1,7 @@
+{
+  "description": "Search AWS documentation for ECS service auto scaling",
+  "tool": "aws_knowledge_aws___search_documentation",
+  "arguments": {
+    "search_phrase": "ECS service auto scaling target tracking"
+  }
+}

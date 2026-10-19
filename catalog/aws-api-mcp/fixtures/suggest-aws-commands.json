@@ -1,0 +1,7 @@
+{
+  "description": "Ask for CLI commands that list running EC2 instances",
+  "tool": "suggest_aws_commands",
+  "arguments": {
+    "query": "List all running EC2 instances in us-east-1 region"
+  }
+}

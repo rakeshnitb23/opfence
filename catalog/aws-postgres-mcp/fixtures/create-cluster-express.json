@@ -1,0 +1,9 @@
+{
+  "description": "Create an express Aurora PostgreSQL cluster shop-aurora-dev",
+  "tool": "create_cluster",
+  "arguments": {
+    "region": "us-east-1",
+    "cluster_identifier": "shop-aurora-dev",
+    "with_express_configuration": true
+  }
+}

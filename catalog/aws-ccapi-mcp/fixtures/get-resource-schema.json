@@ -1,0 +1,8 @@
+{
+  "description": "Read the Cloud Control schema of AWS::S3::Bucket",
+  "tool": "get_resource_schema_information",
+  "arguments": {
+    "resource_type": "AWS::S3::Bucket",
+    "region": "us-east-1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "List the S3 buckets in us-east-1 with the AWS CLI",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws s3api list-buckets --region us-east-1"
+  }
+}

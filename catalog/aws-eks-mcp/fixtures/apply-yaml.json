@@ -1,0 +1,10 @@
+{
+  "description": "Apply the shop manifests to namespace shop",
+  "tool": "apply_yaml",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "yaml_path": "/home/dev/shop/k8s/shop.yaml",
+    "namespace": "shop",
+    "force": true
+  }
+}

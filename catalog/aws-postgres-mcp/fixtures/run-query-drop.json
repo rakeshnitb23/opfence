@@ -1,0 +1,11 @@
+{
+  "description": "Drop table orders_archive",
+  "tool": "run_query",
+  "arguments": {
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "database": "shop",
+    "sql": "DROP TABLE orders_archive"
+  }
+}

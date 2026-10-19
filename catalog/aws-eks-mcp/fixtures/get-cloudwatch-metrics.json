@@ -1,0 +1,13 @@
+{
+  "description": "Read node CPU utilization of cluster shop-prod",
+  "tool": "get_cloudwatch_metrics",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "metric_name": "node_cpu_utilization",
+    "namespace": "ContainerInsights",
+    "dimensions": {
+      "ClusterName": "shop-prod"
+    },
+    "minutes": 60
+  }
+}

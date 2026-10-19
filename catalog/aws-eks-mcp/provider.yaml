@@ -1,0 +1,20 @@
+provider: aws-eks-mcp
+title: Amazon EKS MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/eks-mcp-server
+# AWS Labs' Amazon EKS MCP server (PyPI awslabs.eks-mcp-server, source
+# github.com/awslabs/mcp src/eks-mcp-server), read at version 0.2.1 (commit
+# d534d0f, 2026-10-16). It runs locally over stdio and calls the EKS,
+# CloudFormation, IAM and CloudWatch APIs (catalog/aws) and each cluster's
+# Kubernetes API with the user's credentials. Mutating operations need
+# --allow-write, and Secrets, logs and events need
+# --allow-sensitive-data-access; every tool is registered either way and
+# Opfence cannot see the flags, so rules keep the class of what a call can do.
+# With --auth-mode kubeconfig only the Kubernetes tools are registered.
+# No hosts; the agent hook sees the tool calls. The README keys it
+# "awslabs.eks-mcp-server", which Claude Code writes as
+# "awslabs_eks-mcp-server" (no dots in tool names).
+# No detect or auth block: AWS credentials belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [awslabs_eks-mcp-server, eks-mcp-server, aws-eks]
+  package: "awslabs.eks-mcp-server"

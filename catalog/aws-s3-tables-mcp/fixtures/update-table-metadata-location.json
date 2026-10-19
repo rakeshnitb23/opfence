@@ -1,0 +1,11 @@
+{
+  "description": "Point table retail_data.customers at an older metadata file",
+  "tool": "update_table_metadata_location",
+  "arguments": {
+    "table_bucket_arn": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "namespace": "retail_data",
+    "name": "customers",
+    "metadata_location": "s3://9f1e2d3c-analytics--table-s3/metadata/00003-6a1b.metadata.json",
+    "version_token": "7d4b1c2a9e"
+  }
+}

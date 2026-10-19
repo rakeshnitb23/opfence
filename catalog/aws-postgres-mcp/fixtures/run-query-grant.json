@@ -1,0 +1,11 @@
+{
+  "description": "Grant the reporting role read access to orders",
+  "tool": "run_query",
+  "arguments": {
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "database": "shop",
+    "sql": "GRANT SELECT ON orders TO reporting"
+  }
+}

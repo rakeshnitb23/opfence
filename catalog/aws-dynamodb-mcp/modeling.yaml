@@ -1,0 +1,138 @@
+# Amazon DynamoDB MCP server (awslabs.dynamodb-mcp-server): data modeling
+operations:
+  - id: aws-dynamodb-mcp.modeling.prompt
+    match: { mcp: { tool: dynamodb_data_modeling } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Returns the bundled data-modeling expert prompt; takes no arguments.
+    tests:
+      - fixture: fixtures/data-modeling.json
+        expect: read
+
+  - id: aws-dynamodb-mcp.schema.converter-prompt
+    match: { mcp: { tool: dynamodb_data_model_schema_converter } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Returns the prompt that tells the agent how to write schema.json; the agent writes the
+      file itself.
+    tests:
+      - fixture: fixtures/schema-converter.json
+        expect: read
+
+  - id: aws-dynamodb-mcp.schema.validate
+    match: { mcp: { tool: dynamodb_data_model_schema_validator } }
+    class: read
+    resource: { arg: schema_path, kind: file }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Validates a local schema.json (and usage_data.json) with validate_only=True; writes nothing.
+    tests:
+      - fixture: fixtures/schema-validator.json
+        expect: read
+        resource: /home/dev/shop/dynamodb/schema.json
+
+  - id: aws-dynamodb-mcp.source-db.analyze
+    match: { mcp: { tool: source_db_analyzer } }
+    class: write
+    resource: { arg: source_identifier, kind: database }
+    card: "Analyze {source_db_type} database {source_identifier} and write the results to {output_dir}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/db_analyzer/mysql.py
+    notes: >-
+      Writes query and analysis files into output_dir on the user's machine. In managed mode
+      (MySQL only) it reads the credentials in aws_secret_arn and runs fixed SELECTs on
+      information_schema and performance_schema (query digests, not row data) through the RDS
+      Data API or a direct connection; the secret is not returned. self_service mode only
+      writes SQL for the user to run and parses a results file. Classed write for the files; the
+      database is only read.
+    tests:
+      - fixture: fixtures/source-db-analyzer.json
+        expect: write
+        resource: shop
+
+  - id: aws-dynamodb-mcp.model.validate
+    match: { mcp: { tool: dynamodb_data_model_validation } }
+    class: write
+    resource: { arg: workspace_dir, kind: directory }
+    card: "Test the DynamoDB data model in {workspace_dir} against DynamoDB Local"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/model_validation_utils.py
+    notes: >-
+      Starts (or reuses) DynamoDB Local in a container or a Java process on localhost, deletes
+      the tables it finds there, creates the tables and items from dynamodb_data_model.json and
+      runs each access pattern's "aws dynamodb ..." implementation command from that file with
+      --endpoint-url pointed at the local instance appended and dummy credentials set, then
+      writes the results file. The commands come from a workspace file Opfence cannot see, but
+      the appended endpoint keeps them on DynamoDB Local, so nothing in AWS changes; a reviewer
+      should keep this in mind if that code changes.
+    tests:
+      - fixture: fixtures/data-model-validation.json
+        expect: write
+        resource: /home/dev/shop/dynamodb
+
+  - id: aws-dynamodb-mcp.model.costs
+    match: { mcp: { tool: compute_performances_and_costs } }
+    class: write
+    resource: { arg: workspace_dir, kind: directory }
+    card: "Append a capacity and cost estimate to dynamodb_data_model.md in {workspace_dir}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Computes capacity units and prices locally and appends the report to a file; calls no AWS
+      API.
+    tests:
+      - fixture: fixtures/compute-costs.json
+        expect: write
+        resource: /home/dev/shop/dynamodb
+
+  - id: aws-dynamodb-mcp.model.generate-resources
+    match: { mcp: { tool: generate_resources } }
+    class: write
+    resource: { arg: dynamodb_data_model_json_file, kind: file }
+    card: "Generate a {resource_type} app next to {dynamodb_data_model_json_file}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Writes a CDK project into a cdk folder beside the model file. Deploying it is a separate
+      step the agent runs itself (cdk deploy), which Opfence sees as CloudFormation calls.
+    tests:
+      - fixture: fixtures/generate-resources.json
+        expect: write
+        resource: /home/dev/shop/dynamodb/dynamodb_data_model.json
+
+  - id: aws-dynamodb-mcp.model.generate-dal
+    match: { mcp: { tool: generate_data_access_layer } }
+    class: write
+    resource: { arg: schema_path, kind: file }
+    card: "Generate {language} data access code from {schema_path}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/dynamodb-mcp-server/awslabs/dynamodb_mcp_server/server.py
+    notes: >-
+      Writes generated code into a folder beside schema.json; calls no AWS API.
+    tests:
+      - fixture: fixtures/generate-dal.json
+        expect: write
+        resource: /home/dev/shop/dynamodb/schema.json

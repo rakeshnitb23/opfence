@@ -1,0 +1,21 @@
+{
+  "description": "Append two rows to table retail_data.customers",
+  "tool": "append_rows_to_table",
+  "arguments": {
+    "warehouse": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "region": "us-west-2",
+    "namespace": "retail_data",
+    "uri": "https://s3tables.us-west-2.amazonaws.com/iceberg",
+    "table_name": "customers",
+    "rows": [
+      {
+        "customer_id": 1,
+        "customer_name": "Alice"
+      },
+      {
+        "customer_id": 2,
+        "customer_name": "Bob"
+      }
+    ]
+  }
+}

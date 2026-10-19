@@ -1,0 +1,9 @@
+{
+  "description": "Read the properties of bucket shop-assets",
+  "tool": "get_resource",
+  "arguments": {
+    "resource_type": "AWS::S3::Bucket",
+    "identifier": "shop-assets",
+    "region": "us-east-1"
+  }
+}

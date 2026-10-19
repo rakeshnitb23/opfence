@@ -1,0 +1,10 @@
+{
+  "description": "Create an IAM role from the explained properties",
+  "tool": "create_resource",
+  "arguments": {
+    "resource_type": "AWS::IAM::Role",
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE",
+    "explained_token": "explained-token-EXAMPLE"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Write manifests for app shop-api",
+  "tool": "generate_app_manifest",
+  "arguments": {
+    "app_name": "shop-api",
+    "image_uri": "123456789012.dkr.ecr.us-east-1.amazonaws.com/shop-api:1.4.2",
+    "output_dir": "/home/dev/shop/k8s",
+    "port": 8080,
+    "replicas": 2,
+    "namespace": "shop"
+  }
+}

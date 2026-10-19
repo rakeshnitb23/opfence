@@ -1,0 +1,23 @@
+provider: aws-ccapi-mcp
+title: AWS Cloud Control API MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/ccapi-mcp-server
+# AWS Labs' Cloud Control API MCP server (PyPI awslabs.ccapi-mcp-server,
+# source github.com/awslabs/mcp src/ccapi-mcp-server). DEPRECATED: the awslabs
+# README marks it deprecated in favour of the AWS IaC MCP server
+# (awslabs.aws-iac-mcp-server, which only reads documentation, validates
+# templates and troubleshoots deployments, so it has no catalog entry), and
+# every PyPI release is yanked ("Superceeded by awslabs.aws-iac-mcp-server").
+# It is still in the monorepo and still runs wherever it was installed, so its
+# tools are described here. Read at the last release, 1.0.18, and at the
+# repo's unpublished 1.1.1 (commit d534d0f, 2026-10-16): the same 14 tools
+# with the same arguments.
+# It runs locally over stdio; create_resource, update_resource and
+# delete_resource call the Cloud Control API (cloudcontrolapi.*.amazonaws.com,
+# catalog/aws) with the user's credentials. No hosts; the agent hook sees the
+# tool calls. The README keys it "awslabs.ccapi-mcp-server", which Claude Code
+# writes as "awslabs_ccapi-mcp-server" (no dots in tool names).
+# No detect or auth block: AWS credentials belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [awslabs_ccapi-mcp-server, ccapi-mcp-server, aws-ccapi, ccapi]
+  package: "awslabs.ccapi-mcp-server"

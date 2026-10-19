@@ -1,0 +1,12 @@
+{
+  "description": "Delete PersistentVolumeClaim shop-data in namespace shop",
+  "tool": "manage_k8s_resource",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "delete",
+    "kind": "PersistentVolumeClaim",
+    "api_version": "v1",
+    "name": "shop-data",
+    "namespace": "shop"
+  }
+}

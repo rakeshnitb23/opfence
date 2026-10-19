@@ -1,0 +1,7 @@
+{
+  "description": "Read an ECS documentation page",
+  "tool": "aws_knowledge_aws___read_documentation",
+  "arguments": {
+    "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-auto-scaling.html"
+  }
+}

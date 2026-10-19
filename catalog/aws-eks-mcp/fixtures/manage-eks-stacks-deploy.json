@@ -1,0 +1,9 @@
+{
+  "description": "Deploy the EKS stack for cluster shop-prod",
+  "tool": "manage_eks_stacks",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "deploy",
+    "template_file": "/home/dev/shop/infra/eks-shop-prod.yaml"
+  }
+}

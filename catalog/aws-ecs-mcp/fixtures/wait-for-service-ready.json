@@ -1,0 +1,9 @@
+{
+  "description": "Wait for service shop-api to run",
+  "tool": "wait_for_service_ready",
+  "arguments": {
+    "cluster": "default",
+    "service_name": "shop-api",
+    "timeout_seconds": 300
+  }
+}

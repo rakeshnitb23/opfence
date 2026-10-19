@@ -1,0 +1,11 @@
+{
+  "description": "Read the website configuration of two buckets in one batch",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": [
+      "aws s3api get-bucket-website --bucket shop-assets",
+      "aws s3api get-bucket-website --bucket shop-assets-staging"
+    ],
+    "max_results": 50
+  }
+}

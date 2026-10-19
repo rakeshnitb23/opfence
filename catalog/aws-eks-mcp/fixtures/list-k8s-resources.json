@@ -1,0 +1,11 @@
+{
+  "description": "List Pods in namespace shop",
+  "tool": "list_k8s_resources",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "kind": "Pod",
+    "api_version": "v1",
+    "namespace": "shop",
+    "label_selector": "app=shop-api"
+  }
+}

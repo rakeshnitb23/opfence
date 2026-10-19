@@ -1,0 +1,60 @@
+# Amazon ECS MCP server (awslabs.ecs-mcp-server): ECS API operations
+operations:
+  - id: aws-ecs-mcp.api.call
+    match: { mcp: { tool: ecs_resource_management } }
+    class: irreversible
+    when:
+      - if: { arg: api_operation, in: ["DescribeCapacityProviders", "DescribeClusters", "DescribeContainerInstances", "DescribeServiceDeployments", "DescribeServiceRevisions", "DescribeServices", "DescribeTaskSets", "DiscoverPollEndpoint", "GetTaskProtection", "ListAccountSettings", "ListAttributes", "ListClusters", "ListContainerInstances", "ListExpressGatewayServices", "ListServiceDeployments", "ListServices", "ListServicesByNamespace", "ListTagsForResource", "ListTaskDefinitionFamilies", "ListTaskDefinitions", "ListTasks"] }
+        class: read
+      - if: { arg: api_operation, in: ["DescribeTaskDefinition", "DescribeTasks", "DescribeExpressGatewayService"] }
+        class: credential
+      - if: { arg: api_operation, in: ["CreateCapacityProvider", "CreateCluster", "CreateTaskSet", "DeleteAccountSetting", "DeleteAttributes", "PutAccountSetting", "PutAccountSettingDefault", "PutAttributes", "PutClusterCapacityProviders", "RegisterContainerInstance", "RegisterTaskDefinition", "StopServiceDeployment", "SubmitAttachmentStateChanges", "SubmitContainerStateChange", "SubmitTaskStateChange", "TagResource", "UntagResource", "UpdateCapacityProvider", "UpdateCluster", "UpdateClusterSettings", "UpdateContainerAgent", "UpdateContainerInstancesState", "UpdateExpressGatewayService", "UpdateService", "UpdateServicePrimaryTaskSet", "UpdateTaskProtection", "UpdateTaskSet"] }
+        class: write
+      - if: { arg: api_operation, in: ["CreateService", "CreateExpressGatewayService", "RunTask", "StartTask"] }
+        class: money
+      - if: { arg: api_params.desiredCount, present: true }
+        class: money
+      - if: { arg: api_operation, equals: "CreateExpressGatewayService" }
+        class: access
+      - if: { arg: api_operation, in: ["DeleteCapacityProvider", "DeleteCluster", "DeleteExpressGatewayService", "DeleteService", "DeleteTaskSet", "DeregisterContainerInstance", "DeregisterTaskDefinition", "StopTask"] }
+        class: delete
+      - if: { arg: api_operation, in: ["ExecuteCommand", "DeleteTaskDefinitions"] }
+        class: irreversible
+      - if: { arg: api_params.overrides, present: true }
+        class: irreversible
+    card: "Run ECS {api_operation}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/resource_management.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/resource_management.py
+    notes: >-
+      Calls the boto3 ECS operation named in api_operation (exact names from the server's
+      allow-list; anything else is refused, and the rule's own class covers it) with api_params.
+      Task definitions, tasks (container overrides) and Express Gateway services return
+      environment variable values, which counts as reading a secret as for Lambda GetFunction;
+      the server redacts them unless ALLOW_SENSITIVE_DATA=true, which Opfence cannot see.
+      Creating a service or Express Gateway service and running or starting tasks are billed,
+      as is any call that sets desiredCount; an Express Gateway service also gets a public
+      HTTPS endpoint by default. Deleting services, clusters, capacity providers and task sets,
+      deregistering, and stopping tasks are restorable from their definitions. ExecuteCommand
+      runs a command in a container, overrides on RunTask or StartTask can replace the
+      container command, and DeleteTaskDefinitions permanently deletes revisions with their
+      environment values, so those are irreversible.
+    tests:
+      - fixture: fixtures/ecs-list-services.json
+        expect: read
+      - fixture: fixtures/ecs-describe-task-definition.json
+        expect: credential
+      - fixture: fixtures/ecs-update-service.json
+        expect: money
+      - fixture: fixtures/ecs-register-task-definition.json
+        expect: write
+      - fixture: fixtures/ecs-delete-service.json
+        expect: delete
+      - fixture: fixtures/ecs-execute-command.json
+        expect: irreversible
+      - fixture: fixtures/ecs-run-task-override.json
+        expect: irreversible
+      - fixture: fixtures/ecs-create-express-gateway-service.json
+        expect: access

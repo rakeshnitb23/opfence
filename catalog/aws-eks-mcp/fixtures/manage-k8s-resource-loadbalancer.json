@@ -1,0 +1,17 @@
+{
+  "description": "Expose Service shop-api through a load balancer",
+  "tool": "manage_k8s_resource",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "patch",
+    "kind": "Service",
+    "api_version": "v1",
+    "name": "shop-api",
+    "namespace": "shop",
+    "body": {
+      "spec": {
+        "type": "LoadBalancer"
+      }
+    }
+  }
+}

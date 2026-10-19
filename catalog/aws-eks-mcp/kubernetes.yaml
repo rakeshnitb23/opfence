@@ -1,0 +1,158 @@
+# Amazon EKS MCP server (awslabs.eks-mcp-server): Kubernetes resources
+operations:
+  - id: aws-eks-mcp.k8s-resource.manage
+    match: { mcp: { tool: manage_k8s_resource } }
+    class: irreversible
+    when:
+      - if: { arg: operation, equals: "read" }
+        class: read
+      - if: { arg: operation, in: ["create", "replace", "patch"] }
+        class: write
+      - if: { arg: operation, equals: "delete" }
+        class: irreversible
+      - if: { arg: kind, matches: "(?i)^secrets?$" }
+        class: credential
+      - if: { arg: kind, matches: "(?i)^(cluster)?roles?(bindings?)?$" }
+        class: access
+      - if: { arg: kind, matches: "(?i)^ingress(es)?$" }
+        class: access
+      - if: { arg: body.spec.type, in: ["LoadBalancer", "NodePort"] }
+        class: access
+    resource: { arg: name, kind: k8s-resource }
+    card: "{operation} {kind} {name} in namespace {namespace} of EKS cluster {cluster_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_apis.py
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/models.py
+    notes: >-
+      One tool for create, replace, patch, delete and read of any kind. Delete is irreversible:
+      Kubernetes keeps no copy of a deleted object, and deleting a Namespace, PersistentVolumeClaim
+      or CRD takes its data and dependents with it (Opfence cannot combine operation and kind to
+      spare a Deployment). Reading a Secret returns its data and creating or patching one sets
+      it, so kind Secret is credential for every operation. Roles, ClusterRoles and their
+      bindings grant access, and an Ingress or a LoadBalancer or NodePort Service exposes the
+      workload; because conditions cannot be combined, reading those kinds is access too
+      (stricter than needed). Any other operation value is rejected by the server; the rule's
+      own class covers it.
+    tests:
+      - fixture: fixtures/manage-k8s-resource-read.json
+        expect: read
+        resource: shop-api
+      - fixture: fixtures/manage-k8s-resource-create.json
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/manage-k8s-resource-delete.json
+        expect: irreversible
+        resource: shop-data
+      - fixture: fixtures/manage-k8s-resource-secret.json
+        expect: credential
+        resource: shop-db-credentials
+      - fixture: fixtures/manage-k8s-resource-rbac.json
+        expect: access
+        resource: agent-admin
+      - fixture: fixtures/manage-k8s-resource-loadbalancer.json
+        expect: access
+        resource: shop-api
+
+  - id: aws-eks-mcp.k8s-resource.apply-yaml
+    match: { mcp: { tool: apply_yaml } }
+    class: credential
+    resource: { arg: cluster_name, kind: cluster }
+    card: "Apply the manifests in {yaml_path} to namespace {namespace} of EKS cluster {cluster_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_apis.py
+    notes: >-
+      Creates (and with force, the default, updates) every object in a local YAML file Opfence
+      cannot read. Such files routinely hold Secrets, RBAC bindings and LoadBalancer Services, so
+      the call gets the strictest class those reach: setting a secret is credential. It never
+      deletes objects.
+    tests:
+      - fixture: fixtures/apply-yaml.json
+        expect: credential
+        resource: shop-prod
+
+  - id: aws-eks-mcp.k8s-resource.list
+    match: { mcp: { tool: list_k8s_resources } }
+    class: read
+    when:
+      - if: { arg: kind, matches: "(?i)^secrets?$" }
+        class: credential
+    resource: { arg: cluster_name, kind: cluster }
+    card: "List {kind} objects in namespace {namespace} of EKS cluster {cluster_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+    notes: >-
+      Returns name, namespace, labels and annotations of each object. A Secret's annotations
+      include kubectl.kubernetes.io/last-applied-configuration, which holds the Secret's data
+      when it was created with kubectl apply, and this tool does not check
+      --allow-sensitive-data-access, so listing Secrets is credential.
+    tests:
+      - fixture: fixtures/list-k8s-resources.json
+        expect: read
+        resource: shop-prod
+      - fixture: fixtures/list-k8s-resources-secrets.json
+        expect: credential
+        resource: shop-prod
+
+  - id: aws-eks-mcp.k8s-resource.manifest
+    match: { mcp: { tool: generate_app_manifest } }
+    class: write
+    resource: { arg: app_name, kind: app }
+    card: "Write Kubernetes manifests for {app_name} to {output_dir}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+    notes: >-
+      Writes a Deployment and Service manifest into output_dir on the user's machine; applying
+      them is a separate apply_yaml call.
+    tests:
+      - fixture: fixtures/generate-app-manifest.json
+        expect: write
+        resource: shop-api
+
+  - id: aws-eks-mcp.pod.logs
+    match: { mcp: { tool: get_pod_logs } }
+    class: read
+    resource: { arg: pod_name, kind: pod }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+    notes: >-
+      Needs --allow-sensitive-data-access. Logs are read, as elsewhere in the catalog.
+    tests:
+      - fixture: fixtures/get-pod-logs.json
+        expect: read
+        resource: shop-api-7d9f8b6c4-x2k5q
+
+  - id: aws-eks-mcp.event.list
+    match: { mcp: { tool: get_k8s_events } }
+    class: read
+    resource: { arg: name, kind: k8s-resource }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+    tests:
+      - fixture: fixtures/get-k8s-events.json
+        expect: read
+        resource: shop-api
+
+  - id: aws-eks-mcp.api-version.list
+    match: { mcp: { tool: list_api_versions } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/k8s_handler.py
+    tests:
+      - fixture: fixtures/list-api-versions.json
+        expect: read

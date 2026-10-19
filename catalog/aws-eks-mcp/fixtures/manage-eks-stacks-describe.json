@@ -1,0 +1,8 @@
+{
+  "description": "Describe the stack of cluster shop-prod",
+  "tool": "manage_eks_stacks",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "describe"
+  }
+}

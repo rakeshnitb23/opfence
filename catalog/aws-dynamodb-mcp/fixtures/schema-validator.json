@@ -1,0 +1,8 @@
+{
+  "description": "Validate the schema.json of the shop data model",
+  "tool": "dynamodb_data_model_schema_validator",
+  "arguments": {
+    "schema_path": "/home/dev/shop/dynamodb/schema.json",
+    "usage_data_path": "/home/dev/shop/dynamodb/usage_data.json"
+  }
+}

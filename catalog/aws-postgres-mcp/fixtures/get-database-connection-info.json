@@ -1,0 +1,5 @@
+{
+  "description": "List cached database connections",
+  "tool": "get_database_connection_info",
+  "arguments": {}
+}

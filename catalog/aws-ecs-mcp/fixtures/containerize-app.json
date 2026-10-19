@@ -1,0 +1,8 @@
+{
+  "description": "Get Dockerfile guidance for the shop API",
+  "tool": "containerize_app",
+  "arguments": {
+    "app_path": "/home/dev/shop/api",
+    "port": 8080
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Delete service shop-api-canary",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "DeleteService",
+    "api_params": {
+      "cluster": "shop",
+      "service": "shop-api-canary",
+      "force": true
+    }
+  }
+}

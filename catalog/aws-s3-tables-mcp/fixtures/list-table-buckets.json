@@ -1,0 +1,7 @@
+{
+  "description": "List table buckets",
+  "tool": "list_table_buckets",
+  "arguments": {
+    "region_name": "us-west-2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "description": "Read the last 15 minutes of application logs for pod shop-api",
+  "tool": "get_cloudwatch_logs",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "resource_type": "pod",
+    "log_type": "application",
+    "resource_name": "shop-api",
+    "minutes": 15
+  }
+}
