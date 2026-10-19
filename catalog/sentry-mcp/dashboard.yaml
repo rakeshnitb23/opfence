@@ -1,0 +1,29 @@
+# Sentry MCP server: dashboards
+operations:
+  - id: sentry-mcp.dashboard.find
+    match: { mcp: { tool: find_dashboards } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List dashboards in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-dashboards.ts
+    tests:
+      - fixture: fixtures/dashboard-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.dashboard.get
+    match: { mcp: { tool: get_dashboard_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show dashboard {dashboardIdOrTitle} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-dashboard-details.ts
+    tests:
+      - fixture: fixtures/dashboard-get.http
+        expect: read
+        resource: my-org

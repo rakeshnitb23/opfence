@@ -1,0 +1,30 @@
+# Linear MCP server: comments
+operations:
+  - id: linear-mcp.comment.list
+    match: { mcp: { tool: list_comments } }
+    class: read
+    card: "List comments on Linear issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/2
+      - https://linear.app/changelog/page/3
+    tests:
+      - fixture: fixtures/comment-list.http
+        expect: read
+
+  - id: linear-mcp.comment.create
+    match: { mcp: { tool: create_comment } }
+    class: write
+    card: "Comment on Linear issue {issueId}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.

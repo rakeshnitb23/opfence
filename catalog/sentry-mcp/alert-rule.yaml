@@ -1,0 +1,115 @@
+# Sentry MCP server: alerts (workflows)
+operations:
+  - id: sentry-mcp.alert-rule.find
+    match: { mcp: { tool: find_alert_rules } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List alerts in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-alert-rules.ts
+    tests:
+      - fixture: fixtures/alert-rule-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.alert-rule.get
+    match: { mcp: { tool: get_alert_rule } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show alert {ruleIdOrName} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-alert-rule.ts
+    tests:
+      - fixture: fixtures/alert-rule-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.alert-rule.options
+    match: { mcp: { tool: get_alert_options } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List alert actions and sources in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-alert-options.ts
+    tests:
+      - fixture: fixtures/alert-rule-options.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.alert-rule.create
+    match: { mcp: { tool: create_alert_rule } }
+    class: write
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Create alert {name} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-alert-rule.ts
+    notes: >-
+      Actions can notify Slack, email, PagerDuty and other connected
+      integrations with issue details, all of which the organization already
+      configured.
+    tests:
+      - fixture: fixtures/alert-rule-create.http
+        expect: write
+        resource: my-org
+
+  - id: sentry-mcp.alert-rule.update
+    match: { mcp: { tool: update_alert_rule } }
+    class: write
+    when:
+      - if: { arg: status, equals: "disabled" }
+        class: delete
+      - if: { arg: actionFilters, present: true }
+        class: delete
+      - if: { arg: removeProjectSlugs, present: true }
+        class: delete
+      - if: { arg: removeDetectorIds, present: true }
+        class: delete
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Change alert {ruleIdOrName} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-alert-rule.ts
+    notes: >-
+      actionFilters replaces all action groups (omitted actions are removed),
+      and removing projects or detectors disconnects their notifications; with
+      status 'disabled' these silence alerts until set back, so they are
+      delete. status='disabled' stops a monitor or alert from detecting or
+      notifying, which is turning off a safety net; it can be switched back
+      on, so it is delete rather than irreversible.
+    tests:
+      - fixture: fixtures/alert-rule-update.http
+        expect: write
+        resource: my-org
+      - fixture: fixtures/alert-rule-update-disable.http
+        expect: delete
+        resource: my-org
+      - fixture: fixtures/alert-rule-update-actions.http
+        expect: delete
+        resource: my-org
+
+  - id: sentry-mcp.alert-rule.delete
+    match: { mcp: { tool: delete_alert_rule } }
+    class: delete
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Delete alert {ruleId} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/delete-alert-rule.ts
+    notes: >-
+      Deletes only the alert's configuration (connected monitors are kept),
+      which get_alert_rule returns in full, so it can be rebuilt: delete, not
+      irreversible.
+    tests:
+      - fixture: fixtures/alert-rule-delete.http
+        expect: delete
+        resource: my-org

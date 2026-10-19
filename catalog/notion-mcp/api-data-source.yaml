@@ -1,0 +1,101 @@
+# Notion MCP (local): data sources and databases
+operations:
+  - id: notion-mcp.api-data-source.query
+    match: { mcp: { tool: API-query-data-source } }
+    class: read
+    resource: { arg: data_source_id, kind: data_source }
+    card: "Query Notion data source {data_source_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      POST, but only reads rows.
+    tests:
+      - fixture: fixtures/api-data-source-query.json
+        expect: read
+        resource: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"
+
+  - id: notion-mcp.api-data-source.get
+    match: { mcp: { tool: API-retrieve-a-data-source } }
+    class: read
+    resource: { arg: data_source_id, kind: data_source }
+    card: "Show Notion data source {data_source_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-data-source-get.json
+        expect: read
+        resource: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"
+
+  - id: notion-mcp.api-data-source.update
+    match: { mcp: { tool: API-update-a-data-source } }
+    class: write
+    when:
+      - if: { arg: properties, present: true }
+        class: irreversible
+    resource: { arg: data_source_id, kind: data_source }
+    card: "Change Notion data source {data_source_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      A title or description change is write. properties can remove a column
+      (set it to null) or replace select options, which drops those values
+      from every row, so any properties change is irreversible.
+    tests:
+      - fixture: fixtures/api-data-source-update.json
+        expect: write
+        resource: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"
+      - fixture: fixtures/api-data-source-update-properties.json
+        expect: irreversible
+        resource: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"
+
+  - id: notion-mcp.api-data-source.create
+    match: { mcp: { tool: API-create-a-data-source } }
+    class: write
+    card: "Create a data source in Notion database {parent.database_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-data-source-create.json
+        expect: write
+
+  - id: notion-mcp.api-data-source.templates
+    match: { mcp: { tool: API-list-data-source-templates } }
+    class: read
+    resource: { arg: data_source_id, kind: data_source }
+    card: "List templates of Notion data source {data_source_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-data-source-templates.json
+        expect: read
+        resource: "3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"
+
+  - id: notion-mcp.api-database.get
+    match: { mcp: { tool: API-retrieve-a-database } }
+    class: read
+    resource: { arg: database_id, kind: database }
+    card: "Show Notion database {database_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-database-get.json
+        expect: read
+        resource: "9f8e7d6c-5b4a-4321-9876-fedcba012345"

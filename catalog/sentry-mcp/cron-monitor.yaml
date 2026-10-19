@@ -1,0 +1,29 @@
+# Sentry MCP server: cron monitors
+operations:
+  - id: sentry-mcp.cron-monitor.find
+    match: { mcp: { tool: find_monitors } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List cron monitors in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-monitors.ts
+    tests:
+      - fixture: fixtures/cron-monitor-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.cron-monitor.get
+    match: { mcp: { tool: get_monitor_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show cron monitor {monitorSlug} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-monitor-details.ts
+    tests:
+      - fixture: fixtures/cron-monitor-get.http
+        expect: read
+        resource: my-org

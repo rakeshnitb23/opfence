@@ -1,0 +1,16 @@
+# Notion MCP (local): search
+operations:
+  - id: notion-mcp.api-search.query
+    match: { mcp: { tool: API-post-search } }
+    class: read
+    card: "Search Notion for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      POST /v1/search reads only.
+    tests:
+      - fixture: fixtures/api-search-query.json
+        expect: read

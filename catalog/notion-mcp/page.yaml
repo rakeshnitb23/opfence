@@ -1,0 +1,227 @@
+# Notion MCP (remote): pages
+operations:
+  - id: notion-mcp.page.fetch
+    match: { mcp: { tool: notion-fetch } }
+    class: read
+    card: "Fetch Notion page or database {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-fetch.http
+        expect: read
+
+  - id: notion-mcp.page.list-private
+    match: { mcp: { tool: notion-list-private-pages } }
+    class: read
+    card: "List private Notion pages"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-list-private.http
+        expect: read
+
+  - id: notion-mcp.page.list-shared
+    match: { mcp: { tool: notion-list-shared-pages } }
+    class: read
+    card: "List shared Notion pages"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-list-shared.http
+        expect: read
+
+  - id: notion-mcp.page.list-favorites
+    match: { mcp: { tool: notion-list-favorite-pages } }
+    class: read
+    card: "List favorite Notion pages"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-list-favorites.http
+        expect: read
+
+  - id: notion-mcp.page.list-recent
+    match: { mcp: { tool: notion-list-recent-pages } }
+    class: read
+    card: "List recently viewed Notion pages"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-list-recent.http
+        expect: read
+
+  - id: notion-mcp.page.backlinks
+    match: { mcp: { tool: notion-list-page-backlinks } }
+    class: read
+    resource: { arg: page_id, kind: page }
+    card: "List pages linking to page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-backlinks.http
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.page.create
+    match: { mcp: { tool: notion-create-pages } }
+    class: write
+    card: "Create Notion pages under {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      New pages inherit their parent's permissions (or are private without a
+      parent); creating them shares nothing that was not shared. Remote
+      server; its source is not published, so the name and behaviour come from
+      Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-create.http
+        expect: write
+
+  - id: notion-mcp.page.update
+    match: { mcp: { tool: notion-update-page } }
+    class: delete
+    when:
+      - if: { arg: command, equals: "update_content" }
+        class: write
+      - if: { arg: command, equals: "replace_content" }
+        class: delete
+      - if: { arg: allow_deleting_content, equals: "true" }
+        class: delete
+    resource: { arg: page_id, kind: page }
+    card: "Update Notion page {page_id} ({command})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      update_content applies find-and-replace edits: write. replace_content
+      overwrites the whole page, and other commands (properties, icon, cover,
+      Skill status) are not fully listed in the docs, so anything but
+      update_content is delete: Notion's page history can restore earlier
+      content, and child pages removed by an edit go to Trash. Remote server;
+      its source is not published, so the name and behaviour come from
+      Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-update.http
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/page-update-replace.http
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/page-update-unlisted-command.http
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.page.move
+    match: { mcp: { tool: notion-move-pages } }
+    class: access
+    card: "Move Notion pages {page_or_database_ids} to {new_parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      A Notion page inherits its permissions from its parent, so moving a page
+      or database to another parent can share it with a teamspace, a public
+      page's audience, or nobody: access. Remote server; its source is not
+      published, so the name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-move.http
+        expect: access
+
+  - id: notion-mcp.page.delete
+    match: { mcp: { tool: notion-delete-pages } }
+    class: delete
+    card: "Move Notion pages {page_ids} to Trash"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Up to 20 pages per call. Notion moves them to Trash, where they can be
+      restored for 30 days (notion-restore-pages), so delete, not
+      irreversible. Remote server; its source is not published, so the name
+      and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-delete.http
+        expect: delete
+
+  - id: notion-mcp.page.restore
+    match: { mcp: { tool: notion-restore-pages } }
+    class: write
+    card: "Restore Notion pages {page_ids} from Trash"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Puts pages back where they were, under the same permissions. Remote
+      server; its source is not published, so the name and behaviour come from
+      Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-restore.http
+        expect: write
+
+  - id: notion-mcp.page.duplicate
+    match: { mcp: { tool: notion-duplicate-page } }
+    class: write
+    resource: { arg: page_id, kind: page }
+    card: "Duplicate Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/page-duplicate.http
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.meeting-notes.query
+    match: { mcp: { tool: notion-query-meeting-notes } }
+    class: read
+    card: "Query Notion meeting notes"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/meeting-notes-query.http
+        expect: read

@@ -1,0 +1,22 @@
+{
+  "description": "Append blocks to Notion block 1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+  "tool": "API-patch-block-children",
+  "arguments": {
+    "block_id": "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+    "children": [
+      {
+        "type": "paragraph",
+        "paragraph": {
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Shipped."
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

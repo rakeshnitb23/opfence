@@ -1,0 +1,8 @@
+# description: Search Notion Custom Agent sessions for weekly report
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":53,"method":"tools/call","params":{"name":"notion-search-sessions","arguments":{"query":"weekly report"}}}

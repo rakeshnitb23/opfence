@@ -1,0 +1,42 @@
+# Linear MCP server: labels
+operations:
+  - id: linear-mcp.issue-label.list
+    match: { mcp: { tool: list_issue_labels } }
+    class: read
+    card: "List Linear issue labels"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/5
+    tests:
+      - fixture: fixtures/issue-label-list.http
+        expect: read
+
+  - id: linear-mcp.issue-label.create
+    match: { mcp: { tool: create_issue_label } }
+    class: write
+    card: "Create Linear issue label {name}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.project-label.list
+    match: { mcp: { tool: list_project_labels } }
+    class: read
+    card: "List Linear project labels"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.

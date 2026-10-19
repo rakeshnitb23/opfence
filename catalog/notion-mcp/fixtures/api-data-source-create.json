@@ -1,0 +1,15 @@
+{
+  "description": "Create a data source in Notion database 9f8e7d6c-5b4a-4321-9876-fedcba012345",
+  "tool": "API-create-a-data-source",
+  "arguments": {
+    "parent": {
+      "type": "database_id",
+      "database_id": "9f8e7d6c-5b4a-4321-9876-fedcba012345"
+    },
+    "properties": {
+      "Name": {
+        "title": {}
+      }
+    }
+  }
+}

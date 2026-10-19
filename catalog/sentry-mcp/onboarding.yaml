@@ -1,0 +1,18 @@
+# Sentry MCP server: agentic onboarding
+operations:
+  - id: sentry-mcp.onboarding.update-status
+    match: { mcp: { tool: onboarding_status_update } }
+    class: write
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Report onboarding progress ({update.stage}) to organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/onboarding-status-update.ts
+    notes: >-
+      Updates the status of an onboarding run started from Sentry's UI; the
+      run token identifies the run.
+    tests:
+      - fixture: fixtures/onboarding-update-status.http
+        expect: write
+        resource: my-org

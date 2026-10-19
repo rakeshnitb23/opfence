@@ -1,0 +1,7 @@
+{
+  "description": "List Notion users",
+  "tool": "API-get-users",
+  "arguments": {
+    "page_size": 50
+  }
+}

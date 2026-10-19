@@ -1,0 +1,105 @@
+# Notion MCP (remote): files, attachments and folders
+operations:
+  - id: notion-mcp.file.download-urls
+    match: { mcp: { tool: notion-get-file-download-urls } }
+    class: read
+    card: "Get download URLs for Notion files"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Returns signed URLs that expire after a few minutes for files the user
+      can already read. Remote server; its source is not published, so the
+      name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/file-download-urls.http
+        expect: read
+
+  - id: notion-mcp.file.create-upload
+    match: { mcp: { tool: notion-create-file-upload } }
+    class: write
+    card: "Create a Notion file upload for {filename}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/file-create-upload.http
+        expect: write
+
+  - id: notion-mcp.attachment.create
+    match: { mcp: { tool: notion-create-attachment } }
+    class: write
+    card: "Create a Notion attachment"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Notion fetches public URLs itself and refuses redirects and private
+      network addresses. Remote server; its source is not published, so the
+      name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/attachment-create.http
+        expect: write
+
+  - id: notion-mcp.attachment.download
+    match: { mcp: { tool: notion-download-attachment } }
+    class: read
+    card: "Download Notion attachment {file_upload_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/attachment-download.http
+        expect: read
+
+  - id: notion-mcp.folder.create
+    match: { mcp: { tool: notion-create-folder } }
+    class: write
+    card: "Create a Notion folder under {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/folder-create.http
+        expect: write
+
+  - id: notion-mcp.folder.update
+    match: { mcp: { tool: notion-update-folder } }
+    class: delete
+    when:
+      - if: { arg: command, matches: "^(?i)add" }
+        class: write
+      - if: { arg: command, matches: "(?i)(remove|delete)" }
+        class: delete
+    resource: { arg: folder_id, kind: folder }
+    card: "Change Notion folder {folder_id} ({command})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Adding files or a subfolder is write; removing files is delete. The docs
+      do not list the exact command values, so a command that does not start
+      with 'add' is delete. Remote server; its source is not published, so the
+      name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/folder-update.http
+        expect: write
+        resource: "folder://6a7b8c9d"
+      - fixture: fixtures/folder-update-remove.http
+        expect: delete
+        resource: "folder://6a7b8c9d"

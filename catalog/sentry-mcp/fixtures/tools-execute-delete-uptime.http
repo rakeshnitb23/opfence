@@ -1,0 +1,8 @@
+# description: Run Sentry tool delete_uptime_monitor in organization my-org
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"execute_sentry_tool","arguments":{"name":"delete_uptime_monitor","arguments":{"organizationSlug":"my-org","projectSlug":"backend","uptimeMonitorId":"12345"}}}}

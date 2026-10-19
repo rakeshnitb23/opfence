@@ -1,0 +1,57 @@
+# Sentry MCP server: traces and profiles
+operations:
+  - id: sentry-mcp.trace.get
+    match: { mcp: { tool: get_trace_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show trace {traceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-trace-details.ts
+    tests:
+      - fixture: fixtures/trace-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.trace.span
+    match: { mcp: { tool: get_span_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show span {spanId} of trace {traceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-span-details.ts
+    tests:
+      - fixture: fixtures/trace-span.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.profile.get
+    match: { mcp: { tool: get_profile } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show the profile of {transactionName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-profile.ts
+    tests:
+      - fixture: fixtures/profile-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.profile.details
+    match: { mcp: { tool: get_profile_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show profile {profileId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-profile-details.ts
+    tests:
+      - fixture: fixtures/profile-details.http
+        expect: read
+        resource: my-org

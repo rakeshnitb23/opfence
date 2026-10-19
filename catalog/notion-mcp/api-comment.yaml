@@ -1,0 +1,29 @@
+# Notion MCP (local): comments
+operations:
+  - id: notion-mcp.api-comment.list
+    match: { mcp: { tool: API-retrieve-a-comment } }
+    class: read
+    resource: { arg: block_id, kind: block }
+    card: "List comments on Notion block {block_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-comment-list.json
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-comment.create
+    match: { mcp: { tool: API-create-a-comment } }
+    class: write
+    card: "Comment on Notion page {parent.page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-comment-create.json
+        expect: write

@@ -1,0 +1,7 @@
+{
+  "description": "Show Notion user d40e767c-d7af-4b18-a86d-55c61f1e39a4",
+  "tool": "API-get-user",
+  "arguments": {
+    "user_id": "d40e767c-d7af-4b18-a86d-55c61f1e39a4"
+  }
+}

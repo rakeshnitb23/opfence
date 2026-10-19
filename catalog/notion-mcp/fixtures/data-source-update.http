@@ -1,0 +1,8 @@
+# description: Change Notion data source collection://3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":27,"method":"tools/call","params":{"name":"notion-update-data-source","arguments":{"data_source_id":"collection://3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f","statements":"ADD COLUMN \"Priority\" SELECT('P0','P1')"}}}

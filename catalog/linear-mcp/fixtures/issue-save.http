@@ -1,0 +1,8 @@
+# description: Create or update Linear issue (Checkout fails on Safari)
+POST /mcp HTTP/1.1
+Host: mcp.linear.app
+Authorization: Bearer opf_linear-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"save_issue","arguments":{"title":"Checkout fails on Safari","team":"ENG","assignee":"me","priority":2,"labels":["Bug"]}}}

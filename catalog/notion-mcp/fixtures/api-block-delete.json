@@ -1,0 +1,7 @@
+{
+  "description": "Move Notion block 7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b to Trash",
+  "tool": "API-delete-a-block",
+  "arguments": {
+    "block_id": "7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b"
+  }
+}

@@ -1,0 +1,122 @@
+# Notion MCP (remote): databases, data sources and views
+operations:
+  - id: notion-mcp.database.create
+    match: { mcp: { tool: notion-create-database } }
+    class: write
+    card: "Create a Notion database under {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: write
+
+  - id: notion-mcp.database.delete
+    match: { mcp: { tool: notion-delete-databases } }
+    class: delete
+    card: "Move Notion databases {database_ids} and their rows to Trash"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Up to 20 databases per call, with all of their rows. Notion moves them
+      to Trash, where they can be restored for 30 days (notion-restore-pages),
+      so delete, not irreversible. Remote server; its source is not published,
+      so the name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: delete
+
+  - id: notion-mcp.data-source.update
+    match: { mcp: { tool: notion-update-data-source } }
+    class: irreversible
+    card: "Change Notion data source {data_source_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Changes a database's properties (columns). Dropping a property drops its
+      value in every row, and the docs say omitted select, multi-select and
+      status options are removed, which clears them from the rows that used
+      them; Opfence cannot tell which a call does, so it takes the worse case.
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/data-source-update.http
+        expect: irreversible
+
+  - id: notion-mcp.data-source.query
+    match: { mcp: { tool: notion-query-data-sources } }
+    class: irreversible
+    when:
+      - if: { arg: mode, in: ["rows", "view"] }
+        class: read
+    card: "Query Notion data source {data_source_url} ({mode})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Reading rows or running a saved view is read. The SQL mode runs SQL the
+      docs do not call read-only for this tool (only
+      notion-query-multiple-data-sources is documented as read-only SQLite),
+      and Postgres classification does not apply to SQLite, so any other mode
+      takes the strictest class. Remote server; its source is not published,
+      so the name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/data-source-query.http
+        expect: read
+      - fixture: fixtures/data-source-query-sql.http
+        expect: irreversible
+
+  - id: notion-mcp.data-source.query-multiple
+    match: { mcp: { tool: notion-query-multiple-data-sources } }
+    class: read
+    card: "Run a read-only SQL query across Notion data sources"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      The docs say it runs one read-only SQLite query across 2 to 100 data
+      sources. Remote server; its source is not published, so the name and
+      behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/data-source-query-multiple.http
+        expect: read
+
+  - id: notion-mcp.view.create
+    match: { mcp: { tool: notion-create-view } }
+    class: write
+    card: "Create a view on Notion database {database_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/view-create.http
+        expect: write
+
+  - id: notion-mcp.view.update
+    match: { mcp: { tool: notion-update-view } }
+    class: write
+    card: "Change Notion view {view_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/view-update.http
+        expect: write

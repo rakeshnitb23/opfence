@@ -1,0 +1,8 @@
+# description: React 👍 to Notion comment c0ffee00-1111-4222-8333-444455556666
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":38,"method":"tools/call","params":{"name":"notion-set-comment-reaction","arguments":{"comment_id":"c0ffee00-1111-4222-8333-444455556666","emoji":"👍","reacted":true}}}

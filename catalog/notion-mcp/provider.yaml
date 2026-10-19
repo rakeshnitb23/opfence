@@ -1,0 +1,28 @@
+provider: notion-mcp
+title: Notion MCP
+docs: https://developers.notion.com/docs/mcp
+hosts: [mcp.notion.com]              # Remote Notion MCP, Streamable HTTP at /mcp (SSE at /sse)
+auth:
+  - header: Authorization            # OAuth access token
+    scheme: Bearer
+detect:
+  env: [NOTION_TOKEN]
+  prefixes: [ntn_]                   # integration tokens, as the local server's README shows them
+mcp:
+  names: [notion, Notion, notionApi, notion-mcp, notion-mcp-server]
+  package: "@notionhq/notion-mcp-server"
+# Two servers share this folder.
+# 1. Remote Notion MCP at mcp.notion.com (the plugin config in
+#    github.com/makenotion/claude-code-notion-plugin names it "notion").
+#    Notion does not publish its source. Tool names (notion-*) and the
+#    arguments the rules use come from developers.notion.com/docs/mcp-supported-tools
+#    (56 tools, read 2026-10-19 through WebFetch, which returns a model's
+#    reading of the page, not its raw text). Argument names in fixtures for
+#    tools whose parameters that page does not name are illustrative, and
+#    those rules match on the tool name alone, never relax on an argument.
+# 2. The open-source local server, npm @notionhq/notion-mcp-server 2.5.2
+#    (github.com/makenotion/notion-mcp-server, the README names it
+#    "notionApi"). It turns every operation in its bundled
+#    scripts/notion-openapi.json into a tool named API-<operationId> (24
+#    tools) and calls api.notion.com itself over stdio, so its rules use .json
+#    tool-call fixtures for the agent hook.

@@ -1,0 +1,103 @@
+# Sentry MCP server: uptime monitors
+operations:
+  - id: sentry-mcp.uptime-monitor.find
+    match: { mcp: { tool: find_uptime_monitors } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List uptime monitors in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-uptime-monitors.ts
+    tests:
+      - fixture: fixtures/uptime-monitor-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.uptime-monitor.get
+    match: { mcp: { tool: get_uptime_monitor_details } }
+    class: read
+    resource: { arg: projectSlug, kind: project }
+    card: "Show uptime monitor {uptimeMonitorId} of project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-uptime-monitor-details.ts
+    tests:
+      - fixture: fixtures/uptime-monitor-get.http
+        expect: read
+        resource: checkout-api
+
+  - id: sentry-mcp.uptime-monitor.create
+    match: { mcp: { tool: create_uptime_monitor } }
+    class: write
+    when:
+      - if: { arg: status, absent: true }
+        class: money
+      - if: { arg: status, equals: "active" }
+        class: money
+    resource: { arg: projectSlug, kind: project }
+    card: "Create uptime monitor {name} for {url} in project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-uptime-monitor.ts
+    notes: >-
+      Active uptime monitors count against the organization's billed uptime
+      quota (the status parameter says 'disabled stops checks and does not
+      count against quota'), so creating an active one, the default, is money;
+      created disabled it is write.
+    tests:
+      - fixture: fixtures/uptime-monitor-create.http
+        expect: money
+        resource: checkout-api
+      - fixture: fixtures/uptime-monitor-create-disabled.http
+        expect: write
+        resource: checkout-api
+
+  - id: sentry-mcp.uptime-monitor.update
+    match: { mcp: { tool: update_uptime_monitor } }
+    class: write
+    when:
+      - if: { arg: status, equals: "active" }
+        class: money
+      - if: { arg: status, equals: "disabled" }
+        class: delete
+    resource: { arg: projectSlug, kind: project }
+    card: "Change uptime monitor {uptimeMonitorId} of project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-uptime-monitor.ts
+    notes: >-
+      Re-enabling (status 'active') makes the monitor count against billed
+      quota again: money. status='disabled' stops a monitor or alert from
+      detecting or notifying, which is turning off a safety net; it can be
+      switched back on, so it is delete rather than irreversible.
+    tests:
+      - fixture: fixtures/uptime-monitor-update.http
+        expect: write
+        resource: checkout-api
+      - fixture: fixtures/uptime-monitor-update-disable.http
+        expect: delete
+        resource: checkout-api
+      - fixture: fixtures/uptime-monitor-update-enable.http
+        expect: money
+        resource: checkout-api
+
+  - id: sentry-mcp.uptime-monitor.delete
+    match: { mcp: { tool: delete_uptime_monitor } }
+    class: irreversible
+    resource: { arg: projectSlug, kind: project }
+    card: "Delete uptime monitor {uptimeMonitorId} of project {projectSlug} and its check history"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/delete-uptime-monitor.ts
+    notes: >-
+      The tool says 'Deletion cannot be undone'; the monitor's check history
+      goes with it.
+    tests:
+      - fixture: fixtures/uptime-monitor-delete.http
+        expect: irreversible
+        resource: checkout-api

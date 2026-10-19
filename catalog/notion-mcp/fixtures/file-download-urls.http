@@ -1,0 +1,8 @@
+# description: Get download URLs for Notion files
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":39,"method":"tools/call","params":{"name":"notion-get-file-download-urls","arguments":{"references":["file://2b3c4d5e"]}}}

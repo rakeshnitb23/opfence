@@ -1,0 +1,87 @@
+# Notion MCP (local): blocks
+operations:
+  - id: notion-mcp.api-block.children
+    match: { mcp: { tool: API-get-block-children } }
+    class: read
+    resource: { arg: block_id, kind: block }
+    card: "List children of Notion block {block_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-block-children.json
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-block.append
+    match: { mcp: { tool: API-patch-block-children } }
+    class: write
+    resource: { arg: block_id, kind: block }
+    card: "Append blocks to Notion block {block_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-block-append.json
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-block.get
+    match: { mcp: { tool: API-retrieve-a-block } }
+    class: read
+    resource: { arg: block_id, kind: block }
+    card: "Show Notion block {block_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-block-get.json
+        expect: read
+        resource: "7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b"
+
+  - id: notion-mcp.api-block.update
+    match: { mcp: { tool: API-update-a-block } }
+    class: write
+    when:
+      - if: { arg: archived, equals: "true" }
+        class: delete
+    resource: { arg: block_id, kind: block }
+    card: "Change Notion block {block_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      archived=true moves the block to Trash: delete.
+    tests:
+      - fixture: fixtures/api-block-update.json
+        expect: write
+        resource: "7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b"
+      - fixture: fixtures/api-block-update-archive.json
+        expect: delete
+        resource: "7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b"
+
+  - id: notion-mcp.api-block.delete
+    match: { mcp: { tool: API-delete-a-block } }
+    class: delete
+    resource: { arg: block_id, kind: block }
+    card: "Move Notion block {block_id} to Trash"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      DELETE /v1/blocks/{block_id} archives the block (or page); it can be
+      restored from Trash for 30 days.
+    tests:
+      - fixture: fixtures/api-block-delete.json
+        expect: delete
+        resource: "7e8f9a0b-1c2d-4e3f-8a9b-0c1d2e3f4a5b"

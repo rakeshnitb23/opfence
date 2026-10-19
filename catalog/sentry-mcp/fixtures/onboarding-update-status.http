@@ -1,0 +1,8 @@
+# description: Report onboarding progress (create_project) to organization my-org
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":80,"method":"tools/call","params":{"name":"onboarding_status_update","arguments":{"organizationSlug":"my-org","runToken":"AB12CD34EF","update":{"stage":"create_project","status":"completed","extra":{"projectSlugs":["checkout-api"]}}}}}

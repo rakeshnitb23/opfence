@@ -1,0 +1,91 @@
+# Notion MCP (remote): workspace, users and tool access
+operations:
+  - id: notion-mcp.workspace.self
+    match: { mcp: { tool: notion-get-self } }
+    class: read
+    card: "Show the connected Notion workspace and user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/workspace-self.http
+        expect: read
+
+  - id: notion-mcp.workspace.tool-access
+    match: { mcp: { tool: notion-get-tool-access } }
+    class: read
+    card: "Show which Notion MCP tools the plan allows"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/workspace-tool-access.http
+        expect: read
+
+  - id: notion-mcp.team.list
+    match: { mcp: { tool: notion-get-teams } }
+    class: read
+    card: "List Notion teamspaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/team-list.http
+        expect: read
+
+  - id: notion-mcp.group.list
+    match: { mcp: { tool: notion-get-groups } }
+    class: read
+    card: "List Notion permission groups"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/group-list.http
+        expect: read
+
+  - id: notion-mcp.user.list
+    match: { mcp: { tool: notion-get-users } }
+    class: read
+    card: "List Notion workspace members and guests"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/user-list.http
+        expect: read
+
+  - id: notion-mcp.async-task.get
+    match: { mcp: { tool: notion-get-async-task } }
+    class: read
+    card: "Check Notion async task {task_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/async-task-get.http
+        expect: read

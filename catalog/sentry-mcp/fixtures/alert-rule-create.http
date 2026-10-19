@@ -1,0 +1,8 @@
+# description: Create alert Backend notifications in organization my-org
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":47,"method":"tools/call","params":{"name":"create_alert_rule","arguments":{"organizationSlug":"my-org","name":"Backend notifications","status":"disabled","detectorIds":[],"actionFilters":[]}}}

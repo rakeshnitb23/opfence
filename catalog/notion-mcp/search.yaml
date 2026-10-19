@@ -1,0 +1,48 @@
+# Notion MCP (remote): search
+operations:
+  - id: notion-mcp.search.query
+    match: { mcp: { tool: notion-search } }
+    class: read
+    card: "Search Notion for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Also searches connected sources the user can read (Slack, Mail,
+      Calendar, Google Drive, Jira). Remote server; its source is not
+      published, so the name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/search-query.http
+        expect: read
+
+  - id: notion-mcp.search.ai
+    match: { mcp: { tool: notion-ai-search } }
+    class: read
+    card: "Search Notion with AI for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Legacy AI search, still callable by name. Remote server; its source is
+      not published, so the name and behaviour come from Notion's tool
+      reference.
+    tests:
+      - fixture: fixtures/search-ai.http
+        expect: read
+
+  - id: notion-mcp.memory.search
+    match: { mcp: { tool: notion-memory-search } }
+    class: read
+    card: "Search saved agent memories for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/memory-search.http
+        expect: read

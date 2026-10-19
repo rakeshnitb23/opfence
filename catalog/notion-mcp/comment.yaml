@@ -1,0 +1,97 @@
+# Notion MCP (remote): comments and discussions
+operations:
+  - id: notion-mcp.comment.list
+    match: { mcp: { tool: notion-get-comments } }
+    class: read
+    resource: { arg: page_id, kind: page }
+    card: "List comments on Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/comment-list.http
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.comment.create
+    match: { mcp: { tool: notion-create-comment } }
+    class: write
+    resource: { arg: page_id, kind: page }
+    card: "Comment on Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/comment-create.http
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.comment.update
+    match: { mcp: { tool: notion-update-comment } }
+    class: write
+    card: "Edit Notion comment {comment_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Only the user's own comments. Remote server; its source is not
+      published, so the name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/comment-update.http
+        expect: write
+
+  - id: notion-mcp.comment.delete
+    match: { mcp: { tool: notion-delete-comment } }
+    class: irreversible
+    card: "Delete Notion comment {comment_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Deletes one of the user's own comments, and its discussion when it is
+      the last comment; comments do not go to Trash. Remote server; its source
+      is not published, so the name and behaviour come from Notion's tool
+      reference.
+    tests:
+      - fixture: fixtures/comment-delete.http
+        expect: irreversible
+
+  - id: notion-mcp.discussion.resolve
+    match: { mcp: { tool: notion-set-discussion-resolved } }
+    class: write
+    card: "Resolve or reopen Notion discussion {discussion_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/discussion-resolve.http
+        expect: write
+
+  - id: notion-mcp.comment.react
+    match: { mcp: { tool: notion-set-comment-reaction } }
+    class: write
+    card: "React {emoji} to Notion comment {comment_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/comment-react.http
+        expect: write

@@ -1,0 +1,8 @@
+# description: Create or update Linear document (Checkout revamp spec)
+POST /mcp HTTP/1.1
+Host: mcp.linear.app
+Authorization: Bearer opf_linear-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"save_document","arguments":{"title":"Checkout revamp spec","project":"Checkout revamp","content":"# Goals\n- One-page checkout"}}}

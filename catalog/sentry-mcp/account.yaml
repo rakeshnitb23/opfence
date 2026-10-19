@@ -1,0 +1,37 @@
+# Sentry MCP server: account and server info
+operations:
+  - id: sentry-mcp.user.whoami
+    match: { mcp: { tool: whoami } }
+    class: read
+    card: "Show the authenticated Sentry user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/whoami.ts
+    tests:
+      - fixture: fixtures/user-whoami.http
+        expect: read
+
+  - id: sentry-mcp.server.info
+    match: { mcp: { tool: get_sentry_mcp_info } }
+    class: read
+    card: "Show Sentry MCP server information"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-sentry-mcp-info.ts
+    tests:
+      - fixture: fixtures/server-info.http
+        expect: read
+
+  - id: sentry-mcp.organization.find
+    match: { mcp: { tool: find_organizations } }
+    class: read
+    card: "List Sentry organizations"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-organizations.ts
+    tests:
+      - fixture: fixtures/organization-find.http
+        expect: read

@@ -1,0 +1,169 @@
+# Notion MCP (remote): Custom Agent sessions
+operations:
+  - id: notion-mcp.agent.search
+    match: { mcp: { tool: notion-search-agents } }
+    class: read
+    card: "Find Notion Custom Agents matching {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-search.http
+        expect: read
+
+  - id: notion-mcp.agent-session.list
+    match: { mcp: { tool: notion-query-sessions } }
+    class: read
+    card: "List Notion Custom Agent sessions"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-list.http
+        expect: read
+
+  - id: notion-mcp.agent-session.search
+    match: { mcp: { tool: notion-search-sessions } }
+    class: read
+    card: "Search Notion Custom Agent sessions for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-search.http
+        expect: read
+
+  - id: notion-mcp.agent-session.spawn
+    match: { mcp: { tool: notion-spawn-session } }
+    class: irreversible
+    card: "Start a Notion Custom Agent session with {agent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Hands a free-form instruction to a Custom Agent that runs in Notion with
+      its own permissions and connectors and can edit or delete content and
+      act in connected apps; the strictest class such an instruction can
+      reach. Runs need Notion AI and may use the workspace's AI allowance.
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-spawn.http
+        expect: irreversible
+
+  - id: notion-mcp.agent-session.send
+    match: { mcp: { tool: notion-send-message-to-session } }
+    class: irreversible
+    resource: { arg: session_url, kind: session }
+    card: "Send a message to Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      A follow-up instruction to a running Custom Agent; see
+      notion-spawn-session. Remote server; its source is not published, so the
+      name and behaviour come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-send.http
+        expect: irreversible
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"
+
+  - id: notion-mcp.agent-session.status
+    match: { mcp: { tool: notion-get-session-status } }
+    class: read
+    resource: { arg: session_url, kind: session }
+    card: "Show the status of Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-status.http
+        expect: read
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"
+
+  - id: notion-mcp.agent-session.wait
+    match: { mcp: { tool: notion-wait-session } }
+    class: read
+    resource: { arg: session_url, kind: session }
+    card: "Wait for Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-wait.http
+        expect: read
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"
+
+  - id: notion-mcp.agent-session.stop
+    match: { mcp: { tool: notion-stop-session } }
+    class: write
+    resource: { arg: session_url, kind: session }
+    card: "Stop Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Stops the current run; what the agent already did stays done. Remote
+      server; its source is not published, so the name and behaviour come from
+      Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-stop.http
+        expect: write
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"
+
+  - id: notion-mcp.agent-session.events
+    match: { mcp: { tool: notion-list-session-events } }
+    class: read
+    resource: { arg: session_url, kind: session }
+    card: "List events of Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-events.http
+        expect: read
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"
+
+  - id: notion-mcp.agent-session.event
+    match: { mcp: { tool: notion-read-session-event } }
+    class: read
+    resource: { arg: session_url, kind: session }
+    card: "Read an event of Notion agent session {session_url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/agent-session-event.http
+        expect: read
+        resource: "https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"

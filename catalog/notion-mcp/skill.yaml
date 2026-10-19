@@ -1,0 +1,79 @@
+# Notion MCP (remote): Notion Skills
+operations:
+  - id: notion-mcp.skill.download
+    match: { mcp: { tool: notion-download-skill } }
+    class: read
+    card: "Download Notion Skill {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/skill-download.http
+        expect: read
+
+  - id: notion-mcp.skill.upload
+    match: { mcp: { tool: notion-upload-skill } }
+    class: write
+    card: "Upload an Agent Skill to Notion page {page_id} ({action})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Imports a Skills directory into a Skills database page; the docs say
+      uploading never runs its instructions or scripts. Remote server; its
+      source is not published, so the name and behaviour come from Notion's
+      tool reference.
+    tests:
+      - fixture: fixtures/skill-upload.http
+        expect: write
+
+  - id: notion-mcp.skill.list-enabled
+    match: { mcp: { tool: notion-get-enabled-skills } }
+    class: read
+    card: "List the Notion Skills enabled for MCP clients"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/skill-list-enabled.http
+        expect: read
+
+  - id: notion-mcp.skill.set-enabled
+    match: { mcp: { tool: notion-update-enabled-skills } }
+    class: write
+    card: "Enable or disable Notion Skills for the current user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Changes only the current user's settings. Remote server; its source is
+      not published, so the name and behaviour come from Notion's tool
+      reference.
+    tests:
+      - fixture: fixtures/skill-set-enabled.http
+        expect: write
+
+  - id: notion-mcp.skill.convert-page
+    match: { mcp: { tool: notion-convert-page-to-skill } }
+    class: write
+    card: "Mark Notion page {url} as a Skill"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://developers.notion.com/docs/mcp-supported-tools
+    notes: >-
+      Remote server; its source is not published, so the name and behaviour
+      come from Notion's tool reference.
+    tests:
+      - fixture: fixtures/skill-convert-page.http
+        expect: write

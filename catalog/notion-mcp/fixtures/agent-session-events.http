@@ -1,0 +1,8 @@
+# description: List events of Notion agent session https://www.notion.so/acme/agents/sessions/5b6c7d8e9f
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":59,"method":"tools/call","params":{"name":"notion-list-session-events","arguments":{"session_url":"https://www.notion.so/acme/agents/sessions/5b6c7d8e9f"}}}

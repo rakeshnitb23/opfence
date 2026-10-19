@@ -1,0 +1,85 @@
+# Sentry MCP server: metric monitors
+operations:
+  - id: sentry-mcp.metric-monitor.find
+    match: { mcp: { tool: find_metric_monitors } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List metric monitors in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-metric-monitors.ts
+    tests:
+      - fixture: fixtures/metric-monitor-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.metric-monitor.get
+    match: { mcp: { tool: get_metric_monitor_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show metric monitor {monitorId} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-metric-monitor-details.ts
+    tests:
+      - fixture: fixtures/metric-monitor-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.metric-monitor.create
+    match: { mcp: { tool: create_metric_monitor } }
+    class: write
+    resource: { arg: projectSlug, kind: project }
+    card: "Create metric monitor {name} in project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-metric-monitor.ts
+    tests:
+      - fixture: fixtures/metric-monitor-create.http
+        expect: write
+        resource: checkout-api
+
+  - id: sentry-mcp.metric-monitor.update
+    match: { mcp: { tool: update_metric_monitor } }
+    class: write
+    when:
+      - if: { arg: status, equals: "disabled" }
+        class: delete
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Change metric monitor {monitorId} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-metric-monitor.ts
+    notes: >-
+      status='disabled' stops a monitor or alert from detecting or notifying,
+      which is turning off a safety net; it can be switched back on, so it is
+      delete rather than irreversible. conditionGroup and workflowIds replace
+      the whole configuration but can be set back.
+    tests:
+      - fixture: fixtures/metric-monitor-update.http
+        expect: write
+        resource: my-org
+      - fixture: fixtures/metric-monitor-update-disable.http
+        expect: delete
+        resource: my-org
+
+  - id: sentry-mcp.metric-monitor.delete
+    match: { mcp: { tool: delete_metric_monitor } }
+    class: irreversible
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Delete metric monitor {monitorId} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/delete-metric-monitor.ts
+    notes: >-
+      Permanent; the tool says deletion also removes an associated legacy
+      metric alert and its incident history.
+    tests:
+      - fixture: fixtures/metric-monitor-delete.http
+        expect: irreversible
+        resource: my-org

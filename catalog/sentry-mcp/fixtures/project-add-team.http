@@ -1,0 +1,8 @@
+# description: Give team contractors access to project checkout-api
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":18,"method":"tools/call","params":{"name":"add_team_to_project","arguments":{"organizationSlug":"my-org","projectSlug":"checkout-api","teamSlug":"contractors"}}}

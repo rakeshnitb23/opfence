@@ -1,0 +1,8 @@
+# description: Show span b9f1c2d3e4a5b6c7 of trace a4d1aae7216b47ff8117cf4e09ce9d0a
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":67,"method":"tools/call","params":{"name":"get_span_details","arguments":{"organizationSlug":"my-org","traceId":"a4d1aae7216b47ff8117cf4e09ce9d0a","spanId":"b9f1c2d3e4a5b6c7"}}}

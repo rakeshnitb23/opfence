@@ -1,0 +1,8 @@
+# description: Update issue BACKEND-1Z43 (status , assignee user:123456)
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":61,"method":"tools/call","params":{"name":"update_issue","arguments":{"organizationSlug":"my-org","issueId":"BACKEND-1Z43","assignedTo":"user:123456"}}}

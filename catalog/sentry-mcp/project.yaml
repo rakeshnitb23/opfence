@@ -1,0 +1,79 @@
+# Sentry MCP server: projects
+operations:
+  - id: sentry-mcp.project.find
+    match: { mcp: { tool: find_projects } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List projects in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-projects.ts
+    tests:
+      - fixture: fixtures/project-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: write
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Create project {name} for team {teamSlug} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-project.ts
+    notes: >-
+      Sentry bills by event volume, not per project, so creating one is write.
+      It also creates a client key and returns only its public DSN (see
+      create_dsn), and can link a repository already connected to the
+      organization.
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+        resource: my-org
+
+  - id: sentry-mcp.project.update
+    match: { mcp: { tool: update_project } }
+    class: write
+    resource: { arg: projectSlug, kind: project }
+    card: "Change project {projectSlug} in organization {organizationSlug} (name {name}, slug {slug})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-project.ts
+    notes: >-
+      Changes name, slug or platform only; a new slug breaks links and CLI
+      config that use the old one.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: checkout-api
+
+  - id: sentry-mcp.project.add-team
+    match: { mcp: { tool: add_team_to_project } }
+    class: access
+    resource: { arg: projectSlug, kind: project }
+    card: "Give team {teamSlug} access to project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/add-team-to-project.ts
+    tests:
+      - fixture: fixtures/project-add-team.http
+        expect: access
+        resource: checkout-api
+
+  - id: sentry-mcp.project.remove-team
+    match: { mcp: { tool: remove_team_from_project } }
+    class: access
+    resource: { arg: projectSlug, kind: project }
+    card: "Remove team {teamSlug}'s access to project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/remove-team-from-project.ts
+    tests:
+      - fixture: fixtures/project-remove-team.http
+        expect: access
+        resource: checkout-api

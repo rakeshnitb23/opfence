@@ -1,0 +1,13 @@
+# Sentry MCP server: resources by URL
+operations:
+  - id: sentry-mcp.resource.get
+    match: { mcp: { tool: get_sentry_resource } }
+    class: read
+    card: "Show Sentry resource {url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-sentry-resource.ts
+    tests:
+      - fixture: fixtures/resource-get.http
+        expect: read
