@@ -1,0 +1,11 @@
+{
+  "description": "Search Notion for Launch plan",
+  "tool": "API-post-search",
+  "arguments": {
+    "query": "Launch plan",
+    "filter": {
+      "property": "object",
+      "value": "page"
+    }
+  }
+}

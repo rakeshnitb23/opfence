@@ -1,0 +1,34 @@
+# Firebase MCP server: App Testing tools (apptesting_ prefix, mcpalpha experiment only)
+operations:
+  - id: firebase-mcp.apptesting.run-test
+    match: { mcp: { tool: apptesting_run_test } }
+    class: write
+    resource: { arg: releaseBinaryFile, kind: binary }
+    card: "Upload {releaseBinaryFile} and start an App Testing agent run"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/apptesting/tests.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Only registered with the mcpalpha experiment (firebase
+      experiments:enable mcpalpha). Uploads the APK to App Distribution and
+      starts AI-driven test runs on test devices.
+    tests:
+      - fixture: fixtures/apptesting-run-test.json
+        expect: write
+        resource: "app/build/outputs/apk/release/app-release.apk"
+
+  - id: firebase-mcp.apptesting.check-status
+    match: { mcp: { tool: apptesting_check_status } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/apptesting/tests.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Only registered with the mcpalpha experiment.
+    tests:
+      - fixture: fixtures/apptesting-check-status.json
+        expect: read

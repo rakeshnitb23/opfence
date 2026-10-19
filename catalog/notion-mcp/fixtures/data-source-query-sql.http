@@ -1,0 +1,8 @@
+# description: Query Notion data source collection://3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f (sql)
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":29,"method":"tools/call","params":{"name":"notion-query-data-sources","arguments":{"mode":"sql","data_source_url":"collection://3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f","query":"SELECT \"Name\" FROM t WHERE \"Status\" = 'Open'"}}}

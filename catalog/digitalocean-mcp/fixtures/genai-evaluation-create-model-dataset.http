@@ -1,0 +1,8 @@
+# description: Upload model evaluation dataset support-prompts
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":203,"method":"tools/call","params":{"name":"genai-model-eval-create-dataset","arguments":{"name":"support-prompts","file_name":"prompts.jsonl","file_content":"{\"input\":\"Where is my order?\"}"}}}

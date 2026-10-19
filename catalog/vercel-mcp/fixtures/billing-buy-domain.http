@@ -1,0 +1,8 @@
+# description: Buy domain shop-example.com for 1 year(s) at 20 USD
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"buy_domain","arguments":{"teamId":"team_acme","years":1,"expectedPrice":20,"confirm":true,"idempotencyKey":"quote_EXAMPLE","autoRenew":true,"contact":{"firstName":"Ada","lastName":"Lovelace","email":"ada@example.com","phone":"+14155550123","address1":"1 Main St","city":"San Francisco","state":"CA","zip":"94105","country":"US"},"domain":"shop-example.com"}}}

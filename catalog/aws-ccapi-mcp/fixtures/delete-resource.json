@@ -1,0 +1,12 @@
+{
+  "description": "Delete DynamoDB table orders",
+  "tool": "delete_resource",
+  "arguments": {
+    "resource_type": "AWS::DynamoDB::Table",
+    "identifier": "orders",
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE",
+    "confirmed": true,
+    "explained_token": "explained-token-EXAMPLE"
+  }
+}

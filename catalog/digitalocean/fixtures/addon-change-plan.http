@@ -1,0 +1,7 @@
+# description: Move add-on resource c0ffee00-1234-4abc-8def-0123456789ab to plan basic_plan
+PATCH /v2/add-ons/saas/c0ffee00-1234-4abc-8def-0123456789ab/plan HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"plan_slug": "basic_plan"}

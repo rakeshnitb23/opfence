@@ -1,0 +1,59 @@
+# GitHub MCP server: project
+operations:
+  - id: github-mcp.project.list
+    match: { mcp: { tool: projects_list } }
+    class: read
+    resource: { arg: owner, kind: owner }
+    card: "List {method} of {owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/projects.go
+    notes: >-
+      Toolset projects (not enabled by default).
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.project.get
+    match: { mcp: { tool: projects_get } }
+    class: read
+    resource: { arg: owner, kind: owner }
+    card: "Show {method} of project {project_number}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/projects.go
+    notes: >-
+      Toolset projects (not enabled by default).
+    tests:
+      - fixture: fixtures/project-get.http
+        expect: read
+        resource: acme
+
+  - id: github-mcp.project.write
+    match: { mcp: { tool: projects_write } }
+    class: write
+    when:
+      - if: { arg: method, in: [delete_project_item, delete_project_view] }
+        class: delete
+    resource: { arg: owner, kind: owner }
+    card: "Change project {project_number} of {owner} ({method})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/projects.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/projects_batch_mutation.go
+    notes: >-
+      Toolset projects (not enabled by default). delete_project_item removes an item and its
+      field values from the project (the issue stays); delete_project_view removes a view.
+      Both are delete, as catalog/github classes deleting an issue comment; no method deletes
+      a project.
+    tests:
+      - fixture: fixtures/project-write.http
+        expect: write
+        resource: acme
+      - fixture: fixtures/project-write-delete-item.http
+        expect: delete
+        resource: acme

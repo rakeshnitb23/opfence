@@ -1,0 +1,23 @@
+# DigitalOcean REST API: organization
+operations:
+  - id: digitalocean.organization.create-team
+    match: { rest: { method: POST, path: /v2/organizations/team } }
+    class: write
+    when:
+      - if: { arg: body.invitations, present: true }
+        class: access
+    resource: { arg: body.name, kind: organization }
+    card: "Create team {body.name} in the organization"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/organizations/organizations_create_team.yml
+    notes: >-
+      invitations add members with roles.
+    tests:
+      - fixture: fixtures/organization-create-team.http
+        expect: write
+        resource: "Data Platform"
+      - fixture: fixtures/organization-create-team-invite.http
+        expect: access
+        resource: "Data Platform"

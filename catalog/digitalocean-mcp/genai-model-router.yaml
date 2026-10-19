@@ -1,0 +1,83 @@
+# DigitalOcean MCP server: genai-model-router
+operations:
+  - id: digitalocean-mcp.genai-model-router.list
+    match: { mcp: { tool: genai-inference-router-list } }
+    class: read
+    card: "List model routers"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    tests:
+      - fixture: fixtures/genai-model-router-list.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-model-router.get
+    match: { mcp: { tool: genai-inference-router-get } }
+    class: read
+    resource: { arg: UUID, kind: genai-model-router }
+    card: "Show model router {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    tests:
+      - fixture: fixtures/genai-model-router-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-model-router.list-task-presets
+    match: { mcp: { tool: genai-inference-router-task-presets } }
+    class: read
+    card: "List model router task presets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    tests:
+      - fixture: fixtures/genai-model-router-list-task-presets.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-model-router.create
+    match: { mcp: { tool: genai-inference-router-create } }
+    class: write
+    resource: { arg: Name, kind: genai-model-router }
+    card: "Create model router {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    tests:
+      - fixture: fixtures/genai-model-router-create.http
+        expect: write
+        resource: support-router
+
+  - id: digitalocean-mcp.genai-model-router.update
+    match: { mcp: { tool: genai-inference-router-update } }
+    class: write
+    resource: { arg: UUID, kind: genai-model-router }
+    card: "Change model router {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    tests:
+      - fixture: fixtures/genai-model-router-update.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-model-router.delete
+    match: { mcp: { tool: genai-inference-router-delete } }
+    class: delete
+    resource: { arg: UUID, kind: genai-model-router }
+    card: "Delete model router {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-inferencerouter/router_tools.go
+    notes: >-
+      A routing configuration; callers that use it fail until it is recreated.
+    tests:
+      - fixture: fixtures/genai-model-router-delete.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

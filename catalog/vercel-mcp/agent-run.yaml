@@ -1,0 +1,58 @@
+# Vercel MCP server (mcp.vercel.com): agent-run
+operations:
+  - id: vercel-mcp.agent-run.list-projects
+    match: { mcp: { tool: list_agent_run_projects } }
+    class: read
+    card: "List projects with Agent Runs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/agent-runs
+    tests:
+      - fixture: fixtures/agent-run-list-projects.http
+        expect: read
+
+  - id: vercel-mcp.agent-run.list
+    match: { mcp: { tool: list_agent_runs } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List Agent Runs of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/agent-runs
+    tests:
+      - fixture: fixtures/agent-run-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.agent-run.get
+    match: { mcp: { tool: get_agent_run } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show Agent Run {runId} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/agent-runs
+    tests:
+      - fixture: fixtures/agent-run-get.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.agent-run.get-trace
+    match: { mcp: { tool: get_agent_run_trace } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show the trace of Agent Run {runId} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/agent-runs
+    notes: >-
+      Traces can hold the messages and tool inputs an agent saw; Vercel records
+      them and the tool returns them as recorded, so it is a read like any log.
+    tests:
+      - fixture: fixtures/agent-run-get-trace.http
+        expect: read
+        resource: prj_shopweb

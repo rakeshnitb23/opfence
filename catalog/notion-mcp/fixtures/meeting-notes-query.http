@@ -1,0 +1,8 @@
+# description: Query Notion meeting notes
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":24,"method":"tools/call","params":{"name":"notion-query-meeting-notes","arguments":{"filter":{"title":"Weekly sync"}}}}

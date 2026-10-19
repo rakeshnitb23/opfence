@@ -1,0 +1,8 @@
+# description: Move Notion pages ["1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"] to {"page_id": "0f1e2d3c-4b5a-4968-8776-655443322110"}
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":20,"method":"tools/call","params":{"name":"notion-move-pages","arguments":{"page_or_database_ids":["1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"],"new_parent":{"page_id":"0f1e2d3c-4b5a-4968-8776-655443322110"}}}}

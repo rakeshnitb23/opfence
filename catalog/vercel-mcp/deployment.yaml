@@ -1,0 +1,252 @@
+# Vercel MCP server (mcp.vercel.com): deployment
+operations:
+  - id: vercel-mcp.deployment.list
+    match: { mcp: { tool: list_deployments } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List deployments of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.deployment.get
+    match: { mcp: { tool: get_deployment } }
+    class: read
+    resource: { arg: idOrUrl, kind: deployment }
+    card: "Show deployment {idOrUrl}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-get.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.create
+    match: { mcp: { tool: create_deployment } }
+    class: write
+    resource: { arg: requestBody.project, kind: project }
+    card: "Create a {requestBody.target} deployment of project {requestBody.project}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      A production deployment is a write like the REST rule
+      vercel.deployment.create: the previous production deployment stays and can
+      be promoted back.
+    tests:
+      - fixture: fixtures/deployment-create.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.deployment.deploy-inline
+    match: { mcp: { tool: deploy_to_vercel } }
+    class: write
+    resource: { arg: name, kind: project }
+    card: "Deploy inline files to {target} of project {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      Creates the project if it does not exist and deploys the files sent in the
+      call.
+    tests:
+      - fixture: fixtures/deployment-deploy-inline.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel-mcp.deployment.cancel
+    match: { mcp: { tool: cancel_deployment } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Cancel deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      Stops a build in progress; the commit can be deployed again.
+    tests:
+      - fixture: fixtures/deployment-cancel.http
+        expect: write
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.share-link
+    match: { mcp: { tool: get_access_to_vercel_url } }
+    class: access
+    resource: { arg: url, kind: url }
+    card: "Create a shareable link that bypasses protection for {url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      The link lets anyone who has it open a deployment that Deployment
+      Protection otherwise hides, so it is access.
+    tests:
+      - fixture: fixtures/deployment-share-link.http
+        expect: access
+        resource: https://shop-web-git-main-acme.vercel.app
+
+  - id: vercel-mcp.deployment.fetch-url
+    match: { mcp: { tool: web_fetch_vercel_url } }
+    class: read
+    resource: { arg: url, kind: url }
+    card: "Fetch {url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      Fetches a page of the user's own deployment with their access; Vercel
+      documents it as a fetch, so it is a read.
+    tests:
+      - fixture: fixtures/deployment-fetch-url.http
+        expect: read
+        resource: https://shop-web.vercel.app/api/status
+
+  - id: vercel-mcp.deployment.build-logs
+    match: { mcp: { tool: get_deployment_build_logs } }
+    class: read
+    resource: { arg: idOrUrl, kind: deployment }
+    card: "Read build logs of deployment {idOrUrl}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-build-logs.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.events
+    match: { mcp: { tool: list_deployment_events } }
+    class: read
+    resource: { arg: idOrUrl, kind: deployment }
+    card: "Read events of deployment {idOrUrl}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-events.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.feature-flags
+    match: { mcp: { tool: get_deployment_feature_flags } }
+    class: read
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Show feature flags of deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-feature-flags.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.list-files
+    match: { mcp: { tool: list_deployment_files } }
+    class: read
+    resource: { arg: id, kind: deployment }
+    card: "List files of deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-list-files.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.file-contents
+    match: { mcp: { tool: get_deployment_file_contents } }
+    class: read
+    resource: { arg: id, kind: deployment }
+    card: "Read file {fileId} of deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-file-contents.http
+        expect: read
+        resource: dpl_7Hq2shopweb
+
+  - id: vercel-mcp.deployment.upload-file
+    match: { mcp: { tool: upload_file } }
+    class: write
+    card: "Upload a deployment file ({xVercelDigest})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-upload-file.http
+        expect: write
+
+  - id: vercel-mcp.deployment.git-context
+    match: { mcp: { tool: get_git_deployment_context } }
+    class: read
+    card: "List teams, linked Git projects and Cursor Origin workspaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-git-context.http
+        expect: read
+
+  - id: vercel-mcp.deployment.import-design
+    match: { mcp: { tool: import-claude-design-from-url } }
+    class: write
+    resource: { arg: url, kind: url }
+    card: "Import a Claude Design from {url} and deploy it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    notes: >-
+      Creates or updates a Vercel project and deploys the bundle.
+    tests:
+      - fixture: fixtures/deployment-import-design.http
+        expect: write
+        resource: https://claudeusercontent.com/example/design.html
+
+  - id: vercel-mcp.deployment.open-card
+    match: { mcp: { tool: open_deployments } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show deployments of project {projectId} in a card"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-open-card.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.deployment.card-build-logs
+    match: { mcp: { tool: ui_get_build_log_excerpt } }
+    class: read
+    resource: { arg: idOrUrl, kind: deployment }
+    card: "Read recent build log lines of deployment {idOrUrl}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/deployments
+    tests:
+      - fixture: fixtures/deployment-card-build-logs.http
+        expect: read
+        resource: dpl_7Hq2shopweb

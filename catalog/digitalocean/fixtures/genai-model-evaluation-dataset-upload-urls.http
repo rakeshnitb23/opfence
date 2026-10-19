@@ -1,0 +1,7 @@
+# description: Get upload URLs for model evaluation datasets
+POST /v2/gen-ai/model_evaluation/datasets/file_upload_presigned_urls HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{}

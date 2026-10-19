@@ -1,0 +1,8 @@
+{
+  "description": "Scan the stored template with Checkov",
+  "tool": "run_checkov",
+  "arguments": {
+    "explained_token": "explained-token-EXAMPLE",
+    "framework": "cloudformation"
+  }
+}

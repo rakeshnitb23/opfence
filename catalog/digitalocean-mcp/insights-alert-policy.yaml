@@ -1,0 +1,93 @@
+# DigitalOcean MCP server: insights-alert-policy
+operations:
+  - id: digitalocean-mcp.insights-alert-policy.list
+    match: { mcp: { tool: alert-policy-list } }
+    class: credential
+    card: "List legacy alert policies with their Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_policy_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/insights-alert-policy-list.http
+        expect: credential
+
+  - id: digitalocean-mcp.insights-alert-policy.get
+    match: { mcp: { tool: alert-policy-get } }
+    class: credential
+    resource: { arg: UUID, kind: insights-alert-policy }
+    card: "Show legacy alert policy {UUID} with its Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_policy_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/insights-alert-policy-get.http
+        expect: credential
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-alert-policy.create
+    match: { mcp: { tool: alert-policy-create } }
+    class: write
+    when:
+      - if: { arg: Alerts.Slack.URL, present: true }
+        class: credential
+    resource: { arg: Description, kind: insights-alert-policy }
+    card: "Create legacy alert policy {Description}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_policy_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/insights-alert-policy-create.http
+        expect: write
+        resource: "CPU over 80%"
+      - fixture: fixtures/insights-alert-policy-create-slack.http
+        expect: credential
+        resource: "CPU over 80%"
+
+  - id: digitalocean-mcp.insights-alert-policy.update
+    match: { mcp: { tool: alert-policy-update } }
+    class: write
+    when:
+      - if: { arg: Alerts.Slack.URL, present: true }
+        class: credential
+    resource: { arg: UUID, kind: insights-alert-policy }
+    card: "Change legacy alert policy {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_policy_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/insights-alert-policy-update.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+      - fixture: fixtures/insights-alert-policy-update-slack.http
+        expect: credential
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-alert-policy.delete
+    match: { mcp: { tool: alert-policy-delete } }
+    class: delete
+    resource: { arg: UUID, kind: insights-alert-policy }
+    card: "Delete legacy alert policy {UUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_policy_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-policy-delete.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

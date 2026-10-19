@@ -1,0 +1,105 @@
+# DigitalOcean REST API: dedicated-inference
+operations:
+  - id: digitalocean.dedicated-inference.create
+    match: { rest: { method: POST, path: /v2/dedicated-inferences } }
+    class: credential
+    when:
+      - if: { arg: body.spec, present: true }
+        class: money
+      - if: { arg: body.access_tokens.hugging_face_token, present: true }
+        class: credential
+      - if: { arg: body.spec.enable_public_endpoint, equals: "true" }
+        class: access
+      - if: { arg: body.spec, present: true }
+        class: credential
+    resource: { arg: body.spec.name, kind: dedicated-inference }
+    card: "Create Dedicated Inference {body.spec.name} on GPUs in {body.spec.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/dedicated_inferences/dedicated_inferences_create.yml
+    notes: >-
+      Billed GPUs, and the response carries the first access token (returned
+      only on create), so it is both money and credential. A public endpoint
+      is reachable from the internet; hugging_face_token stores a secret.
+    tests:
+      - fixture: fixtures/dedicated-inference-create.http
+        expect: credential
+        resource: llama-prod
+      - fixture: fixtures/dedicated-inference-create-public.http
+        expect: credential
+        resource: llama-prod
+      - fixture: fixtures/dedicated-inference-create-hf-token.http
+        expect: credential
+        resource: llama-prod
+
+  - id: digitalocean.dedicated-inference.update
+    match: { rest: { method: PATCH, path: "/v2/dedicated-inferences/{dedicated_inference_id}" } }
+    class: money
+    when:
+      - if: { arg: body.spec, present: true }
+        class: money
+      - if: { arg: body.access_tokens.hugging_face_token, present: true }
+        class: credential
+      - if: { arg: body.spec.enable_public_endpoint, equals: "true" }
+        class: access
+    resource: { arg: dedicated_inference_id, kind: dedicated-inference }
+    card: "Change Dedicated Inference {dedicated_inference_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/dedicated_inferences/dedicated_inferences_update.yml
+    tests:
+      - fixture: fixtures/dedicated-inference-update.http
+        expect: money
+        resource: a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+      - fixture: fixtures/dedicated-inference-update-public.http
+        expect: money
+        resource: a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+
+  - id: digitalocean.dedicated-inference.delete
+    match: { rest: { method: DELETE, path: "/v2/dedicated-inferences/{dedicated_inference_id}" } }
+    class: delete
+    resource: { arg: dedicated_inference_id, kind: dedicated-inference }
+    card: "Delete Dedicated Inference {dedicated_inference_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/dedicated_inferences/dedicated_inferences_delete.yml
+    notes: >-
+      A model deployment; it can be recreated from the model source, but its
+      access tokens stop working.
+    tests:
+      - fixture: fixtures/dedicated-inference-delete.http
+        expect: delete
+        resource: a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+
+  - id: digitalocean.dedicated-inference.create-token
+    match: { rest: { method: POST, path: "/v2/dedicated-inferences/{dedicated_inference_id}/tokens" } }
+    class: credential
+    resource: { arg: dedicated_inference_id, kind: dedicated-inference }
+    card: "Create access token {body.name} for Dedicated Inference {dedicated_inference_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/dedicated_inferences/dedicated_inferences_tokens_create.yml
+    notes: >-
+      The token value is returned once.
+    tests:
+      - fixture: fixtures/dedicated-inference-create-token.http
+        expect: credential
+        resource: a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b
+
+  - id: digitalocean.dedicated-inference.revoke-token
+    match: { rest: { method: DELETE, path: "/v2/dedicated-inferences/{dedicated_inference_id}/tokens/{token_id}" } }
+    class: access
+    resource: { arg: dedicated_inference_id, kind: dedicated-inference }
+    card: "Revoke token {token_id} of Dedicated Inference {dedicated_inference_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/dedicated_inferences/dedicated_inferences_tokens_delete.yml
+    tests:
+      - fixture: fixtures/dedicated-inference-revoke-token.http
+        expect: access
+        resource: a2b3c4d5-6e7f-4801-9a2b-3c4d5e6f7a8b

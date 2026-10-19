@@ -1,0 +1,8 @@
+# description: Run scenario set d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a against agent b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":228,"method":"tools/call","params":{"name":"genai-simulation-create-run","arguments":{"scenario_set_uuid":"d4c3b2a1-f6e5-4d7c-9b8a-1f0e2d3c4b5a","agent_uuid":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b","name":"refund-sim"}}}

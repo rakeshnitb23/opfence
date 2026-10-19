@@ -1,0 +1,89 @@
+# GitHub MCP server: discussion
+operations:
+  - id: github-mcp.discussion.list
+    match: { mcp: { tool: list_discussions } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List discussions of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/discussions.go
+    notes: >-
+      Toolset discussions (not enabled by default).
+    tests:
+      - fixture: fixtures/discussion-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.discussion.get
+    match: { mcp: { tool: get_discussion } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read discussion {discussionNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/discussions.go
+    notes: >-
+      Toolset discussions (not enabled by default).
+    tests:
+      - fixture: fixtures/discussion-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.discussion.list-comments
+    match: { mcp: { tool: get_discussion_comments } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read comments on discussion {discussionNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/discussions.go
+    notes: >-
+      Toolset discussions (not enabled by default).
+    tests:
+      - fixture: fixtures/discussion-list-comments.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.discussion.list-categories
+    match: { mcp: { tool: list_discussion_categories } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List discussion categories of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/discussions.go
+    notes: >-
+      Toolset discussions (not enabled by default).
+    tests:
+      - fixture: fixtures/discussion-list-categories.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.discussion-comment.write
+    match: { mcp: { tool: discussion_comment_write } }
+    class: write
+    when:
+      - if: { arg: method, equals: "delete" }
+        class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Change discussion comments in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/discussions.go
+    notes: >-
+      Toolset discussions (not enabled by default). method add, reply, update, delete,
+      mark_answer or unmark_answer; delete removes a comment (delete, as catalog/github
+      classes deleting an issue comment).
+    tests:
+      - fixture: fixtures/discussion-comment-write.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/discussion-comment-write-delete.http
+        expect: delete
+        resource: shop

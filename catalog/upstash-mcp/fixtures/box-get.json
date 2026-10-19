@@ -1,0 +1,8 @@
+{
+  "description": "Get an Upstash Box",
+  "tool": "box_manage",
+  "arguments": {
+    "action": "get",
+    "box_id": "box_7Kp2Qx9Lm4"
+  }
+}

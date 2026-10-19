@@ -1,0 +1,7 @@
+{
+  "description": "Read the policies of role shop-prod-node-role",
+  "tool": "get_policies_for_role",
+  "arguments": {
+    "role_name": "shop-prod-node-role"
+  }
+}

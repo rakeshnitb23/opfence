@@ -1,0 +1,8 @@
+# description: Create metric monitor High error count in project checkout-api
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":40,"method":"tools/call","params":{"name":"create_metric_monitor","arguments":{"organizationSlug":"my-org","projectSlug":"checkout-api","name":"High error count","query":{"dataset":"events","query":"level:error","aggregate":"count()","eventTypes":["error"],"timeWindowSeconds":300},"config":{"detectionType":"static"},"conditionGroup":{"conditions":[{"type":"gt","comparison":100,"conditionResult":75}]}}}}

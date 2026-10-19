@@ -1,0 +1,25 @@
+# Sentry MCP server: documentation
+operations:
+  - id: sentry-mcp.docs.search
+    match: { mcp: { tool: search_docs } }
+    class: read
+    card: "Search Sentry docs for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-docs.ts
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read
+
+  - id: sentry-mcp.docs.get
+    match: { mcp: { tool: get_doc } }
+    class: read
+    card: "Read Sentry doc {path}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-doc.ts
+    tests:
+      - fixture: fixtures/docs-get.http
+        expect: read

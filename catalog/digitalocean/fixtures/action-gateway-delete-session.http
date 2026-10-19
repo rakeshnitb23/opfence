@@ -1,0 +1,5 @@
+# description: End tool session do:actiongateway:session:8f2c1d
+DELETE /v2/action-gateway/sessions/do:actiongateway:session:8f2c1d HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

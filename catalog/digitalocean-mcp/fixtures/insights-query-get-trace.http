@@ -1,0 +1,8 @@
+# description: Show trace 4bf92f3577b34da6a3ce929d0e0e4736 in nyc3
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":267,"method":"tools/call","params":{"name":"insights-trace-get","arguments":{"Region":"nyc3","TraceID":"4bf92f3577b34da6a3ce929d0e0e4736"}}}

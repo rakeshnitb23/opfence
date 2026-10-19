@@ -1,0 +1,8 @@
+{
+  "description": "Delete a QStash schedule",
+  "tool": "qstash_schedules_manage",
+  "arguments": {
+    "operation": "delete",
+    "scheduleId": "scd_6Kp3Nq8Rt2"
+  }
+}

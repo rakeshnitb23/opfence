@@ -1,0 +1,8 @@
+{
+  "description": "Create table bucket analytics",
+  "tool": "create_table_bucket",
+  "arguments": {
+    "name": "analytics",
+    "region_name": "us-west-2"
+  }
+}

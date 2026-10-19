@@ -1,0 +1,7 @@
+# description: Cancel garbage collection eff0feee-49c7-4e8f-ba5c-a320c109c8a8 in shop-registry
+PUT /v2/registries/shop-registry/garbage-collection/eff0feee-49c7-4e8f-ba5c-a320c109c8a8 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"cancel": true}

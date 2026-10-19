@@ -1,0 +1,8 @@
+# description: Create legacy alert policy CPU over 80%
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":245,"method":"tools/call","params":{"name":"alert-policy-create","arguments":{"Type":"v1/insights/droplet/cpu","Description":"CPU over 80%","Compare":"GreaterThan","Value":80,"Window":"5m","Entities":["3164444"],"Alerts":{"Slack":[{"Channel":"#ops","URL":"https://hooks.slack.com/services/EXAMPLE"}]}}}}

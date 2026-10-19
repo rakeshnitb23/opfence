@@ -1,0 +1,7 @@
+# description: Change evaluation test case 2559e75b-b7d7-11ef-bf8f-4e013e2ddde4
+PUT /v2/gen-ai/evaluation_test_cases/2559e75b-b7d7-11ef-bf8f-4e013e2ddde4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"dataset_uuid": "123e4567-e89b-12d3-a456-426614174000", "description": "example string", "name": "example name", "test_case_uuid": "123e4567-e89b-12d3-a456-426614174000"}

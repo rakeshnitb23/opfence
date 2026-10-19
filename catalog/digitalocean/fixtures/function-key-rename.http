@@ -1,0 +1,7 @@
+# description: Rename access key fnkey-EXAMPLE-01 to updated-key-name
+PUT /v2/functions/namespaces/fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f/keys/fnkey-EXAMPLE-01 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "updated-key-name"}

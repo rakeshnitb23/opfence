@@ -1,0 +1,9 @@
+{
+  "description": "List deployments of service api",
+  "tool": "list-deployments",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "limit": 20,
+    "service": "api"
+  }
+}

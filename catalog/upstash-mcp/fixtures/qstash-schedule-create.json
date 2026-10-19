@@ -1,0 +1,9 @@
+{
+  "description": "Schedule a nightly cleanup call",
+  "tool": "qstash_schedules_manage",
+  "arguments": {
+    "operation": "create",
+    "destination": "https://api.example.com/cron/cleanup",
+    "cron": "0 3 * * *"
+  }
+}

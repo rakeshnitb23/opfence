@@ -1,0 +1,8 @@
+# description: Show job job_1 of CI invocation inv_123
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_vercel_ci_job_definition","arguments":{"teamId":"team_acme","attempt":"1","jobDefinitionId":"job_1","invocationId":"inv_123"}}}

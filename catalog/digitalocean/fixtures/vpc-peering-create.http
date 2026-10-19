@@ -1,0 +1,7 @@
+# description: Peer VPCs vpc_ids as nyc1-blr1-peering
+POST /v2/vpc_peerings HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "nyc1-blr1-peering", "vpc_ids": ["c140286f-e6ce-4131-8b7b-df4590ce8d6a", "994a2735-dc84-11e8-80bc-3cfdfea9fba1"]}

@@ -1,0 +1,9 @@
+{
+  "description": "Send a test notification to one device",
+  "tool": "messaging_send_message",
+  "arguments": {
+    "registration_token": "opf_fcm_EXAMPLE_registration_token",
+    "title": "Test",
+    "body": "Hello"
+  }
+}

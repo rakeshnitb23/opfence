@@ -1,0 +1,36 @@
+{
+  "agents": [
+    {
+      "uuid": "1b418231-b7d6-11ef-bf8f-4e013e2ddde4",
+      "name": "support-bot",
+      "region": "tor1",
+      "instruction": "Answer billing questions.",
+      "url": "https://example-agent.ondigitalocean.app",
+      "tags": [
+        "support"
+      ],
+      "model": {
+        "uuid": "95ea6652-75ed-11ef-bf8f-4e013e2ddde4",
+        "name": "Llama 3.3 Instruct (70B)"
+      },
+      "mcp_servers": [
+        {
+          "server_label": "jira",
+          "server_url": "https://mcp.example.com/mcp",
+          "authorization": "Bearer opf_digitalocean_EXAMPLE",
+          "headers": {
+            "X-Api-Key": "opf_digitalocean_EXAMPLE"
+          }
+        }
+      ]
+    }
+  ],
+  "links": {
+    "pages": {}
+  },
+  "meta": {
+    "total": 1,
+    "page": 1,
+    "pages": 1
+  }
+}

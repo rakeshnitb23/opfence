@@ -34,6 +34,7 @@ operations:
 
   - id: planetscale.service-token.access-grant
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/service-tokens/{id}/access" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: access
     resource: { arg: organization, kind: organization }
     card: "Grant service token {id} access {body.access} on {body.database}"
@@ -51,6 +52,7 @@ operations:
 
   - id: planetscale.service-token.access-revoke
     match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/service-tokens/{id}/access" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: access
     resource: { arg: organization, kind: organization }
     card: "Revoke access {body.access} of service token {id}"

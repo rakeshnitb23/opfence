@@ -1,0 +1,32 @@
+# Railway MCP server: docs
+operations:
+  - id: railway-mcp.docs.search
+    match: { mcp: { tool: docs_search } }
+    class: read
+    card: "Search Railway docs for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/docs.rs
+    tests:
+      - fixture: fixtures/docs-search.json
+        expect: read
+
+  - id: railway-mcp.docs.fetch
+    match: { mcp: { tool: docs_fetch } }
+    class: read
+    card: "Read Railway docs page {url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/docs.rs
+    notes: >-
+      Local server only (railway mcp local). Only fetches docs.railway.com pages
+      (from the railwayapp/docs repository).
+    tests:
+      - fixture: fixtures/docs-fetch.json
+        expect: read

@@ -1,0 +1,7 @@
+# description: Recycle nodes nodes of node pool cdda885e-7663-40c8-bc74-3a036c66545d
+POST /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/node_pools/cdda885e-7663-40c8-bc74-3a036c66545d/recycle HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"nodes": ["d8db5e1a-6103-43b5-a7b3-8a948210a9fc"]}

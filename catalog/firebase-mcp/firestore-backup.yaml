@@ -1,0 +1,162 @@
+# Firebase MCP server: Firestore backup and backup schedule tools (remote, proxied)
+operations:
+  - id: firebase-mcp.firestore-backup.get
+    match: { mcp: { tool: firestore_get_backup } }
+    class: read
+    resource: { arg: name, kind: backup }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-backup-get.json
+        expect: read
+        resource: "projects/shop-prod/locations/nam5/backups/7a1f9c2e-0b3d-4e5f-8a9b-0c1d2e3f4a5b"
+
+  - id: firebase-mcp.firestore-backup.list
+    match: { mcp: { tool: firestore_list_backups } }
+    class: read
+    resource: { arg: parent, kind: location }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-backup-list.json
+        expect: read
+        resource: "projects/shop-prod/locations/-"
+
+  - id: firebase-mcp.firestore-backup.delete
+    match: { mcp: { tool: firestore_delete_backup } }
+    class: irreversible
+    resource: { arg: name, kind: backup }
+    card: "Delete Firestore backup {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-backup-delete.json
+        expect: irreversible
+        resource: "projects/shop-prod/locations/nam5/backups/7a1f9c2e-0b3d-4e5f-8a9b-0c1d2e3f4a5b"
+
+  - id: firebase-mcp.firestore-backup-schedule.create
+    match: { mcp: { tool: firestore_create_backup_schedule } }
+    class: money
+    resource: { arg: parent, kind: database }
+    card: "Schedule backups of Firestore database {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Scheduled backups are billed for the storage they
+      keep.
+    tests:
+      - fixture: fixtures/firestore-backup-schedule-create.json
+        expect: money
+        resource: "projects/shop-prod/databases/(default)"
+
+  - id: firebase-mcp.firestore-backup-schedule.get
+    match: { mcp: { tool: firestore_get_backup_schedule } }
+    class: read
+    resource: { arg: name, kind: backup-schedule }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-backup-schedule-get.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/backupSchedules/3b8d2f1a-9c4e-4d7a-b6e5-1f2a3b4c5d6e"
+
+  - id: firebase-mcp.firestore-backup-schedule.list
+    match: { mcp: { tool: firestore_list_backup_schedules } }
+    class: read
+    resource: { arg: parent, kind: database }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-backup-schedule-list.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)"
+
+  - id: firebase-mcp.firestore-backup-schedule.update
+    match: { mcp: { tool: firestore_update_backup_schedule } }
+    class: write
+    resource: { arg: backupSchedule.name, kind: backup-schedule }
+    card: "Change Firestore backup schedule {backupSchedule.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Only retention and recurrence can change, and a new
+      retention applies to backups taken afterwards; existing backups keep
+      their expiry.
+    tests:
+      - fixture: fixtures/firestore-backup-schedule-update.json
+        expect: write
+        resource: "projects/shop-prod/databases/(default)/backupSchedules/3b8d2f1a-9c4e-4d7a-b6e5-1f2a3b4c5d6e"
+
+  - id: firebase-mcp.firestore-backup-schedule.delete
+    match: { mcp: { tool: firestore_delete_backup_schedule } }
+    class: delete
+    resource: { arg: name, kind: backup-schedule }
+    card: "Delete Firestore backup schedule {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Stops future backups; backups already taken stay
+      until they expire (deleting those is firestore_delete_backup), and the
+      schedule can be recreated, so it is a delete.
+    tests:
+      - fixture: fixtures/firestore-backup-schedule-delete.json
+        expect: delete
+        resource: "projects/shop-prod/databases/(default)/backupSchedules/3b8d2f1a-9c4e-4d7a-b6e5-1f2a3b4c5d6e"

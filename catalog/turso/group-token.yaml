@@ -36,6 +36,7 @@ operations:
 
   - id: turso.group-token.create-unscoped
     match: { rest: { method: POST, path: "/{version}/groups/{group}/auth/tokens" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: credential
     resource: { arg: group, kind: group }
     card: "Create an auth token for every database in Turso group {group}"
@@ -54,6 +55,7 @@ operations:
 
   - id: turso.group-token.invalidate-unscoped
     match: { rest: { method: POST, path: "/{version}/groups/{group}/auth/rotate" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: group, kind: group }
     card: "Invalidate every auth token of Turso group {group}"

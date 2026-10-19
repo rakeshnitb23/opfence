@@ -1,0 +1,7 @@
+{
+  "description": "Check the Railway CLI and login",
+  "tool": "check-railway-status",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api"
+  }
+}

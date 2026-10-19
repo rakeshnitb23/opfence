@@ -1,0 +1,7 @@
+{
+  "description": "Check a background deploy job",
+  "tool": "firebase_deploy_status",
+  "arguments": {
+    "jobId": "1760870400000"
+  }
+}

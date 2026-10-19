@@ -1,0 +1,53 @@
+# DigitalOcean REST API: agent-config
+operations:
+  - id: digitalocean.agent-config.create
+    match: { rest: { method: POST, path: /v2/agents/configs } }
+    class: write
+    resource: { arg: body.name, kind: agent-config }
+    card: "Create hosted agent config {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_config.yml
+    tests:
+      - fixture: fixtures/agent-config-create.http
+        expect: write
+        resource: support-agent
+
+  - id: digitalocean.agent-config.delete
+    match: { rest: { method: DELETE, path: "/v2/agents/configs/{config_id}" } }
+    class: delete
+    resource: { arg: config_id, kind: agent-config }
+    card: "Delete hosted agent config {config_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_delete_config.yml
+    notes: >-
+      A soft delete: the config stops being listed.
+    tests:
+      - fixture: fixtures/agent-config-delete.http
+        expect: delete
+        resource: cfg-4a1b2c3d
+
+  - id: digitalocean.agent-config.clone
+    match: { rest: { method: POST, path: "/v2/agents/configs/{config_id}/clone" } }
+    class: write
+    when:
+      - if: { arg: body.secrets, present: true }
+        class: credential
+    resource: { arg: config_id, kind: agent-config }
+    card: "Clone hosted agent config {config_id} as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_config_clone.yml
+    notes: >-
+      secrets binds secret values to the clone's credential slots.
+    tests:
+      - fixture: fixtures/agent-config-clone.http
+        expect: write
+        resource: cfg-4a1b2c3d
+      - fixture: fixtures/agent-config-clone-secrets.http
+        expect: credential
+        resource: cfg-4a1b2c3d

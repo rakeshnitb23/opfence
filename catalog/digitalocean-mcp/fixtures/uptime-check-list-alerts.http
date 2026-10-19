@@ -1,0 +1,8 @@
+# description: List alerts of uptime check 5a4981aa-9653-4bd1-bef5-d6bff52042e4 with their Slack webhook URLs
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":274,"method":"tools/call","params":{"name":"uptimecheck-alert-list","arguments":{"CheckID":"5a4981aa-9653-4bd1-bef5-d6bff52042e4"}}}

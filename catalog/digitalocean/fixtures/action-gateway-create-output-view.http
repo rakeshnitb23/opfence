@@ -1,0 +1,7 @@
+# description: Create output view titles-and-urls for tool exa_web_search
+POST /v2/action-gateway/output-views HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"tool": "exa_web_search", "name": "titles-and-urls", "description": "Keep only result titles and URLs.", "fields": ["results.title", "results.url"]}

@@ -1,0 +1,7 @@
+{
+  "description": "Get pages related to an ECS documentation page",
+  "tool": "aws_knowledge_aws___recommend",
+  "arguments": {
+    "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-auto-scaling.html"
+  }
+}

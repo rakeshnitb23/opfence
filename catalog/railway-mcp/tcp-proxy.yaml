@@ -1,0 +1,72 @@
+# Railway MCP server: tcp-proxy
+operations:
+  - id: railway-mcp.tcp-proxy.list
+    match: { mcp: { tool: list_tcp_proxies } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "List TCP proxies of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/tcp_proxy.rs
+    tests:
+      - fixture: fixtures/tcp-proxy-list.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.tcp-proxy.get
+    match: { mcp: { tool: get_tcp_proxy } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Show TCP proxy {proxy}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/tcp_proxy.rs
+    tests:
+      - fixture: fixtures/tcp-proxy-get.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.tcp-proxy.create
+    match: { mcp: { tool: create_tcp_proxy } }
+    class: access
+    resource: { arg: service_id, kind: service }
+    card: "Expose port {application_port} of service {service_id} through a public TCP proxy"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/tcp_proxy.rs
+    notes: >-
+      Local server only (railway mcp local). Exposing a port to the internet is
+      access, as railway.tcp-proxy.create.
+    tests:
+      - fixture: fixtures/tcp-proxy-create.json
+        expect: access
+        resource: svc-api
+
+  - id: railway-mcp.tcp-proxy.remove
+    match: { mcp: { tool: remove_tcp_proxy } }
+    class: delete
+    resource: { arg: service_id, kind: service }
+    card: "Remove TCP proxy {proxy} of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/tcp_proxy.rs
+    notes: >-
+      Local server only (railway mcp local). Without confirm: true it only
+      returns a preview. As railway.tcp-proxy.delete: a proxy can be created
+      again, on a new public port.
+    tests:
+      - fixture: fixtures/tcp-proxy-remove.json
+        expect: delete
+        resource: svc-api

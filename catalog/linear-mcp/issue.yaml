@@ -1,0 +1,90 @@
+# Linear MCP server: issues
+operations:
+  - id: linear-mcp.issue.list
+    match: { mcp: { tool: list_issues } }
+    class: read
+    card: "List Linear issues"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/5
+    tests:
+      - fixture: fixtures/issue-list.http
+        expect: read
+
+  - id: linear-mcp.issue.save
+    match: { mcp: { tool: save_issue } }
+    class: write
+    card: "Create or update Linear issue {id} ({title})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+      - https://linear.app/changelog/page/2
+    notes: >-
+      The changelog says it replaced create_issue and update_issue
+      (2026-02-26). It sets fields, state, assignee, delegate, labels, cycle,
+      project, parent and links, all of which another save can set back;
+      nothing in the changelog lets it delete, archive or bulk-update issues.
+      Moving an issue to another team can change who in the workspace sees it
+      (private teams), which is visibility inside the workspace, not exposure.
+    tests:
+      - fixture: fixtures/issue-save.http
+        expect: write
+
+  - id: linear-mcp.issue.get
+    match: { mcp: { tool: get_issue } }
+    class: read
+    card: "Show Linear issue {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.issue.list-mine
+    match: { mcp: { tool: list_my_issues } }
+    class: read
+    card: "List my Linear issues"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.issue.create-legacy
+    match: { mcp: { tool: create_issue } }
+    class: write
+    card: "Create Linear issue {title}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: merged into save_issue on 2026-02-26 according to the changelog.
+
+  - id: linear-mcp.issue.update-legacy
+    match: { mcp: { tool: update_issue } }
+    class: write
+    card: "Update Linear issue {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: merged into save_issue on 2026-02-26 according to the changelog.

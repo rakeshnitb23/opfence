@@ -1,0 +1,8 @@
+{
+  "description": "Link service api",
+  "tool": "link-service",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "serviceName": "api"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "description": "Read the properties, environment included, of function shop-api-handler",
+  "tool": "get_resource",
+  "arguments": {
+    "resource_type": "AWS::Lambda::Function",
+    "identifier": "shop-api-handler",
+    "region": "us-east-1",
+    "analyze_security": false
+  }
+}

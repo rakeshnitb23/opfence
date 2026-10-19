@@ -1,0 +1,8 @@
+# description: Open a draft pull request in acme/shop
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"create_pull_request","arguments":{"owner":"acme","repo":"shop","title":"Add cart totals","head":"feature/cart","base":"main","draft":true}}}

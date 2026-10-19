@@ -1,0 +1,95 @@
+# DigitalOcean MCP server: insights-alert
+operations:
+  - id: digitalocean-mcp.insights-alert.list-instances
+    match: { mcp: { tool: insights-alert-instance-list } }
+    class: read
+    card: "List firing alerts"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_instance_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-list-instances.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-alert.get-instance
+    match: { mcp: { tool: insights-alert-instance-get } }
+    class: read
+    resource: { arg: ID, kind: insights-alert }
+    card: "Show firing alert {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_instance_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-get-instance.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-alert.list-rules
+    match: { mcp: { tool: insights-alert-rule-list } }
+    class: read
+    card: "List alert rules"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_rule_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-list-rules.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-alert.get-rule
+    match: { mcp: { tool: insights-alert-rule-get } }
+    class: read
+    resource: { arg: ID, kind: insights-alert-rule }
+    card: "Show alert rule {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_rule_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-get-rule.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-alert.create-rule
+    match: { mcp: { tool: insights-alert-rule-create } }
+    class: write
+    resource: { arg: Name, kind: insights-alert-rule }
+    card: "Create alert rule {Name} on {Metric}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_rule_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-create-rule.http
+        expect: write
+        resource: cpu-high
+
+  - id: digitalocean-mcp.insights-alert.update-rule
+    match: { mcp: { tool: insights-alert-rule-update } }
+    class: write
+    resource: { arg: ID, kind: insights-alert-rule }
+    card: "Change alert rule {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_rule_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-update-rule.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.insights-alert.delete-rule
+    match: { mcp: { tool: insights-alert-rule-delete } }
+    class: delete
+    resource: { arg: ID, kind: insights-alert-rule }
+    card: "Delete alert rule {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/alert_rule_tools.go
+    tests:
+      - fixture: fixtures/insights-alert-delete-rule.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

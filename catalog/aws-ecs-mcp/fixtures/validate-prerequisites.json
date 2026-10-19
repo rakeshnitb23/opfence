@@ -1,0 +1,7 @@
+{
+  "description": "Check the roles and image for an Express Mode deployment",
+  "tool": "validate_ecs_express_mode_prerequisites",
+  "arguments": {
+    "image_uri": "123456789012.dkr.ecr.us-east-1.amazonaws.com/shop-api-repo:1700000000"
+  }
+}

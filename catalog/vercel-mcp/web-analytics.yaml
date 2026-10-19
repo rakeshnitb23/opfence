@@ -1,0 +1,71 @@
+# Vercel MCP server (mcp.vercel.com): web-analytics
+operations:
+  - id: vercel-mcp.web-analytics.query
+    match: { mcp: { tool: get_web_analytics } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Query Web Analytics of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/web-analytics
+    tests:
+      - fixture: fixtures/web-analytics-query.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.web-analytics.count-pageviews
+    match: { mcp: { tool: count_pageviews } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Count page views of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/web-analytics
+    tests:
+      - fixture: fixtures/web-analytics-count-pageviews.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.web-analytics.count-events
+    match: { mcp: { tool: count_events } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Count custom events of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/web-analytics
+    tests:
+      - fixture: fixtures/web-analytics-count-events.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.web-analytics.aggregate-pageviews
+    match: { mcp: { tool: aggregate_pageviews } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Aggregate page views of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/web-analytics
+    tests:
+      - fixture: fixtures/web-analytics-aggregate-pageviews.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.web-analytics.aggregate-events
+    match: { mcp: { tool: aggregate_events } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Aggregate custom events of {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/web-analytics
+    tests:
+      - fixture: fixtures/web-analytics-aggregate-events.http
+        expect: read
+        resource: prj_shopweb

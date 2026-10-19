@@ -1,0 +1,74 @@
+# Linear MCP server: documents
+operations:
+  - id: linear-mcp.document.save
+    match: { mcp: { tool: save_document } }
+    class: write
+    card: "Create or update Linear document {id} ({title})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/2
+    notes: >-
+      Creates, edits or reparents a document under a project, team, initiative
+      or cycle; Linear keeps document history, and nothing in the changelog
+      lets it delete one.
+    tests:
+      - fixture: fixtures/document-save.http
+        expect: write
+
+  - id: linear-mcp.document.list
+    match: { mcp: { tool: list_documents } }
+    class: read
+    card: "List Linear documents"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.document.get
+    match: { mcp: { tool: get_document } }
+    class: read
+    card: "Show Linear document {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.document.create-legacy
+    match: { mcp: { tool: create_document } }
+    class: write
+    card: "Create Linear document {title}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Draft: the changelog names this tool but newer entries use save_*
+      instead, so it is probably no longer registered.
+
+  - id: linear-mcp.document.update-legacy
+    match: { mcp: { tool: update_document } }
+    class: write
+    card: "Update Linear document {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Draft: the changelog names this tool but newer entries use save_*
+      instead, so it is probably no longer registered.

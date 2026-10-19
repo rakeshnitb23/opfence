@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.serverless-restore-job.create
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/serverless/{clusterName}/backup/restoreJobs" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: irreversible
     when:
       - if: { arg: body.deliveryType, equals: "download" }

@@ -1,0 +1,8 @@
+{
+  "description": "List the DynamoDB tables in us-east-1",
+  "tool": "list_resources",
+  "arguments": {
+    "resource_type": "AWS::DynamoDB::Table",
+    "region": "us-east-1"
+  }
+}

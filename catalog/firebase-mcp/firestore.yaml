@@ -1,0 +1,139 @@
+# Firebase MCP server: Firestore document tools (firestore_ prefix). query_collection is
+# local; the rest come from Google's remote Firestore MCP server, proxied.
+operations:
+  - id: firebase-mcp.firestore-document.query
+    match: { mcp: { tool: firestore_query_collection } }
+    class: read
+    resource: { arg: collection_path, kind: collection }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/firestore/query_collection.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      The server's own local tool (the other firestore_ tools are remote).
+    tests:
+      - fixture: fixtures/firestore-document-query.json
+        expect: read
+        resource: "orders"
+
+  - id: firebase-mcp.firestore-document.get
+    match: { mcp: { tool: firestore_get_document } }
+    class: read
+    resource: { arg: name, kind: document }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-document-get.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/documents/orders/A1b2C3"
+
+  - id: firebase-mcp.firestore-document.list
+    match: { mcp: { tool: firestore_list_documents } }
+    class: read
+    resource: { arg: parent, kind: document }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-document-list.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/documents"
+
+  - id: firebase-mcp.firestore-collection.list
+    match: { mcp: { tool: firestore_list_collections } }
+    class: read
+    resource: { arg: parent, kind: document }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-collection-list.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/documents"
+
+  - id: firebase-mcp.firestore-document.add
+    match: { mcp: { tool: firestore_add_document } }
+    class: write
+    resource: { arg: collectionId, kind: collection }
+    card: "Add a document to Firestore collection {collectionId} under {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-document-add.json
+        expect: write
+        resource: "orders"
+
+  - id: firebase-mcp.firestore-document.update
+    match: { mcp: { tool: firestore_update_document } }
+    class: write
+    resource: { arg: document.name, kind: document }
+    card: "Update Firestore document {document.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Changes one document; without updateMask the whole
+      document is replaced and fields left out are removed, but only that
+      document is touched, so it is a write like the other single-document
+      updates in the catalog.
+    tests:
+      - fixture: fixtures/firestore-document-update.json
+        expect: write
+        resource: "projects/shop-prod/databases/(default)/documents/orders/A1b2C3"
+
+  - id: firebase-mcp.firestore-document.delete
+    match: { mcp: { tool: firestore_delete_document } }
+    class: irreversible
+    resource: { arg: name, kind: document }
+    card: "Delete Firestore document {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. Point-in-time recovery is off by default and Opfence
+      cannot see whether it is on, so the deleted document is treated as gone.
+    tests:
+      - fixture: fixtures/firestore-document-delete.json
+        expect: irreversible
+        resource: "projects/shop-prod/databases/(default)/documents/orders/A1b2C3"

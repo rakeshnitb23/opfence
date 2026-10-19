@@ -1,0 +1,35 @@
+# GitHub MCP server: ruleset
+operations:
+  - id: github-mcp.ruleset.read
+    match: { mcp: { tool: repository_ruleset_read } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read rulesets of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/rulesets.go
+    notes: >-
+      Toolset governance (not enabled by default).
+    tests:
+      - fixture: fixtures/ruleset-read.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.ruleset.create
+    match: { mcp: { tool: create_repository_ruleset } }
+    class: access
+    resource: { arg: repo, kind: repository }
+    card: "Create ruleset {name} ({enforcement}) at {level} level"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/rulesets.go
+    notes: >-
+      Toolset governance (not enabled by default). Rulesets decide who may push, merge and
+      bypass, like branch protection (access in catalog/github); bypass_actors can exempt
+      users and apps.
+    tests:
+      - fixture: fixtures/ruleset-create.http
+        expect: access
+        resource: shop

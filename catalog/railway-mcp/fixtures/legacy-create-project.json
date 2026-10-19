@@ -1,0 +1,8 @@
+{
+  "description": "Create Railway project shop-api and link it",
+  "tool": "create-project-and-link",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "projectName": "shop-api"
+  }
+}

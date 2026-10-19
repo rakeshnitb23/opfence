@@ -1,0 +1,7 @@
+# description: Cancel image transfer 3164444
+POST /v2/images/7555620/account_transfer/cancel HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"transfer_id": 3164444}

@@ -1,0 +1,9 @@
+{
+  "description": "Read the metadata location of table retail_data.customers",
+  "tool": "get_table_metadata_location",
+  "arguments": {
+    "table_bucket_arn": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "namespace": "retail_data",
+    "name": "customers"
+  }
+}

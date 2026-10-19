@@ -1,0 +1,5 @@
+# description: Read GenAI agent 1b418231-b7d6-11ef-bf8f-4e013e2ddde4 with its API keys
+GET /v2/gen-ai/agents/1b418231-b7d6-11ef-bf8f-4e013e2ddde4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

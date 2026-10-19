@@ -1,0 +1,25 @@
+provider: sentry-mcp
+title: Sentry MCP
+docs: https://docs.sentry.io/product/sentry-mcp/
+hosts: [mcp.sentry.dev]              # remote server, Streamable HTTP at /mcp (and /mcp/{org}/{project})
+auth:
+  - header: Authorization            # OAuth access token, or a Sentry user/org auth token
+    scheme: Bearer
+detect:
+  env: [SENTRY_ACCESS_TOKEN]
+  prefixes: [sntrys_]                # organization auth tokens (pattern in the server's own source)
+mcp:
+  names: [sentry, Sentry, sentry-mcp, sentry-mcp-server]
+  package: "@sentry/mcp-server"
+# Sentry's official MCP server, source github.com/getsentry/sentry-mcp, read
+# at tag 0.42.0 (npm @sentry/mcp-server 0.42.0, the current release). The
+# hosted server at mcp.sentry.dev and the local stdio package register the
+# same tools from packages/mcp-core/src/tools: 64 catalog tools plus
+# search_sentry_tools and execute_sentry_tool. tools/list shows only a subset
+# directly (surfaces.ts); every other tool is reached through
+# execute_sentry_tool(name, arguments), so execute_sentry_tool takes the
+# class of the tool it names. Which tools a session sees also depends on the
+# skills granted at OAuth time (inspect, seer, docs, triage,
+# project-management); every tool is listed here regardless. The stdio
+# package calls the Sentry REST API (sentry.io or SENTRY_HOST) itself, so
+# its calls are seen by the agent hook, not by this host.

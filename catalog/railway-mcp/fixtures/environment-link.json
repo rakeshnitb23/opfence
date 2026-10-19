@@ -1,0 +1,7 @@
+{
+  "description": "Link environment production to this directory",
+  "tool": "link_environment",
+  "arguments": {
+    "environment_name": "production"
+  }
+}

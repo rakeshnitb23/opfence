@@ -1,0 +1,222 @@
+# GitHub MCP server: pull review
+operations:
+  - id: github-mcp.pull-review.write
+    match: { mcp: { tool: pull_request_review_write } }
+    class: write
+    when:
+      - if: { arg: method, equals: "delete_pending" }
+        class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Review pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    notes: >-
+      method create, submit_pending, delete_pending, resolve_thread or unresolve_thread.
+      delete_pending discards the pending review and its draft comments.
+    tests:
+      - fixture: fixtures/pull-review-write.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/pull-review-write-delete-pending.http
+        expect: delete
+        resource: shop
+
+  - id: github-mcp.pull-review.add-pending-comment
+    match: { mcp: { tool: add_comment_to_pending_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Add a comment on {path} to the pending review of pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-review-add-pending-comment.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review-comment.reply
+    match: { mcp: { tool: add_reply_to_pull_request_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Reply to review comment {commentId} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests.go
+    tests:
+      - fixture: fixtures/pull-review-comment-reply.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review.create
+    match: { mcp: { tool: create_pull_request_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Review pull request {pullNumber} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-review-create.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review.submit
+    match: { mcp: { tool: submit_pending_pull_request_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Submit the pending review of pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-review-submit.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review.delete-pending
+    match: { mcp: { tool: delete_pending_pull_request_review } }
+    class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Discard the pending review of pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write). Discards the review and its draft comments.
+    tests:
+      - fixture: fixtures/pull-review-delete-pending.http
+        expect: delete
+        resource: shop
+
+  - id: github-mcp.pull-review-comment.create
+    match: { mcp: { tool: add_pull_request_review_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Comment on {path} in pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-review-comment-create.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.review-thread.resolve
+    match: { mcp: { tool: resolve_review_thread } }
+    class: write
+    card: "Resolve review thread {threadID}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write). Feature flag thread_resolution_reason adds resolutionReason.
+    tests:
+      - fixture: fixtures/review-thread-resolve.http
+        expect: write
+
+  - id: github-mcp.review-thread.unresolve
+    match: { mcp: { tool: unresolve_review_thread } }
+    class: write
+    card: "Unresolve review thread {threadID}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/review-thread-unresolve.http
+        expect: write
+
+  - id: github-mcp.pull-review-comment.hide
+    match: { mcp: { tool: hide_pull_request_review_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Hide review comment {comment_id} in {owner}/{repo} as {classifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write). Hiding minimizes the comment; it can be unhidden.
+    tests:
+      - fixture: fixtures/pull-review-comment-hide.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review-comment.unhide
+    match: { mcp: { tool: unhide_pull_request_review_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Unhide review comment {comment_id} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-review-comment-unhide.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review.hide
+    match: { mcp: { tool: hide_pull_request_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Hide review {review_id} on pull request {pullNumber} as {classifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write). Hiding minimizes the review; it can be unhidden.
+    tests:
+      - fixture: fixtures/pull-review-hide.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.pull-review.unhide
+    match: { mcp: { tool: unhide_pull_request_review } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Unhide review {review_id} on pull request {pullNumber}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag pull_requests_granular (replaces update_pull_request and
+      pull_request_review_write).
+    tests:
+      - fixture: fixtures/pull-review-unhide.http
+        expect: write
+        resource: shop

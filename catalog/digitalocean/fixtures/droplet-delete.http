@@ -1,0 +1,5 @@
+# description: Destroy Droplet 3164444 and its disk
+DELETE /v2/droplets/3164444 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

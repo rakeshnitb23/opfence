@@ -1,0 +1,5 @@
+# description: Read the BGP auth key of partner attachment 5a4981aa-9653-4bd1-bef5-d6bff52042e4
+GET /v2/partner_network_connect/attachments/5a4981aa-9653-4bd1-bef5-d6bff52042e4/bgp_auth_key HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

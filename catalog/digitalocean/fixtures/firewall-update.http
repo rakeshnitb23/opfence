@@ -1,0 +1,7 @@
+# description: Replace the rules of firewall bb4b2611-3d72-467b-8602-280330ecd65c
+PUT /v2/firewalls/bb4b2611-3d72-467b-8602-280330ecd65c HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "frontend-firewall", "inbound_rules": [{"protocol": "tcp", "ports": "8080", "action": "allow", "sources": {"load_balancer_uids": ["4de7ac8b-495b-4884-9a69-1050c6793cd6"]}}, {"protocol": "tcp", "ports": "22", "action": "allow", "sources": {"tags": ["gateway"], "addresses": ["18.0.0.0/8"]}}], "outbound_rules": [{"protocol": "tcp", "ports": "8080", "action": "allow", "destinations": {"addresses": ["0.0.0.0/0", "::/0"]}}], "droplet_ids": [8043964], "tags": ["frontend"]}

@@ -1,0 +1,7 @@
+{
+  "description": "Deploy Firestore and Storage rules",
+  "tool": "firebase_deploy",
+  "arguments": {
+    "only": "firestore,storage"
+  }
+}

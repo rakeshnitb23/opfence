@@ -1,0 +1,8 @@
+# description: Set feature flag checkout-v2 of project 9a8b7c6d-1111-4222-8333-444455556666 to true
+POST / HTTP/1.1
+Host: mcp.railway.com
+Authorization: Bearer opf_railway-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"set-feature-flag","arguments":{"key":"checkout-v2","value":true,"projectId":"9a8b7c6d-1111-4222-8333-444455556666"}}}

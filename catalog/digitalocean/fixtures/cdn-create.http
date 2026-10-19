@@ -1,0 +1,7 @@
+# description: Create a CDN endpoint for static-images.nyc3.digitaloceanspaces.com
+POST /v2/cdn/endpoints HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"origin": "static-images.nyc3.digitaloceanspaces.com", "ttl": 3600}

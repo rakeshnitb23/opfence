@@ -1,0 +1,5 @@
+# description: Delete node 478247f8-b1bb-4f7a-8db9-2a5f8d4b8f8f from node pool cdda885e-7663-40c8-bc74-3a036c66545d
+DELETE /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af/node_pools/cdda885e-7663-40c8-bc74-3a036c66545d/nodes/478247f8-b1bb-4f7a-8db9-2a5f8d4b8f8f?replace=1 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

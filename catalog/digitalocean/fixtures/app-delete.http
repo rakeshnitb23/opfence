@@ -1,0 +1,5 @@
+# description: Delete App Platform app 4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf with its dev databases and secrets
+DELETE /v2/apps/4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

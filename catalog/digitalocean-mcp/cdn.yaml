@@ -1,0 +1,71 @@
+# DigitalOcean MCP server: cdn
+operations:
+  - id: digitalocean-mcp.cdn.list
+    match: { mcp: { tool: spaces-cdn-list } }
+    class: read
+    card: "List CDN endpoints"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/cdn_tools.go
+    tests:
+      - fixture: fixtures/cdn-list.http
+        expect: read
+
+  - id: digitalocean-mcp.cdn.get
+    match: { mcp: { tool: spaces-cdn-get } }
+    class: read
+    resource: { arg: ID, kind: cdn }
+    card: "Show CDN endpoint {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/cdn_tools.go
+    tests:
+      - fixture: fixtures/cdn-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.cdn.create
+    match: { mcp: { tool: spaces-cdn-create } }
+    class: write
+    resource: { arg: Origin, kind: cdn }
+    card: "Create a CDN endpoint for {Origin}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/cdn_tools.go
+    tests:
+      - fixture: fixtures/cdn-create.http
+        expect: write
+        resource: static-images.nyc3.digitaloceanspaces.com
+
+  - id: digitalocean-mcp.cdn.delete
+    match: { mcp: { tool: spaces-cdn-delete } }
+    class: delete
+    resource: { arg: ID, kind: cdn }
+    card: "Delete CDN endpoint {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/cdn_tools.go
+    notes: >-
+      The bucket and its files stay.
+    tests:
+      - fixture: fixtures/cdn-delete.http
+        expect: delete
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.cdn.purge
+    match: { mcp: { tool: spaces-cdn-flush-cache } }
+    class: write
+    resource: { arg: ID, kind: cdn }
+    card: "Purge {Files} from CDN endpoint {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/spaces/cdn_tools.go
+    tests:
+      - fixture: fixtures/cdn-purge.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

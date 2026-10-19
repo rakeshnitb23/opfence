@@ -1,0 +1,8 @@
+# description: Add forwarding rules to load balancer 4de7ac8b-495b-4884-9a69-1050c6793cd6
+POST /mcp HTTP/1.1
+Host: networking.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":329,"method":"tools/call","params":{"name":"lb-add-fwd-rules","arguments":{"LoadBalancerID":"4de7ac8b-495b-4884-9a69-1050c6793cd6","ForwardingRules":["entry_protocol:https,entry_port:443,target_protocol:http,target_port:8080,certificate_id:892071a0-bb95-49bc-8021-3afd67a210bf"]}}}

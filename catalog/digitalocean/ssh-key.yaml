@@ -1,0 +1,49 @@
+# DigitalOcean REST API: ssh-key
+operations:
+  - id: digitalocean.ssh-key.create
+    match: { rest: { method: POST, path: /v2/account/keys } }
+    class: access
+    resource: { arg: body.name, kind: ssh-key }
+    card: "Add SSH key {body.name} to the account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/ssh_keys/sshKeys_create.yml
+    notes: >-
+      A key on the account is offered for root login on every new Droplet that
+      names it.
+    tests:
+      - fixture: fixtures/ssh-key-create.http
+        expect: access
+        resource: "My SSH Public Key"
+
+  - id: digitalocean.ssh-key.update
+    match: { rest: { method: PUT, path: "/v2/account/keys/{ssh_key_identifier}" } }
+    class: write
+    resource: { arg: ssh_key_identifier, kind: ssh-key }
+    card: "Rename SSH key {ssh_key_identifier} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/ssh_keys/sshKeys_update.yml
+    tests:
+      - fixture: fixtures/ssh-key-update.http
+        expect: write
+        resource: "512189"
+
+  - id: digitalocean.ssh-key.delete
+    match: { rest: { method: DELETE, path: "/v2/account/keys/{ssh_key_identifier}" } }
+    class: access
+    resource: { arg: ssh_key_identifier, kind: ssh-key }
+    card: "Remove SSH key {ssh_key_identifier} from the account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/ssh_keys/sshKeys_delete.yml
+    notes: >-
+      Droplets that already trust the key keep it in authorized_keys; new
+      Droplets can no longer use it.
+    tests:
+      - fixture: fixtures/ssh-key-delete.http
+        expect: access
+        resource: "512189"

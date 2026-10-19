@@ -1,0 +1,17 @@
+{
+  "description": "Prepare a memory change for function shop-api-handler",
+  "tool": "generate_infrastructure_code",
+  "arguments": {
+    "resource_type": "AWS::Lambda::Function",
+    "identifier": "shop-api-handler",
+    "patch_document": [
+      {
+        "op": "replace",
+        "path": "/MemorySize",
+        "value": 1024
+      }
+    ],
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE"
+  }
+}

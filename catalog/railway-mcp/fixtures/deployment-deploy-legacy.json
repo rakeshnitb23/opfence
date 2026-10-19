@@ -1,0 +1,9 @@
+{
+  "description": "Deploy workspace /home/dev/shop-api to service api in production (@railway/mcp-server 0.1.x)",
+  "tool": "deploy",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "service": "api",
+    "environment": "production"
+  }
+}

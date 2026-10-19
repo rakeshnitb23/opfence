@@ -1,0 +1,7 @@
+{
+  "description": "Get a QStash DLQ message",
+  "tool": "qstash_dlq_get",
+  "arguments": {
+    "dlqId": "1760870400000-0"
+  }
+}

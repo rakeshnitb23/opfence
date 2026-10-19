@@ -1,0 +1,8 @@
+# description: Move Notion databases ["https://www.notion.so/acme/9f8e7d6c5b4a43219876fedcba012345"] and their rows to Trash
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":26,"method":"tools/call","params":{"name":"notion-delete-databases","arguments":{"database_ids":["https://www.notion.so/acme/9f8e7d6c5b4a43219876fedcba012345"],"user_confirmed":true}}}

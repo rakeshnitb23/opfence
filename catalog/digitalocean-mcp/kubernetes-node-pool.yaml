@@ -1,0 +1,119 @@
+# DigitalOcean MCP server: kubernetes-node-pool
+operations:
+  - id: digitalocean-mcp.kubernetes-node-pool.list
+    match: { mcp: { tool: doks-list-nodepools } }
+    class: read
+    resource: { arg: ClusterID, kind: kubernetes-cluster }
+    card: "List node pools of Kubernetes cluster {ClusterID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-list.http
+        expect: read
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-node-pool.get
+    match: { mcp: { tool: doks-get-nodepool } }
+    class: read
+    resource: { arg: NodePoolID, kind: kubernetes-node-pool }
+    card: "Show node pool {NodePoolID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-get.http
+        expect: read
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+
+  - id: digitalocean-mcp.kubernetes-node-pool.create
+    match: { mcp: { tool: doks-create-nodepool } }
+    class: money
+    resource: { arg: cluster_id, kind: kubernetes-cluster }
+    card: "Add node pool {node_pool_create_request.name} to Kubernetes cluster {cluster_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-create.http
+        expect: money
+        resource: bd5f5959-5e1e-4205-a714-a914373942af
+
+  - id: digitalocean-mcp.kubernetes-node-pool.update
+    match: { mcp: { tool: doks-update-nodepool } }
+    class: write
+    when:
+      - if: { arg: Count, present: true }
+        class: money
+      - if: { arg: MaxNodes, present: true }
+        class: money
+      - if: { arg: AutoScale, equals: "true" }
+        class: money
+    resource: { arg: NodePoolID, kind: kubernetes-node-pool }
+    card: "Change node pool {NodePoolID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      Node count, autoscaling and its maximum change the bill; labels, taints,
+      tags and name do not.
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-update.http
+        expect: write
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+      - fixture: fixtures/kubernetes-node-pool-update-count.http
+        expect: money
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+      - fixture: fixtures/kubernetes-node-pool-update-autoscale.http
+        expect: money
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+
+  - id: digitalocean-mcp.kubernetes-node-pool.delete
+    match: { mcp: { tool: doks-delete-nodepool } }
+    class: delete
+    resource: { arg: NodePoolID, kind: kubernetes-node-pool }
+    card: "Delete node pool {NodePoolID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      Nodes are rebuildable; pods move to other pools.
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-delete.http
+        expect: delete
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+
+  - id: digitalocean-mcp.kubernetes-node-pool.delete-node
+    match: { mcp: { tool: doks-delete-node } }
+    class: delete
+    resource: { arg: NodePoolID, kind: kubernetes-node-pool }
+    card: "Delete node {NodeID} of node pool {NodePoolID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    notes: >-
+      The pool replaces the node unless the count drops.
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-delete-node.http
+        expect: delete
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d
+
+  - id: digitalocean-mcp.kubernetes-node-pool.recycle
+    match: { mcp: { tool: doks-recycle-nodes } }
+    class: write
+    resource: { arg: NodePoolID, kind: kubernetes-node-pool }
+    card: "Recycle nodes of node pool {NodePoolID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/doks/doks.go
+    tests:
+      - fixture: fixtures/kubernetes-node-pool-recycle.http
+        expect: write
+        resource: cdda885e-7663-40c8-bc74-3a036c66545d

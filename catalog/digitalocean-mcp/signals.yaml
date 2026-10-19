@@ -1,0 +1,157 @@
+# DigitalOcean MCP server: signals
+operations:
+  - id: digitalocean-mcp.signals.list-consents
+    match: { mcp: { tool: signals-list-consents } }
+    class: read
+    card: "List Signals consent settings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-list-consents.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.get-agent-consent
+    match: { mcp: { tool: signals-get-agent-consent } }
+    class: read
+    resource: { arg: AgentID, kind: agent }
+    card: "Show Signals consent for environment {AgentID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-get-agent-consent.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.signals.get-inference-consent
+    match: { mcp: { tool: signals-get-inference-consent } }
+    class: read
+    card: "Show Signals consent for serverless inference"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-get-inference-consent.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.set-agent-consent
+    match: { mcp: { tool: signals-set-agent-consent } }
+    class: access
+    resource: { arg: AgentID, kind: agent }
+    card: "Set Signals collection for environment {AgentID} to {Enabled}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    notes: >-
+      Decides whether DigitalOcean records the environment's traffic.
+    tests:
+      - fixture: fixtures/signals-set-agent-consent.http
+        expect: access
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.signals.set-inference-consent
+    match: { mcp: { tool: signals-set-inference-consent } }
+    class: access
+    card: "Set Signals collection for serverless inference to {Enabled}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    notes: >-
+      Decides whether DigitalOcean records the team's inference traffic.
+    tests:
+      - fixture: fixtures/signals-set-inference-consent.http
+        expect: access
+
+  - id: digitalocean-mcp.signals.list-sessions
+    match: { mcp: { tool: signals-list-agent-sessions } }
+    class: read
+    resource: { arg: AgentID, kind: agent }
+    card: "List recorded sessions of environment {AgentID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-list-sessions.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.signals.list-dialogues
+    match: { mcp: { tool: signals-list-session-dialogues } }
+    class: read
+    card: "Read dialogues of session {SessionID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-list-dialogues.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.get-export-options
+    match: { mcp: { tool: signals-get-export-options } }
+    class: read
+    card: "List Signals export filters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-get-export-options.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.list-exports
+    match: { mcp: { tool: signals-list-exports } }
+    class: read
+    card: "List Signals exports"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-list-exports.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.get-export
+    match: { mcp: { tool: signals-get-export } }
+    class: read
+    card: "Show Signals export {ExportID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-get-export.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.get-export-download
+    match: { mcp: { tool: signals-get-export-download } }
+    class: read
+    card: "Get a download link for Signals export {ExportID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-get-export-download.http
+        expect: read
+
+  - id: digitalocean-mcp.signals.create-export
+    match: { mcp: { tool: signals-create-export } }
+    class: write
+    resource: { arg: AgentID, kind: agent }
+    card: "Export recorded signals of environment {AgentID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/signals/signals_tools.go
+    tests:
+      - fixture: fixtures/signals-create-export.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

@@ -18,6 +18,7 @@ operations:
 
   - id: heroku.space.outbound-ruleset-update
     match: { rest: { method: PUT, path: "/spaces/{space_id_or_name}/outbound-ruleset" } }
+    unlisted: "only in the v5 schema; kept while the endpoint may still answer"
     class: access
     resource: { arg: space_id_or_name, kind: space }
     card: "Replace the outbound rules of space {space_id_or_name}"

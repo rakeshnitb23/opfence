@@ -1,0 +1,81 @@
+# Railway MCP server: feature-flag
+operations:
+  - id: railway-mcp.feature-flag.list
+    match: { mcp: { tool: list-feature-flags } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "List feature flags of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+    tests:
+      - fixture: fixtures/feature-flag-list.http
+        expect: read
+        resource: 9a8b7c6d-1111-4222-8333-444455556666
+
+  - id: railway-mcp.feature-flag.get
+    match: { mcp: { tool: get-feature-flag } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show feature flag {key} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+    tests:
+      - fixture: fixtures/feature-flag-get.http
+        expect: read
+        resource: 9a8b7c6d-1111-4222-8333-444455556666
+
+  - id: railway-mcp.feature-flag.set
+    match: { mcp: { tool: set-feature-flag } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Set feature flag {key} of project {projectId} to {value}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      Docs mark it admin-only. It changes application behaviour and keeps no
+      data, so it is a write.
+    tests:
+      - fixture: fixtures/feature-flag-set.http
+        expect: write
+        resource: 9a8b7c6d-1111-4222-8333-444455556666
+
+  - id: railway-mcp.feature-flag.delete
+    match: { mcp: { tool: delete-feature-flag } }
+    class: irreversible
+    resource: { arg: projectId, kind: project }
+    card: "Delete feature flag {key} of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      Docs mark it destructive. Railway documents no way to restore a deleted
+      flag or its value, so it is irreversible like deleting a variable.
+    tests:
+      - fixture: fixtures/feature-flag-delete.http
+        expect: irreversible
+        resource: 9a8b7c6d-1111-4222-8333-444455556666

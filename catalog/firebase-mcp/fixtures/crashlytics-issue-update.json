@@ -1,0 +1,9 @@
+{
+  "description": "Close a Crashlytics issue",
+  "tool": "crashlytics_update_issue",
+  "arguments": {
+    "appId": "1:123456789012:android:abc123def456",
+    "issueId": "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b",
+    "state": "CLOSED"
+  }
+}

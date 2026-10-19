@@ -1,0 +1,24 @@
+{
+  "description": "Estimate capacity and cost for the users table",
+  "tool": "compute_performances_and_costs",
+  "arguments": {
+    "access_pattern_list": [
+      {
+        "operation": "GetItem",
+        "pattern": "get-user",
+        "description": "Get user by ID",
+        "table": "users",
+        "rps": 100,
+        "item_size_bytes": 2000
+      }
+    ],
+    "table_list": [
+      {
+        "name": "users",
+        "item_size_bytes": 2500,
+        "item_count": 10000
+      }
+    ],
+    "workspace_dir": "/home/dev/shop/dynamodb"
+  }
+}

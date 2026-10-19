@@ -1,0 +1,7 @@
+{
+  "description": "Make shop-prod the active project",
+  "tool": "firebase_update_environment",
+  "arguments": {
+    "active_project": "shop-prod"
+  }
+}

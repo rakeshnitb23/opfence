@@ -27,7 +27,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 
 ## Catalog
 
-3,721 tested rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, Neon, PlanetScale, MongoDB Atlas and Turso, and the MCP servers of Supabase, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, Neon, PlanetScale, MongoDB and Turso, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
+5,397 rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB Atlas and Turso, and 28 MCP servers: Supabase, GitHub, Vercel, Railway, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB, Turso, Firebase, Upstash, Sentry, Notion, Linear and eight AWS Labs servers, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. A nightly job (`opfence catalog check-sources`) compares the rules with the schemas providers publish, so a renamed or new endpoint shows up the night it ships. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
 
 ## Use with Claude Code
 

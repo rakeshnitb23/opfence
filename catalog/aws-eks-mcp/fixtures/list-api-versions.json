@@ -1,0 +1,7 @@
+{
+  "description": "List API versions of cluster shop-prod",
+  "tool": "list_api_versions",
+  "arguments": {
+    "cluster_name": "shop-prod"
+  }
+}

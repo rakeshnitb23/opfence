@@ -1,0 +1,85 @@
+# DigitalOcean MCP server: reserved-ip
+operations:
+  - id: digitalocean-mcp.reserved-ip.list
+    match: { mcp: { tool: reserved-ip-list } }
+    class: read
+    card: "List reserved {Type} addresses"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    tests:
+      - fixture: fixtures/reserved-ip-list.http
+        expect: read
+
+  - id: digitalocean-mcp.reserved-ip.get
+    match: { mcp: { tool: reserved-ip-get } }
+    class: read
+    resource: { arg: IP, kind: reserved-ip }
+    card: "Show reserved IP {IP}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    tests:
+      - fixture: fixtures/reserved-ip-get.http
+        expect: read
+        resource: "203.0.113.20"
+
+  - id: digitalocean-mcp.reserved-ip.reserve
+    match: { mcp: { tool: reserved-ip-reserve } }
+    class: money
+    card: "Reserve a new {Type} address in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    notes: >-
+      Reserved IPs are billed while not assigned.
+    tests:
+      - fixture: fixtures/reserved-ip-reserve.http
+        expect: money
+
+  - id: digitalocean-mcp.reserved-ip.release
+    match: { mcp: { tool: reserved-ip-release } }
+    class: delete
+    resource: { arg: IP, kind: reserved-ip }
+    card: "Release reserved IP {IP}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    notes: >-
+      The address may not be gettable again, but nothing stored is lost.
+    tests:
+      - fixture: fixtures/reserved-ip-release.http
+        expect: delete
+        resource: "203.0.113.20"
+
+  - id: digitalocean-mcp.reserved-ip.assign
+    match: { mcp: { tool: reserved-ip-assign } }
+    class: write
+    resource: { arg: IP, kind: reserved-ip }
+    card: "Point reserved IP {IP} at Droplet {DropletID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    tests:
+      - fixture: fixtures/reserved-ip-assign.http
+        expect: write
+        resource: "203.0.113.20"
+
+  - id: digitalocean-mcp.reserved-ip.unassign
+    match: { mcp: { tool: reserved-ip-unassign } }
+    class: write
+    resource: { arg: IP, kind: reserved-ip }
+    card: "Unassign reserved IP {IP}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/reserved_ips_tools.go
+    tests:
+      - fixture: fixtures/reserved-ip-unassign.http
+        expect: write
+        resource: "203.0.113.20"

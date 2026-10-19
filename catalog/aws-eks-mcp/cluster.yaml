@@ -1,0 +1,150 @@
+# Amazon EKS MCP server (awslabs.eks-mcp-server): clusters, IAM and observability
+operations:
+  - id: aws-eks-mcp.stack.manage
+    match: { mcp: { tool: manage_eks_stacks } }
+    class: irreversible
+    when:
+      - if: { arg: operation, equals: "describe" }
+        class: read
+      - if: { arg: operation, equals: "generate" }
+        class: write
+      - if: { arg: operation, equals: "deploy" }
+        class: money
+      - if: { arg: operation, equals: "delete" }
+        class: irreversible
+    resource: { arg: cluster_name, kind: cluster }
+    card: "{operation} the CloudFormation stack of EKS cluster {cluster_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/eks_stack_handler.py
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/consts.py
+    notes: >-
+      generate writes the server's EKS Auto Mode template (cluster, VPC, NAT gateways) to a local
+      file; deploy creates or updates the stack from template_file, which creates a billed
+      cluster and NAT gateways (money; an update from an edited template can also replace
+      resources, as for aws.cloudformation.stack.update); delete deletes the stack and the
+      cluster with every workload and volume in it; describe reads. The server only deploys or
+      deletes stacks it tagged as its own. Any other operation value is rejected by the server;
+      the rule's own class covers it.
+    tests:
+      - fixture: fixtures/manage-eks-stacks-describe.json
+        expect: read
+        resource: shop-prod
+      - fixture: fixtures/manage-eks-stacks-generate.json
+        expect: write
+        resource: shop-prod
+      - fixture: fixtures/manage-eks-stacks-deploy.json
+        expect: money
+        resource: shop-prod
+      - fixture: fixtures/manage-eks-stacks-delete.json
+        expect: irreversible
+        resource: shop-prod
+
+  - id: aws-eks-mcp.iam.add-inline-policy
+    match: { mcp: { tool: add_inline_policy } }
+    class: access
+    resource: { arg: role_name, kind: role }
+    card: "Add inline policy {policy_name} to IAM role {role_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/iam_handler.py
+    notes: >-
+      Calls iam:PutRolePolicy with the given statements (aws.iam.put-role-policy in catalog/aws
+      is access too). It refuses to overwrite an existing policy of the same name.
+    tests:
+      - fixture: fixtures/add-inline-policy.json
+        expect: access
+        resource: shop-prod-node-role
+
+  - id: aws-eks-mcp.iam.get-role-policies
+    match: { mcp: { tool: get_policies_for_role } }
+    class: read
+    resource: { arg: role_name, kind: role }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/iam_handler.py
+    tests:
+      - fixture: fixtures/get-policies-for-role.json
+        expect: read
+        resource: shop-prod-node-role
+
+  - id: aws-eks-mcp.cloudwatch.logs
+    match: { mcp: { tool: get_cloudwatch_logs } }
+    class: read
+    resource: { arg: cluster_name, kind: cluster }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/cloudwatch_handler.py
+    notes: >-
+      Runs a CloudWatch Logs Insights query; needs --allow-sensitive-data-access.
+    tests:
+      - fixture: fixtures/get-cloudwatch-logs.json
+        expect: read
+        resource: shop-prod
+
+  - id: aws-eks-mcp.cloudwatch.metrics
+    match: { mcp: { tool: get_cloudwatch_metrics } }
+    class: read
+    resource: { arg: cluster_name, kind: cluster }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/cloudwatch_handler.py
+    tests:
+      - fixture: fixtures/get-cloudwatch-metrics.json
+        expect: read
+        resource: shop-prod
+
+  - id: aws-eks-mcp.cloudwatch.metrics-guidance
+    match: { mcp: { tool: get_eks_metrics_guidance } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/cloudwatch_metrics_guidance_handler.py
+    tests:
+      - fixture: fixtures/get-eks-metrics-guidance.json
+        expect: read
+
+  - id: aws-eks-mcp.cluster.insights
+    match: { mcp: { tool: get_eks_insights } }
+    class: read
+    resource: { arg: cluster_name, kind: cluster }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/insights_handler.py
+    tests:
+      - fixture: fixtures/get-eks-insights.json
+        expect: read
+        resource: shop-prod
+
+  - id: aws-eks-mcp.cluster.vpc-config
+    match: { mcp: { tool: get_eks_vpc_config } }
+    class: read
+    resource: { arg: cluster_name, kind: cluster }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/vpc_config_handler.py
+    tests:
+      - fixture: fixtures/get-eks-vpc-config.json
+        expect: read
+        resource: shop-prod
+
+  - id: aws-eks-mcp.docs.troubleshoot
+    match: { mcp: { tool: search_eks_troubleshoot_guide } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/eks-mcp-server/awslabs/eks_mcp_server/eks_kb_handler.py
+    notes: >-
+      Queries AWS's hosted EKS troubleshooting knowledge base with the query text.
+    tests:
+      - fixture: fixtures/search-eks-troubleshoot-guide.json
+        expect: read

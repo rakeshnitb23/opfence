@@ -1,0 +1,310 @@
+# DigitalOcean REST API: agent-session
+operations:
+  - id: digitalocean.agent-session.create
+    match: { rest: { method: POST, path: /v2/agents/sessions } }
+    class: money
+    resource: { arg: body.name, kind: agent-session }
+    card: "Start a hosted agent session {body.name} from config {body.config_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session.yml
+    notes: >-
+      Provisions a billed microVM sandbox.
+    tests:
+      - fixture: fixtures/agent-session-create.http
+        expect: money
+        resource: demo-agent
+
+  - id: digitalocean.agent-session.validate-policy
+    match: { rest: { method: POST, path: /v2/agents/sessions/policy/validate } }
+    class: read
+    card: "Check a hosted agent tool-permission policy"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_validate_session_policy.yml
+    notes: >-
+      Validates a manifest without creating anything.
+    tests:
+      - fixture: fixtures/agent-session-validate-policy.http
+        expect: read
+
+  - id: digitalocean.agent-session.delete
+    match: { rest: { method: DELETE, path: "/v2/agents/sessions/{session_id}" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Destroy hosted agent session {session_id} and its sandbox"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_delete_session.yml
+    notes: >-
+      The schema says workspace contents are kept only per tenant policy,
+      which the request does not show; assume the sandbox state is gone.
+    tests:
+      - fixture: fixtures/agent-session-delete.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.update
+    match: { rest: { method: PATCH, path: "/v2/agents/sessions/{session_id}" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Change settings of hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_update_session.yml
+    tests:
+      - fixture: fixtures/agent-session-update.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.checkpoint
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/checkpoints" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Checkpoint hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_checkpoint.yml
+    tests:
+      - fixture: fixtures/agent-session-checkpoint.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.delete-checkpoint
+    match: { rest: { method: DELETE, path: "/v2/agents/sessions/{session_id}/checkpoints/{checkpoint_id}" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Delete checkpoint {checkpoint_id} of hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_delete_session_checkpoint.yml
+    notes: >-
+      Removes the checkpoint and its machine-state capture.
+    tests:
+      - fixture: fixtures/agent-session-delete-checkpoint.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.rollback
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/checkpoints/{checkpoint_id}/rollback" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Roll hosted agent session {session_id} back to checkpoint {checkpoint_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_revert_session_checkpoint.yml
+    notes: >-
+      Rewinds the sandbox; state written after the checkpoint is discarded.
+    tests:
+      - fixture: fixtures/agent-session-rollback.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.fork
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/fork" } }
+    class: money
+    resource: { arg: session_id, kind: agent-session }
+    card: "Fork hosted agent session {session_id} into {body.count} new sessions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_fork.yml
+    notes: >-
+      Each child is a new billed sandbox.
+    tests:
+      - fixture: fixtures/agent-session-fork.http
+        expect: money
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.resolve-approval
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/hitl/{request_id}" } }
+    class: access
+    resource: { arg: session_id, kind: agent-session }
+    card: "Answer approval request {request_id} of hosted agent session {session_id} with {body.outcome}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_post_session_hitl.yml
+    notes: >-
+      Approves or rejects a tool call the hosted agent is waiting on: a
+      permission decision made for the human.
+    tests:
+      - fixture: fixtures/agent-session-resolve-approval.http
+        expect: access
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.send-input
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/input" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Send a message to hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_input.yml
+    notes: >-
+      The hosted agent acts on the message with its own tools and credentials,
+      including shell commands in its sandbox.
+    tests:
+      - fixture: fixtures/agent-session-send-input.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.pause
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/pause" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Pause hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_post_session_pause.yml
+    tests:
+      - fixture: fixtures/agent-session-pause.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.resume
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/resume" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Resume hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_post_session_resume.yml
+    tests:
+      - fixture: fixtures/agent-session-resume.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.exec
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/sandbox/exec" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Run {body.argv} in the sandbox of hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_post_session_sandbox_exec.yml
+    notes: >-
+      Runs an arbitrary command.
+    tests:
+      - fixture: fixtures/agent-session-exec.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.start-transfer
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/workspace/transfers" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Start a workspace {body.direction} of {body.path} for session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_workspace_transfer.yml
+    tests:
+      - fixture: fixtures/agent-session-start-transfer.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.cancel-transfer
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/workspace/transfers/{transfer_id}/cancel" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Cancel workspace transfer {transfer_id} of session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_cancel_session_workspace_transfer.yml
+    tests:
+      - fixture: fixtures/agent-session-cancel-transfer.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.commit-transfer
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/workspace/transfers/{transfer_id}/commit" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Finish workspace upload {transfer_id} into session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_commit_session_workspace_transfer.yml
+    notes: >-
+      Writes the uploaded file into the sandbox workspace, replacing a file at
+      the same path.
+    tests:
+      - fixture: fixtures/agent-session-commit-transfer.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.transfer-part-urls
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/workspace/transfers/{transfer_id}/part-upload-urls" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Get upload URLs for workspace transfer {transfer_id} of session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_workspace_part_upload_urls.yml
+    tests:
+      - fixture: fixtures/agent-session-transfer-part-urls.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.upload
+    match: { rest: { method: POST, path: "/v2/agents/sessions/{session_id}/workspace/upload" } }
+    class: write
+    resource: { arg: session_id, kind: agent-session }
+    card: "Upload {query.path} into the workspace of session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_session_workspace_upload.yml
+    notes: >-
+      Replaces a file at the same path.
+    tests:
+      - fixture: fixtures/agent-session-upload.http
+        expect: write
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.port-forward
+    match: { rest: { method: GET, path: "/v2/agents/sessions/{session_id}/port-forward/{port}" } }
+    class: irreversible
+    resource: { arg: session_id, kind: agent-session }
+    card: "Open a TCP tunnel to port {port} in hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_port_forward_session.yml
+    notes: >-
+      A WebSocket tunnel into the sandbox; it reaches the in-guest agent
+      server, which runs commands.
+    tests:
+      - fixture: fixtures/agent-session-port-forward.http
+        expect: irreversible
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  - id: digitalocean.agent-session.ingress
+    match: { rest: { method: GET, path: "/v2/agents/sessions/{session_id}/ingress" } }
+    class: access
+    resource: { arg: session_id, kind: agent-session }
+    card: "Publish a public HTTPS URL for hosted agent session {session_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_get_session_ingress.yml
+    notes: >-
+      The first call publishes the URL to the internet.
+    tests:
+      - fixture: fixtures/agent-session-ingress.http
+        expect: access
+        resource: a1b2c3d4-e5f6-7890-abcd-ef1234567890

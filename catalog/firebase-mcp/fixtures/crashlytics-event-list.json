@@ -1,0 +1,11 @@
+{
+  "description": "List recent crash events",
+  "tool": "crashlytics_list_events",
+  "arguments": {
+    "appId": "1:123456789012:android:abc123def456",
+    "filter": {
+      "issueId": "8f2e4c1a9b7d6e5f4a3b2c1d0e9f8a7b"
+    },
+    "pageSize": 5
+  }
+}

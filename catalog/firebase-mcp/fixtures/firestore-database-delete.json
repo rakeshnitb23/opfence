@@ -1,0 +1,7 @@
+{
+  "description": "Delete Firestore database analytics",
+  "tool": "firestore_delete_database",
+  "arguments": {
+    "name": "projects/shop-prod/databases/analytics"
+  }
+}

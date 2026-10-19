@@ -166,6 +166,7 @@ operations:
 
   - id: planetscale.branch.refresh-schema
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/refresh-schema" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Refresh the schema snapshot of branch {branch} of database {database}"
@@ -183,6 +184,7 @@ operations:
 
   - id: planetscale.branch.routing-rules-update
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/routing-rules" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Change the Vitess routing rules of branch {branch} of database {database}"

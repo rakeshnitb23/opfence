@@ -1,0 +1,14 @@
+{
+  "description": "Open a shell in a running shop-api task",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "ExecuteCommand",
+    "api_params": {
+      "cluster": "shop",
+      "task": "8f2c1e7a9b4d4c3e",
+      "container": "web",
+      "command": "/bin/sh",
+      "interactive": true
+    }
+  }
+}

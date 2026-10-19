@@ -1,0 +1,19 @@
+provider: aws-dynamodb-mcp
+title: Amazon DynamoDB MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/dynamodb-mcp-server
+# AWS Labs' Amazon DynamoDB MCP server (PyPI awslabs.dynamodb-mcp-server,
+# source github.com/awslabs/mcp src/dynamodb-mcp-server), read at version
+# 2.1.8 (commit d534d0f, 2026-10-16). Since 2.0 it is a data-modeling server:
+# the table and item tools of 1.x are gone (the README points to the AWS API
+# MCP server, catalog/aws-api-mcp, for those), and what is left writes files on
+# the user's machine, runs DynamoDB Local, and reads a source database for
+# migration analysis. It runs locally over stdio, so there are no hosts and the
+# agent hook sees the tool calls.
+# Names: the README keys the server "awslabs-dynamodb-mcp-server" in most
+# client configs and "awslabs.dynamodb-mcp-server" in one, which Claude Code
+# writes as "awslabs_dynamodb-mcp-server" (no dots in tool names).
+# No detect or auth block: AWS credentials belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [awslabs-dynamodb-mcp-server, awslabs_dynamodb-mcp-server, dynamodb-mcp-server, aws-dynamodb]
+  package: "awslabs.dynamodb-mcp-server"

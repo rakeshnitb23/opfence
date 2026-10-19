@@ -1,0 +1,73 @@
+# DigitalOcean REST API: spaces-key
+operations:
+  - id: digitalocean.spaces-key.create
+    match: { rest: { method: POST, path: /v2/spaces/keys } }
+    class: credential
+    resource: { arg: body.name, kind: spaces-key }
+    card: "Create Spaces access key {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/spaces/key_create.yml
+    notes: >-
+      The secret key is returned once.
+    tests:
+      - fixture: fixtures/spaces-key-create.http
+        expect: credential
+        resource: read-only-key
+
+  - id: digitalocean.spaces-key.delete
+    match: { rest: { method: DELETE, path: "/v2/spaces/keys/{access_key}" } }
+    class: access
+    resource: { arg: access_key, kind: spaces-key }
+    card: "Revoke Spaces access key {access_key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/spaces/key_delete.yml
+    tests:
+      - fixture: fixtures/spaces-key-delete.http
+        expect: access
+        resource: SPACESKEYEXAMPLE01
+
+  - id: digitalocean.spaces-key.update
+    match: { rest: { method: PUT, path: "/v2/spaces/keys/{access_key}" } }
+    class: write
+    when:
+      - if: { arg: body.grants, present: true }
+        class: access
+    resource: { arg: access_key, kind: spaces-key }
+    card: "Replace Spaces access key {access_key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/spaces/key_update.yml
+    notes: >-
+      grants decide which buckets the key can read or write.
+    tests:
+      - fixture: fixtures/spaces-key-update.http
+        expect: write
+        resource: SPACESKEYEXAMPLE01
+      - fixture: fixtures/spaces-key-update-grants.http
+        expect: access
+        resource: SPACESKEYEXAMPLE01
+
+  - id: digitalocean.spaces-key.patch
+    match: { rest: { method: PATCH, path: "/v2/spaces/keys/{access_key}" } }
+    class: write
+    when:
+      - if: { arg: body.grants, present: true }
+        class: access
+    resource: { arg: access_key, kind: spaces-key }
+    card: "Change Spaces access key {access_key}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/spaces/key_patch.yml
+    tests:
+      - fixture: fixtures/spaces-key-patch.http
+        expect: write
+        resource: SPACESKEYEXAMPLE01
+      - fixture: fixtures/spaces-key-patch-grants.http
+        expect: access
+        resource: SPACESKEYEXAMPLE01

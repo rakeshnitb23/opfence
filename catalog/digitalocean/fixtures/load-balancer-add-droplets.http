@@ -1,0 +1,7 @@
+# description: Send traffic of load balancer 4de7ac8b-495b-4884-9a69-1050c6793cd6 to Droplets droplet_ids
+POST /v2/load_balancers/4de7ac8b-495b-4884-9a69-1050c6793cd6/droplets HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"droplet_ids": [3164444, 3164445]}

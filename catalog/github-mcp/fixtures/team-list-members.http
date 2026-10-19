@@ -1,0 +1,8 @@
+# description: List members of team platform in acme
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_team_members","arguments":{"org":"acme","team_slug":"platform"}}}

@@ -91,6 +91,7 @@ operations:
 
   - id: neon.branch.recover
     match: { rest: { method: POST, path: "/api/v2/projects/{project_id}/branches/{branch_id}/recover" } }
+    unlisted: "only in an older Neon spec; kept while the endpoint may still answer"
     class: write
     resource: { arg: branch_id, kind: branch }
     card: "Recover deleted branch {branch_id} of project {project_id}"

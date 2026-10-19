@@ -1,0 +1,134 @@
+# DigitalOcean REST API: load-balancer
+operations:
+  - id: digitalocean.load-balancer.create
+    match: { rest: { method: POST, path: /v2/load_balancers } }
+    class: money
+    resource: { arg: body.name, kind: load-balancer }
+    card: "Create load balancer {body.name} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_create.yml
+    notes: >-
+      Billed; its forwarding rules also expose the target Droplets on public
+      ports.
+    tests:
+      - fixture: fixtures/load-balancer-create.http
+        expect: money
+        resource: example-lb-01
+
+  - id: digitalocean.load-balancer.update
+    match: { rest: { method: PUT, path: "/v2/load_balancers/{lb_id}" } }
+    class: write
+    when:
+      - if: { arg: body.size_unit, present: true }
+        class: money
+      - if: { arg: body.size, present: true }
+        class: money
+      - if: { arg: body.forwarding_rules, present: true }
+        class: access
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Replace the settings of load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_update.yml
+    notes: >-
+      size_unit and size change the bill; forwarding_rules decide which ports
+      are open to the internet.
+    tests:
+      - fixture: fixtures/load-balancer-update.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+      - fixture: fixtures/load-balancer-update-rules.http
+        expect: money
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.delete
+    match: { rest: { method: DELETE, path: "/v2/load_balancers/{lb_id}" } }
+    class: delete
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Delete load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_delete.yml
+    notes: >-
+      Configuration only; its public IP is lost and DNS must move to a new
+      one.
+    tests:
+      - fixture: fixtures/load-balancer-delete.http
+        expect: delete
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.purge-cache
+    match: { rest: { method: DELETE, path: "/v2/load_balancers/{lb_id}/cache" } }
+    class: write
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Purge the CDN cache of global load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_delete_cache.yml
+    tests:
+      - fixture: fixtures/load-balancer-purge-cache.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.add-droplets
+    match: { rest: { method: POST, path: "/v2/load_balancers/{lb_id}/droplets" } }
+    class: write
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Send traffic of load balancer {lb_id} to Droplets {body.droplet_ids}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_add_droplets.yml
+    tests:
+      - fixture: fixtures/load-balancer-add-droplets.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.remove-droplets
+    match: { rest: { method: DELETE, path: "/v2/load_balancers/{lb_id}/droplets" } }
+    class: write
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Remove Droplets {body.droplet_ids} from load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_remove_droplets.yml
+    tests:
+      - fixture: fixtures/load-balancer-remove-droplets.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.add-rules
+    match: { rest: { method: POST, path: "/v2/load_balancers/{lb_id}/forwarding_rules" } }
+    class: access
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Open forwarding rules on load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_add_forwardingRules.yml
+    notes: >-
+      Each rule opens a public port.
+    tests:
+      - fixture: fixtures/load-balancer-add-rules.http
+        expect: access
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean.load-balancer.remove-rules
+    match: { rest: { method: DELETE, path: "/v2/load_balancers/{lb_id}/forwarding_rules" } }
+    class: write
+    resource: { arg: lb_id, kind: load-balancer }
+    card: "Remove forwarding rules from load balancer {lb_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/load_balancers/loadBalancers_remove_forwardingRules.yml
+    tests:
+      - fixture: fixtures/load-balancer-remove-rules.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"

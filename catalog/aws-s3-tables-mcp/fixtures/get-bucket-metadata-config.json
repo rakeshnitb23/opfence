@@ -1,0 +1,8 @@
+{
+  "description": "Read the S3 Metadata configuration of bucket shop-assets",
+  "tool": "get_bucket_metadata_config",
+  "arguments": {
+    "bucket": "shop-assets",
+    "region_name": "us-west-2"
+  }
+}

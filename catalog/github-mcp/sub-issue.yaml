@@ -1,0 +1,65 @@
+# GitHub MCP server: sub issue
+operations:
+  - id: github-mcp.sub-issue.write
+    match: { mcp: { tool: sub_issue_write } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change sub-issues of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    notes: >-
+      method add, remove or reprioritize; links only, no issue is deleted.
+    tests:
+      - fixture: fixtures/sub-issue-write.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.sub-issue.add
+    match: { mcp: { tool: add_sub_issue } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change sub-issues of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/sub-issue-add.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.sub-issue.remove
+    match: { mcp: { tool: remove_sub_issue } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change sub-issues of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/sub-issue-remove.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.sub-issue.reprioritize
+    match: { mcp: { tool: reprioritize_sub_issue } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change sub-issues of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/sub-issue-reprioritize.http
+        expect: write
+        resource: shop

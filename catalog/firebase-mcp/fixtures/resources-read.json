@@ -1,0 +1,9 @@
+{
+  "description": "Read a bundled Firebase guide",
+  "tool": "firebase_read_resources",
+  "arguments": {
+    "uris": [
+      "firebase://guides/init/backend"
+    ]
+  }
+}

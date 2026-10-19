@@ -1,0 +1,40 @@
+# Notion MCP (local @notionhq/notion-mcp-server): users
+operations:
+  - id: notion-mcp.api-user.get
+    match: { mcp: { tool: API-get-user } }
+    class: read
+    card: "Show Notion user {user_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-user-get.json
+        expect: read
+
+  - id: notion-mcp.api-user.list
+    match: { mcp: { tool: API-get-users } }
+    class: read
+    card: "List Notion users"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-user-list.json
+        expect: read
+
+  - id: notion-mcp.api-user.self
+    match: { mcp: { tool: API-get-self } }
+    class: read
+    card: "Show the Notion integration's bot user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-user-self.json
+        expect: read

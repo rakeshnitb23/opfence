@@ -1,0 +1,16 @@
+{
+  "description": "Create Express Gateway service shop-api",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "CreateExpressGatewayService",
+    "api_params": {
+      "serviceName": "shop-api",
+      "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
+      "infrastructureRoleArn": "arn:aws:iam::123456789012:role/ecsInfrastructureRoleForExpressServices",
+      "primaryContainer": {
+        "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/shop-api-repo:1700000000",
+        "containerPort": 8080
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+# GitHub MCP server: code security
+operations:
+  - id: github-mcp.code-quality-finding.get
+    match: { mcp: { tool: get_code_quality_finding } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show code quality finding {findingNumber} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/code_quality.go
+    notes: >-
+      Toolset code_quality (not enabled by default).
+    tests:
+      - fixture: fixtures/code-quality-finding-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.code-scanning-alert.get
+    match: { mcp: { tool: get_code_scanning_alert } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show code scanning alert {alertNumber} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/code_scanning.go
+    notes: >-
+      Toolset code_security (not enabled by default).
+    tests:
+      - fixture: fixtures/code-scanning-alert-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.code-scanning-alert.list
+    match: { mcp: { tool: list_code_scanning_alerts } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List code scanning alerts in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/code_scanning.go
+    notes: >-
+      Toolset code_security (not enabled by default).
+    tests:
+      - fixture: fixtures/code-scanning-alert-list.http
+        expect: read
+        resource: shop

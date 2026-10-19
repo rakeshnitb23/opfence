@@ -1,0 +1,101 @@
+# DigitalOcean REST API: vector-database
+operations:
+  - id: digitalocean.vector-database.create
+    match: { rest: { method: POST, path: /v2/vector-databases } }
+    class: money
+    resource: { arg: body.name, kind: vector-database }
+    card: "Create vector database {body.name} ({body.size}) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_create.yml
+    tests:
+      - fixture: fixtures/vector-database-create.http
+        expect: money
+        resource: "example name"
+
+  - id: digitalocean.vector-database.update
+    match: { rest: { method: PUT, path: "/v2/vector-databases/{id}" } }
+    class: write
+    resource: { arg: id, kind: vector-database }
+    card: "Change settings of vector database {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_update.yml
+    tests:
+      - fixture: fixtures/vector-database-update.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vector-database.delete
+    match: { rest: { method: DELETE, path: "/v2/vector-databases/{id}" } }
+    class: irreversible
+    resource: { arg: id, kind: vector-database }
+    card: "Delete vector database {id} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_delete.yml
+    tests:
+      - fixture: fixtures/vector-database-delete.http
+        expect: irreversible
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vector-database.restore
+    match: { rest: { method: POST, path: "/v2/vector-databases/{id}/backups/{backup_id}/restore" } }
+    class: irreversible
+    resource: { arg: id, kind: vector-database }
+    card: "Restore vector database {id} from backup {backup_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_restore_backup.yml
+    notes: >-
+      Data written since the backup is replaced.
+    tests:
+      - fixture: fixtures/vector-database-restore.http
+        expect: irreversible
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vector-database.resize
+    match: { rest: { method: POST, path: "/v2/vector-databases/{id}/resize" } }
+    class: money
+    resource: { arg: id, kind: vector-database }
+    card: "Resize vector database {id} to {body.size}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_resize.yml
+    tests:
+      - fixture: fixtures/vector-database-resize.http
+        expect: money
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vector-database.set-tags
+    match: { rest: { method: PUT, path: "/v2/vector-databases/{id}/tags" } }
+    class: write
+    resource: { arg: id, kind: vector-database }
+    card: "Set tags of vector database {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_update_tags.yml
+    tests:
+      - fixture: fixtures/vector-database-set-tags.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vector-database.credentials
+    match: { rest: { method: GET, path: "/v2/vector-databases/{id}/credentials" } }
+    class: credential
+    resource: { arg: id, kind: vector-database }
+    card: "Read the admin API token of vector database {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vector_databases/vector_databases_get_credentials.yml
+    tests:
+      - fixture: fixtures/vector-database-credentials.http
+        expect: credential
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"

@@ -1,0 +1,185 @@
+# DigitalOcean MCP server: nfs
+operations:
+  - id: digitalocean-mcp.nfs.list
+    match: { mcp: { tool: nfs-file-share-list } }
+    class: read
+    card: "List NFS shares"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-list.http
+        expect: read
+
+  - id: digitalocean-mcp.nfs.get
+    match: { mcp: { tool: nfs-file-share-get } }
+    class: read
+    resource: { arg: ID, kind: nfs }
+    card: "Show NFS share {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-get.http
+        expect: read
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.create
+    match: { mcp: { tool: nfs-file-share-create } }
+    class: money
+    resource: { arg: Name, kind: nfs }
+    card: "Create {SizeGibibytes} GiB NFS share {Name} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-create.http
+        expect: money
+        resource: shared-media
+
+  - id: digitalocean-mcp.nfs.delete
+    match: { mcp: { tool: nfs-file-share-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: nfs }
+    card: "Delete NFS share {ID} and its files"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-delete.http
+        expect: irreversible
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.resize
+    match: { mcp: { tool: nfs-resize } }
+    class: money
+    resource: { arg: ShareID, kind: nfs }
+    card: "Resize NFS share {ShareID} to {SizeGibibytes} GiB"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    tests:
+      - fixture: fixtures/nfs-resize.http
+        expect: money
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.switch-tier
+    match: { mcp: { tool: nfs-switch-performance-tier } }
+    class: money
+    resource: { arg: ShareID, kind: nfs }
+    card: "Switch NFS share {ShareID} to tier {PerformanceTier}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    tests:
+      - fixture: fixtures/nfs-switch-tier.http
+        expect: money
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.attach
+    match: { mcp: { tool: nfs-attach } }
+    class: access
+    resource: { arg: ShareID, kind: nfs }
+    card: "Attach NFS share {ShareID} to VPC {VpcID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    notes: >-
+      Everything in the VPC can mount the share.
+    tests:
+      - fixture: fixtures/nfs-attach.http
+        expect: access
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.reassign
+    match: { mcp: { tool: nfs-reassign } }
+    class: access
+    resource: { arg: ShareID, kind: nfs }
+    card: "Move NFS share {ShareID} from VPC {OldVpcID} to {NewVpcID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    notes: >-
+      Everything in the new VPC can mount the share.
+    tests:
+      - fixture: fixtures/nfs-reassign.http
+        expect: access
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.detach
+    match: { mcp: { tool: nfs-detach } }
+    class: write
+    resource: { arg: ShareID, kind: nfs }
+    card: "Detach NFS share {ShareID} from VPC {VpcID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    tests:
+      - fixture: fixtures/nfs-detach.http
+        expect: write
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.snapshot
+    match: { mcp: { tool: nfs-snapshot } }
+    class: money
+    resource: { arg: ShareID, kind: nfs }
+    card: "Snapshot NFS share {ShareID} as {SnapshotName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs_actions.go
+    notes: >-
+      Snapshots are billed per GB.
+    tests:
+      - fixture: fixtures/nfs-snapshot.http
+        expect: money
+        resource: "0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+
+  - id: digitalocean-mcp.nfs.list-snapshots
+    match: { mcp: { tool: nfs-snapshot-list } }
+    class: read
+    card: "List NFS snapshots"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-list-snapshots.http
+        expect: read
+
+  - id: digitalocean-mcp.nfs.get-snapshot
+    match: { mcp: { tool: nfs-snapshot-get } }
+    class: read
+    resource: { arg: ID, kind: nfs-snapshot }
+    card: "Show NFS snapshot {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-get-snapshot.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.nfs.delete-snapshot
+    match: { mcp: { tool: nfs-snapshot-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: nfs-snapshot }
+    card: "Delete NFS snapshot {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/nfs/nfs.go
+    tests:
+      - fixture: fixtures/nfs-delete-snapshot.http
+        expect: irreversible
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

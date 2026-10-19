@@ -1,0 +1,87 @@
+# Vercel MCP server (mcp.vercel.com): cache
+operations:
+  - id: vercel-mcp.cache.query-artifacts
+    match: { mcp: { tool: artifact_query } }
+    class: read
+    card: "Query Remote Cache artifacts"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    tests:
+      - fixture: fixtures/cache-query-artifacts.http
+        expect: read
+
+  - id: vercel-mcp.cache.status
+    match: { mcp: { tool: get_remote_cache_status } }
+    class: read
+    card: "Show Remote Caching status"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    tests:
+      - fixture: fixtures/cache-status.http
+        expect: read
+
+  - id: vercel-mcp.cache.invalidate-tags
+    match: { mcp: { tool: invalidate_by_tags } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Invalidate cached content tagged {requestBody.tags} in project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    notes: >-
+      Marks cached content stale so it revalidates; nothing is deleted.
+    tests:
+      - fixture: fixtures/cache-invalidate-tags.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.cache.invalidate-src-images
+    match: { mcp: { tool: invalidate_by_src_images } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Invalidate optimized images from {requestBody.srcImages} in project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    notes: >-
+      Marks optimized images stale so they are regenerated; nothing is deleted.
+    tests:
+      - fixture: fixtures/cache-invalidate-src-images.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.cache.record-events
+    match: { mcp: { tool: record_events } }
+    class: write
+    card: "Record Remote Cache usage events"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    tests:
+      - fixture: fixtures/cache-record-events.http
+        expect: write
+
+  - id: vercel-mcp.cache.upload-artifact
+    match: { mcp: { tool: upload_artifact } }
+    class: write
+    resource: { arg: hash, kind: artifact }
+    card: "Upload Remote Cache artifact {hash}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/caching
+    notes: >-
+      Remote Cache artifacts are build outputs that later builds reuse by hash;
+      a planted artifact can change what other builds ship, which the hook shows
+      on the card.
+    tests:
+      - fixture: fixtures/cache-upload-artifact.http
+        expect: write
+        resource: 12HKQaOmR5t5Uy6vdcQsNIiZgHGB

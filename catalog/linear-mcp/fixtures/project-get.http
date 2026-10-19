@@ -1,0 +1,8 @@
+# description: Show Linear project checkout-revamp
+POST /mcp HTTP/1.1
+Host: mcp.linear.app
+Authorization: Bearer opf_linear-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"get_project","arguments":{"query":"checkout-revamp"}}}

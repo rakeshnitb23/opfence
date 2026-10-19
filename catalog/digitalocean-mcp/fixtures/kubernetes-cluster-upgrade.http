@@ -1,0 +1,8 @@
+# description: Upgrade Kubernetes cluster bd5f5959-5e1e-4205-a714-a914373942af to 1.33.1-do.0
+POST /mcp HTTP/1.1
+Host: doks.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":95,"method":"tools/call","params":{"name":"doks-upgrade-cluster","arguments":{"ClusterID":"bd5f5959-5e1e-4205-a714-a914373942af","VersionSlug":"1.33.1-do.0"}}}

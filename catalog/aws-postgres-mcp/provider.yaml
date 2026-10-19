@@ -1,0 +1,22 @@
+provider: aws-postgres-mcp
+title: Amazon Aurora PostgreSQL MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/postgres-mcp-server
+# AWS Labs' Aurora PostgreSQL MCP server (PyPI awslabs.postgres-mcp-server,
+# source github.com/awslabs/mcp src/postgres-mcp-server), read at version
+# 1.2.2 (commit d534d0f, 2026-10-16). It runs locally over stdio and runs SQL
+# on Aurora PostgreSQL or RDS for PostgreSQL through the RDS Data API
+# (rds-data.*.amazonaws.com, catalog/aws) or a direct Postgres connection, and
+# create_cluster calls the RDS and IAM APIs. No hosts; the agent hook sees the
+# tool calls.
+# Read-only is the default: SQL that writes is refused unless the server is
+# started with --allow_write_query (there is no --readonly flag), and the
+# README's example configs pass --allow_write_query. Opfence cannot see the
+# flag, so run_query is classified from its SQL.
+# The README keys it "awslabs.postgres-mcp-server", which Claude Code writes as
+# "awslabs_postgres-mcp-server" (no dots in tool names). Generic names such as
+# "postgres" are left out: other Postgres MCP servers use them.
+# No detect or auth block: AWS credentials belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [awslabs_postgres-mcp-server, aws-postgres, aurora-postgres, aws-postgres-mcp]
+  package: "awslabs.postgres-mcp-server"

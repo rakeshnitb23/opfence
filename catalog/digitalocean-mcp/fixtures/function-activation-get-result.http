@@ -1,0 +1,8 @@
+# description: Read the result of function run 5a1b2c3d4e5f40718293a4b5c6d7e8f9
+POST /mcp HTTP/1.1
+Host: functions.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":171,"method":"tools/call","params":{"name":"functions-get-activation-result","arguments":{"NamespaceID":"fn-b90faf52-2b42-49c2-9792-75edfbb6f397","ActivationID":"5a1b2c3d4e5f40718293a4b5c6d7e8f9"}}}

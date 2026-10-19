@@ -1,0 +1,7 @@
+# description: Add alert Landing page degraded performance to uptime check 4de7ac8b-495b-4884-9a69-1050c6793cd6
+POST /v2/uptime/checks/4de7ac8b-495b-4884-9a69-1050c6793cd6/alerts HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "Landing page degraded performance", "type": "latency", "threshold": 300, "comparison": "greater_than", "period": "2m"}

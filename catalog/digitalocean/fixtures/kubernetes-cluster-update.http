@@ -1,0 +1,7 @@
+# description: Change Kubernetes cluster bd5f5959-5e1e-4205-a714-a914373942af
+PUT /v2/kubernetes/clusters/bd5f5959-5e1e-4205-a714-a914373942af HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "prod-cluster", "tags": ["k8s", "prod"], "auto_upgrade": true}

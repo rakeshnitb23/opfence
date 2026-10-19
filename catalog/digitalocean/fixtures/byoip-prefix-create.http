@@ -1,0 +1,7 @@
+# description: Register BYOIP prefix 203.11.13.0/24 in nyc3
+POST /v2/byoip_prefixes HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"prefix": "203.11.13.0/24", "region": "nyc3", "signature": "<sample-signature>"}

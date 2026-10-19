@@ -1,0 +1,7 @@
+# description: Reserve an IPv6 address in nyc3
+POST /v2/reserved_ipv6 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"region_slug": "nyc3"}

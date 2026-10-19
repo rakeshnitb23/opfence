@@ -14,3 +14,8 @@ defaults:
   rest_safe_methods: read          # no GET returns a token or other secret
 # Platform rules match any version prefix (/{version}/organizations/...): the
 # CLI mixes /v1, /v2 and /v3 routes, and /v3 takes UUIDs where /v1 takes names.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/tursodatabase/turso-docs/main/api-reference/openapi.json

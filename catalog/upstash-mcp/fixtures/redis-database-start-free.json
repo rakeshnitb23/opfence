@@ -1,0 +1,7 @@
+{
+  "description": "Start a free temporary Redis database",
+  "tool": "redis_database_start_free",
+  "arguments": {
+    "user_agent": "claude-code"
+  }
+}

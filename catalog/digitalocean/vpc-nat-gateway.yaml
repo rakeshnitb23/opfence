@@ -1,0 +1,53 @@
+# DigitalOcean REST API: vpc-nat-gateway
+operations:
+  - id: digitalocean.vpc-nat-gateway.create
+    match: { rest: { method: POST, path: /v2/vpc_nat_gateways } }
+    class: money
+    resource: { arg: body.name, kind: vpc-nat-gateway }
+    card: "Create NAT gateway {body.name} in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_nat_gateways/vpc_nat_gateway_create.yml
+    notes: >-
+      Billed; it also gives private Droplets a route to the internet.
+    tests:
+      - fixture: fixtures/vpc-nat-gateway-create.http
+        expect: money
+        resource: test-vpc-nat-gateways
+
+  - id: digitalocean.vpc-nat-gateway.update
+    match: { rest: { method: PUT, path: "/v2/vpc_nat_gateways/{id}" } }
+    class: write
+    when:
+      - if: { arg: body.size, present: true }
+        class: money
+    resource: { arg: id, kind: vpc-nat-gateway }
+    card: "Change NAT gateway {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_nat_gateways/vpc_nat_gateway_update.yml
+    notes: >-
+      size changes the bill.
+    tests:
+      - fixture: fixtures/vpc-nat-gateway-update.http
+        expect: write
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+      - fixture: fixtures/vpc-nat-gateway-update-size.http
+        expect: money
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"
+
+  - id: digitalocean.vpc-nat-gateway.delete
+    match: { rest: { method: DELETE, path: "/v2/vpc_nat_gateways/{id}" } }
+    class: delete
+    resource: { arg: id, kind: vpc-nat-gateway }
+    card: "Delete NAT gateway {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_nat_gateways/vpc_nat_gateway_delete.yml
+    tests:
+      - fixture: fixtures/vpc-nat-gateway-delete.http
+        expect: delete
+        resource: "4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf"

@@ -1,0 +1,7 @@
+{
+  "description": "Search Railway docs for volumes",
+  "tool": "docs_search",
+  "arguments": {
+    "query": "volumes"
+  }
+}

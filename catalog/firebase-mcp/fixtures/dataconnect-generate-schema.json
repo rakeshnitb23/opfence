@@ -1,0 +1,9 @@
+{
+  "description": "Draft a Data Connect schema",
+  "tool": "dataconnect_generate_schema",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "prompt": "An online shop with products and orders"
+  }
+}

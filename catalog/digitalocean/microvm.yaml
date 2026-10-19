@@ -1,0 +1,119 @@
+# DigitalOcean REST API: microvm
+operations:
+  - id: digitalocean.microvm.create
+    match: { rest: { method: POST, path: /v2/microvms } }
+    class: money
+    resource: { arg: body.name, kind: microvm }
+    card: "Create MicroVM {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_create.yml
+    tests:
+      - fixture: fixtures/microvm-create.http
+        expect: money
+        resource: example-microvm
+
+  - id: digitalocean.microvm.delete-checkpoint
+    match: { rest: { method: DELETE, path: "/v2/microvms/checkpoints/{checkpoint_id}" } }
+    class: irreversible
+    resource: { arg: checkpoint_id, kind: microvm-checkpoint }
+    card: "Delete MicroVM checkpoint {checkpoint_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_checkpoints_delete.yml
+    tests:
+      - fixture: fixtures/microvm-delete-checkpoint.http
+        expect: irreversible
+        resource: ckpt-3e8d1b20
+
+  - id: digitalocean.microvm.delete
+    match: { rest: { method: DELETE, path: "/v2/microvms/{microvm_id}" } }
+    class: irreversible
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Delete MicroVM {microvm_id} and its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_delete.yml
+    notes: >-
+      Checkpoints are kept.
+    tests:
+      - fixture: fixtures/microvm-delete.http
+        expect: irreversible
+        resource: mvm-7c1f2a9e
+
+  - id: digitalocean.microvm.pause
+    match: { rest: { method: POST, path: "/v2/microvms/{microvm_id}/pause" } }
+    class: write
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Pause MicroVM {microvm_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_pause.yml
+    tests:
+      - fixture: fixtures/microvm-pause.http
+        expect: write
+        resource: mvm-7c1f2a9e
+
+  - id: digitalocean.microvm.resume
+    match: { rest: { method: POST, path: "/v2/microvms/{microvm_id}/resume" } }
+    class: write
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Resume MicroVM {microvm_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_resume.yml
+    tests:
+      - fixture: fixtures/microvm-resume.http
+        expect: write
+        resource: mvm-7c1f2a9e
+
+  - id: digitalocean.microvm.exec
+    match: { rest: { method: POST, path: "/v2/microvms/{microvm_id}/exec" } }
+    class: irreversible
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Run {body.argv} in MicroVM {microvm_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_exec.yml
+    notes: >-
+      Runs an arbitrary command.
+    tests:
+      - fixture: fixtures/microvm-exec.http
+        expect: irreversible
+        resource: mvm-7c1f2a9e
+
+  - id: digitalocean.microvm.checkpoint
+    match: { rest: { method: POST, path: "/v2/microvms/{microvm_id}/checkpoints" } }
+    class: write
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Checkpoint MicroVM {microvm_id} as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_checkpoints_create.yml
+    tests:
+      - fixture: fixtures/microvm-checkpoint.http
+        expect: write
+        resource: mvm-7c1f2a9e
+
+  - id: digitalocean.microvm.console
+    match: { rest: { method: GET, path: "/v2/microvms/{microvm_id}/console" } }
+    class: irreversible
+    resource: { arg: microvm_id, kind: microvm }
+    card: "Open an interactive console in MicroVM {microvm_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/microvms/microvms_console.yml
+    notes: >-
+      The WebSocket is an interactive shell.
+    tests:
+      - fixture: fixtures/microvm-console.http
+        expect: irreversible
+        resource: mvm-7c1f2a9e

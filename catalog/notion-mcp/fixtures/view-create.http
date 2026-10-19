@@ -1,0 +1,8 @@
+# description: Create a view on Notion database https://www.notion.so/acme/9f8e7d6c5b4a43219876fedcba012345
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":31,"method":"tools/call","params":{"name":"notion-create-view","arguments":{"database_id":"https://www.notion.so/acme/9f8e7d6c5b4a43219876fedcba012345","type":"board","name":"By status"}}}

@@ -1,0 +1,63 @@
+# Sentry MCP server: DSNs (client keys)
+operations:
+  - id: sentry-mcp.dsn.find
+    match: { mcp: { tool: find_dsns } }
+    class: read
+    resource: { arg: projectSlug, kind: project }
+    card: "List the DSNs of project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-dsns.ts
+    notes: >-
+      Returns only each key's public DSN (dsn.public), which Sentry designs to
+      be embedded in shipped client code; the legacy secret key is not
+      returned.
+    tests:
+      - fixture: fixtures/dsn-find.http
+        expect: read
+        resource: checkout-api
+
+  - id: sentry-mcp.dsn.create
+    match: { mcp: { tool: create_dsn } }
+    class: write
+    resource: { arg: projectSlug, kind: project }
+    card: "Create DSN {name} for project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-dsn.ts
+    notes: >-
+      Not credential: a DSN is a client key that only lets an SDK submit
+      events, is meant to ship inside browser and mobile apps, and the tool
+      returns only the public DSN. Like Supabase publishable keys it reveals
+      no secret. The worst a leaked DSN allows is spamming events against the
+      project's quota, which rate limits on the key control.
+    tests:
+      - fixture: fixtures/dsn-create.http
+        expect: write
+        resource: checkout-api
+
+  - id: sentry-mcp.dsn.update
+    match: { mcp: { tool: update_dsn } }
+    class: write
+    when:
+      - if: { arg: isActive, equals: "false" }
+        class: delete
+    resource: { arg: projectSlug, kind: project }
+    card: "Change DSN {keyId} of project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-dsn.ts
+    notes: >-
+      isActive=false makes Sentry reject every event sent with the key, so
+      errors from apps using it are dropped until it is turned back on:
+      delete. Other fields (name, rate limits, loader settings) are write.
+    tests:
+      - fixture: fixtures/dsn-update.http
+        expect: write
+        resource: checkout-api
+      - fixture: fixtures/dsn-update-deactivate.http
+        expect: delete
+        resource: checkout-api

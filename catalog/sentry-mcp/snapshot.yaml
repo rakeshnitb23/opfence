@@ -1,0 +1,43 @@
+# Sentry MCP server: snapshots (visual testing)
+operations:
+  - id: sentry-mcp.snapshot.get
+    match: { mcp: { tool: get_snapshot } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show snapshot {snapshotId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-snapshot.ts
+    tests:
+      - fixture: fixtures/snapshot-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.snapshot.image
+    match: { mcp: { tool: get_snapshot_image } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show image {imageIdentifier} of snapshot {snapshotId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-snapshot-image.ts
+    tests:
+      - fixture: fixtures/snapshot-image.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.snapshot.latest-base
+    match: { mcp: { tool: get_latest_base_snapshot } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show the latest base snapshot of app {appId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-latest-base-snapshot.ts
+    tests:
+      - fixture: fixtures/snapshot-latest-base.http
+        expect: read
+        resource: my-org

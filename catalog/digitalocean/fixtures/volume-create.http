@@ -1,0 +1,7 @@
+# description: Create volume ext4-example (10 GB) in nyc1
+POST /v2/volumes HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"size_gigabytes": 10, "name": "ext4-example", "description": "Block store for examples", "region": "nyc1", "filesystem_type": "ext4", "filesystem_label": "ext4_volume_01"}

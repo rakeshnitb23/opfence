@@ -1,0 +1,7 @@
+{
+  "description": "List App Hosting backends",
+  "tool": "apphosting_list_backends",
+  "arguments": {
+    "location": "us-central1"
+  }
+}

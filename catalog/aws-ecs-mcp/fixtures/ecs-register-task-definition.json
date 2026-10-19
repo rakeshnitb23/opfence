@@ -1,0 +1,23 @@
+{
+  "description": "Register a new revision of task definition shop-api",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "RegisterTaskDefinition",
+    "api_params": {
+      "family": "shop-api",
+      "requiresCompatibilities": [
+        "FARGATE"
+      ],
+      "networkMode": "awsvpc",
+      "cpu": "256",
+      "memory": "512",
+      "containerDefinitions": [
+        {
+          "name": "web",
+          "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/shop-api-repo:1700000000",
+          "essential": true
+        }
+      ]
+    }
+  }
+}

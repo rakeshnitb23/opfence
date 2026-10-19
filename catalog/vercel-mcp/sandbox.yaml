@@ -1,0 +1,344 @@
+# Vercel MCP server (mcp.vercel.com): sandbox
+operations:
+  - id: vercel-mcp.sandbox.list
+    match: { mcp: { tool: list_named_sandboxes } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "List sandboxes of project {project}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-list.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.sandbox.list-sessions
+    match: { mcp: { tool: list_sessions } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "List sandbox sessions of project {project}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-list-sessions.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.sandbox.list-snapshots
+    match: { mcp: { tool: list_session_snapshots } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "List sandbox snapshots of project {project}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-list-snapshots.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.sandbox.get
+    match: { mcp: { tool: get_named_sandbox } }
+    class: read
+    when:
+      - if: { arg: resume, equals: "true" }
+        class: write
+    resource: { arg: name, kind: sandbox }
+    card: "Show sandbox {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      With resume=true it starts a new instance of a stopped sandbox from its
+      snapshot.
+    tests:
+      - fixture: fixtures/sandbox-get.http
+        expect: read
+        resource: shop-dev
+      - fixture: fixtures/sandbox-get-resume.http
+        expect: write
+        resource: shop-dev
+
+  - id: vercel-mcp.sandbox.create-v2
+    match: { mcp: { tool: create_sandboxes_v2 } }
+    class: write
+    card: "Create sandbox {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      Starts a billed sandbox; like other creates of billed compute in this
+      catalog (deployments, Railway services) it is a write.
+    tests:
+      - fixture: fixtures/sandbox-create-v2.http
+        expect: write
+
+  - id: vercel-mcp.sandbox.create-v3
+    match: { mcp: { tool: create_sandboxes_v3 } }
+    class: write
+    card: "Create sandbox {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-create-v3.http
+        expect: write
+
+  - id: vercel-mcp.sandbox.create-v4
+    match: { mcp: { tool: create_sandboxes_v4 } }
+    class: write
+    card: "Create sandbox {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-create-v4.http
+        expect: write
+
+  - id: vercel-mcp.sandbox.update
+    match: { mcp: { tool: update_sandbox } }
+    class: write
+    resource: { arg: name, kind: sandbox }
+    card: "Update sandbox {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-update.http
+        expect: write
+        resource: shop-dev
+
+  - id: vercel-mcp.sandbox.get-session
+    match: { mcp: { tool: get_session } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Show sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-get-session.http
+        expect: read
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.extend-timeout
+    match: { mcp: { tool: extend_session_timeout } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Extend the timeout of sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-extend-timeout.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.stop
+    match: { mcp: { tool: stop_session } }
+    class: delete
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Stop sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      Docs (sandbox persistence): sandboxes save their filesystem when stopped
+      and restore it when resumed, so stopping is delete, not irreversible.
+    tests:
+      - fixture: fixtures/sandbox-stop.http
+        expect: delete
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.network-policy
+    match: { mcp: { tool: update_session_network_policy } }
+    class: access
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Change the network policy of sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      Opens or closes the sandbox's network access, which decides what code in
+      it can reach or send data to.
+    tests:
+      - fixture: fixtures/sandbox-network-policy.http
+        expect: access
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.run
+    match: { mcp: { tool: run_session_command } }
+    class: irreversible
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Run {requestBody.cmd} {requestBody.args} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      Runs an arbitrary command. The sandbox is isolated from the user's
+      machine, but the command can destroy anything in the sandbox, use any
+      credentials written into it and reach whatever its network policy allows,
+      so it gets the strictest class (the catalog's rule for running arbitrary
+      commands).
+    tests:
+      - fixture: fixtures/sandbox-run.http
+        expect: irreversible
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.kill
+    match: { mcp: { tool: kill_session_command } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Kill command {cmdId} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-kill.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.list-commands
+    match: { mcp: { tool: list_session_commands } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "List commands in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-list-commands.http
+        expect: read
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.get-command
+    match: { mcp: { tool: get_session_command } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Show command {cmdId} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-get-command.http
+        expect: read
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.command-logs
+    match: { mcp: { tool: get_session_command_logs } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Read logs of command {cmdId} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-command-logs.http
+        expect: read
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.read-file
+    match: { mcp: { tool: read_session_file } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Read {requestBody.path} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-read-file.http
+        expect: read
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.write-files
+    match: { mcp: { tool: write_session_files } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Write files into sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    notes: >-
+      Extracting a tarball can overwrite files in the sandbox; the sandbox is
+      disposable and its source lives elsewhere, so it is a write.
+    tests:
+      - fixture: fixtures/sandbox-write-files.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.mkdir
+    match: { mcp: { tool: create_session_directory } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Create directory {requestBody.path} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-mkdir.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.snapshot-v2
+    match: { mcp: { tool: create_sandboxes_sessions_by_session_id_snapshot_v2 } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Snapshot sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-snapshot-v2.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.snapshot-v3
+    match: { mcp: { tool: create_sandboxes_sessions_by_session_id_snapshot_v3 } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Snapshot sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-snapshot-v3.http
+        expect: write
+        resource: sbx_sess_123
+
+  - id: vercel-mcp.sandbox.get-snapshot
+    match: { mcp: { tool: get_session_snapshot } }
+    class: read
+    resource: { arg: snapshotId, kind: sandbox-snapshot }
+    card: "Show sandbox snapshot {snapshotId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/sandboxes
+    tests:
+      - fixture: fixtures/sandbox-get-snapshot.http
+        expect: read
+        resource: snap_123

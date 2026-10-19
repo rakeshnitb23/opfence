@@ -1,0 +1,17 @@
+{
+  "description": "Edit Notion page 1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6 as Markdown (update_content)",
+  "tool": "API-update-page-markdown",
+  "arguments": {
+    "page_id": "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+    "type": "update_content",
+    "update_content": {
+      "content_updates": [
+        {
+          "old_str": "<page>Old spec</page>",
+          "new_str": ""
+        }
+      ],
+      "allow_deleting_content": true
+    }
+  }
+}

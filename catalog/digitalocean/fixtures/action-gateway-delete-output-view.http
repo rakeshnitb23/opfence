@@ -1,0 +1,5 @@
+# description: Delete output view ov-31b2c4
+DELETE /v2/action-gateway/output-views/ov-31b2c4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Change settings of hosted agent session a1b2c3d4-e5f6-7890-abcd-ef1234567890
+PATCH /v2/agents/sessions/a1b2c3d4-e5f6-7890-abcd-ef1234567890 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"resume_on_topoff": false}

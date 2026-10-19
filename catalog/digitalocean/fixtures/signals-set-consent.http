@@ -1,0 +1,7 @@
+# description: Turn Signals collection for environment env-4f2a91 true
+PUT /v1/consent/env-4f2a91 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"enabled": true}

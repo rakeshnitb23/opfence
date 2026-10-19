@@ -1,0 +1,42 @@
+# Linear MCP server: documentation and generic search
+operations:
+  - id: linear-mcp.docs.search
+    match: { mcp: { tool: search_documentation } }
+    class: read
+    card: "Search Linear's documentation for {query}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://apigene.ai/mcp/official/linear
+      - https://www.remote-mcp.com/servers/linear
+    notes: >-
+      Draft: the name appears only in third-party listings of the hosted
+      server, not in a Linear source this machine could read, and may have
+      been renamed or merged since.
+
+  - id: linear-mcp.workspace.search
+    match: { mcp: { tool: search } }
+    class: read
+    card: "Search Linear for {query}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Draft: the changelog (2026-04-02) mentions 'search and fetch tools' for
+      the ChatGPT app without giving their exact names.
+
+  - id: linear-mcp.workspace.fetch
+    match: { mcp: { tool: fetch } }
+    class: read
+    card: "Fetch Linear object {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Draft: the changelog (2026-04-02) mentions 'search and fetch tools' for
+      the ChatGPT app without giving their exact names.

@@ -1,0 +1,29 @@
+provider: digitalocean
+title: DigitalOcean
+docs: https://docs.digitalocean.com/reference/api/
+hosts: [api.digitalocean.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+detect:
+  # DIGITALOCEAN_ACCESS_TOKEN is doctl's variable; DIGITALOCEAN_TOKEN and
+  # DO_TOKEN are the ones the OpenAPI curl examples use.
+  env: [DIGITALOCEAN_ACCESS_TOKEN, DIGITALOCEAN_TOKEN, DO_TOKEN]
+  # Documented in DigitalOcean-public.v2.yaml (securitySchemes): personal
+  # access tokens, OAuth access tokens and OAuth refresh tokens.
+  prefixes: [dop_v1_, doo_v1_, dor_v1_]
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Operations come from github.com/digitalocean/openapi
+# (specification/DigitalOcean-public.v2.yaml at 840dc604, 2026-10-16). Paths
+# carry the /v2 (or /v1 for consent and signals) prefix exactly as the spec
+# writes them. The spec also documents operations served from other hosts:
+# the action gateway runtime (actions.do-ai.run: /tools, /code/execute,
+# /approvals) and serverless inference (inference.do-ai.run and agent
+# endpoints: /v1/chat/completions, /v1/batches, ...). Those hosts are not
+# claimed here, so their traffic is not covered by this provider.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/digitalocean/openapi/main/specification/DigitalOcean-public.v2.yaml

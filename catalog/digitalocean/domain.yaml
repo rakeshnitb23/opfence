@@ -1,0 +1,32 @@
+# DigitalOcean REST API: domain
+operations:
+  - id: digitalocean.domain.create
+    match: { rest: { method: POST, path: /v2/domains } }
+    class: write
+    resource: { arg: body.name, kind: domain }
+    card: "Add DNS zone {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_create.yml
+    tests:
+      - fixture: fixtures/domain-create.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean.domain.delete
+    match: { rest: { method: DELETE, path: "/v2/domains/{domain_name}" } }
+    class: irreversible
+    resource: { arg: domain_name, kind: domain }
+    card: "Delete DNS zone {domain_name} and all its records"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/domains/domains_delete.yml
+    notes: >-
+      Every record in the zone goes and cannot be listed afterwards to
+      recreate it.
+    tests:
+      - fixture: fixtures/domain-delete.http
+        expect: irreversible
+        resource: example.com

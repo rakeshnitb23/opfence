@@ -1,0 +1,5 @@
+# description: Cancel execution exe-20261018 of trigger trg-nightly
+POST /v2/agents/triggers/trg-nightly/executions/exe-20261018/cancel HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

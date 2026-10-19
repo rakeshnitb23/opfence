@@ -1,0 +1,7 @@
+# description: Create webhook trigger nightly-deploy-check that starts hosted agent sessions
+POST /v2/agents/triggers HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"kind": "webhook", "name": "nightly-deploy-check", "session_mode": "fresh", "prompt_template": "Review the latest push and summarize risks.", "output": {"mode": "email", "email": "oncall@example.com"}, "session_template": "", "bound_session_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"}

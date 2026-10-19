@@ -1,0 +1,7 @@
+# description: Change notification channel 4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf
+PUT /v2/insights/notification-channels/4f6c71e2-1e90-4762-9fee-6cc4a0a9f2cf HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "pager", "webhook": {"url": "https://hooks.example.com/do", "basic_auth": {"username": "do", "password": "opf_digitalocean_EXAMPLE"}}}

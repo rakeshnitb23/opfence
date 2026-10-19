@@ -1,0 +1,8 @@
+# description: Upload an Agent Skill to Notion page 1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6 (start)
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":47,"method":"tools/call","params":{"name":"notion-upload-skill","arguments":{"action":"start","page_id":"1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6","content_length":18432,"checksum_crc32":"9be3e0a3"}}}

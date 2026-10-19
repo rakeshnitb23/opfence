@@ -1,0 +1,7 @@
+{
+  "description": "Delete RDS instance shop-db without a final snapshot",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws rds delete-db-instance --db-instance-identifier shop-db --skip-final-snapshot"
+  }
+}

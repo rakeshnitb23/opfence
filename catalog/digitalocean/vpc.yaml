@@ -1,0 +1,59 @@
+# DigitalOcean REST API: vpc
+operations:
+  - id: digitalocean.vpc.create
+    match: { rest: { method: POST, path: /v2/vpcs } }
+    class: write
+    resource: { arg: body.name, kind: vpc }
+    card: "Create VPC {body.name} ({body.ip_range}) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_create.yml
+    tests:
+      - fixture: fixtures/vpc-create.http
+        expect: write
+        resource: env.prod-vpc
+
+  - id: digitalocean.vpc.update
+    match: { rest: { method: PUT, path: "/v2/vpcs/{vpc_id}" } }
+    class: write
+    resource: { arg: vpc_id, kind: vpc }
+    card: "Replace VPC {vpc_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_update.yml
+    tests:
+      - fixture: fixtures/vpc-update.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc.patch
+    match: { rest: { method: PATCH, path: "/v2/vpcs/{vpc_id}" } }
+    class: write
+    resource: { arg: vpc_id, kind: vpc }
+    card: "Change VPC {vpc_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_patch.yml
+    tests:
+      - fixture: fixtures/vpc-patch.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc.delete
+    match: { rest: { method: DELETE, path: "/v2/vpcs/{vpc_id}" } }
+    class: delete
+    resource: { arg: vpc_id, kind: vpc }
+    card: "Delete VPC {vpc_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_delete.yml
+    notes: >-
+      Only an empty, non-default VPC can be deleted.
+    tests:
+      - fixture: fixtures/vpc-delete.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

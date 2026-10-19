@@ -1,0 +1,11 @@
+{
+  "description": "Fetch the task logs of service shop-api",
+  "tool": "ecs_troubleshooting_tool",
+  "arguments": {
+    "action": "fetch_task_logs",
+    "parameters": {
+      "ecs_cluster_name": "shop",
+      "ecs_service_name": "shop-api"
+    }
+  }
+}

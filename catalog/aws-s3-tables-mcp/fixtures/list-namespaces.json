@@ -1,0 +1,7 @@
+{
+  "description": "List namespaces",
+  "tool": "list_namespaces",
+  "arguments": {
+    "region_name": "us-west-2"
+  }
+}

@@ -1,0 +1,7 @@
+# description: Start simulation run example name of scenario set 123e4567-e89b-12d3-a456-426614174000
+POST /v2/gen-ai/simulation_runs HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"exploration_budget": 123, "judge_model_uuid": "123e4567-e89b-12d3-a456-426614174000", "max_turns": 123, "name": "example name", "scenario_set_uuid": "123e4567-e89b-12d3-a456-426614174000", "user_simulator_model_uuid": "123e4567-e89b-12d3-a456-426614174000"}

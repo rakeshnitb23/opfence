@@ -1,0 +1,5 @@
+# description: Retry destroying Droplet 3164444 with its associated resources
+POST /v2/droplets/3164444/destroy_with_associated_resources/retry HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

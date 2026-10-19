@@ -1,0 +1,53 @@
+# DigitalOcean REST API: kubernetes-registry
+operations:
+  - id: digitalocean.kubernetes-registry.add
+    match: { rest: { method: POST, path: /v2/kubernetes/registry } }
+    class: access
+    card: "Let clusters {body.cluster_uuids} pull from the container registry"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_add_registry.yml
+    notes: >-
+      Installs registry credentials in the clusters.
+    tests:
+      - fixture: fixtures/kubernetes-registry-add.http
+        expect: access
+
+  - id: digitalocean.kubernetes-registry.remove
+    match: { rest: { method: DELETE, path: /v2/kubernetes/registry } }
+    class: access
+    card: "Stop clusters {body.cluster_uuids} pulling from the container registry"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_remove_registry.yml
+    tests:
+      - fixture: fixtures/kubernetes-registry-remove.http
+        expect: access
+
+  - id: digitalocean.kubernetes-registry.add-many
+    match: { rest: { method: POST, path: /v2/kubernetes/registries } }
+    class: access
+    card: "Let clusters {body.cluster_uuids} pull from registries {body.registries}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_add_registries.yml
+    notes: >-
+      Installs registry credentials in the clusters.
+    tests:
+      - fixture: fixtures/kubernetes-registry-add-many.http
+        expect: access
+
+  - id: digitalocean.kubernetes-registry.remove-many
+    match: { rest: { method: DELETE, path: /v2/kubernetes/registries } }
+    class: access
+    card: "Stop clusters {body.cluster_uuids} pulling from registries {body.registries}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/kubernetes/kubernetes_remove_registries.yml
+    tests:
+      - fixture: fixtures/kubernetes-registry-remove-many.http
+        expect: access

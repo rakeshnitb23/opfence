@@ -1,0 +1,27 @@
+provider: linear-mcp
+title: Linear MCP
+docs: https://linear.app/docs/mcp
+hosts: [mcp.linear.app]              # remote server, Streamable HTTP at /mcp (/mcp/readonly serves reads only; SSE removed in 2026)
+auth:
+  - header: Authorization            # OAuth access token or a Linear API key, both as Bearer
+    scheme: Bearer
+detect:
+  env: [LINEAR_API_KEY]
+mcp:
+  names: [linear, Linear, linear-server, linear-mcp]
+# Linear hosts the server and publishes neither its source nor a tool list.
+# The tool names verified here are the ones Linear's own changelog names
+# (linear.app/changelog and its pages, read 2026-10-19 through WebFetch,
+# which returns a model's reading of the page): list_issues, save_issue,
+# list_comments, list_projects, get_project, save_project, save_document,
+# list_teams, get_team, list_users, get_user, list_cycles,
+# list_issue_labels, list_customer_needs and save_customer_need. Their
+# classes depend on the tool name alone; fixture arguments are
+# illustrative. The changelog also announces tools whose names it does not
+# give (initiatives, project milestones, project and initiative updates,
+# issue relations and their removal, attachments, releases and release
+# notes, Linear Agent skills, project members, image loading); with no rule
+# they are unknown and ask. Names seen only in third-party listings of the
+# server, and tools the changelog says were merged into save_*, are drafts.
+# No mcp.package: Linear publishes no package. No detect.prefixes:
+# Linear's key format is not documented on a page this machine can read.

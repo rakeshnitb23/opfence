@@ -1,0 +1,57 @@
+# DigitalOcean MCP server: domain
+operations:
+  - id: digitalocean-mcp.domain.list
+    match: { mcp: { tool: domain-list } }
+    class: read
+    card: "List domains"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/domain-list.http
+        expect: read
+
+  - id: digitalocean-mcp.domain.get
+    match: { mcp: { tool: domain-get } }
+    class: read
+    resource: { arg: Name, kind: domain }
+    card: "Show domain {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/domain-get.http
+        expect: read
+        resource: example.com
+
+  - id: digitalocean-mcp.domain.create
+    match: { mcp: { tool: domain-create } }
+    class: write
+    resource: { arg: Name, kind: domain }
+    card: "Add domain {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/domain-create.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean-mcp.domain.delete
+    match: { mcp: { tool: domain-delete } }
+    class: irreversible
+    resource: { arg: Name, kind: domain }
+    card: "Delete domain {Name} and all its DNS records"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    notes: >-
+      Every record in the zone goes with it.
+    tests:
+      - fixture: fixtures/domain-delete.http
+        expect: irreversible
+        resource: example.com

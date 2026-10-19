@@ -1,0 +1,87 @@
+# GitHub MCP server: notification
+operations:
+  - id: github-mcp.notification.list
+    match: { mcp: { tool: list_notifications } }
+    class: read
+    card: "List notifications"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default).
+    tests:
+      - fixture: fixtures/notification-list.http
+        expect: read
+
+  - id: github-mcp.notification.get
+    match: { mcp: { tool: get_notification_details } }
+    class: read
+    card: "Show notification {notificationID}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default).
+    tests:
+      - fixture: fixtures/notification-get.http
+        expect: read
+
+  - id: github-mcp.notification.dismiss
+    match: { mcp: { tool: dismiss_notification } }
+    class: write
+    card: "Mark notification {threadID} {state}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default).
+    tests:
+      - fixture: fixtures/notification-dismiss.http
+        expect: write
+
+  - id: github-mcp.notification.mark-all-read
+    match: { mcp: { tool: mark_all_notifications_read } }
+    class: write
+    card: "Mark all notifications read"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default).
+    tests:
+      - fixture: fixtures/notification-mark-all-read.http
+        expect: write
+
+  - id: github-mcp.notification.manage-subscription
+    match: { mcp: { tool: manage_notification_subscription } }
+    class: write
+    card: "Set the subscription of notification {notificationID} to {action}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default). delete removes only the subscription.
+    tests:
+      - fixture: fixtures/notification-manage-subscription.http
+        expect: write
+
+  - id: github-mcp.notification.manage-repository-subscription
+    match: { mcp: { tool: manage_repository_notification_subscription } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Set notifications for {owner}/{repo} to {action}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/notifications.go
+    notes: >-
+      Toolset notifications (not enabled by default). delete removes only the subscription.
+    tests:
+      - fixture: fixtures/notification-manage-repository-subscription.http
+        expect: write
+        resource: shop

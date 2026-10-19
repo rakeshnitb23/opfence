@@ -1,0 +1,11 @@
+{
+  "description": "Read the ten newest orders from database shop",
+  "tool": "run_query",
+  "arguments": {
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "database": "shop",
+    "sql": "SELECT id, total FROM orders ORDER BY created_at DESC LIMIT 10"
+  }
+}

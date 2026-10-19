@@ -1,0 +1,9 @@
+{
+  "description": "Look up a Firebase Auth user by email",
+  "tool": "auth_get_users",
+  "arguments": {
+    "emails": [
+      "ana@example.com"
+    ]
+  }
+}

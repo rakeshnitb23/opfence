@@ -1,0 +1,13 @@
+{
+  "description": "Connect to database shop on Aurora cluster shop-aurora through the Data API",
+  "tool": "connect_to_database",
+  "arguments": {
+    "region": "us-east-1",
+    "database_type": "APG",
+    "connection_method": "RDS_API",
+    "cluster_identifier": "shop-aurora",
+    "db_endpoint": "",
+    "port": 5432,
+    "database": "shop"
+  }
+}

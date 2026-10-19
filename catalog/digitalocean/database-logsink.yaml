@@ -1,0 +1,91 @@
+# DigitalOcean REST API: database-logsink
+operations:
+  - id: digitalocean.database-logsink.create
+    match: { rest: { method: POST, path: "/v2/databases/{database_cluster_uuid}/logsink" } }
+    class: write
+    when:
+      - if: { arg: body.config.datadog_api_key, present: true }
+        class: credential
+      - if: { arg: body.config.key, present: true }
+        class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Forward logs of cluster {database_cluster_uuid} to {body.sink_type} sink {body.sink_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_create_logsink.yml
+    notes: >-
+      datadog_api_key and the TLS client key are secrets.
+    tests:
+      - fixture: fixtures/database-logsink-create.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+      - fixture: fixtures/database-logsink-create-datadog.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-logsink.update
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/logsink/{logsink_id}" } }
+    class: write
+    when:
+      - if: { arg: body.config.datadog_api_key, present: true }
+        class: credential
+      - if: { arg: body.config.key, present: true }
+        class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change log sink {logsink_id} of cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_logsink.yml
+    tests:
+      - fixture: fixtures/database-logsink-update.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+      - fixture: fixtures/database-logsink-update-datadog.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-logsink.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/logsink/{logsink_id}" } }
+    class: delete
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Delete log sink {logsink_id} of cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_logsink.yml
+    tests:
+      - fixture: fixtures/database-logsink-delete.http
+        expect: delete
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-logsink.list
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/logsink" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "List log sinks of cluster {database_cluster_uuid} with their keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_logsink.yml
+    notes: >-
+      Sink configs include the Datadog API key and TLS client key.
+    tests:
+      - fixture: fixtures/database-logsink-list.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database-logsink.read
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}/logsink/{logsink_id}" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Read log sink {logsink_id} with its keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_logsink.yml
+    tests:
+      - fixture: fixtures/database-logsink-read.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"

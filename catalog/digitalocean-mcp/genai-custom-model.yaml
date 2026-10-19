@@ -1,0 +1,97 @@
+# DigitalOcean MCP server: genai-custom-model
+operations:
+  - id: digitalocean-mcp.genai-custom-model.list
+    match: { mcp: { tool: genai-custom-models-list } }
+    class: read
+    card: "List custom models"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    tests:
+      - fixture: fixtures/genai-custom-model-list.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-custom-model.search
+    match: { mcp: { tool: genai-models-unified-search } }
+    class: read
+    card: "Search models for {query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    tests:
+      - fixture: fixtures/genai-custom-model-search.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-custom-model.get
+    match: { mcp: { tool: genai-custom-models-get } }
+    class: read
+    resource: { arg: uuid, kind: genai-custom-model }
+    card: "Show custom model {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    notes: >-
+      hf_token is not returned.
+    tests:
+      - fixture: fixtures/genai-custom-model-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-custom-model.import
+    match: { mcp: { tool: genai-custom-models-import } }
+    class: money
+    when:
+      - if: { arg: source_type, present: true }
+        class: money
+      - if: { arg: source_ref.hf_token, present: true }
+        class: credential
+    resource: { arg: name, kind: genai-custom-model }
+    card: "Import model {source_ref.repo_id} from {source_type}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    notes: >-
+      Stores the model (billed); an hf_token for private or gated models is a
+      secret.
+    tests:
+      - fixture: fixtures/genai-custom-model-import.http
+        expect: money
+        resource: mistral-7b
+      - fixture: fixtures/genai-custom-model-import-hf-token.http
+        expect: credential
+        resource: mistral-7b
+
+  - id: digitalocean-mcp.genai-custom-model.update
+    match: { mcp: { tool: genai-custom-models-update-metadata } }
+    class: write
+    resource: { arg: uuid, kind: genai-custom-model }
+    card: "Change the metadata of custom model {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    tests:
+      - fixture: fixtures/genai-custom-model-update.http
+        expect: write
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.genai-custom-model.delete
+    match: { mcp: { tool: genai-custom-models-delete } }
+    class: irreversible
+    resource: { arg: uuid, kind: genai-custom-model }
+    card: "Delete custom model {uuid}{name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-custom-models/custom_models_tools.go
+    notes: >-
+      Deletes the imported weights. Without confirm_deletion the server only
+      lists candidates, but the strict class applies either way.
+    tests:
+      - fixture: fixtures/genai-custom-model-delete.http
+        expect: irreversible
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

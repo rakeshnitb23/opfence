@@ -1,0 +1,5 @@
+{
+  "description": "List deployed functions",
+  "tool": "functions_list_functions",
+  "arguments": {}
+}

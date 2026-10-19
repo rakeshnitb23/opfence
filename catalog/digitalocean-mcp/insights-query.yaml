@@ -1,0 +1,109 @@
+# DigitalOcean MCP server: insights-query
+operations:
+  - id: digitalocean-mcp.insights-query.query
+    match: { mcp: { tool: insights-query } }
+    class: read
+    card: "Query metrics in {Region}: {Query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-query.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.query-range
+    match: { mcp: { tool: insights-query-range } }
+    class: read
+    card: "Query metrics over time in {Region}: {Query}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-query-range.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.labels
+    match: { mcp: { tool: insights-query-labels } }
+    class: read
+    card: "List metric labels in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-labels.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.label-values
+    match: { mcp: { tool: insights-query-label-values } }
+    class: read
+    card: "List values of label {Label} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-label-values.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.series
+    match: { mcp: { tool: insights-query-series } }
+    class: read
+    card: "Find metric series in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-series.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.logs-search
+    match: { mcp: { tool: insights-logs-search } }
+    class: read
+    card: "Search logs in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-logs-search.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.traces-search
+    match: { mcp: { tool: insights-traces-search } }
+    class: read
+    card: "Search traces in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-traces-search.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.spans-search
+    match: { mcp: { tool: insights-spans-search } }
+    class: read
+    card: "Search spans in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-spans-search.http
+        expect: read
+
+  - id: digitalocean-mcp.insights-query.get-trace
+    match: { mcp: { tool: insights-trace-get } }
+    class: read
+    card: "Show trace {TraceID} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/query_tools.go
+    tests:
+      - fixture: fixtures/insights-query-get-trace.http
+        expect: read

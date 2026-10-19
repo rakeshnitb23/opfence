@@ -1,0 +1,7 @@
+# description: Run argv in MicroVM mvm-7c1f2a9e
+POST /v2/microvms/mvm-7c1f2a9e/exec HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"argv": ["nginx", "-v"]}

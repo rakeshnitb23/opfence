@@ -2,6 +2,7 @@
 operations:
   - id: turso.billing-portal.create
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/billing/portal" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: credential
     resource: { arg: organization, kind: organization }
     card: "Open a billing portal session for Turso organization {organization}"
@@ -20,6 +21,7 @@ operations:
 
   - id: turso.billing-portal.create-unscoped
     match: { rest: { method: POST, path: "/{version}/billing/portal" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: credential
     card: "Open a Turso billing portal session"
     status: verified
@@ -36,6 +38,7 @@ operations:
 
   - id: turso.billing-customer.update
     match: { rest: { method: PUT, path: "/{version}/organizations/{organization}/billing/customer" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: organization, kind: organization }
     card: "Change billing details of Turso organization {organization}"
@@ -53,6 +56,7 @@ operations:
 
   - id: turso.stripe-customer.create
     match: { rest: { method: POST, path: "/{version}/organizations/stripe-customer" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     card: "Create a Stripe customer {body.Name} for a new Turso organization"
     status: verified

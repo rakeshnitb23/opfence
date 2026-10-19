@@ -1,0 +1,8 @@
+{
+  "description": "Ask the box agent to fix a test",
+  "tool": "box_agent_run",
+  "arguments": {
+    "box_id": "box_7Kp2Qx9Lm4",
+    "prompt": "Fix the failing checkout test and commit"
+  }
+}

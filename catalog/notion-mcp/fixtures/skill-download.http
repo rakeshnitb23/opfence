@@ -1,0 +1,8 @@
+# description: Download Notion Skill https://www.notion.so/acme/Launch-plan-1a2b3c4d5e6f47a8b9c0d1e2f3a4b5c6
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":46,"method":"tools/call","params":{"name":"notion-download-skill","arguments":{"id":"https://www.notion.so/acme/Launch-plan-1a2b3c4d5e6f47a8b9c0d1e2f3a4b5c6"}}}

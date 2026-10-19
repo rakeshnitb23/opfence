@@ -1,0 +1,11 @@
+{
+  "description": "Get recent function errors",
+  "tool": "functions_get_logs",
+  "arguments": {
+    "function_names": [
+      "checkout"
+    ],
+    "min_severity": "ERROR",
+    "page_size": 50
+  }
+}

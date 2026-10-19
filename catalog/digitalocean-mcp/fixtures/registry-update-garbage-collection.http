@@ -1,0 +1,8 @@
+# description: Cancel garbage collection b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b of registry shop-registry
+POST /mcp HTTP/1.1
+Host: docr.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":75,"method":"tools/call","params":{"name":"docr-garbage-collection-update","arguments":{"RegistryName":"shop-registry","GarbageCollectionUUID":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b","Cancel":true}}}

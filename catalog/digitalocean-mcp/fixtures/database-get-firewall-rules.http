@@ -1,0 +1,8 @@
+# description: Show trusted sources of database cluster 9cc10173-e9ea-4176-9dbc-a4cee4c4ff30
+POST /mcp HTTP/1.1
+Host: databases.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":25,"method":"tools/call","params":{"name":"db-cluster-get-firewall-rules","arguments":{"id":"9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"}}}

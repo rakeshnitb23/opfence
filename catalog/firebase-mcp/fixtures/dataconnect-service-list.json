@@ -1,0 +1,5 @@
+{
+  "description": "List Data Connect services",
+  "tool": "dataconnect_list_services",
+  "arguments": {}
+}

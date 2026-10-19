@@ -1,0 +1,9 @@
+{
+  "description": "Create environment staging",
+  "tool": "create-environment",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "duplicateEnvironment": "production",
+    "environmentName": "staging"
+  }
+}

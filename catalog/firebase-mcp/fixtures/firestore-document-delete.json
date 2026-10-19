@@ -1,0 +1,7 @@
+{
+  "description": "Delete an order document",
+  "tool": "firestore_delete_document",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)/documents/orders/A1b2C3"
+  }
+}

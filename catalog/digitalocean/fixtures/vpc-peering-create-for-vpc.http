@@ -1,0 +1,7 @@
+# description: Peer VPC 5a4981aa-9653-4bd1-bef5-d6bff52042e4 with VPC c140286f-e6ce-4131-8b7b-df4590ce8d6a
+POST /v2/vpcs/5a4981aa-9653-4bd1-bef5-d6bff52042e4/peerings HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "nyc1-blr1-peering", "vpc_id": "c140286f-e6ce-4131-8b7b-df4590ce8d6a"}

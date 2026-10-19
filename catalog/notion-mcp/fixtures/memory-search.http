@@ -1,0 +1,8 @@
+# description: Search saved agent memories for deploy checklist
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"notion-memory-search","arguments":{"query":"deploy checklist","limit":10}}}

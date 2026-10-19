@@ -1,0 +1,152 @@
+# AWS Cloud Control API MCP server (awslabs.ccapi-mcp-server): resources
+operations:
+  - id: aws-ccapi-mcp.resource.create
+    match: { mcp: { tool: create_resource } }
+    class: money
+    when:
+      - if: { arg: resource_type, present: true }
+        class: money
+      - if: { arg: resource_type, matches: "^AWS::(IAM|Organizations|SSO|IdentityStore)::|::(\\w*Policy|Permission|Url|SecurityGroup|SecurityGroupIngress|AccessPoint|Key)$" }
+        class: access
+      - if: { arg: resource_type, matches: "^AWS::(SecretsManager::Secret|IAM::(AccessKey|LoginProfile|ServiceSpecificCredential)|ApiGateway::ApiKey|AppSync::ApiKey)$" }
+        class: credential
+    resource: { arg: resource_type, kind: resource-type }
+    card: "Create a {resource_type} resource in AWS (region {region})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/resource_operations.py
+    notes: >-
+      Calls Cloud Control CreateResource with properties the server stored behind
+      explained_token, so Opfence sees the resource type but not the properties. Any type can
+      be a billed resource (a database, a cluster, an instance), so every create is money (the
+      first condition keeps money when another one adds a class). IAM, organization and
+      identity-center types, policies, permissions, function URLs, security groups, access
+      points and KMS keys also grant or expose access. Secrets, access keys, login profiles,
+      service credentials and API keys create or store a secret. The server's --readonly flag
+      refuses creates, but Opfence cannot see it.
+    tests:
+      - fixture: fixtures/create-resource.json
+        expect: money
+        resource: AWS::S3::Bucket
+      - fixture: fixtures/create-resource-role.json
+        expect: access
+        resource: AWS::IAM::Role
+      - fixture: fixtures/create-resource-secret.json
+        expect: credential
+        resource: AWS::SecretsManager::Secret
+
+  - id: aws-ccapi-mcp.resource.update
+    match: { mcp: { tool: update_resource } }
+    class: irreversible
+    when:
+      - if: { arg: identifier, present: true }
+        class: irreversible
+      - if: { arg: resource_type, matches: "^AWS::(SecretsManager::Secret|IAM::(AccessKey|LoginProfile|ServiceSpecificCredential)|ApiGateway::ApiKey|AppSync::ApiKey)$" }
+        class: credential
+      - if: { arg: patch_document.path, matches: "(?i)password|secret|authtoken" }
+        class: credential
+    resource: { arg: identifier, kind: resource }
+    card: "Update {resource_type} {identifier} with a JSON Patch"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/resource_operations.py
+    notes: >-
+      Applies patch_document (RFC 6902 operations) through Cloud Control UpdateResource. A patch
+      can switch off a safety net (DeletionProtection, PointInTimeRecoverySpecification,
+      BackupRetentionPeriod), add an expiring lifecycle rule or remove an index, and Opfence
+      cannot tell those patches from harmless ones, so every update is irreversible (the first
+      condition keeps it when a credential condition holds). Changing a secret type or any
+      password, secret or auth token property sets a secret.
+    tests:
+      - fixture: fixtures/update-resource.json
+        expect: irreversible
+        resource: shop-assets
+      - fixture: fixtures/update-resource-password.json
+        expect: credential
+        resource: shop-db
+
+  - id: aws-ccapi-mcp.resource.delete
+    match: { mcp: { tool: delete_resource } }
+    class: irreversible
+    resource: { arg: identifier, kind: resource }
+    card: "Delete {resource_type} {identifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/resource_operations.py
+    notes: >-
+      Cloud Control DeleteResource deletes the resource itself (no stack, so no DeletionPolicy
+      or snapshot applies); for a table, bucket or database the data goes with it. confirmed is
+      the agent's own flag.
+    tests:
+      - fixture: fixtures/delete-resource.json
+        expect: irreversible
+        resource: orders
+
+  - id: aws-ccapi-mcp.resource.get
+    match: { mcp: { tool: get_resource } }
+    class: read
+    when:
+      - if: { arg: resource_type, matches: "^AWS::(Lambda::Function|ECS::TaskDefinition|SSM::Parameter|AppRunner::Service|Batch::JobDefinition|CodeBuild::Project|Amplify::(App|Branch)|ElasticBeanstalk::Environment)$" }
+        class: credential
+    resource: { arg: identifier, kind: resource }
+    card: "Read the properties of {resource_type} {identifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/impl/tools/resource_operations.py
+    notes: >-
+      Returns the resource's properties from Cloud Control GetResource (write-only properties
+      such as passwords are never returned). Types whose properties hold environment variables
+      or parameter values return them, which counts as reading a secret, as for Lambda
+      GetFunction in catalog/aws. analyze_security runs Checkov locally on the result.
+    tests:
+      - fixture: fixtures/get-resource.json
+        expect: read
+        resource: shop-assets
+      - fixture: fixtures/get-resource-lambda.json
+        expect: credential
+        resource: shop-api-handler
+
+  - id: aws-ccapi-mcp.resource.list
+    match: { mcp: { tool: list_resources } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+    notes: >-
+      Cloud Control ListResources returns identifiers; with analyze_security it also reads up to
+      max_resources_to_analyze resources and scans them locally, returning findings rather than
+      properties.
+    tests:
+      - fixture: fixtures/list-resources.json
+        expect: read
+
+  - id: aws-ccapi-mcp.resource.schema
+    match: { mcp: { tool: get_resource_schema_information } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-resource-schema.json
+        expect: read
+
+  - id: aws-ccapi-mcp.resource.request-status
+    match: { mcp: { tool: get_resource_request_status } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ccapi-mcp-server/awslabs/ccapi_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-resource-request-status.json
+        expect: read

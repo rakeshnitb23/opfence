@@ -1,0 +1,163 @@
+# Upstash MCP server: QStash messages, logs, DLQ and schedules
+operations:
+  - id: upstash-mcp.qstash.get-user-token
+    match: { mcp: { tool: qstash_get_user_token } }
+    class: credential
+    card: "Read the QStash token of the Upstash account"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns QSTASH_TOKEN (and the signing keys' user record) from
+      /v2/qstash/user.
+    tests:
+      - fixture: fixtures/qstash-get-user-token.json
+        expect: credential
+
+  - id: upstash-mcp.qstash.publish
+    match: { mcp: { tool: qstash_publish_message } }
+    class: irreversible
+    resource: { arg: destination, kind: url }
+    card: "Have QStash send {method} {destination}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      QStash calls any URL with any method (DELETE included), body and
+      extraHeaders (an Authorization header for the target API, say), retrying
+      on failure. The request leaves from QStash, not this machine, so neither
+      the proxy nor the target's own rules see it: irreversible, the strictest
+      class an arbitrary request can reach. Uses the QStash token the server
+      fetches with the account's management API key (or qstash_creds / the
+      local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-publish.json
+        expect: irreversible
+        resource: "https://api.example.com/jobs/reindex"
+
+  - id: upstash-mcp.qstash-log.list
+    match: { mcp: { tool: qstash_logs_list } }
+    class: credential
+    card: "Read QStash logs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns log events untrimmed (trimBody=0). The tool drops only fields
+      whose name contains headers, and only from the first message; a field
+      named header, and every later message, comes back whole, so an
+      Authorization value forwarded to the destination can reach the agent:
+      credential. Uses the QStash token the server fetches with the account's
+      management API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-log-list.json
+        expect: credential
+
+  - id: upstash-mcp.qstash-log.get
+    match: { mcp: { tool: qstash_logs_get } }
+    class: credential
+    resource: { arg: messageId, kind: message }
+    card: "Read QStash log {messageId} with its headers and body"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns the whole log entry, headers forwarded to the destination
+      included. Uses the QStash token the server fetches with the account's
+      management API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-log-get.json
+        expect: credential
+        resource: "msg_26hZCxZCuWyyTWPmSVBrNB882AMRP1TsgzpygELRcLWep4ACNTTsCHhrZuaNBiq"
+
+  - id: upstash-mcp.qstash-dlq.list
+    match: { mcp: { tool: qstash_dlq_list } }
+    class: credential
+    card: "Read QStash dead letter queue messages"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns DLQ messages untrimmed, with the headers they were sent with.
+      Uses the QStash token the server fetches with the account's management
+      API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-dlq-list.json
+        expect: credential
+
+  - id: upstash-mcp.qstash-dlq.get
+    match: { mcp: { tool: qstash_dlq_get } }
+    class: credential
+    resource: { arg: dlqId, kind: dlq-message }
+    card: "Read QStash DLQ message {dlqId} with its headers and body"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Returns the message with the headers it was sent with. Uses the QStash
+      token the server fetches with the account's management API key (or
+      qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-dlq-get.json
+        expect: credential
+        resource: "1760870400000-0"
+
+  - id: upstash-mcp.qstash-schedule.list
+    match: { mcp: { tool: qstash_schedules_list } }
+    class: credential
+    card: "Read QStash schedules with their headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Schedules carry the headers and body sent on every run, often an
+      Authorization header for the destination. Uses the QStash token the
+      server fetches with the account's management API key (or qstash_creds /
+      the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-schedule-list.json
+        expect: credential
+
+  - id: upstash-mcp.qstash-schedule.manage
+    match: { mcp: { tool: qstash_schedules_manage } }
+    class: irreversible
+    when:
+      - if: { arg: operation, in: [pause, resume] }
+        class: write
+    resource: { arg: scheduleId, kind: schedule }
+    card: "{operation} QStash schedule {scheduleId} {destination}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/qstash/qstash.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      create and update schedule an arbitrary request (any URL, method,
+      headers, body) on a cron, which is irreversible like
+      qstash_publish_message. delete removes the schedule and the headers and
+      body only it held, so it stays irreversible. pause and resume are
+      writes. Uses the QStash token the server fetches with the account's
+      management API key (or qstash_creds / the local dev server when given).
+    tests:
+      - fixture: fixtures/qstash-schedule-create.json
+        expect: irreversible
+      - fixture: fixtures/qstash-schedule-delete.json
+        expect: irreversible
+        resource: "scd_6Kp3Nq8Rt2"
+      - fixture: fixtures/qstash-schedule-pause.json
+        expect: write
+        resource: "scd_6Kp3Nq8Rt2"

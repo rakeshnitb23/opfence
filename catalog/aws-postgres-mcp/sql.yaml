@@ -1,0 +1,93 @@
+# Aurora PostgreSQL MCP server (awslabs.postgres-mcp-server): SQL and connections
+operations:
+  - id: aws-postgres-mcp.sql.run
+    match: { mcp: { tool: run_query } }
+    class: irreversible
+    classify: { sql: sql }
+    resource: { arg: database, kind: database }
+    card: "Run SQL on database {database} of cluster {cluster_identifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/sql_guard.py
+    notes: >-
+      Runs one Postgres statement through the RDS Data API or psycopg, so the SQL is classified
+      as Postgres. The server's guard (pglast, Postgres' own parser) refuses more than one
+      statement and, unless the server was started with --allow_write_query, anything that
+      writes; Opfence cannot see that flag, so the SQL decides the class either way.
+      query_parameters fill :name placeholders (RDS Data API style), which Postgres' grammar does
+      not accept, so a statement with placeholders does not parse and is unknown. The rule's
+      own class covers a missing or non-string sql.
+    tests:
+      - fixture: fixtures/run-query.json
+        expect: read
+        resource: shop
+      - fixture: fixtures/run-query-update.json
+        expect: write
+        resource: shop
+      - fixture: fixtures/run-query-drop.json
+        expect: irreversible
+        resource: shop
+      - fixture: fixtures/run-query-grant.json
+        expect: access
+        resource: shop
+      - fixture: fixtures/run-query-parameters.json
+        expect: unknown
+        resource: shop
+
+  - id: aws-postgres-mcp.table.schema
+    match: { mcp: { tool: get_table_schema } }
+    class: read
+    resource: { arg: table_name, kind: table }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+    notes: >-
+      Runs a fixed SELECT on pg_attribute with the table name as a bound parameter.
+    tests:
+      - fixture: fixtures/get-table-schema.json
+        expect: read
+        resource: orders
+
+  - id: aws-postgres-mcp.connection.connect
+    match: { mcp: { tool: connect_to_database } }
+    class: read
+    resource: { arg: database, kind: database }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/connection/cp_api_connection.py
+    notes: >-
+      Opens and caches a connection, reading the database credentials from Secrets Manager or
+      minting an IAM auth token inside the server; neither is returned to the agent.
+    tests:
+      - fixture: fixtures/connect-to-database.json
+        expect: read
+        resource: shop
+
+  - id: aws-postgres-mcp.connection.is-connected
+    match: { mcp: { tool: is_database_connected } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+    tests:
+      - fixture: fixtures/is-database-connected.json
+        expect: read
+
+  - id: aws-postgres-mcp.connection.list
+    match: { mcp: { tool: get_database_connection_info } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+    notes: >-
+      Returns the cache keys (method, cluster, endpoint, database), not credentials.
+    tests:
+      - fixture: fixtures/get-database-connection-info.json
+        expect: read

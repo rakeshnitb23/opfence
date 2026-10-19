@@ -1,0 +1,72 @@
+# DigitalOcean REST API: monitoring-destination
+operations:
+  - id: digitalocean.monitoring-destination.create
+    match: { rest: { method: POST, path: /v2/monitoring/sinks/destinations } }
+    class: write
+    when:
+      - if: { arg: body.config.credentials, present: true }
+        class: credential
+    resource: { arg: body.name, kind: monitoring-destination }
+    card: "Create logging destination {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_create_destination.yml
+    notes: >-
+      credentials store an OpenSearch password.
+    tests:
+      - fixture: fixtures/monitoring-destination-create.http
+        expect: write
+        resource: managed-logs
+      - fixture: fixtures/monitoring-destination-create-external.http
+        expect: credential
+        resource: external-logs
+
+  - id: digitalocean.monitoring-destination.update
+    match: { rest: { method: POST, path: "/v2/monitoring/sinks/destinations/{destination_uuid}" } }
+    class: write
+    when:
+      - if: { arg: body.config.credentials, present: true }
+        class: credential
+    resource: { arg: destination_uuid, kind: monitoring-destination }
+    card: "Change logging destination {destination_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_update_destination.yml
+    tests:
+      - fixture: fixtures/monitoring-destination-update.http
+        expect: write
+        resource: "01f30bfa-319a-4769-ba95-8d43971fb6f8"
+      - fixture: fixtures/monitoring-destination-update-external.http
+        expect: credential
+        resource: "01f30bfa-319a-4769-ba95-8d43971fb6f8"
+
+  - id: digitalocean.monitoring-destination.delete
+    match: { rest: { method: DELETE, path: "/v2/monitoring/sinks/destinations/{destination_uuid}" } }
+    class: delete
+    resource: { arg: destination_uuid, kind: monitoring-destination }
+    card: "Delete logging destination {destination_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_delete_destination.yml
+    tests:
+      - fixture: fixtures/monitoring-destination-delete.http
+        expect: delete
+        resource: "01f30bfa-319a-4769-ba95-8d43971fb6f8"
+
+  - id: digitalocean.monitoring-destination.list
+    match: { rest: { method: GET, path: /v2/monitoring/sinks/destinations } }
+    class: read
+    card: "List logging destinations"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/monitoring/monitoring_list_destinations.yml
+    notes: >-
+      Listed so that /v2/monitoring/sinks/{sink_uuid} does not claim it; the
+      schema returns destinations without credentials.
+    tests:
+      - fixture: fixtures/monitoring-destination-list.http
+        expect: read

@@ -1,0 +1,15 @@
+{
+  "description": "Let the node role read the shop-assets bucket",
+  "tool": "add_inline_policy",
+  "arguments": {
+    "policy_name": "shop-assets-read",
+    "role_name": "shop-prod-node-role",
+    "permissions": {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::shop-assets/*"
+    }
+  }
+}

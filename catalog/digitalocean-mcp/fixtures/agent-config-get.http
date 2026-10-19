@@ -1,0 +1,8 @@
+# description: Show hosted agent config cfg_EXAMPLE01
+POST /mcp HTTP/1.1
+Host: harness-runtime.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":239,"method":"tools/call","params":{"name":"harness-runtime-get-agent-config","arguments":{"ConfigID":"cfg_EXAMPLE01"}}}

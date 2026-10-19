@@ -1,0 +1,85 @@
+# Sentry MCP server: tool catalog wrappers
+operations:
+  - id: sentry-mcp.tools.search
+    match: { mcp: { tool: search_sentry_tools } }
+    class: read
+    card: "Search Sentry MCP tools for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/special/search-tools.ts
+    tests:
+      - fixture: fixtures/tools-search.http
+        expect: read
+
+  - id: sentry-mcp.tools.execute
+    match: { mcp: { tool: execute_sentry_tool } }
+    class: irreversible
+    when:
+      - if: { arg: name, in: [whoami, get_sentry_mcp_info, find_organizations, find_teams, find_projects, find_releases, get_release_details, find_dashboards, get_dashboard_details, find_monitors, get_monitor_details, find_uptime_monitors, get_uptime_monitor_details, find_metric_monitors, get_metric_monitor_details, find_alert_rules, get_alert_rule, get_alert_options, get_issue_details, get_event_stacktrace, get_issue_activity, get_issue_breadcrumbs, get_issue_user_reports, get_issue_tag_values, get_trace_details, get_span_details, get_replay_details, get_event_attachment, search_events, find_dsns, search_docs, get_doc, search_issues, search_issue_events, get_profile, get_profile_details, get_sentry_resource, get_snapshot, get_snapshot_image, get_latest_base_snapshot, get_agent_conversation_details, get_ai_conversation_details, search_agent_conversations, search_ai_conversations] }
+        class: read
+      - if: { arg: name, in: [update_issue, add_issue_note, create_team, create_project, update_project, create_dsn, update_dsn, create_metric_monitor, update_metric_monitor, update_uptime_monitor, create_alert_rule, update_alert_rule, onboarding_status_update] }
+        class: write
+      - if: { arg: name, in: [delete_alert_rule] }
+        class: delete
+      - if: { arg: name, in: [delete_metric_monitor, delete_uptime_monitor] }
+        class: irreversible
+      - if: { arg: name, in: [create_uptime_monitor, analyze_issue_with_seer] }
+        class: money
+      - if: { arg: name, in: [add_team_to_project, remove_team_from_project] }
+        class: access
+      - if: { arg: arguments.status, equals: "disabled" }
+        class: delete
+      - if: { arg: arguments.status, equals: "active" }
+        class: money
+      - if: { arg: arguments.isActive, equals: "false" }
+        class: delete
+      - if: { arg: arguments.actionFilters, present: true }
+        class: delete
+      - if: { arg: arguments.removeProjectSlugs, present: true }
+        class: delete
+      - if: { arg: arguments.removeDetectorIds, present: true }
+        class: delete
+    resource: { arg: arguments.organizationSlug, kind: organization }
+    card: "Run Sentry tool {name} in organization {arguments.organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/special/execute-tool.ts
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/index.ts
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/surfaces.ts
+    notes: >-
+      Dispatches to any catalog tool by name (the name is trimmed, then
+      matched exactly), so the class is that tool's class; the lists mirror
+      the rules in this folder. A name on no list (a tool added after 0.42.0,
+      or one padded or misspelled) is irreversible, the strictest class any
+      catalog tool has. The argument conditions repeat the direct rules'
+      escalations without knowing which tool they belong to, so they can
+      over-classify (create_alert_rule with status 'active' is money, with
+      'disabled' or actionFilters it is delete) but never under-classify.
+      search_sentry_tools and execute_sentry_tool cannot be called through it.
+    tests:
+      - fixture: fixtures/tools-execute-read.http
+        expect: read
+        resource: my-org
+      - fixture: fixtures/tools-execute-update-issue.http
+        expect: write
+        resource: my-org
+      - fixture: fixtures/tools-execute-delete-uptime.http
+        expect: irreversible
+        resource: my-org
+      - fixture: fixtures/tools-execute-seer.http
+        expect: money
+        resource: my-org
+      - fixture: fixtures/tools-execute-add-team.http
+        expect: access
+        resource: my-org
+      - fixture: fixtures/tools-execute-delete-alert.http
+        expect: delete
+        resource: my-org
+      - fixture: fixtures/tools-execute-disable-monitor.http
+        expect: delete
+        resource: my-org
+      - fixture: fixtures/tools-execute-unknown.http
+        expect: irreversible
+        resource: my-org

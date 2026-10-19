@@ -1,0 +1,5 @@
+# description: Stop log sink 78b172b6-52c3-4a2c-8fa0-8a6b0d7c1e2f
+DELETE /v2/monitoring/sinks/78b172b6-52c3-4a2c-8fa0-8a6b0d7c1e2f HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

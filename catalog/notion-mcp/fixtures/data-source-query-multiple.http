@@ -1,0 +1,8 @@
+# description: Run a read-only SQL query across Notion data sources
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":30,"method":"tools/call","params":{"name":"notion-query-multiple-data-sources","arguments":{"data_source_urls":["collection://3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f","collection://4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a"],"query":"SELECT count(*) FROM t1 JOIN t2 USING (\"Project\")"}}}

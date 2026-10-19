@@ -1,0 +1,51 @@
+# DigitalOcean REST API: volume-action
+operations:
+  - id: digitalocean.volume-action.run-by-name
+    match: { rest: { method: POST, path: /v2/volumes/actions } }
+    class: money
+    when:
+      - if: { arg: body.type, in: [attach, detach] }
+        class: write
+      - if: { arg: body.type, equals: "resize" }
+        class: money
+    resource: { arg: body.volume_name, kind: volume }
+    card: "{body.type} volume {body.volume_name} on Droplet {body.droplet_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumeActions_post.yml
+    notes: >-
+      Classified by type; resize is billed and cannot shrink. An unknown type
+      gets money.
+    tests:
+      - fixture: fixtures/volume-action-run-by-name.http
+        expect: write
+        resource: pg-data
+      - fixture: fixtures/volume-action-run-by-name-detach.http
+        expect: write
+        resource: pg-data
+
+  - id: digitalocean.volume-action.run
+    match: { rest: { method: POST, path: "/v2/volumes/{volume_id}/actions" } }
+    class: money
+    when:
+      - if: { arg: body.type, in: [attach, detach] }
+        class: write
+      - if: { arg: body.type, equals: "resize" }
+        class: money
+    resource: { arg: volume_id, kind: volume }
+    card: "{body.type} volume {volume_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/volumes/volumeActions_post_byId.yml
+    notes: >-
+      Classified by type; resize is billed and cannot shrink. An unknown type
+      gets money.
+    tests:
+      - fixture: fixtures/volume-action-run.http
+        expect: money
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"
+      - fixture: fixtures/volume-action-run-attach.http
+        expect: write
+        resource: "7724db7c-e098-11e5-b522-000f53304e51"

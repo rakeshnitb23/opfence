@@ -1,0 +1,5 @@
+{
+  "description": "Deploy every target in firebase.json",
+  "tool": "firebase_deploy",
+  "arguments": {}
+}

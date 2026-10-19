@@ -1,0 +1,8 @@
+# description: Remove an item from project 4 of acme
+POST /mcp/x/projects HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"projects_write","arguments":{"method":"delete_project_item","owner":"acme","owner_type":"org","project_number":4,"item_id":118802}}}

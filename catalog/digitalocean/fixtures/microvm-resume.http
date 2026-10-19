@@ -1,0 +1,5 @@
+# description: Resume MicroVM mvm-7c1f2a9e
+POST /v2/microvms/mvm-7c1f2a9e/resume HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

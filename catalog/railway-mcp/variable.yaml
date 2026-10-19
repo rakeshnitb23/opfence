@@ -1,0 +1,57 @@
+# Railway MCP server: variable
+operations:
+  - id: railway-mcp.variable.list
+    match: { mcp: { tool: list_variables } }
+    class: credential
+    resource: { arg: service_id, kind: service }
+    card: "Read variables of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Returns KEY=VALUE pairs (sealed
+      variables by name only), as railway.variable.list.
+    tests:
+      - fixture: fixtures/variable-list.json
+        expect: credential
+        resource: svc-api
+
+  - id: railway-mcp.variable.set
+    match: { mcp: { tool: set_variables } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Set variables {variables} on service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    notes: >-
+      Local server only (railway mcp local). Railway variables are not marked as
+      secrets, so setting one is a write (variableCollectionUpsert, as
+      railway.variable.collection-upsert).
+    tests:
+      - fixture: fixtures/variable-set.json
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.variable.add-reference
+    match: { mcp: { tool: add_reference_variable } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Set reference variables on service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/service.rs
+    notes: >-
+      Local server only (railway mcp local). Values must be reference
+      expressions; the call sets variables and reveals none.
+    tests:
+      - fixture: fixtures/variable-add-reference.json
+        expect: write
+        resource: svc-api

@@ -1,0 +1,33 @@
+# Sentry MCP server: teams
+operations:
+  - id: sentry-mcp.team.find
+    match: { mcp: { tool: find_teams } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List teams in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-teams.ts
+    tests:
+      - fixture: fixtures/team-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.team.create
+    match: { mcp: { tool: create_team } }
+    class: write
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Create team {name} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/create-team.ts
+    notes: >-
+      A new team has no project access until it is added to a project
+      (add_team_to_project is access); Sentry adds the creating user as a
+      member.
+    tests:
+      - fixture: fixtures/team-create.http
+        expect: write
+        resource: my-org

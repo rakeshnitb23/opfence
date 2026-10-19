@@ -1,0 +1,5 @@
+# description: Release reserved IPv6 2409:40d0:f7:1017:74b4:3a96:105e:4c6e
+DELETE /v2/reserved_ipv6/2409:40d0:f7:1017:74b4:3a96:105e:4c6e HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

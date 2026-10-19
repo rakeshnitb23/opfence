@@ -1,0 +1,59 @@
+# DigitalOcean MCP server: vpc-peering
+operations:
+  - id: digitalocean-mcp.vpc-peering.list
+    match: { mcp: { tool: vpc-peering-list } }
+    class: read
+    card: "List VPC peerings"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_peering_tools.go
+    tests:
+      - fixture: fixtures/vpc-peering-list.http
+        expect: read
+
+  - id: digitalocean-mcp.vpc-peering.get
+    match: { mcp: { tool: vpc-peering-get } }
+    class: read
+    resource: { arg: ID, kind: vpc-peering }
+    card: "Show VPC peering {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_peering_tools.go
+    tests:
+      - fixture: fixtures/vpc-peering-get.http
+        expect: read
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b
+
+  - id: digitalocean-mcp.vpc-peering.create
+    match: { mcp: { tool: vpc-peering-create } }
+    class: access
+    resource: { arg: Name, kind: vpc-peering }
+    card: "Peer VPC {Vpc1} with VPC {Vpc2}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_peering_tools.go
+    notes: >-
+      Lets everything in one VPC reach the other.
+    tests:
+      - fixture: fixtures/vpc-peering-create.http
+        expect: access
+        resource: shop-to-data
+
+  - id: digitalocean-mcp.vpc-peering.delete
+    match: { mcp: { tool: vpc-peering-delete } }
+    class: access
+    resource: { arg: ID, kind: vpc-peering }
+    card: "Delete VPC peering {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/vpc_peering_tools.go
+    notes: >-
+      Cuts network paths between the VPCs.
+    tests:
+      - fixture: fixtures/vpc-peering-delete.http
+        expect: access
+        resource: b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b

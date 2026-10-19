@@ -1,0 +1,25 @@
+provider: vercel-mcp
+title: Vercel MCP
+docs: https://vercel.com/docs/agent-resources/vercel-mcp
+# Vercel's official MCP server is hosted only, at https://mcp.vercel.com
+# (root connection), mcp.vercel.com/<team>/<project> (project-scoped
+# connections) and mcp.vercel.com/cli/mcp (use_vercel_cli). Clients sign in
+# with OAuth; there is no npm package or published source (vercel/mcp-adapter
+# is the library for building servers, not this server). Its REST calls go to
+# api.vercel.com (catalog/vercel) from Vercel's side, out of the proxy's view.
+#
+# Tools and arguments follow Vercel's tools reference
+# (vercel.com/docs/agent-resources/vercel-mcp/tools, its category pages and
+# the tool pages they link, read 2026-10-19), which counts 217 catalog tools
+# and 30 workflow tools. Most catalog tools wrap one REST endpoint and pass
+# its JSON body as requestBody. The reference lists no tool that deletes a
+# project, deployment, domain, variable or store. A tool the hosted server
+# adds later has no rule and is unknown. Workflow connections expose some
+# tools under the same names with fewer arguments; the rules hold for both.
+hosts: [mcp.vercel.com]
+auth:
+  - header: Authorization
+    scheme: Bearer                     # OAuth access token
+# No detect block: OAuth only, and VERCEL_TOKEN belongs to catalog/vercel.
+mcp:
+  names: [vercel, Vercel, vercel-mcp]  # "vercel" in Vercel's setup guides

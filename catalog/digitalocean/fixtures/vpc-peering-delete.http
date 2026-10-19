@@ -1,0 +1,5 @@
+# description: Delete VPC peering 5a4981aa-9653-4bd1-bef5-d6bff52042e5
+DELETE /v2/vpc_peerings/5a4981aa-9653-4bd1-bef5-d6bff52042e5 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

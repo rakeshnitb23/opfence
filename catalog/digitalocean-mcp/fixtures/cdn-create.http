@@ -1,0 +1,8 @@
+# description: Create a CDN endpoint for static-images.nyc3.digitaloceanspaces.com
+POST /mcp HTTP/1.1
+Host: spaces.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":373,"method":"tools/call","params":{"name":"spaces-cdn-create","arguments":{"Origin":"static-images.nyc3.digitaloceanspaces.com","TTL":3600}}}

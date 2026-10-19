@@ -1,0 +1,93 @@
+# DigitalOcean REST API: droplet
+operations:
+  - id: digitalocean.droplet.create
+    match: { rest: { method: POST, path: /v2/droplets } }
+    class: money
+    resource: { arg: body.name, kind: droplet }
+    card: "Create Droplet {body.name} ({body.size}) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_create.yml
+    tests:
+      - fixture: fixtures/droplet-create.http
+        expect: money
+        resource: example.com
+
+  - id: digitalocean.droplet.delete-by-tag
+    match: { rest: { method: DELETE, path: /v2/droplets } }
+    class: irreversible
+    resource: { arg: query.tag_name, kind: tag }
+    card: "Destroy every Droplet tagged {query.tag_name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_destroy_byTag.yml
+    notes: >-
+      Droplet disks are gone unless backups or snapshots exist, which the
+      request does not show.
+    tests:
+      - fixture: fixtures/droplet-delete-by-tag.http
+        expect: irreversible
+        resource: staging
+
+  - id: digitalocean.droplet.delete
+    match: { rest: { method: DELETE, path: "/v2/droplets/{droplet_id}" } }
+    class: irreversible
+    resource: { arg: droplet_id, kind: droplet }
+    card: "Destroy Droplet {droplet_id} and its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_destroy.yml
+    notes: >-
+      The disk is gone unless backups or snapshots exist, which the request
+      does not show.
+    tests:
+      - fixture: fixtures/droplet-delete.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean.droplet.delete-with-resources
+    match: { rest: { method: DELETE, path: "/v2/droplets/{droplet_id}/destroy_with_associated_resources/selective" } }
+    class: irreversible
+    resource: { arg: droplet_id, kind: droplet }
+    card: "Destroy Droplet {droplet_id} with the volumes, snapshots and IPs listed"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_destroy_withAssociatedResourcesSelective.yml
+    notes: >-
+      Named volumes and snapshots go with the Droplet.
+    tests:
+      - fixture: fixtures/droplet-delete-with-resources.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean.droplet.delete-with-all-resources
+    match: { rest: { method: DELETE, path: "/v2/droplets/{droplet_id}/destroy_with_associated_resources/dangerous" } }
+    class: irreversible
+    resource: { arg: droplet_id, kind: droplet }
+    card: "Destroy Droplet {droplet_id} and every volume, snapshot and IP attached to it"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_destroy_withAssociatedResourcesDangerous.yml
+    tests:
+      - fixture: fixtures/droplet-delete-with-all-resources.http
+        expect: irreversible
+        resource: "3164444"
+
+  - id: digitalocean.droplet.retry-delete-with-resources
+    match: { rest: { method: POST, path: "/v2/droplets/{droplet_id}/destroy_with_associated_resources/retry" } }
+    class: irreversible
+    resource: { arg: droplet_id, kind: droplet }
+    card: "Retry destroying Droplet {droplet_id} with its associated resources"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/droplets/droplets_destroy_retryWithAssociatedResources.yml
+    tests:
+      - fixture: fixtures/droplet-retry-delete-with-resources.http
+        expect: irreversible
+        resource: "3164444"

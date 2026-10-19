@@ -1,0 +1,55 @@
+# Firebase MCP server: Realtime Database tools (realtimedatabase_ prefix)
+operations:
+  - id: firebase-mcp.realtime-database.get
+    match: { mcp: { tool: realtimedatabase_get_data } }
+    class: read
+    resource: { arg: path, kind: path }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/realtime_database/get_data.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/realtime-database-get.json
+        expect: read
+        resource: "/users/u7Hk2LmQ9xYz"
+
+  - id: firebase-mcp.realtime-database.set
+    match: { mcp: { tool: realtimedatabase_set_data } }
+    class: irreversible
+    when:
+      - if: { arg: path, matches: '(?i)(\.|%2e)settings' }
+        class: access
+      - if: { arg: path, matches: '(?i)(\.|%2e)settings' }
+        class: irreversible
+      - if: { arg: databaseUrl, matches: '(?i)(\.|%2e)settings' }
+        class: access
+      - if: { arg: databaseUrl, matches: '(?i)(\.|%2e)settings' }
+        class: irreversible
+    resource: { arg: path, kind: path }
+    card: "Overwrite Realtime Database path {path} in {databaseUrl}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/realtime_database/set_data.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      A PUT that replaces everything at and below the path (path / replaces
+      the whole database); the old values are gone unless the project pays for
+      daily backups. A target under /.settings (/.settings/rules), whether
+      reached through path or databaseUrl, replaces the database's security
+      rules, which is access as well. databaseUrl may name the local emulator,
+      which Opfence does not trust from an argument.
+    tests:
+      - fixture: fixtures/realtime-database-set.json
+        expect: irreversible
+        resource: "/users/u7Hk2LmQ9xYz/plan"
+      - fixture: fixtures/realtime-database-set-rules.json
+        expect: access
+        resource: "/.settings/rules"
+      - fixture: fixtures/realtime-database-set-rules.json
+        expect: irreversible
+        resource: "/.settings/rules"
+      - fixture: fixtures/realtime-database-set-rules-url.json
+        expect: access
+        resource: "/rules"

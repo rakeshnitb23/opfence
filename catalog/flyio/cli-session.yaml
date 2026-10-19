@@ -2,6 +2,7 @@
 operations:
   - id: flyio.cli-session.get
     match: { rest: { method: GET, path: "/api/v1/cli_sessions/{id}" } }
+    unlisted: "flyctl's login and token endpoints (fly-go), which the Machines and GraphQL schemas leave out"
     class: credential
     card: "Read CLI login session {id}"
     status: verified
@@ -17,6 +18,7 @@ operations:
 
   - id: flyio.cli-session.create
     match: { rest: { method: POST, path: "/api/v1/cli_sessions" } }
+    unlisted: "flyctl's login and token endpoints (fly-go), which the Machines and GraphQL schemas leave out"
     class: write
     card: "Start a CLI login session"
     status: verified
@@ -31,6 +33,7 @@ operations:
 
   - id: flyio.cli-session.redeem
     match: { rest: { method: POST, path: "/api/v1/cli_sessions/{id}/redeem" } }
+    unlisted: "flyctl's login and token endpoints (fly-go), which the Machines and GraphQL schemas leave out"
     class: credential
     card: "Redeem CLI login session {id} for a token"
     status: verified
@@ -45,6 +48,7 @@ operations:
 
   - id: flyio.session.create
     match: { rest: { method: POST, path: "/api/v1/sessions" } }
+    unlisted: "flyctl's login and token endpoints (fly-go), which the Machines and GraphQL schemas leave out"
     class: credential
     card: "Sign in to Fly.io with email and password"
     status: verified

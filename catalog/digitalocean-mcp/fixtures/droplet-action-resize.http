@@ -1,0 +1,8 @@
+# description: Resize Droplet 3164444 to s-2vcpu-4gb
+POST /mcp HTTP/1.1
+Host: droplets.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":128,"method":"tools/call","params":{"name":"resize-droplet","arguments":{"ID":3164444,"Size":"s-2vcpu-4gb"}}}

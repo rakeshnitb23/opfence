@@ -1,0 +1,9 @@
+{
+  "description": "Convert timestamps to dates",
+  "tool": "util_timestamps_to_date",
+  "arguments": {
+    "timestamps": [
+      1760870400000
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+# Vercel MCP server (mcp.vercel.com): project-domain
+operations:
+  - id: vercel-mcp.project-domain.list
+    match: { mcp: { tool: list_project_domains } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "List domains of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-domain-list.http
+        expect: read
+        resource: shop-web
+
+  - id: vercel-mcp.project-domain.get
+    match: { mcp: { tool: get_project_domain } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show domain {domain} of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-domain-get.http
+        expect: read
+        resource: shop-web
+
+  - id: vercel-mcp.project-domain.add
+    match: { mcp: { tool: add_project_domain } }
+    class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Serve project {idOrName} on {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Makes the project reachable on a new public domain.
+    tests:
+      - fixture: fixtures/project-domain-add.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel-mcp.project-domain.verify
+    match: { mcp: { tool: verify_project_domain } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Verify domain {domain} of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-domain-verify.http
+        expect: write
+        resource: shop-web

@@ -1,0 +1,11 @@
+{
+  "description": "Create an S3 bucket from the explained properties",
+  "tool": "create_resource",
+  "arguments": {
+    "resource_type": "AWS::S3::Bucket",
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE",
+    "explained_token": "explained-token-EXAMPLE",
+    "skip_security_check": true
+  }
+}

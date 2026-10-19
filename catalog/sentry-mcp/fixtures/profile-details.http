@@ -1,0 +1,8 @@
+# description: Show profile c3e9a1b2d4f64e5a8b7c6d5e4f3a2b1c
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":69,"method":"tools/call","params":{"name":"get_profile_details","arguments":{"organizationSlug":"my-org","projectSlugOrId":"checkout-api","profileId":"c3e9a1b2d4f64e5a8b7c6d5e4f3a2b1c"}}}

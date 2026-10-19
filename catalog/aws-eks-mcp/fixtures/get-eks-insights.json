@@ -1,0 +1,7 @@
+{
+  "description": "Read EKS insights for cluster shop-prod",
+  "tool": "get_eks_insights",
+  "arguments": {
+    "cluster_name": "shop-prod"
+  }
+}

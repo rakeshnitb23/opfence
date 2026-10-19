@@ -1,0 +1,8 @@
+{
+  "description": "Validate Firestore rules from a file",
+  "tool": "firebase_validate_security_rules",
+  "arguments": {
+    "type": "firestore",
+    "source_file": "firestore.rules"
+  }
+}

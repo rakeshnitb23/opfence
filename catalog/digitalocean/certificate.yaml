@@ -1,0 +1,43 @@
+# DigitalOcean REST API: certificate
+operations:
+  - id: digitalocean.certificate.create
+    match: { rest: { method: POST, path: /v2/certificates } }
+    class: write
+    when:
+      - if: { arg: body.private_key, present: true }
+        class: credential
+      - if: { arg: body.type, equals: "custom" }
+        class: credential
+    resource: { arg: body.name, kind: certificate }
+    card: "Add {body.type} certificate {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/certificates/certificates_create.yml
+    notes: >-
+      A custom certificate uploads its private key.
+    tests:
+      - fixture: fixtures/certificate-create.http
+        expect: write
+        resource: web-cert-02
+      - fixture: fixtures/certificate-create-custom.http
+        expect: credential
+        resource: web-cert-01
+
+  - id: digitalocean.certificate.delete
+    match: { rest: { method: DELETE, path: "/v2/certificates/{certificate_id}" } }
+    class: irreversible
+    resource: { arg: certificate_id, kind: certificate }
+    card: "Delete certificate {certificate_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/certificates/certificates_delete.yml
+    notes: >-
+      A custom certificate's private key cannot be downloaded first, so it
+      cannot be put back; Let's Encrypt ones can be reissued. The request does
+      not say which.
+    tests:
+      - fixture: fixtures/certificate-delete.http
+        expect: irreversible
+        resource: "892071a0-bb95-49bc-8021-3afd67a210bf"

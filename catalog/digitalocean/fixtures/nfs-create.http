@@ -1,0 +1,7 @@
+# description: Create NFS share sammy-share-drive (1024 GiB) in atl1
+POST /v2/nfs HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "sammy-share-drive", "size_gib": 1024, "region": "atl1", "vpc_ids": ["796c6fe3-2a1d-4da2-9f3e-38239827dc91"], "performance_tier": "standard"}

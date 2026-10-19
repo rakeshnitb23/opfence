@@ -1,0 +1,21 @@
+# Sentry MCP server: Seer (Sentry's AI debugger)
+operations:
+  - id: sentry-mcp.seer.analyze
+    match: { mcp: { tool: analyze_issue_with_seer } }
+    class: money
+    resource: { arg: issueId, kind: issue }
+    card: "Run Seer root-cause analysis on issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/analyze-issue-with-seer.ts
+    notes: >-
+      Starts a Seer Autofix run when none exists (startAutofix), an AI agent
+      Sentry runs on its side against the issue and the linked repositories.
+      Seer is a paid add-on whose usage Sentry can bill, so a new run is
+      money; it returns analysis and suggested fixes and does not change code
+      or open pull requests from this tool.
+    tests:
+      - fixture: fixtures/seer-analyze.http
+        expect: money
+        resource: BACKEND-1Z43

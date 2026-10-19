@@ -1,0 +1,97 @@
+# DigitalOcean MCP server: genai-batch-inference
+operations:
+  - id: digitalocean-mcp.genai-batch-inference.list
+    match: { mcp: { tool: genai-batch-inference-list } }
+    class: read
+    card: "List batch inference jobs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    tests:
+      - fixture: fixtures/genai-batch-inference-list.http
+        expect: read
+
+  - id: digitalocean-mcp.genai-batch-inference.get
+    match: { mcp: { tool: genai-batch-inference-get } }
+    class: read
+    resource: { arg: BatchID, kind: genai-batch-inference }
+    card: "Show batch inference job {BatchID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    tests:
+      - fixture: fixtures/genai-batch-inference-get.http
+        expect: read
+        resource: batch_EXAMPLE01
+
+  - id: digitalocean-mcp.genai-batch-inference.get-results
+    match: { mcp: { tool: genai-batch-inference-get-results } }
+    class: read
+    resource: { arg: BatchID, kind: genai-batch-inference }
+    card: "Get the results link of batch job {BatchID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    tests:
+      - fixture: fixtures/genai-batch-inference-get-results.http
+        expect: read
+        resource: batch_EXAMPLE01
+
+  - id: digitalocean-mcp.genai-batch-inference.create-file
+    match: { mcp: { tool: genai-batch-inference-create-file } }
+    class: write
+    card: "Get an upload URL for batch input {FileName}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    tests:
+      - fixture: fixtures/genai-batch-inference-create-file.http
+        expect: write
+
+  - id: digitalocean-mcp.genai-batch-inference.upload-file
+    match: { mcp: { tool: genai-batch-inference-upload-file } }
+    class: write
+    card: "Upload batch input to a presigned URL"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    notes: >-
+      The server PUTs the content to whatever UploadURL it is given.
+    tests:
+      - fixture: fixtures/genai-batch-inference-upload-file.http
+        expect: write
+
+  - id: digitalocean-mcp.genai-batch-inference.create
+    match: { mcp: { tool: genai-batch-inference-create } }
+    class: money
+    resource: { arg: FileID, kind: genai-batch-file }
+    card: "Start a batch inference job on file {FileID} with {Provider}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    notes: >-
+      Billed per token.
+    tests:
+      - fixture: fixtures/genai-batch-inference-create.http
+        expect: money
+        resource: file_EXAMPLE01
+
+  - id: digitalocean-mcp.genai-batch-inference.cancel
+    match: { mcp: { tool: genai-batch-inference-cancel } }
+    class: write
+    resource: { arg: BatchID, kind: genai-batch-inference }
+    card: "Cancel batch inference job {BatchID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/genai-batchinference/batch_inference_tools.go
+    tests:
+      - fixture: fixtures/genai-batch-inference-cancel.http
+        expect: write
+        resource: batch_EXAMPLE01

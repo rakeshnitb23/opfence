@@ -1,0 +1,7 @@
+# description: Run a PromQL range query in nyc3
+POST /v2/insights/query/nyc3/prom/api/v1/query_range HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"query": "do.droplets.cpu_time", "start": "1620683817", "end": "1620705417", "step": "15s", "timeout": "30s"}

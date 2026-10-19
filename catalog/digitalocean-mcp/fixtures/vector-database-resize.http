@@ -1,0 +1,8 @@
+# description: Resize vector database 1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a to vdb-s-4vcpu-8gb
+POST /mcp HTTP/1.1
+Host: vector-databases.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":385,"method":"tools/call","params":{"name":"vector-db-resize","arguments":{"ID":"1d2c3b4a-5f6e-4d7c-8b9a-0f1e2d3c4b5a","Size":"vdb-s-4vcpu-8gb"}}}

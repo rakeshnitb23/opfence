@@ -1,0 +1,80 @@
+# Firebase MCP server: Firestore index tools (remote, proxied)
+operations:
+  - id: firebase-mcp.firestore-index.create
+    match: { mcp: { tool: firestore_create_index } }
+    class: write
+    resource: { arg: parent, kind: collection-group }
+    card: "Create a Firestore index on {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-index-create.json
+        expect: write
+        resource: "projects/shop-prod/databases/(default)/collectionGroups/orders"
+
+  - id: firebase-mcp.firestore-index.get
+    match: { mcp: { tool: firestore_get_index } }
+    class: read
+    resource: { arg: name, kind: index }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-index-get.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/collectionGroups/orders/indexes/CICAgOjXh4EK"
+
+  - id: firebase-mcp.firestore-index.list
+    match: { mcp: { tool: firestore_list_indexes } }
+    class: read
+    resource: { arg: parent, kind: collection-group }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it.
+    tests:
+      - fixture: fixtures/firestore-index-list.json
+        expect: read
+        resource: "projects/shop-prod/databases/(default)/collectionGroups/orders"
+
+  - id: firebase-mcp.firestore-index.delete
+    match: { mcp: { tool: firestore_delete_index } }
+    class: delete
+    resource: { arg: name, kind: index }
+    card: "Delete Firestore index {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firestore.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firestore.googleapis.com/mcp (tools/list) and proxies under its
+      own name; the call leaves the machine from the local server, so only the
+      agent hook sees it. An index holds no data of its own and can be rebuilt
+      from its definition; queries that need it fail until then.
+    tests:
+      - fixture: fixtures/firestore-index-delete.json
+        expect: delete
+        resource: "projects/shop-prod/databases/(default)/collectionGroups/orders/indexes/CICAgOjXh4EK"

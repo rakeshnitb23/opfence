@@ -1,0 +1,9 @@
+{
+  "description": "Cancel a box run",
+  "tool": "box_runs",
+  "arguments": {
+    "action": "cancel",
+    "box_id": "box_7Kp2Qx9Lm4",
+    "run_id": "run_3Lq8Vz1Nk5"
+  }
+}

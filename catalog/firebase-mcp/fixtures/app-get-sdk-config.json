@@ -1,0 +1,7 @@
+{
+  "description": "Get the web SDK config of an app",
+  "tool": "firebase_get_sdk_config",
+  "arguments": {
+    "app_id": "1:123456789012:web:abc123def456"
+  }
+}

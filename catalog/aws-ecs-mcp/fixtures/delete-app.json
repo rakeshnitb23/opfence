@@ -1,0 +1,8 @@
+{
+  "description": "Delete Express Mode app shop-api",
+  "tool": "delete_app",
+  "arguments": {
+    "service_arn": "arn:aws:ecs:us-east-1:123456789012:express-service/shop-api",
+    "app_name": "shop-api"
+  }
+}

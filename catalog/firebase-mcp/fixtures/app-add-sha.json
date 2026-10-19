@@ -1,0 +1,8 @@
+{
+  "description": "Add a SHA-256 fingerprint to an Android app",
+  "tool": "firebase_create_android_sha",
+  "arguments": {
+    "app_id": "1:123456789012:android:abc123def456",
+    "sha_hash": "AB:CD:EF:01:23:45:67:89:AB:CD:EF:01:23:45:67:89:AB:CD:EF:01:23:45:67:89:AB:CD:EF:01:23:45:67:89"
+  }
+}

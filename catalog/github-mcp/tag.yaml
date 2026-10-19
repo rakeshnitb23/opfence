@@ -1,0 +1,29 @@
+# GitHub MCP server: tag
+operations:
+  - id: github-mcp.tag.list
+    match: { mcp: { tool: list_tags } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List tags of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/tag-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.tag.get
+    match: { mcp: { tool: get_tag } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show tag {tag} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/repositories.go
+    tests:
+      - fixture: fixtures/tag-get.http
+        expect: read
+        resource: shop

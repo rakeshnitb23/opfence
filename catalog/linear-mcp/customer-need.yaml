@@ -1,0 +1,27 @@
+# Linear MCP server: customer requests
+operations:
+  - id: linear-mcp.customer-need.list
+    match: { mcp: { tool: list_customer_needs } }
+    class: read
+    card: "List customer requests for {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog
+    tests:
+      - fixture: fixtures/customer-need-list.http
+        expect: read
+
+  - id: linear-mcp.customer-need.save
+    match: { mcp: { tool: save_customer_need } }
+    class: write
+    card: "Create or update a customer request for {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog
+    tests:
+      - fixture: fixtures/customer-need-save.http
+        expect: write

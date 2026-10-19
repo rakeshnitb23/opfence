@@ -1,0 +1,71 @@
+# DigitalOcean MCP server: dns-record
+operations:
+  - id: digitalocean-mcp.dns-record.list
+    match: { mcp: { tool: domain-record-list } }
+    class: read
+    resource: { arg: Domain, kind: domain }
+    card: "List DNS records of {Domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/dns-record-list.http
+        expect: read
+        resource: example.com
+
+  - id: digitalocean-mcp.dns-record.get
+    match: { mcp: { tool: domain-record-get } }
+    class: read
+    resource: { arg: Domain, kind: domain }
+    card: "Show DNS record {RecordID} of {Domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/dns-record-get.http
+        expect: read
+        resource: example.com
+
+  - id: digitalocean-mcp.dns-record.create
+    match: { mcp: { tool: domain-record-create } }
+    class: write
+    resource: { arg: Domain, kind: domain }
+    card: "Add {Type} record {Name} to {Domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean-mcp.dns-record.update
+    match: { mcp: { tool: domain-record-edit } }
+    class: write
+    resource: { arg: Domain, kind: domain }
+    card: "Change DNS record {RecordID} of {Domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: write
+        resource: example.com
+
+  - id: digitalocean-mcp.dns-record.delete
+    match: { mcp: { tool: domain-record-delete } }
+    class: delete
+    resource: { arg: Domain, kind: domain }
+    card: "Delete DNS record {RecordID} of {Domain}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/domains_tools.go
+    tests:
+      - fixture: fixtures/dns-record-delete.http
+        expect: delete
+        resource: example.com

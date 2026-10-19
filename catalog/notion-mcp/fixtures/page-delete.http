@@ -1,0 +1,8 @@
+# description: Move Notion pages ["1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"] to Trash
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":21,"method":"tools/call","params":{"name":"notion-delete-pages","arguments":{"page_ids":["1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"],"user_confirmed":true}}}

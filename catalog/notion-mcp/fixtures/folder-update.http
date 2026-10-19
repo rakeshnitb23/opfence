@@ -1,0 +1,8 @@
+# description: Change Notion folder folder://6a7b8c9d (add_files)
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":44,"method":"tools/call","params":{"name":"notion-update-folder","arguments":{"folder_id":"folder://6a7b8c9d","command":"add_files","file_upload_ids":["f1e2d3c4-b5a6-4978-8695-a4b3c2d1e0f9"]}}}

@@ -1,0 +1,76 @@
+# GitHub MCP server: actions
+operations:
+  - id: github-mcp.actions.list
+    match: { mcp: { tool: actions_list } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List {method} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/actions.go
+    notes: >-
+      Toolset actions (not enabled by default).
+    tests:
+      - fixture: fixtures/actions-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.actions.get
+    match: { mcp: { tool: actions_get } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show {method} {resource_id} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/actions.go
+    notes: >-
+      Toolset actions (not enabled by default). get_workflow_run_logs_url and
+      download_workflow_run_artifact return short-lived download URLs; Actions masks secrets
+      in logs.
+    tests:
+      - fixture: fixtures/actions-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.actions.run-trigger
+    match: { mcp: { tool: actions_run_trigger } }
+    class: write
+    when:
+      - if: { arg: method, equals: "delete_workflow_run_logs" }
+        class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Run {method} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/actions.go
+    notes: >-
+      Toolset actions (not enabled by default). run_workflow, rerun_workflow_run,
+      rerun_failed_jobs and cancel_workflow_run are write, as in catalog/github (workflow
+      dispatch, rerun and cancel). delete_workflow_run_logs is delete, as catalog/github
+      classes deleting a run.
+    tests:
+      - fixture: fixtures/actions-run-trigger.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/actions-run-trigger-delete-logs.http
+        expect: delete
+        resource: shop
+
+  - id: github-mcp.job-logs.get
+    match: { mcp: { tool: get_job_logs } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Read job logs of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/actions.go
+    notes: >-
+      Toolset actions (not enabled by default). Actions masks registered secrets in logs.
+    tests:
+      - fixture: fixtures/job-logs-get.http
+        expect: read
+        resource: shop

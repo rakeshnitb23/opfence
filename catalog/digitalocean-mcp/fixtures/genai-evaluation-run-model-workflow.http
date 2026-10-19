@@ -1,0 +1,8 @@
+# description: Run model evaluation workflow mistral-vs-baseline for mistral-7b
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":207,"method":"tools/call","params":{"name":"genai-model-eval-run-workflow","arguments":{"name":"mistral-vs-baseline","candidate_model_name":"mistral-7b","judge_model_name":"gpt-4o","dataset_file_content":"{\"input\":\"Where is my order?\"}"}}}

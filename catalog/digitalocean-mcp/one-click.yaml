@@ -1,0 +1,30 @@
+# DigitalOcean MCP server: one-click
+operations:
+  - id: digitalocean-mcp.one-click.list
+    match: { mcp: { tool: marketplace-1-click-list } }
+    class: read
+    card: "List 1-Click apps"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/marketplace/1-click_tools.go
+    tests:
+      - fixture: fixtures/one-click-list.http
+        expect: read
+
+  - id: digitalocean-mcp.one-click.install-kubernetes
+    match: { mcp: { tool: marketplace-1-click-kubernetes-app-install } }
+    class: money
+    resource: { arg: ClusterUUID, kind: kubernetes-cluster }
+    card: "Install {AppSlugs} on Kubernetes cluster {ClusterUUID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/marketplace/1-click_tools.go
+    notes: >-
+      Some 1-Click apps create billed resources such as load balancers and
+      volumes.
+    tests:
+      - fixture: fixtures/one-click-install-kubernetes.http
+        expect: money
+        resource: bd5f5959-5e1e-4205-a714-a914373942af

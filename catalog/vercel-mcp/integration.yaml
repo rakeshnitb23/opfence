@@ -1,0 +1,77 @@
+# Vercel MCP server (mcp.vercel.com): integration
+operations:
+  - id: vercel-mcp.integration.list
+    match: { mcp: { tool: list_integration_configurations } }
+    class: read
+    card: "List {view} integration configurations"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-list.http
+        expect: read
+
+  - id: vercel-mcp.integration.get
+    match: { mcp: { tool: get_configuration } }
+    class: read
+    resource: { arg: id, kind: integration-configuration }
+    card: "Show integration configuration {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-get.http
+        expect: read
+        resource: icfg_123
+
+  - id: vercel-mcp.integration.list-products
+    match: { mcp: { tool: list_integration_configuration_products } }
+    class: read
+    resource: { arg: id, kind: integration-configuration }
+    card: "List products of integration configuration {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-list-products.http
+        expect: read
+        resource: icfg_123
+
+  - id: vercel-mcp.integration.list-plans
+    match: { mcp: { tool: list_integration_billing_plans } }
+    class: read
+    card: "List billing plans of {integrationIdOrSlug} product {productIdOrSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-list-plans.http
+        expect: read
+
+  - id: vercel-mcp.integration.list-webhooks
+    match: { mcp: { tool: get_webhooks } }
+    class: read
+    card: "List webhooks"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-list-webhooks.http
+        expect: read
+
+  - id: vercel-mcp.integration.search-repos
+    match: { mcp: { tool: search_repo } }
+    class: read
+    card: "Search {provider} repositories for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/integrations
+    tests:
+      - fixture: fixtures/integration-search-repos.http
+        expect: read

@@ -1,0 +1,7 @@
+{
+  "description": "Run the shop data model's access patterns on DynamoDB Local",
+  "tool": "dynamodb_data_model_validation",
+  "arguments": {
+    "workspace_dir": "/home/dev/shop/dynamodb"
+  }
+}

@@ -1,0 +1,35 @@
+# GitHub MCP server: issue dependency
+operations:
+  - id: github-mcp.issue-dependency.read
+    match: { mcp: { tool: issue_dependency_read } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List dependencies of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issue_dependencies.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/feature_flags.go
+    notes: >-
+      Feature flag issue_dependencies (or insiders mode).
+    tests:
+      - fixture: fixtures/issue-dependency-read.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.issue-dependency.write
+    match: { mcp: { tool: issue_dependency_write } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change dependencies of issue {issue_number} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issue_dependencies.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/feature_flags.go
+    notes: >-
+      Feature flag issue_dependencies (or insiders mode). method add or remove; links only.
+    tests:
+      - fixture: fixtures/issue-dependency-write.http
+        expect: write
+        resource: shop

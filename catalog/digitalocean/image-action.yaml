@@ -1,0 +1,18 @@
+# DigitalOcean REST API: image-action
+operations:
+  - id: digitalocean.image-action.run
+    match: { rest: { method: POST, path: "/v2/images/{image_id}/actions" } }
+    class: money
+    resource: { arg: image_id, kind: image }
+    card: "{body.type} image {image_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/images/imageActions_post.yml
+    notes: >-
+      convert turns a backup into a billed snapshot; transfer copies the image
+      to another region, billed as storage there.
+    tests:
+      - fixture: fixtures/image-action-run.http
+        expect: money
+        resource: "7555620"

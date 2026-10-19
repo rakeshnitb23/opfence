@@ -1,0 +1,5 @@
+# description: Delete simulation run 0337c539-b7d7-11ef-bf8f-4e013e2ddde4 and its results
+DELETE /v2/gen-ai/simulation_runs/0337c539-b7d7-11ef-bf8f-4e013e2ddde4 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

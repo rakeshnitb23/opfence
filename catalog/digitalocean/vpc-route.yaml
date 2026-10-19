@@ -1,0 +1,52 @@
+# DigitalOcean REST API: vpc-route
+operations:
+  - id: digitalocean.vpc-route.create
+    match: { rest: { method: POST, path: "/v2/vpcs/{vpc_uuid}/subnets/{subnet_uuid}/routes" } }
+    class: access
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Route {body.destination_cidr} from subnet {subnet_uuid} to {body.target_urns}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/routes/subnet_routes_create.yml
+    notes: >-
+      Routes decide where subnet traffic goes, such as through a NAT gateway
+      to the internet.
+    tests:
+      - fixture: fixtures/vpc-route-create.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-route.update
+    match: { rest: { method: PATCH, path: "/v2/vpcs/{vpc_uuid}/subnets/{subnet_uuid}/routes/{route_uuid}" } }
+    class: access
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Change targets of route {route_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/routes/subnet_routes_update.yml
+    notes: >-
+      Routes decide where subnet traffic goes, such as through a NAT gateway
+      to the internet.
+    tests:
+      - fixture: fixtures/vpc-route-update.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-route.delete
+    match: { rest: { method: DELETE, path: "/v2/vpcs/{vpc_uuid}/subnets/{subnet_uuid}/routes/{route_uuid}" } }
+    class: access
+    resource: { arg: vpc_uuid, kind: vpc }
+    card: "Delete route {route_uuid} of subnet {subnet_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/routes/subnet_routes_delete.yml
+    notes: >-
+      Routes decide where subnet traffic goes, such as through a NAT gateway
+      to the internet.
+    tests:
+      - fixture: fixtures/vpc-route-delete.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

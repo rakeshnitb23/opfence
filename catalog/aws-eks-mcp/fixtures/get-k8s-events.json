@@ -1,0 +1,10 @@
+{
+  "description": "Read events for Deployment shop-api",
+  "tool": "get_k8s_events",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "kind": "Deployment",
+    "name": "shop-api",
+    "namespace": "shop"
+  }
+}

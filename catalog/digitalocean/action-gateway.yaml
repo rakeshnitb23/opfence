@@ -1,0 +1,268 @@
+# DigitalOcean REST API: action-gateway
+operations:
+  - id: digitalocean.action-gateway.clear-limits
+    match: { rest: { method: POST, path: "/v2/action-gateway/actors/{actor_id}/limits:clear" } }
+    class: write
+    resource: { arg: actor_id, kind: action-gateway-actor }
+    card: "Clear rate-limit overrides of actor {actor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/actorLimits_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-clear-limits.http
+        expect: write
+        resource: team-user-1234
+
+  - id: digitalocean.action-gateway.set-limits
+    match: { rest: { method: POST, path: "/v2/action-gateway/actors/{actor_id}/limits:set" } }
+    class: write
+    resource: { arg: actor_id, kind: action-gateway-actor }
+    card: "Set rate-limit overrides of actor {actor_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/actorLimits_update.yml
+    tests:
+      - fixture: fixtures/action-gateway-set-limits.http
+        expect: write
+        resource: team-user-1234
+
+  - id: digitalocean.action-gateway.create-connection
+    match: { rest: { method: POST, path: /v2/action-gateway/connections } }
+    class: access
+    resource: { arg: body.provider, kind: action-gateway-provider }
+    card: "Connect user {body.user_id} to tool provider {body.provider}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/connections_create.yml
+    notes: >-
+      Authorizes an end user to use a provider's tools with a stored
+      credential or OAuth grant.
+    tests:
+      - fixture: fixtures/action-gateway-create-connection.http
+        expect: access
+        resource: jira
+
+  - id: digitalocean.action-gateway.delete-connection
+    match: { rest: { method: DELETE, path: "/v2/action-gateway/connections/{id}" } }
+    class: access
+    resource: { arg: id, kind: action-gateway-connection }
+    card: "Delete tool connection {id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/connections_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-delete-connection.http
+        expect: access
+        resource: conn-9d2e41
+
+  - id: digitalocean.action-gateway.register-mcp-server
+    match: { rest: { method: POST, path: /v2/action-gateway/mcp-servers } }
+    class: write
+    when:
+      - if: { arg: body.api_key, present: true }
+        class: credential
+      - if: { arg: body.oauth_client_secret, present: true }
+        class: credential
+    resource: { arg: body.serverRef, kind: action-gateway-mcp-server }
+    card: "Register MCP server {body.serverRef} at {body.endpoint}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/mcpServers_create.yml
+    notes: >-
+      api_key and oauth_client_secret store secrets for the server.
+    tests:
+      - fixture: fixtures/action-gateway-register-mcp-server.http
+        expect: write
+        resource: jira-cloud
+      - fixture: fixtures/action-gateway-register-mcp-server-api-key.http
+        expect: credential
+        resource: jira-cloud
+
+  - id: digitalocean.action-gateway.update-mcp-server
+    match: { rest: { method: PATCH, path: "/v2/action-gateway/mcp-servers/{server_ref}" } }
+    class: write
+    resource: { arg: server_ref, kind: action-gateway-mcp-server }
+    card: "Change the description of MCP server {server_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/mcpServers_patch.yml
+    tests:
+      - fixture: fixtures/action-gateway-update-mcp-server.http
+        expect: write
+        resource: jira-cloud
+
+  - id: digitalocean.action-gateway.delete-mcp-server
+    match: { rest: { method: DELETE, path: "/v2/action-gateway/mcp-servers/{server_ref}" } }
+    class: delete
+    resource: { arg: server_ref, kind: action-gateway-mcp-server }
+    card: "Remove MCP server {server_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/mcpServers_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-delete-mcp-server.http
+        expect: delete
+        resource: jira-cloud
+
+  - id: digitalocean.action-gateway.resync-mcp-server
+    match: { rest: { method: POST, path: "/v2/action-gateway/mcp-servers/{server_ref}/resync" } }
+    class: write
+    resource: { arg: server_ref, kind: action-gateway-mcp-server }
+    card: "Rediscover the tools of MCP server {server_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/mcpServers_run_resync.yml
+    tests:
+      - fixture: fixtures/action-gateway-resync-mcp-server.http
+        expect: write
+        resource: jira-cloud
+
+  - id: digitalocean.action-gateway.set-mcp-server-tools
+    match: { rest: { method: PUT, path: "/v2/action-gateway/mcp-servers/{server_ref}/tools" } }
+    class: access
+    resource: { arg: server_ref, kind: action-gateway-mcp-server }
+    card: "Choose which tools of MCP server {server_ref} are enabled"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/mcpServers_update_tools.yml
+    notes: >-
+      Decides which tools agents may call.
+    tests:
+      - fixture: fixtures/action-gateway-set-mcp-server-tools.http
+        expect: access
+        resource: jira-cloud
+
+  - id: digitalocean.action-gateway.create-output-view
+    match: { rest: { method: POST, path: /v2/action-gateway/output-views } }
+    class: write
+    resource: { arg: body.name, kind: action-gateway-output-view }
+    card: "Create output view {body.name} for tool {body.tool}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/outputViews_create.yml
+    tests:
+      - fixture: fixtures/action-gateway-create-output-view.http
+        expect: write
+        resource: titles-and-urls
+
+  - id: digitalocean.action-gateway.preview-output-view
+    match: { rest: { method: POST, path: /v2/action-gateway/output-views/preview } }
+    class: read
+    card: "Preview output view {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/outputViews_validate.yml
+    tests:
+      - fixture: fixtures/action-gateway-preview-output-view.http
+        expect: read
+
+  - id: digitalocean.action-gateway.delete-output-view
+    match: { rest: { method: DELETE, path: "/v2/action-gateway/output-views/{view_id}" } }
+    class: delete
+    resource: { arg: view_id, kind: action-gateway-output-view }
+    card: "Delete output view {view_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/outputViews_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-delete-output-view.http
+        expect: delete
+        resource: ov-31b2c4
+
+  - id: digitalocean.action-gateway.create-session
+    match: { rest: { method: POST, path: /v2/action-gateway/sessions } }
+    class: access
+    resource: { arg: body.name, kind: action-gateway-session }
+    card: "Create tool session {body.name} for actor {body.actorId}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/sessions_create.yml
+    notes: >-
+      A session carries the allow/ask/deny policy for an agent's tool calls.
+    tests:
+      - fixture: fixtures/action-gateway-create-session.http
+        expect: access
+        resource: support-bot-alice
+
+  - id: digitalocean.action-gateway.delete-session
+    match: { rest: { method: DELETE, path: "/v2/action-gateway/sessions/{session_urn}" } }
+    class: write
+    resource: { arg: session_urn, kind: action-gateway-session }
+    card: "End tool session {session_urn}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/sessions_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-delete-session.http
+        expect: write
+        resource: "do:actiongateway:session:8f2c1d"
+
+  - id: digitalocean.action-gateway.create-toolbelt
+    match: { rest: { method: POST, path: /v2/action-gateway/toolbelts } }
+    class: write
+    resource: { arg: body.name, kind: action-gateway-toolbelt }
+    card: "Create toolbelt {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/toolbelts_create.yml
+    tests:
+      - fixture: fixtures/action-gateway-create-toolbelt.http
+        expect: write
+        resource: search-toolbelt
+
+  - id: digitalocean.action-gateway.delete-toolbelt
+    match: { rest: { method: DELETE, path: "/v2/action-gateway/toolbelts/{name}" } }
+    class: delete
+    resource: { arg: name, kind: action-gateway-toolbelt }
+    card: "Delete toolbelt {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/toolbelts_delete.yml
+    tests:
+      - fixture: fixtures/action-gateway-delete-toolbelt.http
+        expect: delete
+        resource: support-tools
+
+  - id: digitalocean.action-gateway.add-toolbelt-tools
+    match: { rest: { method: POST, path: "/v2/action-gateway/toolbelts/{name}/tools/add" } }
+    class: write
+    resource: { arg: name, kind: action-gateway-toolbelt }
+    card: "Add tools {body.tools} to toolbelt {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/toolbelts_add_tools.yml
+    tests:
+      - fixture: fixtures/action-gateway-add-toolbelt-tools.http
+        expect: write
+        resource: support-tools
+
+  - id: digitalocean.action-gateway.remove-toolbelt-tools
+    match: { rest: { method: POST, path: "/v2/action-gateway/toolbelts/{name}/tools/remove" } }
+    class: write
+    resource: { arg: name, kind: action-gateway-toolbelt }
+    card: "Remove tools {body.tools} from toolbelt {name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/action_gateway/toolbelts_remove_tools.yml
+    tests:
+      - fixture: fixtures/action-gateway-remove-toolbelt-tools.http
+        expect: write
+        resource: support-tools

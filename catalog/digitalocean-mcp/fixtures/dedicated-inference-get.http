@@ -1,0 +1,8 @@
+# description: Show Dedicated Inference 6b5c619c-359c-44ca-87e2-47e98170c01d
+POST /mcp HTTP/1.1
+Host: dedicated-inference.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":59,"method":"tools/call","params":{"name":"dedicated-inference-get","arguments":{"DedicatedInferenceID":"6b5c619c-359c-44ca-87e2-47e98170c01d"}}}

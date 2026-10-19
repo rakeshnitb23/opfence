@@ -110,6 +110,7 @@ operations:
 
   - id: turso.group.rename
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/rename" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: group, kind: group }
     card: "Rename Turso group {group} to {body.Name}"
@@ -126,6 +127,7 @@ operations:
 
   - id: turso.group.aws-migration-start
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/aws/migration/start" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: group, kind: group }
     card: "Start migrating Turso group {group} to AWS"
@@ -142,6 +144,7 @@ operations:
 
   - id: turso.group.aws-migration-abort
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/groups/{group}/aws/migration/abort" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: group, kind: group }
     card: "Abort the AWS migration of Turso group {group}"
@@ -173,6 +176,7 @@ operations:
 
   - id: turso.group.delete-unscoped
     match: { rest: { method: DELETE, path: "/{version}/groups/{group}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: irreversible
     resource: { arg: group, kind: group }
     card: "Delete Turso group {group} and every database in it"
@@ -191,6 +195,7 @@ operations:
 
   - id: turso.group.configure-unscoped
     match: { rest: { method: PATCH, path: "/{version}/groups/{group}/configuration" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     when:
       - if: { arg: body.delete_protection, equals: "false" }
@@ -215,6 +220,7 @@ operations:
 
   - id: turso.group.transfer-unscoped
     match: { rest: { method: POST, path: "/{version}/groups/{group}/transfer" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: group, kind: group }
     card: "Transfer Turso group {group} to organization {body.organization}"

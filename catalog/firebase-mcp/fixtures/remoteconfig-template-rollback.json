@@ -1,0 +1,7 @@
+{
+  "description": "Roll Remote Config back to version 41",
+  "tool": "remoteconfig_update_template",
+  "arguments": {
+    "version_number": 41
+  }
+}

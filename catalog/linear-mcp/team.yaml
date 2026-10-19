@@ -1,0 +1,67 @@
+# Linear MCP server: teams, users and cycles
+operations:
+  - id: linear-mcp.team.list
+    match: { mcp: { tool: list_teams } }
+    class: read
+    card: "List Linear teams"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog
+    tests:
+      - fixture: fixtures/team-list.http
+        expect: read
+
+  - id: linear-mcp.team.get
+    match: { mcp: { tool: get_team } }
+    class: read
+    card: "Show Linear team {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog
+    tests:
+      - fixture: fixtures/team-get.http
+        expect: read
+
+  - id: linear-mcp.user.list
+    match: { mcp: { tool: list_users } }
+    class: read
+    card: "List Linear users"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/5
+      - https://linear.app/changelog/page/3
+    tests:
+      - fixture: fixtures/user-list.http
+        expect: read
+
+  - id: linear-mcp.user.get
+    match: { mcp: { tool: get_user } }
+    class: read
+    card: "Show Linear user {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/4
+    tests:
+      - fixture: fixtures/user-get.http
+        expect: read
+
+  - id: linear-mcp.cycle.list
+    match: { mcp: { tool: list_cycles } }
+    class: read
+    card: "List cycles of Linear team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/5
+    tests:
+      - fixture: fixtures/cycle-list.http
+        expect: read

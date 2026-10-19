@@ -1,0 +1,7 @@
+{
+  "description": "List Firestore databases",
+  "tool": "firestore_list_databases",
+  "arguments": {
+    "parent": "projects/shop-prod"
+  }
+}

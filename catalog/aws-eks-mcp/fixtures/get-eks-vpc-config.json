@@ -1,0 +1,7 @@
+{
+  "description": "Read the VPC setup of cluster shop-prod",
+  "tool": "get_eks_vpc_config",
+  "arguments": {
+    "cluster_name": "shop-prod"
+  }
+}

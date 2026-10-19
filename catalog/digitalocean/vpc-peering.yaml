@@ -1,0 +1,77 @@
+# DigitalOcean REST API: vpc-peering
+operations:
+  - id: digitalocean.vpc-peering.create-for-vpc
+    match: { rest: { method: POST, path: "/v2/vpcs/{vpc_id}/peerings" } }
+    class: access
+    resource: { arg: vpc_id, kind: vpc }
+    card: "Peer VPC {vpc_id} with VPC {body.vpc_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_create_peerings.yml
+    notes: >-
+      Peering lets two networks reach each other.
+    tests:
+      - fixture: fixtures/vpc-peering-create-for-vpc.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-peering.rename-for-vpc
+    match: { rest: { method: PATCH, path: "/v2/vpcs/{vpc_id}/peerings/{vpc_peering_id}" } }
+    class: write
+    resource: { arg: vpc_id, kind: vpc }
+    card: "Rename VPC peering {vpc_peering_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpcs/vpcs_update_peerings.yml
+    tests:
+      - fixture: fixtures/vpc-peering-rename-for-vpc.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.vpc-peering.create
+    match: { rest: { method: POST, path: /v2/vpc_peerings } }
+    class: access
+    resource: { arg: body.name, kind: vpc-peering }
+    card: "Peer VPCs {body.vpc_ids} as {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_peerings/vpc_peerings_create.yml
+    notes: >-
+      Peering lets two networks reach each other.
+    tests:
+      - fixture: fixtures/vpc-peering-create.http
+        expect: access
+        resource: nyc1-blr1-peering
+
+  - id: digitalocean.vpc-peering.rename
+    match: { rest: { method: PATCH, path: "/v2/vpc_peerings/{vpc_peering_id}" } }
+    class: write
+    resource: { arg: vpc_peering_id, kind: vpc-peering }
+    card: "Rename VPC peering {vpc_peering_id} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_peerings/vpc_peerings_update.yml
+    tests:
+      - fixture: fixtures/vpc-peering-rename.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e5"
+
+  - id: digitalocean.vpc-peering.delete
+    match: { rest: { method: DELETE, path: "/v2/vpc_peerings/{vpc_peering_id}" } }
+    class: access
+    resource: { arg: vpc_peering_id, kind: vpc-peering }
+    card: "Delete VPC peering {vpc_peering_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/vpc_peerings/vpc_peerings_delete.yml
+    notes: >-
+      The two networks stop reaching each other.
+    tests:
+      - fixture: fixtures/vpc-peering-delete.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e5"

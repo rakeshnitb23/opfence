@@ -1,0 +1,175 @@
+# S3 Tables MCP server (awslabs.s3-tables-mcp-server): table buckets, namespaces and tables
+operations:
+  - id: aws-s3-tables-mcp.table-bucket.create
+    match: { mcp: { tool: create_table_bucket } }
+    class: write
+    resource: { arg: name, kind: table-bucket }
+    card: "Create S3 table bucket {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/table_buckets.py
+    notes: >-
+      An empty table bucket costs nothing (storage and requests are billed), as for S3
+      CreateBucket in catalog/aws.
+    tests:
+      - fixture: fixtures/create-table-bucket.json
+        expect: write
+        resource: analytics
+
+  - id: aws-s3-tables-mcp.table-bucket.list
+    match: { mcp: { tool: list_table_buckets } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/list-table-buckets.json
+        expect: read
+
+  - id: aws-s3-tables-mcp.namespace.create
+    match: { mcp: { tool: create_namespace } }
+    class: write
+    resource: { arg: namespace, kind: namespace }
+    card: "Create namespace {namespace} in table bucket {table_bucket_arn}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/namespaces.py
+    tests:
+      - fixture: fixtures/create-namespace.json
+        expect: write
+        resource: retail_data
+
+  - id: aws-s3-tables-mcp.namespace.list
+    match: { mcp: { tool: list_namespaces } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/list-namespaces.json
+        expect: read
+
+  - id: aws-s3-tables-mcp.table.create
+    match: { mcp: { tool: create_table } }
+    class: write
+    resource: { arg: name, kind: table }
+    card: "Create table {namespace}.{name} in table bucket {table_bucket_arn}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/tables.py
+    tests:
+      - fixture: fixtures/create-table.json
+        expect: write
+        resource: customers
+
+  - id: aws-s3-tables-mcp.table.list
+    match: { mcp: { tool: list_tables } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/list-tables.json
+        expect: read
+
+  - id: aws-s3-tables-mcp.table.rename
+    match: { mcp: { tool: rename_table } }
+    class: write
+    resource: { arg: name, kind: table }
+    card: "Rename table {namespace}.{name} to {new_namespace_name}.{new_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/tables.py
+    notes: >-
+      Keeps the data; readers that use the old name break until they change, and renaming back
+      restores it.
+    tests:
+      - fixture: fixtures/rename-table.json
+        expect: write
+        resource: customers
+
+  - id: aws-s3-tables-mcp.table.update-metadata-location
+    match: { mcp: { tool: update_table_metadata_location } }
+    class: delete
+    resource: { arg: name, kind: table }
+    card: "Point table {namespace}.{name} at metadata file {metadata_location}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/tables.py
+    notes: >-
+      Replaces the Iceberg table's current metadata pointer. Pointing it at an older or foreign
+      metadata file hides every commit after it (or breaks the table) without deleting files;
+      setting the previous location (get_table_metadata_location) back restores it, until S3
+      Tables' unreferenced-file removal deletes the files no snapshot refers to any more.
+      Classed delete as a restorable loss.
+    tests:
+      - fixture: fixtures/update-table-metadata-location.json
+        expect: delete
+        resource: customers
+
+  - id: aws-s3-tables-mcp.table.get-metadata-location
+    match: { mcp: { tool: get_table_metadata_location } }
+    class: read
+    resource: { arg: name, kind: table }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-table-metadata-location.json
+        expect: read
+        resource: customers
+
+  - id: aws-s3-tables-mcp.table.get-maintenance-config
+    match: { mcp: { tool: get_table_maintenance_config } }
+    class: read
+    resource: { arg: name, kind: table }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-table-maintenance-config.json
+        expect: read
+        resource: customers
+
+  - id: aws-s3-tables-mcp.table.get-maintenance-job-status
+    match: { mcp: { tool: get_maintenance_job_status } }
+    class: read
+    resource: { arg: name, kind: table }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-maintenance-job-status.json
+        expect: read
+        resource: customers
+
+  - id: aws-s3-tables-mcp.bucket.get-metadata-config
+    match: { mcp: { tool: get_bucket_metadata_config } }
+    class: read
+    resource: { arg: bucket, kind: bucket }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+    notes: >-
+      Reads a general purpose bucket's S3 Metadata configuration (GetBucketMetadataTableConfiguration).
+    tests:
+      - fixture: fixtures/get-bucket-metadata-config.json
+        expect: read
+        resource: shop-assets

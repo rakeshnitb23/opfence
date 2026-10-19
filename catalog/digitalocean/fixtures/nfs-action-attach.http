@@ -1,0 +1,7 @@
+# description: attach NFS share 0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b
+POST /v2/nfs/0a1b2c3d-4e5f-4061-8a9b-0c1d2e3f4a5b/actions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"type": "attach", "region": "atl1", "params": {"vpc_id": "5a4981aa-9653-4bd1-bef5-d6bff52042e4"}}

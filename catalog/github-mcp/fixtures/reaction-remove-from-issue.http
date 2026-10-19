@@ -1,0 +1,8 @@
+# description: Remove a reaction from issue 42 in acme/shop
+POST /mcp/ HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"remove_issue_reaction","arguments":{"owner":"acme","repo":"shop","issue_number":42,"reaction_id":99102}}}

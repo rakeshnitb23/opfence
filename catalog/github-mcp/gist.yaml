@@ -1,0 +1,63 @@
+# GitHub MCP server: gist
+operations:
+  - id: github-mcp.gist.list
+    match: { mcp: { tool: list_gists } }
+    class: read
+    card: "List gists"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/gists.go
+    notes: >-
+      Toolset gists (not enabled by default).
+    tests:
+      - fixture: fixtures/gist-list.http
+        expect: read
+
+  - id: github-mcp.gist.get
+    match: { mcp: { tool: get_gist } }
+    class: read
+    card: "Read gist {gist_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/gists.go
+    notes: >-
+      Toolset gists (not enabled by default).
+    tests:
+      - fixture: fixtures/gist-get.http
+        expect: read
+
+  - id: github-mcp.gist.create
+    match: { mcp: { tool: create_gist } }
+    class: write
+    when:
+      - if: { arg: public, equals: "true" }
+        class: access
+    card: "Create gist {filename}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/gists.go
+    notes: >-
+      Toolset gists (not enabled by default). public defaults to false; a public gist
+      publishes its files to anyone.
+    tests:
+      - fixture: fixtures/gist-create.http
+        expect: write
+      - fixture: fixtures/gist-create-public.http
+        expect: access
+
+  - id: github-mcp.gist.update
+    match: { mcp: { tool: update_gist } }
+    class: write
+    card: "Update {filename} in gist {gist_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/gists.go
+    notes: >-
+      Toolset gists (not enabled by default). Gists keep earlier revisions.
+    tests:
+      - fixture: fixtures/gist-update.http
+        expect: write

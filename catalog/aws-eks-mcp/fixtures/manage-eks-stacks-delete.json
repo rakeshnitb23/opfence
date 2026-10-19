@@ -1,0 +1,8 @@
+{
+  "description": "Delete the stack and cluster shop-prod",
+  "tool": "manage_eks_stacks",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "delete"
+  }
+}

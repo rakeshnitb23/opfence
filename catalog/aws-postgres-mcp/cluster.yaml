@@ -1,0 +1,42 @@
+# Aurora PostgreSQL MCP server (awslabs.postgres-mcp-server): clusters
+operations:
+  - id: aws-postgres-mcp.cluster.create
+    match: { mcp: { tool: create_cluster } }
+    class: money
+    when:
+      - if: { arg: cluster_identifier, present: true }
+        class: money
+      - if: { arg: cluster_identifier, present: true }
+        class: access
+    resource: { arg: cluster_identifier, kind: cluster }
+    card: "Create Aurora PostgreSQL cluster {cluster_identifier} in {region} and grant your IAM identity access to it"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/connection/cp_api_connection.py
+    notes: >-
+      Creates a billed Aurora Serverless v2 cluster (or an express cluster with
+      with_express_configuration) and then attaches an rds-db:connect IAM policy to the calling
+      IAM user, or to the base role of an assumed-role session, so it is money and access at
+      once; both conditions hold for every real call (cluster_identifier is required), and the
+      rule's own class covers a call without it. The server does not gate this tool behind
+      --allow_write_query.
+    tests:
+      - fixture: fixtures/create-cluster.json
+        expect: money
+        resource: shop-aurora
+      - fixture: fixtures/create-cluster-express.json
+        expect: access
+        resource: shop-aurora-dev
+
+  - id: aws-postgres-mcp.cluster.job-status
+    match: { mcp: { tool: get_job_status } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py
+    tests:
+      - fixture: fixtures/get-job-status.json
+        expect: read

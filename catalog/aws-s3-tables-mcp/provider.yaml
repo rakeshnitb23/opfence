@@ -1,0 +1,17 @@
+provider: aws-s3-tables-mcp
+title: Amazon S3 Tables MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/s3-tables-mcp-server
+# AWS Labs' S3 Tables MCP server (PyPI awslabs.s3-tables-mcp-server, source
+# github.com/awslabs/mcp src/s3-tables-mcp-server), read at version 0.1.1
+# (commit d534d0f, 2026-10-16). It runs locally over stdio and calls the S3
+# Tables API and its Iceberg REST endpoint (s3tables.<region>.amazonaws.com,
+# catalog/aws) with the user's credentials. Write tools only run when the
+# server is started with --allow-write; Opfence cannot see the flag, so they
+# keep their class. No hosts; the agent hook sees the tool calls.
+# The README keys it "awslabs.s3-tables-mcp-server", which Claude Code writes as
+# "awslabs_s3-tables-mcp-server" (no dots in tool names).
+# No detect or auth block: AWS credentials belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [awslabs_s3-tables-mcp-server, s3-tables-mcp-server, aws-s3-tables, s3-tables]
+  package: "awslabs.s3-tables-mcp-server"

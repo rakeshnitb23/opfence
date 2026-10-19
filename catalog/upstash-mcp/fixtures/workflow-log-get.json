@@ -1,0 +1,7 @@
+{
+  "description": "Get a workflow run",
+  "tool": "workflow_logs_get",
+  "arguments": {
+    "workflowRunId": "wfr_4f1c9a2b-7d3e-4b6a-9c8d-2e1f0a9b8c7d"
+  }
+}

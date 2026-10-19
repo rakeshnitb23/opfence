@@ -1,0 +1,5 @@
+# description: Delete tool connection conn-9d2e41
+DELETE /v2/action-gateway/connections/conn-9d2e41 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

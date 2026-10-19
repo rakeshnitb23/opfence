@@ -1,0 +1,5 @@
+{
+  "description": "Get the active Remote Config template",
+  "tool": "remoteconfig_get_template",
+  "arguments": {}
+}

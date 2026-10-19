@@ -13,3 +13,12 @@ detect:
 defaults:
   graphql_query: read
   rest_safe_methods: read
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
+    coverage: partial
+  - kind: graphql
+    url: https://raw.githubusercontent.com/octokit/graphql-schema/main/schema.graphql
+    coverage: partial

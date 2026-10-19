@@ -1,0 +1,8 @@
+{
+  "description": "Check the status of a Cloud Control request",
+  "tool": "get_resource_request_status",
+  "arguments": {
+    "request_token": "2026a1b2-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
+    "region": "us-east-1"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "description": "List Railway projects",
+  "tool": "list_projects",
+  "arguments": {}
+}

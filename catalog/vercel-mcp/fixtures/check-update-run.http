@@ -1,0 +1,8 @@
+# description: Update check run chkrun_123 of deployment dpl_7Hq2shopweb
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"update_deployment_check_run","arguments":{"teamId":"team_acme","checkRunId":"chkrun_123","requestBody":{"status":"completed","conclusion":"succeeded"},"deploymentId":"dpl_7Hq2shopweb"}}}

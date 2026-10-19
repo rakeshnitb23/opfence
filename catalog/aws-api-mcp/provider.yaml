@@ -1,0 +1,19 @@
+provider: aws-api-mcp
+title: AWS API MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/aws-api-mcp-server
+# AWS Labs' AWS API MCP server (PyPI awslabs.aws-api-mcp-server, source
+# github.com/awslabs/mcp src/aws-api-mcp-server), read at version 1.5.6
+# (commit d534d0f, 2026-10-16). It runs locally (stdio, or streamable HTTP on
+# 127.0.0.1) and call_aws runs any AWS CLI command with the user's own AWS
+# credentials, which then calls the APIs in catalog/aws. AWS hosts no remote
+# copy of this server, so there are no hosts and the agent hook sees the tool
+# calls. Its successor, the managed "AWS MCP Server"
+# (aws-mcp.us-east-1.api.aws), is a different server and is not described here.
+# Names: the README's client configs key the server "awslabs.aws-api-mcp-server",
+# which Claude Code turns into "awslabs_aws-api-mcp-server" in tool names (a
+# dot is not allowed there), and its Claude Code example names it "aws-api".
+# No detect or auth block: the AWS credential variables belong to catalog/aws.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [aws-api, awslabs_aws-api-mcp-server, aws-api-mcp-server, aws-api-mcp]
+  package: "awslabs.aws-api-mcp-server"

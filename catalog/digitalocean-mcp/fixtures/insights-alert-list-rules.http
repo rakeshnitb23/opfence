@@ -1,0 +1,8 @@
+# description: List alert rules
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":249,"method":"tools/call","params":{"name":"insights-alert-rule-list","arguments":{}}}

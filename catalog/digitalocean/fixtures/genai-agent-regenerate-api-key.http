@@ -1,0 +1,5 @@
+# description: Regenerate API key 5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4 of agent 1b418231-b7d6-11ef-bf8f-4e013e2ddde4
+PUT /v2/gen-ai/agents/1b418231-b7d6-11ef-bf8f-4e013e2ddde4/api_keys/5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4/regenerate HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

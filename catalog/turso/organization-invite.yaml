@@ -16,6 +16,7 @@ operations:
 
   - id: turso.organization-invite.create-legacy
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/invite" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: organization, kind: organization }
     card: "Invite {body.email} to Turso organization {organization} as {body.role}"

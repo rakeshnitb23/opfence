@@ -1,0 +1,8 @@
+# description: Create Kubernetes cluster shop-k8s in nyc1
+POST /mcp HTTP/1.1
+Host: doks.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":93,"method":"tools/call","params":{"name":"doks-create-cluster","arguments":{"name":"shop-k8s","region":"nyc1","version":"1.33.1-do.0","node_pools":[{"name":"default","size":"s-2vcpu-4gb","count":3}]}}}

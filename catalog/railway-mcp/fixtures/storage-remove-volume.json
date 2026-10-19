@@ -1,0 +1,8 @@
+{
+  "description": "Delete volume vol-pg-data and all data on it",
+  "tool": "remove_volume",
+  "arguments": {
+    "confirm": true,
+    "volume_id": "vol-pg-data"
+  }
+}

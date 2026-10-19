@@ -1,0 +1,7 @@
+# description: Import custom model support-llama from acme/support-llama-8b
+POST /v2/gen-ai/custom_models/import HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "support-llama", "source_type": "SOURCE_TYPE_HUGGINGFACE", "accept_terms_and_conditions": true, "source_ref": {"repo_id": "acme/support-llama-8b", "access_type": "ACCESS_TYPE_PUBLIC"}}

@@ -1,0 +1,8 @@
+# description: List billing charges from 2026-09-01T00:00:00Z to 2026-10-01T00:00:00Z
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_billing_charges","arguments":{"teamId":"team_acme","from":"2026-09-01T00:00:00Z","to":"2026-10-01T00:00:00Z"}}}

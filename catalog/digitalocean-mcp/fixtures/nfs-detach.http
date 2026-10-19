@@ -1,0 +1,8 @@
+# description: Detach NFS share 0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d from VPC 5a4981aa-9653-4bd1-bef5-d6bff52042e4
+POST /mcp HTTP/1.1
+Host: nfs.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":354,"method":"tools/call","params":{"name":"nfs-detach","arguments":{"ShareID":"0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d","VpcID":"5a4981aa-9653-4bd1-bef5-d6bff52042e4"}}}

@@ -1,0 +1,19 @@
+{
+  "description": "Generate a CloudFormation template for bucket shop-assets",
+  "tool": "create_template",
+  "arguments": {
+    "template_name": "shop-assets-import",
+    "resources": [
+      {
+        "ResourceType": "AWS::S3::Bucket",
+        "ResourceIdentifier": {
+          "BucketName": "shop-assets"
+        }
+      }
+    ],
+    "output_format": "YAML",
+    "deletion_policy": "RETAIN",
+    "update_replace_policy": "RETAIN",
+    "region": "us-east-1"
+  }
+}

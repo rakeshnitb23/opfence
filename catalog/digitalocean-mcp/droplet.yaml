@@ -1,0 +1,112 @@
+# DigitalOcean MCP server: droplet
+operations:
+  - id: digitalocean-mcp.droplet.list
+    match: { mcp: { tool: droplet-list } }
+    class: read
+    card: "List Droplets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-list.http
+        expect: read
+
+  - id: digitalocean-mcp.droplet.get
+    match: { mcp: { tool: droplet-get } }
+    class: read
+    resource: { arg: ID, kind: droplet }
+    card: "Show Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-get.http
+        expect: read
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet.list-kernels
+    match: { mcp: { tool: droplet-kernels } }
+    class: read
+    resource: { arg: ID, kind: droplet }
+    card: "List kernels for Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-list-kernels.http
+        expect: read
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet.get-backup-policy
+    match: { mcp: { tool: droplet-backup-policy } }
+    class: read
+    resource: { arg: ID, kind: droplet }
+    card: "Show the backup policy of Droplet {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-get-backup-policy.http
+        expect: read
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet.get-action
+    match: { mcp: { tool: droplet-action } }
+    class: read
+    resource: { arg: DropletID, kind: droplet }
+    card: "Show action {ActionID} of Droplet {DropletID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-get-action.http
+        expect: read
+        resource: "3164444"
+
+  - id: digitalocean-mcp.droplet.list-sizes
+    match: { mcp: { tool: size-list } }
+    class: read
+    card: "List Droplet sizes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/sizes_tools.go
+    tests:
+      - fixture: fixtures/droplet-list-sizes.http
+        expect: read
+
+  - id: digitalocean-mcp.droplet.create
+    match: { mcp: { tool: droplet-create } }
+    class: money
+    resource: { arg: Name, kind: droplet }
+    card: "Create Droplet {Name} ({Size}) in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    tests:
+      - fixture: fixtures/droplet-create.http
+        expect: money
+        resource: web-1
+
+  - id: digitalocean-mcp.droplet.delete
+    match: { mcp: { tool: droplet-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: droplet }
+    card: "Destroy Droplet {ID} and its disk"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/droplet/droplet_tools.go
+    notes: >-
+      The disk is gone; backups of a destroyed Droplet are deleted with it
+      unless converted to snapshots first.
+    tests:
+      - fixture: fixtures/droplet-delete.http
+        expect: irreversible
+        resource: "3164444"

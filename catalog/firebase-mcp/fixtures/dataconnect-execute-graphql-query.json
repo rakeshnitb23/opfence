@@ -1,0 +1,10 @@
+{
+  "description": "Run a query through the read-write tool",
+  "tool": "dataconnect_execute_graphql",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "serviceId": "shop",
+    "query": "query { products { id name } }"
+  }
+}

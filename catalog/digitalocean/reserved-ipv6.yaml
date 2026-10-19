@@ -1,0 +1,41 @@
+# DigitalOcean REST API: reserved-ipv6
+operations:
+  - id: digitalocean.reserved-ipv6.create
+    match: { rest: { method: POST, path: /v2/reserved_ipv6 } }
+    class: money
+    card: "Reserve an IPv6 address in {body.region_slug}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ipv6/reservedIPv6_create.yml
+    tests:
+      - fixture: fixtures/reserved-ipv6-create.http
+        expect: money
+
+  - id: digitalocean.reserved-ipv6.delete
+    match: { rest: { method: DELETE, path: "/v2/reserved_ipv6/{reserved_ipv6}" } }
+    class: delete
+    resource: { arg: reserved_ipv6, kind: reserved-ipv6 }
+    card: "Release reserved IPv6 {reserved_ipv6}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ipv6/reservedIPv6_delete.yml
+    tests:
+      - fixture: fixtures/reserved-ipv6-delete.http
+        expect: delete
+        resource: "2409:40d0:f7:1017:74b4:3a96:105e:4c6e"
+
+  - id: digitalocean.reserved-ipv6.action
+    match: { rest: { method: POST, path: "/v2/reserved_ipv6/{reserved_ipv6}/actions" } }
+    class: write
+    resource: { arg: reserved_ipv6, kind: reserved-ipv6 }
+    card: "{body.type} reserved IPv6 {reserved_ipv6}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ipv6/reservedIPv6Actions_post.yml
+    tests:
+      - fixture: fixtures/reserved-ipv6-action.http
+        expect: write
+        resource: "2409:40d0:f7:1017:74b4:3a96:105e:4c6e"

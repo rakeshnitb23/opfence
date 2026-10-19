@@ -1,0 +1,7 @@
+{
+  "description": "Search the EKS troubleshooting guide",
+  "tool": "search_eks_troubleshoot_guide",
+  "arguments": {
+    "query": "nodes not joining cluster"
+  }
+}

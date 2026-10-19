@@ -1,0 +1,5 @@
+# description: List logging destinations
+GET /v2/monitoring/sinks/destinations HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

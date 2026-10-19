@@ -2,6 +2,7 @@
 operations:
   - id: turso.database-instance.create
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/instances" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Add an instance of Turso database {database} in {body.Location}"
@@ -18,6 +19,7 @@ operations:
 
   - id: turso.database-instance.delete
     match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/databases/{database}/instances/{instance}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: irreversible
     resource: { arg: database, kind: database }
     card: "Destroy instance {instance} of Turso database {database}"
@@ -36,6 +38,7 @@ operations:
 
   - id: turso.database-instance.delete-unscoped
     match: { rest: { method: DELETE, path: "/{version}/databases/{database}/instances/{instance}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: irreversible
     resource: { arg: database, kind: database }
     card: "Destroy instance {instance} of Turso database {database}"

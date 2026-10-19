@@ -1,0 +1,159 @@
+# DigitalOcean MCP server: load-balancer
+operations:
+  - id: digitalocean-mcp.load-balancer.list
+    match: { mcp: { tool: lb-list } }
+    class: read
+    card: "List load balancers"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-list.http
+        expect: read
+
+  - id: digitalocean-mcp.load-balancer.get
+    match: { mcp: { tool: lb-get } }
+    class: read
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Show load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-get.http
+        expect: read
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.create
+    match: { mcp: { tool: lb-create } }
+    class: money
+    resource: { arg: Name, kind: load-balancer }
+    card: "Create load balancer {Name} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-create.http
+        expect: money
+        resource: shop-lb
+
+  - id: digitalocean-mcp.load-balancer.update
+    match: { mcp: { tool: lb-update } }
+    class: write
+    when:
+      - if: { arg: SizeUnit, present: true }
+        class: money
+      - if: { arg: ForwardingRules, present: true }
+        class: access
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Change load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    notes: >-
+      Size units change the bill. Forwarding rules decide which ports are
+      exposed to the internet.
+    tests:
+      - fixture: fixtures/load-balancer-update.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+      - fixture: fixtures/load-balancer-update-size.http
+        expect: money
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+      - fixture: fixtures/load-balancer-update-rules.http
+        expect: access
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.delete
+    match: { mcp: { tool: lb-delete } }
+    class: delete
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Delete load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    notes: >-
+      Its configuration can be rebuilt, though its IP address is released.
+    tests:
+      - fixture: fixtures/load-balancer-delete.http
+        expect: delete
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.purge-cache
+    match: { mcp: { tool: lb-delete-cache } }
+    class: write
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Purge the CDN cache of global load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-purge-cache.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.add-droplets
+    match: { mcp: { tool: lb-add-droplets } }
+    class: write
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Add Droplets {DropletIDs} to load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-add-droplets.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.remove-droplets
+    match: { mcp: { tool: lb-remove-droplets } }
+    class: write
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Remove Droplets {DropletIDs} from load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    tests:
+      - fixture: fixtures/load-balancer-remove-droplets.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.add-rules
+    match: { mcp: { tool: lb-add-fwd-rules } }
+    class: access
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Add forwarding rules to load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    notes: >-
+      Forwarding rules decide which ports are exposed to the internet.
+    tests:
+      - fixture: fixtures/load-balancer-add-rules.http
+        expect: access
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"
+
+  - id: digitalocean-mcp.load-balancer.remove-rules
+    match: { mcp: { tool: lb-remove-fwd-rules } }
+    class: write
+    resource: { arg: LoadBalancerID, kind: load-balancer }
+    card: "Remove forwarding rules from load balancer {LoadBalancerID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/load_balancers_tools.go
+    notes: >-
+      Closes ports; nothing is exposed.
+    tests:
+      - fixture: fixtures/load-balancer-remove-rules.http
+        expect: write
+        resource: "4de7ac8b-495b-4884-9a69-1050c6793cd6"

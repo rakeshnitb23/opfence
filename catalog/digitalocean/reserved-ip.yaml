@@ -1,0 +1,46 @@
+# DigitalOcean REST API: reserved-ip
+operations:
+  - id: digitalocean.reserved-ip.create
+    match: { rest: { method: POST, path: /v2/reserved_ips } }
+    class: money
+    card: "Reserve an IPv4 address"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ips/reservedIPs_create.yml
+    notes: >-
+      An unassigned reserved IP is billed.
+    tests:
+      - fixture: fixtures/reserved-ip-create.http
+        expect: money
+
+  - id: digitalocean.reserved-ip.delete
+    match: { rest: { method: DELETE, path: "/v2/reserved_ips/{reserved_ip}" } }
+    class: delete
+    resource: { arg: reserved_ip, kind: reserved-ip }
+    card: "Release reserved IP {reserved_ip}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ips/reservedIPs_delete.yml
+    notes: >-
+      The address returns to DigitalOcean; DNS pointing at it must move to a
+      new one.
+    tests:
+      - fixture: fixtures/reserved-ip-delete.http
+        expect: delete
+        resource: "45.55.96.47"
+
+  - id: digitalocean.reserved-ip.action
+    match: { rest: { method: POST, path: "/v2/reserved_ips/{reserved_ip}/actions" } }
+    class: write
+    resource: { arg: reserved_ip, kind: reserved-ip }
+    card: "{body.type} reserved IP {reserved_ip}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/reserved_ips/reservedIPsActions_post.yml
+    tests:
+      - fixture: fixtures/reserved-ip-action.http
+        expect: write
+        resource: "45.55.96.47"

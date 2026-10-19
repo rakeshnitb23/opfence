@@ -1,0 +1,7 @@
+# description: Create vector database example name (example string) in tor1
+POST /v2/vector-databases HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "example name", "project_id": "123e4567-e89b-12d3-a456-426614174000", "region": "tor1", "size": "example string", "tags": ["example string"]}

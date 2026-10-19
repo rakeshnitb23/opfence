@@ -1,0 +1,5 @@
+# description: Revoke Spaces access key SPACESKEYEXAMPLE01
+DELETE /v2/spaces/keys/SPACESKEYEXAMPLE01 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

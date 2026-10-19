@@ -1,0 +1,7 @@
+{
+  "description": "Get a QStash log entry",
+  "tool": "qstash_logs_get",
+  "arguments": {
+    "messageId": "msg_26hZCxZCuWyyTWPmSVBrNB882AMRP1TsgzpygELRcLWep4ACNTTsCHhrZuaNBiq"
+  }
+}

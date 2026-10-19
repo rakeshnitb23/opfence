@@ -1,0 +1,81 @@
+# DigitalOcean REST API: genai-anthropic-key
+operations:
+  - id: digitalocean.genai-anthropic-key.create
+    match: { rest: { method: POST, path: /v2/gen-ai/anthropic/keys } }
+    class: credential
+    resource: { arg: body.name, kind: genai-anthropic-key }
+    card: "Store Anthropic API key {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_anthropic_api_key.yml
+    tests:
+      - fixture: fixtures/genai-anthropic-key-create.http
+        expect: credential
+        resource: "\"Production Key\""
+
+  - id: digitalocean.genai-anthropic-key.update
+    match: { rest: { method: PUT, path: "/v2/gen-ai/anthropic/keys/{api_key_uuid}" } }
+    class: write
+    when:
+      - if: { arg: body.api_key, present: true }
+        class: credential
+    resource: { arg: api_key_uuid, kind: genai-anthropic-key }
+    card: "Change Anthropic API key {api_key_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_anthropic_api_key.yml
+    notes: >-
+      api_key replaces the stored secret.
+    tests:
+      - fixture: fixtures/genai-anthropic-key-update.http
+        expect: write
+        resource: "5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4"
+      - fixture: fixtures/genai-anthropic-key-update-key.http
+        expect: credential
+        resource: "5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-anthropic-key.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/anthropic/keys/{api_key_uuid}" } }
+    class: irreversible
+    resource: { arg: api_key_uuid, kind: genai-anthropic-key }
+    card: "Delete stored Anthropic API key {api_key_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_anthropic_api_key.yml
+    notes: >-
+      The stored secret cannot be read back, so it cannot be put back; agents
+      using it stop working.
+    tests:
+      - fixture: fixtures/genai-anthropic-key-delete.http
+        expect: irreversible
+        resource: "5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-anthropic-key.list-agents
+    match: { rest: { method: GET, path: "/v2/gen-ai/anthropic/keys/{uuid}/agents" } }
+    class: credential
+    resource: { arg: uuid, kind: genai-anthropic-key }
+    card: "List agents using Anthropic key {uuid}, with their API keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_agents_by_anthropic_key.yml
+    response:
+      redact: [agents.api_key_infos.secret_key, agents.api_keys.api_key, agents.functions.api_key, agents.mcp_servers.authorization, agents.mcp_servers.headers, agents.child_agents, agents.parent_agents, agents.workspace.agents]
+      class: read
+    notes: >-
+      The response is a GenAI agent object, which carries its API keys
+      (api_keys[].api_key, api_key_infos[].secret_key), function route keys
+      (functions[].api_key) and MCP server authorization and headers, plus
+      nested child_agents, parent_agents and workspace.agents with the same
+      fields; the schema does not say any of them are masked. The nested agent
+      lists are redacted whole because they can nest without limit. Under
+      opfence run the proxy redacts those fields and the call is just a read;
+      anywhere else it is credential.
+    tests:
+      - fixture: fixtures/genai-anthropic-key-list-agents.http
+        expect: credential
+        response: fixtures/genai-anthropic-key-list-agents-response.json
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"

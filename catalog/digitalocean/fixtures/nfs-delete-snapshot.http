@@ -1,0 +1,5 @@
+# description: Delete NFS snapshot 5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9
+DELETE /v2/nfs/snapshots/5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9?region=atl1 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

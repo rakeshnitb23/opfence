@@ -1,0 +1,109 @@
+# Railway MCP server: deployment
+operations:
+  - id: railway-mcp.deployment.redeploy-hosted
+    match: { mcp: { tool: redeploy } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Redeploy service {serviceId} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId. A
+      redeploy is a write, as railway.deployment.redeploy.
+    tests:
+      - fixture: fixtures/deployment-redeploy-hosted.http
+        expect: write
+        resource: svc-api
+
+  - id: railway-mcp.deployment.accept-staged
+    match: { mcp: { tool: accept-deploy } }
+    class: irreversible
+    resource: { arg: environmentId, kind: environment }
+    card: "Commit the staged changes of environment {environmentId} and deploy"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      Docs: commits staged changes and deploys (destructive). Staged changes are
+      an environment patch, which can delete services, volumes and variables,
+      and the call does not show what is staged, so it takes the strictest class
+      the patch can reach.
+    tests:
+      - fixture: fixtures/deployment-accept-staged.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway-mcp.deployment.list
+    match: { mcp: { tool: list_deployments } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "List deployments of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/deployment-list.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.deployment.logs
+    match: { mcp: { tool: get_logs } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Read {log_type} logs of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+    tests:
+      - fixture: fixtures/deployment-logs.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.deployment.deploy
+    match: { mcp: { tool: deploy } }
+    class: write
+    when:
+      - if: { arg: environment, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+      - if: { arg: service, matches: '[;&|<>`"\n\r]|\$\(' }
+        class: irreversible
+    resource: { arg: service_id, kind: service }
+    card: "Upload {path} and deploy it to service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.11/src/tools/deploy.ts
+      - https://github.com/railwayapp/railway-mcp-server/blob/v0.1.8/src/cli/core.ts
+    notes: >-
+      Registered by the local server (uploads a directory as a tarball and
+      deploys it) and by @railway/mcp-server 0.1.x (runs railway up in
+      workspacePath). A deploy is a write, as railway.service-instance.deploy;
+      the previous deployment stays and can be redeployed. @railway/mcp-server
+      0.1.0 to 0.1.8 built each Railway CLI command as one string and ran it
+      with exec(), so a shell metacharacter in environment, service ran a
+      command of its own (fixed in 0.1.11, which passes argv arrays); such a
+      value makes the call irreversible.
+    tests:
+      - fixture: fixtures/deployment-deploy.json
+        expect: write
+        resource: svc-api
+      - fixture: fixtures/deployment-deploy-legacy.json
+        expect: write
+      - fixture: fixtures/deployment-deploy-legacy-injection.json
+        expect: irreversible

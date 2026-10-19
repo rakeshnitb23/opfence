@@ -1,0 +1,12 @@
+{
+  "description": "Import a CSV export into table retail_data.customers",
+  "tool": "import_csv_to_table",
+  "arguments": {
+    "warehouse": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "region": "us-west-2",
+    "namespace": "retail_data",
+    "uri": "https://s3tables.us-west-2.amazonaws.com/iceberg",
+    "table_name": "customers",
+    "s3_url": "s3://shop-exports/customers/2026-10-18.csv"
+  }
+}

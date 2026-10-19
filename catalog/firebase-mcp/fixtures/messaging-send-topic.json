@@ -1,0 +1,9 @@
+{
+  "description": "Send a notification to every subscriber",
+  "tool": "messaging_send_message",
+  "arguments": {
+    "topic": "all-users",
+    "title": "Sale",
+    "body": "50% off today"
+  }
+}

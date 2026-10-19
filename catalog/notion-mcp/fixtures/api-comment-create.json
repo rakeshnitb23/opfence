@@ -1,0 +1,16 @@
+{
+  "description": "Comment on Notion page 1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+  "tool": "API-create-a-comment",
+  "arguments": {
+    "parent": {
+      "page_id": "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+    },
+    "rich_text": [
+      {
+        "text": {
+          "content": "Looks good."
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+# description: Create Railway project shop-api
+POST / HTTP/1.1
+Host: mcp.railway.com
+Authorization: Bearer opf_railway-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"create-project","arguments":{"name":"shop-api"}}}

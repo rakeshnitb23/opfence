@@ -1,0 +1,33 @@
+# GitHub MCP server: dependabot
+operations:
+  - id: github-mcp.dependabot-alert.get
+    match: { mcp: { tool: get_dependabot_alert } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show Dependabot alert {alertNumber} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/dependabot.go
+    notes: >-
+      Toolset dependabot (not enabled by default).
+    tests:
+      - fixture: fixtures/dependabot-alert-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.dependabot-alert.list
+    match: { mcp: { tool: list_dependabot_alerts } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List Dependabot alerts in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/dependabot.go
+    notes: >-
+      Toolset dependabot (not enabled by default).
+    tests:
+      - fixture: fixtures/dependabot-alert-list.http
+        expect: read
+        resource: shop

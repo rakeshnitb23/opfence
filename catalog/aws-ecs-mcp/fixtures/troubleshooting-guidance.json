@@ -1,0 +1,12 @@
+{
+  "description": "Start troubleshooting service shop-api",
+  "tool": "ecs_troubleshooting_tool",
+  "arguments": {
+    "action": "get_ecs_troubleshooting_guidance",
+    "parameters": {
+      "ecs_cluster_name": "shop",
+      "ecs_service_name": "shop-api",
+      "symptoms_description": "ALB returning 503 errors"
+    }
+  }
+}

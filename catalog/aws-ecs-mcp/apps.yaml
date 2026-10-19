@@ -1,0 +1,142 @@
+# Amazon ECS MCP server (awslabs.ecs-mcp-server): Express Mode apps, troubleshooting and docs
+operations:
+  - id: aws-ecs-mcp.app.build-and-push
+    match: { mcp: { tool: build_and_push_image_to_ecr } }
+    class: access
+    resource: { arg: app_name, kind: app }
+    card: "Create ECR repository and push role for {app_name}, then build and push {app_path}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/express.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/express.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/templates/ecr_infrastructure.json
+    notes: >-
+      Deploys a CloudFormation stack with an ECR repository and an IAM role that can push and
+      pull it (creating a role is access, as for aws.iam.create-role), then builds the local
+      Dockerfile and pushes the image.
+    tests:
+      - fixture: fixtures/build-and-push-image.json
+        expect: access
+        resource: shop-api
+
+  - id: aws-ecs-mcp.app.delete
+    match: { mcp: { tool: delete_app } }
+    class: irreversible
+    resource: { arg: app_name, kind: app }
+    card: "Delete Express Mode app {app_name}: service {service_arn}, its ECR repository and images"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/express.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/express.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/templates/ecr_infrastructure.json
+    notes: >-
+      Deletes the Express Gateway service and the ECR stack; the repository has
+      EmptyOnDelete: true, so every pushed image is deleted with it.
+    tests:
+      - fixture: fixtures/delete-app.json
+        expect: irreversible
+        resource: shop-api
+
+  - id: aws-ecs-mcp.app.validate-prerequisites
+    match: { mcp: { tool: validate_ecs_express_mode_prerequisites } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/express.py
+    notes: >-
+      Checks that the two IAM roles and the image exist.
+    tests:
+      - fixture: fixtures/validate-prerequisites.json
+        expect: read
+
+  - id: aws-ecs-mcp.app.wait-ready
+    match: { mcp: { tool: wait_for_service_ready } }
+    class: read
+    resource: { arg: service_name, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/express.py
+    tests:
+      - fixture: fixtures/wait-for-service-ready.json
+        expect: read
+        resource: shop-api
+
+  - id: aws-ecs-mcp.app.containerize
+    match: { mcp: { tool: containerize_app } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/containerize.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/containerize.py
+    notes: >-
+      Returns Dockerfile guidance; writes no files and calls no AWS API.
+    tests:
+      - fixture: fixtures/containerize-app.json
+        expect: read
+
+  - id: aws-ecs-mcp.troubleshooting.run
+    match: { mcp: { tool: ecs_troubleshooting_tool } }
+    class: read
+    when:
+      - if: { arg: action, absent: true }
+        class: credential
+      - if: { arg: action, in: ["get_ecs_troubleshooting_guidance", "detect_image_pull_failures"] }
+        class: credential
+    card: "Run ECS troubleshooting action {action}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/troubleshooting.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/ecs_troubleshooting.py
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/api/troubleshooting_tools/utils.py
+    notes: >-
+      Every action only reads. get_ecs_troubleshooting_guidance (the default when action is
+      missing) and detect_image_pull_failures return task definitions, whose environment values
+      the server redacts unless ALLOW_SENSITIVE_DATA=true, so they are credential as for
+      DescribeTaskDefinition. Logs, service events, task failures, stack status and network
+      configuration are read (the server also gates most of them behind ALLOW_SENSITIVE_DATA).
+    tests:
+      - fixture: fixtures/troubleshooting-logs.json
+        expect: read
+      - fixture: fixtures/troubleshooting-guidance.json
+        expect: credential
+
+  - id: aws-ecs-mcp.docs.search
+    match: { mcp: { tool: aws_knowledge_aws___search_documentation } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/aws_knowledge_proxy.py
+    notes: >-
+      Proxied from AWS's hosted Knowledge MCP server.
+    tests:
+      - fixture: fixtures/knowledge-search.json
+        expect: read
+
+  - id: aws-ecs-mcp.docs.read
+    match: { mcp: { tool: aws_knowledge_aws___read_documentation } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/aws_knowledge_proxy.py
+    tests:
+      - fixture: fixtures/knowledge-read.json
+        expect: read
+
+  - id: aws-ecs-mcp.docs.recommend
+    match: { mcp: { tool: aws_knowledge_aws___recommend } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/ecs-mcp-server/awslabs/ecs_mcp_server/modules/aws_knowledge_proxy.py
+    tests:
+      - fixture: fixtures/knowledge-recommend.json
+        expect: read

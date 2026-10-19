@@ -1,0 +1,177 @@
+# DigitalOcean MCP server: uptime-check
+operations:
+  - id: digitalocean-mcp.uptime-check.list
+    match: { mcp: { tool: uptimecheck-list } }
+    class: read
+    card: "List uptime checks"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-list.http
+        expect: read
+
+  - id: digitalocean-mcp.uptime-check.get
+    match: { mcp: { tool: uptimecheck-get } }
+    class: read
+    resource: { arg: ID, kind: uptime-check }
+    card: "Show uptime check {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-get.http
+        expect: read
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.get-state
+    match: { mcp: { tool: uptimecheck-get-state } }
+    class: read
+    resource: { arg: ID, kind: uptime-check }
+    card: "Show the state of uptime check {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-get-state.http
+        expect: read
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.create
+    match: { mcp: { tool: uptimecheck-create } }
+    class: write
+    resource: { arg: Name, kind: uptime-check }
+    card: "Create uptime check {Name} for {Target}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-create.http
+        expect: write
+        resource: landing-page
+
+  - id: digitalocean-mcp.uptime-check.update
+    match: { mcp: { tool: uptimecheck-update } }
+    class: write
+    resource: { arg: ID, kind: uptime-check }
+    card: "Change uptime check {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-update.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.delete
+    match: { mcp: { tool: uptimecheck-delete } }
+    class: delete
+    resource: { arg: ID, kind: uptime-check }
+    card: "Delete uptime check {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-delete.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.list-alerts
+    match: { mcp: { tool: uptimecheck-alert-list } }
+    class: credential
+    resource: { arg: CheckID, kind: uptime-check }
+    card: "List alerts of uptime check {CheckID} with their Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_alert_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-list-alerts.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.get-alert
+    match: { mcp: { tool: uptimecheck-alert-get } }
+    class: credential
+    resource: { arg: CheckID, kind: uptime-check }
+    card: "Show alert {AlertID} of uptime check {CheckID} with its Slack webhook URLs"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_alert_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-get-alert.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.create-alert
+    match: { mcp: { tool: uptimecheck-alert-create } }
+    class: write
+    when:
+      - if: { arg: SlackDetails.url, present: true }
+        class: credential
+    resource: { arg: CheckID, kind: uptime-check }
+    card: "Add alert {Name} to uptime check {CheckID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_alert_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-create-alert.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+      - fixture: fixtures/uptime-check-create-alert-slack.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.update-alert
+    match: { mcp: { tool: uptimecheck-alert-update } }
+    class: write
+    when:
+      - if: { arg: SlackDetails.url, present: true }
+        class: credential
+    resource: { arg: CheckID, kind: uptime-check }
+    card: "Change alert {AlertID} of uptime check {CheckID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_alert_tools.go
+    notes: >-
+      A Slack incoming-webhook URL is a secret (anyone holding it can post to
+      the channel).
+    tests:
+      - fixture: fixtures/uptime-check-update-alert.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+      - fixture: fixtures/uptime-check-update-alert-slack.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean-mcp.uptime-check.delete-alert
+    match: { mcp: { tool: uptimecheck-alert-delete } }
+    class: delete
+    resource: { arg: CheckID, kind: uptime-check }
+    card: "Delete alert {AlertID} of uptime check {CheckID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/insights/uptime_alert_tools.go
+    tests:
+      - fixture: fixtures/uptime-check-delete-alert.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

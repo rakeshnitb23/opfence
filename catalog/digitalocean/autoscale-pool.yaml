@@ -1,0 +1,62 @@
+# DigitalOcean REST API: autoscale-pool
+operations:
+  - id: digitalocean.autoscale-pool.create
+    match: { rest: { method: POST, path: /v2/droplets/autoscale } }
+    class: money
+    resource: { arg: body.name, kind: autoscale-pool }
+    card: "Create autoscale pool {body.name} of {body.droplet_template.size} Droplets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/autoscale_pools/autoscale_pool_create.yml
+    tests:
+      - fixture: fixtures/autoscale-pool-create.http
+        expect: money
+        resource: my-autoscale-pool
+
+  - id: digitalocean.autoscale-pool.update
+    match: { rest: { method: PUT, path: "/v2/droplets/autoscale/{autoscale_pool_id}" } }
+    class: money
+    resource: { arg: autoscale_pool_id, kind: autoscale-pool }
+    card: "Change autoscale pool {autoscale_pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/autoscale_pools/autoscale_pool_update.yml
+    notes: >-
+      The config sets instance counts and the Droplet size.
+    tests:
+      - fixture: fixtures/autoscale-pool-update.http
+        expect: money
+        resource: "0d3db13e-a604-4944-9827-7ec2642d32ac"
+
+  - id: digitalocean.autoscale-pool.delete
+    match: { rest: { method: DELETE, path: "/v2/droplets/autoscale/{autoscale_pool_id}" } }
+    class: irreversible
+    resource: { arg: autoscale_pool_id, kind: autoscale-pool }
+    card: "Delete autoscale pool {autoscale_pool_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/autoscale_pools/autoscale_pool_delete.yml
+    notes: >-
+      The reference does not say what happens to the pool's Droplets; assume
+      they are destroyed with it.
+    tests:
+      - fixture: fixtures/autoscale-pool-delete.http
+        expect: irreversible
+        resource: "0d3db13e-a604-4944-9827-7ec2642d32ac"
+
+  - id: digitalocean.autoscale-pool.delete-with-droplets
+    match: { rest: { method: DELETE, path: "/v2/droplets/autoscale/{autoscale_pool_id}/dangerous" } }
+    class: irreversible
+    resource: { arg: autoscale_pool_id, kind: autoscale-pool }
+    card: "Delete autoscale pool {autoscale_pool_id} and destroy its Droplets"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/autoscale_pools/autoscale_pool_delete_dangerous.yml
+    tests:
+      - fixture: fixtures/autoscale-pool-delete-with-droplets.http
+        expect: irreversible
+        resource: "0d3db13e-a604-4944-9827-7ec2642d32ac"

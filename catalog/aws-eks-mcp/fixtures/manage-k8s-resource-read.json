@@ -1,0 +1,12 @@
+{
+  "description": "Read Deployment shop-api in namespace shop",
+  "tool": "manage_k8s_resource",
+  "arguments": {
+    "cluster_name": "shop-prod",
+    "operation": "read",
+    "kind": "Deployment",
+    "api_version": "apps/v1",
+    "name": "shop-api",
+    "namespace": "shop"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "Show Notion database 9f8e7d6c-5b4a-4321-9876-fedcba012345",
+  "tool": "API-retrieve-a-database",
+  "arguments": {
+    "database_id": "9f8e7d6c-5b4a-4321-9876-fedcba012345"
+  }
+}

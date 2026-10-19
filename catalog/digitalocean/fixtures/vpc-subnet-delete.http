@@ -1,0 +1,5 @@
+# description: Delete subnet 6b5a4f3e-2d1c-4b0a-9f8e-7d6c5b4a3f2e of VPC 5a4981aa-9653-4bd1-bef5-d6bff52042e4
+DELETE /v2/vpcs/5a4981aa-9653-4bd1-bef5-d6bff52042e4/subnets/6b5a4f3e-2d1c-4b0a-9f8e-7d6c5b4a3f2e HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

@@ -1,0 +1,9 @@
+{
+  "description": "Explain the generated bucket properties",
+  "tool": "explain",
+  "arguments": {
+    "generated_code_token": "generated-code-token-EXAMPLE",
+    "operation": "create",
+    "format": "detailed"
+  }
+}

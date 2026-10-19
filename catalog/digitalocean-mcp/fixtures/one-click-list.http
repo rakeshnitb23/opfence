@@ -1,0 +1,8 @@
+# description: List 1-Click apps
+POST /mcp HTTP/1.1
+Host: marketplace.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":279,"method":"tools/call","params":{"name":"marketplace-1-click-list","arguments":{}}}

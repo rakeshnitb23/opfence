@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.data-lake-pipeline-run.delete
     match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/runs/{pipelineRunId}" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: irreversible
     resource: { arg: pipelineName, kind: pipeline }
     card: "Delete the dataset of pipeline run {pipelineRunId} of {pipelineName}"

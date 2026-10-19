@@ -1,0 +1,22 @@
+# Railway MCP server: agent
+operations:
+  - id: railway-mcp.agent.run
+    match: { mcp: { tool: railway-agent } }
+    class: irreversible
+    card: "Hand a request to Railway's AI agent"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/proxy.rs
+    notes: >-
+      Tool names come from Railway's MCP docs; the hosted server's source and
+      argument schemas are not published. The CLI proxy (proxy.rs) names the
+      scoping arguments projectId, environmentId, serviceId and deploymentId.
+      Takes a natural-language request that Railway's own agent carries out over
+      several steps with the user's permissions (log analysis, debugging,
+      service configuration), so it can reach any operation, including deletes;
+      it gets the strictest class.
+    tests:
+      - fixture: fixtures/agent-run.http
+        expect: irreversible

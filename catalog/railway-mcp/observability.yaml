@@ -1,0 +1,65 @@
+# Railway MCP server: observability
+operations:
+  - id: railway-mcp.observability.metrics
+    match: { mcp: { tool: service_metrics } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Read metrics of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/observability.rs
+    tests:
+      - fixture: fixtures/observability-metrics.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.observability.http-requests
+    match: { mcp: { tool: http_requests } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Count HTTP requests of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/observability.rs
+    tests:
+      - fixture: fixtures/observability-http-requests.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.observability.http-error-rate
+    match: { mcp: { tool: http_error_rate } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Read the HTTP error rate of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/observability.rs
+    tests:
+      - fixture: fixtures/observability-http-error-rate.json
+        expect: read
+        resource: svc-api
+
+  - id: railway-mcp.observability.http-response-time
+    match: { mcp: { tool: http_response_time } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    card: "Read HTTP response times of service {service_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/params.rs
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/tools/observability.rs
+    tests:
+      - fixture: fixtures/observability-http-response-time.json
+        expect: read
+        resource: svc-api

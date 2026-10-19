@@ -1,0 +1,17 @@
+# Railway MCP server: account
+operations:
+  - id: railway-mcp.account.whoami
+    match: { mcp: { tool: whoami } }
+    class: read
+    card: "Show the signed-in Railway user"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/docs/blob/main/content/docs/ai/mcp-server.md
+      - https://github.com/railwayapp/cli/blob/master/src/commands/mcp/handler.rs
+    notes: >-
+      Registered by the hosted server and by the local server (railway mcp
+      local) under the same name.
+    tests:
+      - fixture: fixtures/account-whoami.http
+        expect: read

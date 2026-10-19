@@ -1,0 +1,47 @@
+# Sentry MCP server: events
+operations:
+  - id: sentry-mcp.event.search
+    match: { mcp: { tool: search_events } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Search {dataset} in organization {organizationSlug} for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-events.ts
+    notes: >-
+      query may be natural language; a server-side agent translates it to
+      Sentry search syntax using only read tools (dataset attributes, search
+      validation, whoami).
+    tests:
+      - fixture: fixtures/event-search.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.event.stacktrace
+    match: { mcp: { tool: get_event_stacktrace } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show the stack trace of event {eventId} in issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-event-stacktrace.ts
+    tests:
+      - fixture: fixtures/event-stacktrace.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.event.attachment
+    match: { mcp: { tool: get_event_attachment } }
+    class: read
+    resource: { arg: projectSlug, kind: project }
+    card: "Download attachments of event {eventId} in project {projectSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-event-attachment.ts
+    tests:
+      - fixture: fixtures/event-attachment.http
+        expect: read
+        resource: checkout-api

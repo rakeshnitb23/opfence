@@ -1,0 +1,172 @@
+# Firebase MCP server: Data Connect (SQL Connect) tools (dataconnect_ prefix). build,
+# list_services and execute_in_emulator are local; the rest are remote, proxied.
+operations:
+  - id: firebase-mcp.dataconnect.build
+    match: { mcp: { tool: dataconnect_build } }
+    class: read
+    resource: { arg: service_id, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/dataconnect/compile.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Compiles the local schema and connectors and reports errors; nothing is
+      deployed.
+    tests:
+      - fixture: fixtures/dataconnect-build.json
+        expect: read
+        resource: "shop"
+
+  - id: firebase-mcp.dataconnect-service.list
+    match: { mcp: { tool: dataconnect_list_services } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/dataconnect/list_services.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    tests:
+      - fixture: fixtures/dataconnect-service-list.json
+        expect: read
+
+  - id: firebase-mcp.dataconnect.execute-in-emulator
+    match: { mcp: { tool: dataconnect_execute_in_emulator } }
+    class: write
+    resource: { arg: service_id, kind: service }
+    card: "Run a GraphQL operation on the local Data Connect emulator"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/dataconnect/execute.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/util/dataconnect/emulator.ts
+    notes: >-
+      Always sent to the running local emulator (the client's URL comes from
+      the emulator hub, never from the arguments), so mutations change
+      throwaway local data only.
+    tests:
+      - fixture: fixtures/dataconnect-execute-in-emulator.json
+        expect: write
+        resource: "shop"
+
+  - id: firebase-mcp.dataconnect.execute-graphql
+    match: { mcp: { tool: dataconnect_execute_graphql } }
+    class: irreversible
+    resource: { arg: serviceId, kind: service }
+    card: "Run GraphQL with admin rights on Data Connect service {serviceId} in {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Runs any query or mutation against the
+      service's Cloud SQL Postgres database with admin rights (bypassing
+      @auth, optionally impersonating a user through extensions). The
+      operation is GraphQL, not SQL, so classify.sql cannot read it, and a
+      document can hold mutations under any operationName: always
+      irreversible. dataconnect_execute_graphql_read is the read-only variant.
+    tests:
+      - fixture: fixtures/dataconnect-execute-graphql.json
+        expect: irreversible
+        resource: "shop"
+      - fixture: fixtures/dataconnect-execute-graphql-query.json
+        expect: irreversible
+        resource: "shop"
+
+  - id: firebase-mcp.dataconnect.execute-graphql-read
+    match: { mcp: { tool: dataconnect_execute_graphql_read } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Calls executeGraphqlRead, which the Data
+      Connect API rejects for mutations, so the server enforces read-only.
+    tests:
+      - fixture: fixtures/dataconnect-execute-graphql-read.json
+        expect: read
+        resource: "shop"
+
+  - id: firebase-mcp.dataconnect.generate-schema
+    match: { mcp: { tool: dataconnect_generate_schema } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Gemini drafts a schema and returns it;
+      nothing is saved.
+    tests:
+      - fixture: fixtures/dataconnect-generate-schema.json
+        expect: read
+
+  - id: firebase-mcp.dataconnect.generate-query
+    match: { mcp: { tool: dataconnect_generate_query } }
+    class: read
+    resource: { arg: serviceId, kind: service }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Gemini drafts an operation and returns
+      it; nothing runs.
+    tests:
+      - fixture: fixtures/dataconnect-generate-query.json
+        expect: read
+        resource: "shop"
+
+  - id: firebase-mcp.dataconnect.generate-query-from-schema
+    match: { mcp: { tool: dataconnect_generate_query_from_schema } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Gemini drafts an operation and returns
+      it; nothing runs.
+    tests:
+      - fixture: fixtures/dataconnect-generate-query-from-schema.json
+        expect: read
+
+  - id: firebase-mcp.dataconnect.list-locations
+    match: { mcp: { tool: dataconnect_list_locations } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://firebasedataconnect.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://firebasedataconnect.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it.
+    tests:
+      - fixture: fixtures/dataconnect-list-locations.json
+        expect: read

@@ -1,0 +1,44 @@
+# DigitalOcean REST API: agent-template
+operations:
+  - id: digitalocean.agent-template.create
+    match: { rest: { method: POST, path: /v2/agents/templates } }
+    class: write
+    resource: { arg: body.name, kind: agent-template }
+    card: "Create hosted agent template {body.name} from {body.source_oci_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_create_template.yml
+    tests:
+      - fixture: fixtures/agent-template-create.http
+        expect: write
+
+  - id: digitalocean.agent-template.update
+    match: { rest: { method: PUT, path: "/v2/agents/templates/{template_id}" } }
+    class: write
+    resource: { arg: template_id, kind: agent-template }
+    card: "Rebuild hosted agent template {template_id} from {body.source_oci_ref}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_update_template.yml
+    tests:
+      - fixture: fixtures/agent-template-update.http
+        expect: write
+        resource: tpl-shop-agent
+
+  - id: digitalocean.agent-template.delete
+    match: { rest: { method: DELETE, path: "/v2/agents/templates/{template_id}" } }
+    class: delete
+    resource: { arg: template_id, kind: agent-template }
+    card: "Delete hosted agent template {template_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/agents/agents_delete_template.yml
+    notes: >-
+      Can be rebuilt from its OCI source.
+    tests:
+      - fixture: fixtures/agent-template-delete.http
+        expect: delete
+        resource: tpl-shop-agent

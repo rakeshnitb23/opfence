@@ -1,0 +1,5 @@
+# description: Delete certificate 892071a0-bb95-49bc-8021-3afd67a210bf
+DELETE /v2/certificates/892071a0-bb95-49bc-8021-3afd67a210bf HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

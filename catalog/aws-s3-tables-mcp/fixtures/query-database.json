@@ -1,0 +1,11 @@
+{
+  "description": "Query ten customers from retail_data",
+  "tool": "query_database",
+  "arguments": {
+    "warehouse": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "region": "us-west-2",
+    "namespace": "retail_data",
+    "uri": "https://s3tables.us-west-2.amazonaws.com/iceberg",
+    "query": "SELECT * FROM customers LIMIT 10"
+  }
+}

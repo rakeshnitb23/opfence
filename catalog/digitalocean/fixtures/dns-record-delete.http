@@ -1,0 +1,5 @@
+# description: Delete DNS record 3352896 from example.com
+DELETE /v2/domains/example.com/records/3352896 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

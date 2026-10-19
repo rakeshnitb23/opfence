@@ -1,0 +1,102 @@
+# DigitalOcean REST API: partner-attachment
+operations:
+  - id: digitalocean.partner-attachment.create
+    match: { rest: { method: POST, path: /v2/partner_network_connect/attachments } }
+    class: money
+    when:
+      - if: { arg: body.connection_bandwidth_in_mbps, present: true }
+        class: money
+      - if: { arg: body.bgp.auth_key, present: true }
+        class: credential
+    resource: { arg: body.name, kind: partner-attachment }
+    card: "Create partner attachment {body.name} ({body.connection_bandwidth_in_mbps} Mbps) via {body.naas_provider}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_create.yml
+    notes: >-
+      A billed interconnect into your VPCs; bgp.auth_key is a shared secret.
+    tests:
+      - fixture: fixtures/partner-attachment-create.http
+        expect: money
+        resource: env.prod-partner-network-connect
+
+  - id: digitalocean.partner-attachment.update
+    match: { rest: { method: PATCH, path: "/v2/partner_network_connect/attachments/{pa_id}" } }
+    class: write
+    when:
+      - if: { arg: body.vpc_ids, present: true }
+        class: access
+      - if: { arg: body.bgp.auth_key, present: true }
+        class: credential
+    resource: { arg: pa_id, kind: partner-attachment }
+    card: "Change partner attachment {pa_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_update.yml
+    notes: >-
+      vpc_ids decides which VPCs the outside network reaches.
+    tests:
+      - fixture: fixtures/partner-attachment-update.http
+        expect: write
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+      - fixture: fixtures/partner-attachment-update-vpcs.http
+        expect: access
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.partner-attachment.delete
+    match: { rest: { method: DELETE, path: "/v2/partner_network_connect/attachments/{pa_id}" } }
+    class: delete
+    resource: { arg: pa_id, kind: partner-attachment }
+    card: "Delete partner attachment {pa_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_delete.yml
+    tests:
+      - fixture: fixtures/partner-attachment-delete.http
+        expect: delete
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.partner-attachment.regenerate-service-key
+    match: { rest: { method: POST, path: "/v2/partner_network_connect/attachments/{pa_id}/service_key" } }
+    class: credential
+    resource: { arg: pa_id, kind: partner-attachment }
+    card: "Regenerate the service key of partner attachment {pa_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_service_key_create.yml
+    tests:
+      - fixture: fixtures/partner-attachment-regenerate-service-key.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.partner-attachment.read-bgp-key
+    match: { rest: { method: GET, path: "/v2/partner_network_connect/attachments/{pa_id}/bgp_auth_key" } }
+    class: credential
+    resource: { arg: pa_id, kind: partner-attachment }
+    card: "Read the BGP auth key of partner attachment {pa_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_bgp_auth_key_get.yml
+    tests:
+      - fixture: fixtures/partner-attachment-read-bgp-key.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"
+
+  - id: digitalocean.partner-attachment.read-service-key
+    match: { rest: { method: GET, path: "/v2/partner_network_connect/attachments/{pa_id}/service_key" } }
+    class: credential
+    resource: { arg: pa_id, kind: partner-attachment }
+    card: "Read the service key of partner attachment {pa_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/partner_network_connect/partner_attachment_service_key_get.yml
+    tests:
+      - fixture: fixtures/partner-attachment-read-service-key.http
+        expect: credential
+        resource: "5a4981aa-9653-4bd1-bef5-d6bff52042e4"

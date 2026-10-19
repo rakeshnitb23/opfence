@@ -1,0 +1,7 @@
+# description: Generate 123 scenarios as billing-support-generated
+POST /v2/gen-ai/scenario_sets/generate HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"generator_model_uuid": "123e4567-e89b-12d3-a456-426614174000", "goal_description": "Test how the agent handles refund requests", "name": "billing-support-generated", "num_scenarios": 123}

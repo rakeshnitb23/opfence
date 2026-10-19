@@ -1,0 +1,8 @@
+# description: Resolve or reopen Notion discussion discussion://9a8b7c6d
+POST /mcp HTTP/1.1
+Host: mcp.notion.com
+Authorization: Bearer opf_notion-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":37,"method":"tools/call","params":{"name":"notion-set-discussion-resolved","arguments":{"discussion_id":"discussion://9a8b7c6d","resolved":true}}}

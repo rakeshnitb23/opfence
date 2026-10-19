@@ -1,0 +1,8 @@
+# description: Create notification channel ops-slack
+POST /mcp HTTP/1.1
+Host: insights.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":257,"method":"tools/call","params":{"name":"insights-notification-channel-create","arguments":{"Name":"ops-slack","SlackChannel":"#ops","SlackWebhookURL":"https://hooks.slack.com/services/EXAMPLE"}}}

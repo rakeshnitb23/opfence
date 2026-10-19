@@ -1,0 +1,13 @@
+{
+  "description": "Analyze MySQL database shop through the RDS Data API",
+  "tool": "source_db_analyzer",
+  "arguments": {
+    "source_db_type": "mysql",
+    "source_identifier": "shop",
+    "execution_mode": "managed",
+    "aws_cluster_arn": "arn:aws:rds:us-east-1:123456789012:cluster:shop-aurora",
+    "aws_secret_arn": "arn:aws:secretsmanager:us-east-1:123456789012:secret:shop-db-EXAMPLE",
+    "aws_region": "us-east-1",
+    "output_dir": "/home/dev/shop/dynamodb/analysis"
+  }
+}

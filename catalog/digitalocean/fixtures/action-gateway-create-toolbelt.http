@@ -1,0 +1,7 @@
+# description: Create toolbelt search-toolbelt
+POST /v2/action-gateway/toolbelts HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "search-toolbelt", "display_name": "Search Tools", "description": "Tools for searching and fetching public web pages.", "tools": ["exa_web_search", "exa_web_fetch"]}

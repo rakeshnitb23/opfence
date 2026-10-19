@@ -2,6 +2,7 @@
 operations:
   - id: turso.user-session.invalidate
     match: { rest: { method: POST, path: "/{version}/auth/invalidate" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     card: "Invalidate every Turso CLI session of the current user"
     status: verified

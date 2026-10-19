@@ -1,0 +1,7 @@
+{
+  "description": "Load the schema converter prompt without sample data",
+  "tool": "dynamodb_data_model_schema_converter",
+  "arguments": {
+    "generate_usage_data": false
+  }
+}

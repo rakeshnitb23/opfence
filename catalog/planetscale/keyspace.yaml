@@ -120,6 +120,7 @@ operations:
 
   - id: planetscale.keyspace.read-only-regions-update
     match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/keyspaces/{keyspace}/read-only-regions" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: money
     resource: { arg: database, kind: database }
     card: "Change the read-only regions of keyspace {keyspace} on branch {branch}"
@@ -137,6 +138,7 @@ operations:
 
   - id: planetscale.keyspace.external-create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/keyspaces/external" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Add external keyspace {body.name} to branch {branch} of database {database}"
@@ -154,6 +156,7 @@ operations:
 
   - id: planetscale.keyspace.external-lint
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/keyspaces/external/lint" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: read
     resource: { arg: database, kind: database }
     card: "Check an external keyspace definition for branch {branch}"

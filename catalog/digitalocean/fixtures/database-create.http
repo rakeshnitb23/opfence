@@ -1,0 +1,7 @@
+# description: Create pg database cluster backend (db-s-2vcpu-4gb x2) in nyc3
+POST /v2/databases HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "backend", "engine": "pg", "version": "14", "region": "nyc3", "size": "db-s-2vcpu-4gb", "storage_size_mib": 61440, "num_nodes": 2, "tags": ["production"]}

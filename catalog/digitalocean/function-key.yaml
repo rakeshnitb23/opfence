@@ -1,0 +1,45 @@
+# DigitalOcean REST API: function-key
+operations:
+  - id: digitalocean.function-key.create
+    match: { rest: { method: POST, path: "/v2/functions/namespaces/{namespace_id}/keys" } }
+    class: credential
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Create access key {body.name} for namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_create_key.yml
+    notes: >-
+      The secret is returned once.
+    tests:
+      - fixture: fixtures/function-key-create.http
+        expect: credential
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f
+
+  - id: digitalocean.function-key.rename
+    match: { rest: { method: PUT, path: "/v2/functions/namespaces/{namespace_id}/keys/{key_id}" } }
+    class: write
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Rename access key {key_id} to {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_update_key.yml
+    tests:
+      - fixture: fixtures/function-key-rename.http
+        expect: write
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f
+
+  - id: digitalocean.function-key.delete
+    match: { rest: { method: DELETE, path: "/v2/functions/namespaces/{namespace_id}/keys/{key_id}" } }
+    class: access
+    resource: { arg: namespace_id, kind: function-namespace }
+    card: "Revoke access key {key_id} of namespace {namespace_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/functions/functions_delete_key.yml
+    tests:
+      - fixture: fixtures/function-key-delete.http
+        expect: access
+        resource: fn-b0a83a9b-0e1c-4d5e-9b5c-2b6a3c1d4e5f

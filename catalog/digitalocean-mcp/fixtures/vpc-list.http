@@ -1,0 +1,8 @@
+# description: List VPCs
+POST /mcp HTTP/1.1
+Host: networking.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":337,"method":"tools/call","params":{"name":"vpc-list","arguments":{}}}

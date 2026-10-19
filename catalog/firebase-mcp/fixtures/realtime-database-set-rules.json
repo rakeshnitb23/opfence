@@ -1,0 +1,8 @@
+{
+  "description": "Replace the database rules",
+  "tool": "realtimedatabase_set_data",
+  "arguments": {
+    "path": "/.settings/rules",
+    "data": "{\"rules\": {\".read\": true, \".write\": true}}"
+  }
+}

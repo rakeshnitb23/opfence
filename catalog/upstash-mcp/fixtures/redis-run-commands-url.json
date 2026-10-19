@@ -1,0 +1,18 @@
+{
+  "description": "Delete keys on a database given by URL",
+  "tool": "redis_database_run_redis_commands",
+  "arguments": {
+    "database_rest_url": "https://eu1-sharp-mole-31337.upstash.io",
+    "database_rest_token": "opf_upstash_EXAMPLE",
+    "commands": [
+      [
+        "DEL",
+        "cart:1"
+      ],
+      [
+        "DEL",
+        "cart:2"
+      ]
+    ]
+  }
+}

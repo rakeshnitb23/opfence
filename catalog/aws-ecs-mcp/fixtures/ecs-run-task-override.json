@@ -1,0 +1,24 @@
+{
+  "description": "Run a one-off task that replaces the container command",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "RunTask",
+    "api_params": {
+      "cluster": "shop",
+      "taskDefinition": "shop-api:12",
+      "launchType": "FARGATE",
+      "overrides": {
+        "containerOverrides": [
+          {
+            "name": "web",
+            "command": [
+              "python",
+              "manage.py",
+              "flush"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "Publish a message to a job endpoint",
+  "tool": "qstash_publish_message",
+  "arguments": {
+    "destination": "https://api.example.com/jobs/reindex",
+    "body": "{\"full\": true}",
+    "method": "POST"
+  }
+}

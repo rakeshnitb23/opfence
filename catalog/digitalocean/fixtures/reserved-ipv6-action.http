@@ -1,0 +1,7 @@
+# description: type reserved IPv6 2409:40d0:f7:1017:74b4:3a96:105e:4c6e
+POST /v2/reserved_ipv6/2409:40d0:f7:1017:74b4:3a96:105e:4c6e/actions HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"droplet_id": 758604968}

@@ -1,0 +1,5 @@
+# description: List GenAI agents with their MCP server credentials
+GET /v2/gen-ai/agents HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

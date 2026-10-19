@@ -1,0 +1,11 @@
+{
+  "description": "Rename table retail_data.customers to crm.customers",
+  "tool": "rename_table",
+  "arguments": {
+    "table_bucket_arn": "arn:aws:s3tables:us-west-2:123456789012:bucket/analytics",
+    "namespace": "retail_data",
+    "name": "customers",
+    "new_name": "customers",
+    "new_namespace_name": "crm"
+  }
+}

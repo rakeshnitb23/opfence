@@ -1,0 +1,8 @@
+# description: Download attachments of event 7b1c9e2f4a6d4b0e9f3a2c1d5e8f7a6b in project checkout-api
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":65,"method":"tools/call","params":{"name":"get_event_attachment","arguments":{"organizationSlug":"my-org","projectSlug":"checkout-api","eventId":"7b1c9e2f4a6d4b0e9f3a2c1d5e8f7a6b"}}}

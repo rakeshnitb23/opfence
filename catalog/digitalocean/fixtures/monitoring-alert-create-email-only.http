@@ -1,0 +1,7 @@
+# description: Create alert policy CPU Alert
+POST /v2/monitoring/alerts HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"type": "v1/insights/droplet/cpu", "description": "CPU Alert", "compare": "GreaterThan", "value": 80, "window": "5m", "entities": ["192018292"], "tags": [], "enabled": true, "alerts": {"email": ["ops@example.com"], "slack": []}}

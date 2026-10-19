@@ -1,0 +1,7 @@
+{
+  "description": "List Data Connect locations",
+  "tool": "dataconnect_list_locations",
+  "arguments": {
+    "name": "projects/shop-prod"
+  }
+}

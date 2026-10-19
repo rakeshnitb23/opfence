@@ -1,0 +1,73 @@
+# DigitalOcean MCP server: certificate
+operations:
+  - id: digitalocean-mcp.certificate.list
+    match: { mcp: { tool: certificate-list } }
+    class: read
+    card: "List certificates"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/certificate_tools.go
+    tests:
+      - fixture: fixtures/certificate-list.http
+        expect: read
+
+  - id: digitalocean-mcp.certificate.get
+    match: { mcp: { tool: certificate-get } }
+    class: read
+    resource: { arg: ID, kind: certificate }
+    card: "Show certificate {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/certificate_tools.go
+    tests:
+      - fixture: fixtures/certificate-get.http
+        expect: read
+        resource: "892071a0-bb95-49bc-8021-3afd67a210bf"
+
+  - id: digitalocean-mcp.certificate.create-custom
+    match: { mcp: { tool: custom-certificate-create } }
+    class: credential
+    resource: { arg: Name, kind: certificate }
+    card: "Upload certificate {Name} with its private key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/certificate_tools.go
+    notes: >-
+      Stores a TLS private key.
+    tests:
+      - fixture: fixtures/certificate-create-custom.http
+        expect: credential
+        resource: shop-wildcard
+
+  - id: digitalocean-mcp.certificate.create-lets-encrypt
+    match: { mcp: { tool: lets-encrypt-certificate-create } }
+    class: write
+    resource: { arg: Name, kind: certificate }
+    card: "Request a Let's Encrypt certificate {Name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/certificate_tools.go
+    tests:
+      - fixture: fixtures/certificate-create-lets-encrypt.http
+        expect: write
+        resource: shop-www
+
+  - id: digitalocean-mcp.certificate.delete
+    match: { mcp: { tool: certificate-delete } }
+    class: irreversible
+    resource: { arg: ID, kind: certificate }
+    card: "Delete certificate {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/networking/certificate_tools.go
+    notes: >-
+      An uploaded certificate's private key cannot be downloaded again.
+    tests:
+      - fixture: fixtures/certificate-delete.http
+        expect: irreversible
+        resource: "892071a0-bb95-49bc-8021-3afd67a210bf"

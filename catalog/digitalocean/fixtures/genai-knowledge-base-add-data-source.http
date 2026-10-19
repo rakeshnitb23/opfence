@@ -1,0 +1,7 @@
+# description: Add a data source to knowledge base 8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4
+POST /v2/gen-ai/knowledge_bases/8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4/data_sources HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"knowledge_base_uuid": "8abf4d51-b7d6-11ef-bf8f-4e013e2ddde4", "spaces_data_source": {"bucket_name": "acme-docs", "region": "nyc3", "item_path": "/manuals"}}

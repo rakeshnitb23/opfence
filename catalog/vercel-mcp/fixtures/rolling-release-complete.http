@@ -1,0 +1,8 @@
+# description: Send all traffic of prj_shopweb to the canary
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"complete_rolling_release","arguments":{"teamId":"team_acme","requestBody":{"canaryDeploymentId":"dpl_7Hq2shopweb"},"idOrName":"prj_shopweb"}}}

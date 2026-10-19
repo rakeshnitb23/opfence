@@ -1,0 +1,56 @@
+# Firebase MCP server: Authentication tools (auth_ prefix)
+operations:
+  - id: firebase-mcp.auth-user.get
+    match: { mcp: { tool: auth_get_users } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/auth/get_users.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Returns user records (emails, phone numbers, providers, custom claims);
+      the tool strips passwordHash and salt before returning them.
+    tests:
+      - fixture: fixtures/auth-user-get.json
+        expect: read
+
+  - id: firebase-mcp.auth-user.update
+    match: { mcp: { tool: auth_update_user } }
+    class: access
+    resource: { arg: uid, kind: user }
+    card: "Change Firebase Auth user {uid}: disabled {disabled}, claim {claim.key}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/auth/update_user.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Disabling or enabling an account decides whether it can sign in, and
+      custom claims (admin: true) are what security rules and backends check
+      for permissions, so both are access.
+    tests:
+      - fixture: fixtures/auth-user-update-claim.json
+        expect: access
+        resource: "u7Hk2LmQ9xYz"
+      - fixture: fixtures/auth-user-update-disable.json
+        expect: access
+        resource: "u7Hk2LmQ9xYz"
+
+  - id: firebase-mcp.auth-config.set-sms-region-policy
+    match: { mcp: { tool: auth_set_sms_region_policy } }
+    class: access
+    resource: { arg: policy_type, kind: policy }
+    card: "Replace the SMS sign-in region policy with {policy_type} {country_codes}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/auth/set_sms_region_policy.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Overrides the existing policy and decides which countries can sign in by
+      SMS.
+    tests:
+      - fixture: fixtures/auth-config-set-sms-region-policy.json
+        expect: access
+        resource: "ALLOW"

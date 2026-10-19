@@ -1,0 +1,217 @@
+# Vercel MCP server (mcp.vercel.com): project
+operations:
+  - id: vercel-mcp.project.list
+    match: { mcp: { tool: list_projects } }
+    class: read
+    card: "List projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: vercel-mcp.project.get
+    match: { mcp: { tool: get_project } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Show project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-get.http
+        expect: read
+        resource: shop-web
+
+  - id: vercel-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: write
+    resource: { arg: requestBody.name, kind: project }
+    card: "Create project {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel-mcp.project.create-from-git
+    match: { mcp: { tool: create_git_project } }
+    class: write
+    resource: { arg: repo, kind: repo }
+    card: "Create or reuse a project for {repo} and deploy a preview"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Creates or links a project and, unless deploy is false, a preview
+      deployment.
+    tests:
+      - fixture: fixtures/project-create-from-git.http
+        expect: write
+        resource: acme/shop-web
+
+  - id: vercel-mcp.project.update
+    match: { mcp: { tool: update_project } }
+    class: write
+    when:
+      - if: { arg: requestBody.ssoProtection, present: true }
+        class: access
+      - if: { arg: requestBody.passwordProtection, present: true }
+        class: access
+      - if: { arg: requestBody.trustedIps, present: true }
+        class: access
+      - if: { arg: requestBody.publicSource, present: true }
+        class: access
+      - if: { arg: requestBody.oidcTokenConfig, present: true }
+        class: access
+      - if: { arg: requestBody.optionsAllowlist, present: true }
+        class: access
+    resource: { arg: idOrName, kind: project }
+    card: "Change project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      The same conditions as vercel.project.update: protection, public source,
+      OIDC and the OPTIONS allowlist decide who can reach the project, so
+      setting any of them is access.
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: shop-web
+      - fixture: fixtures/project-update-protection-off.http
+        expect: access
+        resource: shop-web
+
+  - id: vercel-mcp.project.pause
+    match: { mcp: { tool: pause_project } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Pause project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Takes production offline until unpaused (as vercel.project.pause).
+    tests:
+      - fixture: fixtures/project-pause.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.project.unpause
+    match: { mcp: { tool: unpause_project } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Unpause project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-unpause.http
+        expect: write
+        resource: prj_shopweb
+
+  - id: vercel-mcp.project.deletion-link
+    match: { mcp: { tool: get_project_deletion_link } }
+    class: read
+    resource: { arg: idOrName, kind: project }
+    card: "Get the dashboard link to delete project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Docs: returns a link and requires_user_action; the tool does not delete
+      the project.
+    tests:
+      - fixture: fixtures/project-deletion-link.http
+        expect: read
+        resource: shop-web
+
+  - id: vercel-mcp.project.get-protection
+    match: { mcp: { tool: get_project_deployment_protection } }
+    class: read
+    resource: { arg: projectId, kind: project }
+    card: "Show deployment protection of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Docs: password values are never returned.
+    tests:
+      - fixture: fixtures/project-get-protection.http
+        expect: read
+        resource: prj_shopweb
+
+  - id: vercel-mcp.project.update-protection
+    match: { mcp: { tool: update_project_deployment_protection } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Change deployment protection of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Can disable password protection, Vercel Authentication or Trusted IPs and
+      expose deployments.
+    tests:
+      - fixture: fixtures/project-update-protection.http
+        expect: access
+        resource: prj_shopweb
+
+  - id: vercel-mcp.project.protection-bypass
+    match: { mcp: { tool: update_project_protection_bypass } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Change the automation bypass secret of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Generates or revokes the secret that bypasses Deployment Protection (as
+      vercel.protection-bypass.update).
+    tests:
+      - fixture: fixtures/project-protection-bypass.http
+        expect: credential
+        resource: shop-web
+
+  - id: vercel-mcp.project.accept-transfer
+    match: { mcp: { tool: accept_project_transfer_request } }
+    class: access
+    resource: { arg: code, kind: transfer-code }
+    card: "Accept project transfer {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    notes: >-
+      Moves a project between teams (as vercel.project.transfer-accept).
+    tests:
+      - fixture: fixtures/project-accept-transfer.http
+        expect: access
+        resource: xfer_123
+
+  - id: vercel-mcp.project.git-namespaces
+    match: { mcp: { tool: git_namespaces } }
+    class: read
+    card: "List {provider} namespaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/projects
+    tests:
+      - fixture: fixtures/project-git-namespaces.http
+        expect: read

@@ -1,0 +1,97 @@
+# GitHub MCP server: reaction
+operations:
+  - id: github-mcp.reaction.add-to-issue
+    match: { mcp: { tool: add_issue_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/reaction-add-to-issue.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.reaction.remove-from-issue
+    match: { mcp: { tool: remove_issue_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/reaction-remove-from-issue.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.reaction.add-to-issue-comment
+    match: { mcp: { tool: add_issue_comment_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/reaction-add-to-issue-comment.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.reaction.remove-from-issue-comment
+    match: { mcp: { tool: remove_issue_comment_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/reaction-remove-from-issue-comment.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.reaction.add-to-review-comment
+    match: { mcp: { tool: add_pull_request_review_comment_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular.
+    tests:
+      - fixture: fixtures/reaction-add-to-review-comment.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.reaction.remove-from-review-comment
+    match: { mcp: { tool: remove_pull_request_review_comment_reaction } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Change reactions in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/pullrequests_granular.go
+    notes: >-
+      Feature flag pull_requests_granular.
+    tests:
+      - fixture: fixtures/reaction-remove-from-review-comment.http
+        expect: write
+        resource: shop

@@ -1,0 +1,7 @@
+{
+  "description": "Show the AWS session the server uses",
+  "tool": "get_aws_session_info",
+  "arguments": {
+    "environment_token": "environment-token-EXAMPLE"
+  }
+}

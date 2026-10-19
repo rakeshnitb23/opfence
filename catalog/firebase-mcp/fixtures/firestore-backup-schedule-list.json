@@ -1,0 +1,7 @@
+{
+  "description": "List backup schedules",
+  "tool": "firestore_list_backup_schedules",
+  "arguments": {
+    "parent": "projects/shop-prod/databases/(default)"
+  }
+}

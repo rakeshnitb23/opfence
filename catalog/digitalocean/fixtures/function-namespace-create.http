@@ -1,0 +1,7 @@
+# description: Create Functions namespace my namespace in nyc1
+POST /v2/functions/namespaces HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"region": "nyc1", "label": "my namespace"}

@@ -1,0 +1,74 @@
+# S3 Tables MCP server (awslabs.s3-tables-mcp-server): table data
+operations:
+  - id: aws-s3-tables-mcp.data.query
+    match: { mcp: { tool: query_database } }
+    class: read
+    resource: { arg: namespace, kind: namespace }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/database.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/engines/pyiceberg.py
+    notes: >-
+      The query is Daft SQL over PyIceberg, not Postgres, so it is not handed to the SQL
+      classifier. The server enforces read-only itself: it parses the query and refuses any
+      write operation before running it, and Daft's SQL only reads, so read holds whatever the
+      text says.
+    tests:
+      - fixture: fixtures/query-database.json
+        expect: read
+        resource: retail_data
+
+  - id: aws-s3-tables-mcp.data.append-rows
+    match: { mcp: { tool: append_rows_to_table } }
+    class: write
+    resource: { arg: table_name, kind: table }
+    card: "Append rows to table {namespace}.{table_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/engines/pyiceberg.py
+    notes: >-
+      Iceberg append: adds a snapshot, overwrites nothing.
+    tests:
+      - fixture: fixtures/append-rows.json
+        expect: write
+        resource: customers
+
+  - id: aws-s3-tables-mcp.data.import-csv
+    match: { mcp: { tool: import_csv_to_table } }
+    class: write
+    resource: { arg: table_name, kind: table }
+    card: "Import {s3_url} into table {namespace}.{table_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/file_processor/utils.py
+    notes: >-
+      Reads the CSV from S3 and appends it to an existing table (the code refuses a missing
+      table, although the tool description says it creates one); overwrites nothing.
+    tests:
+      - fixture: fixtures/import-csv.json
+        expect: write
+        resource: customers
+
+  - id: aws-s3-tables-mcp.data.import-parquet
+    match: { mcp: { tool: import_parquet_to_table } }
+    class: write
+    resource: { arg: table_name, kind: table }
+    card: "Import {s3_url} into table {namespace}.{table_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/s3-tables-mcp-server/awslabs/s3_tables_mcp_server/file_processor/utils.py
+    notes: >-
+      Reads the Parquet file from S3 and appends it to an existing table (the code refuses a
+      missing table, although the tool description says it creates one); overwrites nothing.
+    tests:
+      - fixture: fixtures/import-parquet.json
+        expect: write
+        resource: customers

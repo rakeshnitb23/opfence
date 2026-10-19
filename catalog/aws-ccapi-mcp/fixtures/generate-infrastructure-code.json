@@ -1,0 +1,12 @@
+{
+  "description": "Prepare properties for a new S3 bucket",
+  "tool": "generate_infrastructure_code",
+  "arguments": {
+    "resource_type": "AWS::S3::Bucket",
+    "properties": {
+      "BucketName": "shop-assets-staging"
+    },
+    "region": "us-east-1",
+    "credentials_token": "credentials-token-EXAMPLE"
+  }
+}

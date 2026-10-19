@@ -1,0 +1,7 @@
+# description: Disable logs for a Droplet
+PUT /v2/insights/resources/do:droplet:12345/signals HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"region": "nyc3", "metrics": true, "logs": false}

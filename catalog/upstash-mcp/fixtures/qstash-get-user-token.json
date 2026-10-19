@@ -1,0 +1,5 @@
+{
+  "description": "Get the QStash token",
+  "tool": "qstash_get_user_token",
+  "arguments": {}
+}

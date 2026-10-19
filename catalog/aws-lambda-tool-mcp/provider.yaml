@@ -1,0 +1,25 @@
+provider: aws-lambda-tool-mcp
+title: AWS Lambda Tool MCP
+docs: https://github.com/awslabs/mcp/tree/main/src/lambda-tool-mcp-server
+# AWS Labs' Lambda Tool MCP server (PyPI awslabs.lambda-tool-mcp-server,
+# source github.com/awslabs/mcp src/lambda-tool-mcp-server), read at version
+# 2.1.1 (commit d534d0f, 2026-10-16). It runs locally over stdio. At start it
+# lists the account's Lambda functions (narrowed by FUNCTION_PREFIX,
+# FUNCTION_LIST or FUNCTION_TAG_KEY/FUNCTION_TAG_VALUE) and registers one tool
+# per function, named after the function (prefix removed, other characters
+# than letters, digits and _ replaced by _), taking one `parameters` object.
+# Each call invokes that function synchronously (lambda:InvokeFunction), and a
+# function can do anything its role allows.
+# No rules: the tool names are the user's function names, which the catalog
+# cannot list, and the catalog has no class for "every tool of this server".
+# Every call from this server is therefore unknown, which the default policy
+# asks about in every environment. Its strictest plausible class would be
+# irreversible (an engine default for unlisted MCP tools would let this
+# provider say so).
+# No hosts; the agent hook sees the tool calls. The README keys it
+# "awslabs.lambda-tool-mcp-server", which Claude Code writes as
+# "awslabs_lambda-tool-mcp-server" (no dots in tool names).
+# No detect or auth block: AWS credentials belong to catalog/aws.
+mcp:
+  names: [awslabs_lambda-tool-mcp-server, lambda-tool-mcp-server, aws-lambda-tool, lambda-tool]
+  package: "awslabs.lambda-tool-mcp-server"

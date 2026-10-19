@@ -1,0 +1,322 @@
+# DigitalOcean REST API: database
+operations:
+  - id: digitalocean.database.create
+    match: { rest: { method: POST, path: /v2/databases } }
+    class: credential
+    when:
+      - if: { arg: body.name, present: true }
+        class: money
+      - if: { arg: body.name, present: true }
+        class: credential
+    resource: { arg: body.name, kind: database }
+    card: "Create {body.engine} database cluster {body.name} ({body.size} x{body.num_nodes}) in {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_create_cluster.yml
+    notes: >-
+      A billed cluster (money), and the response carries the admin user's
+      password and connection strings (credential).
+    tests:
+      - fixture: fixtures/database-create.http
+        expect: credential
+        resource: backend
+
+  - id: digitalocean.database.delete
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}" } }
+    class: irreversible
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Destroy database cluster {database_cluster_uuid} and its data"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_destroy_cluster.yml
+    tests:
+      - fixture: fixtures/database-delete.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.update-config
+    match: { rest: { method: PATCH, path: "/v2/databases/{database_cluster_uuid}/config" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change engine settings of database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_patch_config.yml
+    tests:
+      - fixture: fixtures/database-update-config.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.start-migration
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/online-migration" } }
+    class: irreversible
+    when:
+      - if: { arg: body.source, present: true }
+        class: irreversible
+      - if: { arg: body.source.password, present: true }
+        class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Start replicating {body.source.host} into database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_onlineMigration.yml
+    notes: >-
+      Replicates an external database into this cluster, replacing what is
+      there; the body carries the source database password.
+    tests:
+      - fixture: fixtures/database-start-migration.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.stop-migration
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/online-migration/{migration_id}" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Stop online migration {migration_id} into database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_onlineMigration.yml
+    tests:
+      - fixture: fixtures/database-stop-migration.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.migrate-region
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/migrate" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Move database cluster {database_cluster_uuid} to region {body.region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_region.yml
+    tests:
+      - fixture: fixtures/database-migrate-region.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.resize
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/resize" } }
+    class: money
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Resize database cluster {database_cluster_uuid} to {body.size} x{body.num_nodes}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_clusterSize.yml
+    tests:
+      - fixture: fixtures/database-resize.http
+        expect: money
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.update-firewall
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/firewall" } }
+    class: access
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Replace the trusted sources of database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_firewall_rules.yml
+    notes: >-
+      Trusted sources decide who can connect; an empty list opens the cluster
+      to any address.
+    tests:
+      - fixture: fixtures/database-update-firewall.http
+        expect: access
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.update-do-settings
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/do_settings" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Change service CNAMEs of database cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_do_settings.yml
+    tests:
+      - fixture: fixtures/database-update-do-settings.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.set-maintenance-window
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/maintenance" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Set the maintenance window of database cluster {database_cluster_uuid} to {body.day} {body.hour}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_maintenanceWindow.yml
+    tests:
+      - fixture: fixtures/database-set-maintenance-window.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.install-update
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/install_update" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Start maintenance on database cluster {database_cluster_uuid} now"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_installUpdate.yml
+    tests:
+      - fixture: fixtures/database-install-update.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.set-eviction-policy
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/eviction_policy" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Set the eviction policy of cluster {database_cluster_uuid} to {body.eviction_policy}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_evictionPolicy.yml
+    tests:
+      - fixture: fixtures/database-set-eviction-policy.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.set-sql-mode
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/sql_mode" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Set the SQL mode of MySQL cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_sql_mode.yml
+    tests:
+      - fixture: fixtures/database-set-sql-mode.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.upgrade-version
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/upgrade" } }
+    class: write
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Upgrade database cluster {database_cluster_uuid} to version {body.version}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_upgrade_major_version.yml
+    tests:
+      - fixture: fixtures/database-upgrade-version.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.set-autoscale
+    match: { rest: { method: PUT, path: "/v2/databases/{database_cluster_uuid}/autoscale" } }
+    class: write
+    when:
+      - if: { arg: body.storage.enabled, equals: "true" }
+        class: money
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Configure storage autoscaling of cluster {database_cluster_uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_autoscale.yml
+    notes: >-
+      Enabled storage autoscaling adds billed storage without asking.
+    tests:
+      - fixture: fixtures/database-set-autoscale.http
+        expect: write
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+      - fixture: fixtures/database-set-autoscale-enable.http
+        expect: money
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.set-metrics-credentials
+    match: { rest: { method: PUT, path: /v2/databases/metrics/credentials } }
+    class: credential
+    card: "Set the metrics endpoint credentials of all database clusters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_update_cluster_metrics_credentials.yml
+    tests:
+      - fixture: fixtures/database-set-metrics-credentials.http
+        expect: credential
+
+  - id: digitalocean.database.delete-index
+    match: { rest: { method: DELETE, path: "/v2/databases/{database_cluster_uuid}/indexes/{index_name}" } }
+    class: irreversible
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Delete OpenSearch index {index_name} and its documents"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_delete_opensearch_index.yml
+    tests:
+      - fixture: fixtures/database-delete-index.http
+        expect: irreversible
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.list
+    match: { rest: { method: GET, path: /v2/databases } }
+    class: credential
+    card: "List database clusters with their passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_clusters.yml
+    notes: >-
+      Database cluster objects carry connection strings with the admin
+      password and each user's password.
+    tests:
+      - fixture: fixtures/database-list.http
+        expect: credential
+
+  - id: digitalocean.database.list-options
+    match: { rest: { method: GET, path: /v2/databases/options } }
+    class: read
+    card: "List database engines, versions and sizes"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_list_options.yml
+    notes: >-
+      Listed so that /v2/databases/{database_cluster_uuid} does not claim it.
+    tests:
+      - fixture: fixtures/database-list-options.http
+        expect: read
+
+  - id: digitalocean.database.read
+    match: { rest: { method: GET, path: "/v2/databases/{database_cluster_uuid}" } }
+    class: credential
+    resource: { arg: database_cluster_uuid, kind: database }
+    card: "Read database cluster {database_cluster_uuid} with its passwords"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_cluster.yml
+    notes: >-
+      Database cluster objects carry connection strings with the admin
+      password and each user's password.
+    tests:
+      - fixture: fixtures/database-read.http
+        expect: credential
+        resource: "9cc10173-e9ea-4176-9dbc-a4cee4c4ff30"
+
+  - id: digitalocean.database.read-metrics-credentials
+    match: { rest: { method: GET, path: /v2/databases/metrics/credentials } }
+    class: credential
+    card: "Read the metrics endpoint password of database clusters"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/databases/databases_get_cluster_metrics_credentials.yml
+    tests:
+      - fixture: fixtures/database-read-metrics-credentials.http
+        expect: credential

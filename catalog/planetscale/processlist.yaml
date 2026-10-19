@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.processlist.kill
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/processlist/kill" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Kill MySQL process {body.id} on branch {branch} of database {database}"

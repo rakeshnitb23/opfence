@@ -1,0 +1,29 @@
+provider: railway-mcp
+title: Railway MCP
+docs: https://docs.railway.com/ai/mcp-server
+# Railway's MCP server has three surfaces, all named "railway" in client
+# configs:
+# - Hosted at https://mcp.railway.com (OAuth), and what a bare `railway mcp`
+#   bridges stdio to with the CLI's login (src/commands/mcp/proxy.rs in
+#   railwayapp/cli). The proxy sees these calls. Tool names come from
+#   Railway's docs (railwayapp/docs content/docs/ai/mcp-server.md, read at
+#   7235449); the hosted source and argument schemas are not published.
+# - Local: `railway mcp local` in the Railway CLI (Rust, read at 5.70.0,
+#   commit 05ed159), src/commands/mcp/handler.rs and params.rs. It calls
+#   backboard.railway.com (catalog/railway) itself; only the agent hook sees
+#   its tool calls.
+# - The npm package @railway/mcp-server: 0.1.12 is a shim that starts
+#   `railway mcp`; 0.1.0-0.1.11 (railwayapp/railway-mcp-server, read at
+#   v0.1.11 and v0.1.8) ran the Railway CLI for each tool. Their tools are
+#   listed for users who pinned an old version.
+# Hosted tools are hyphenated, local tools use underscores; whoami and deploy
+# exist on two surfaces under one name and have one rule each.
+hosts: [mcp.railway.com]
+auth:
+  - header: Authorization
+    scheme: Bearer                   # OAuth token, or the CLI login the proxy attaches
+# No detect block: RAILWAY_TOKEN and RAILWAY_API_TOKEN belong to
+# catalog/railway, and the hosted server refuses project tokens.
+mcp:
+  names: [railway, railway-mcp, railway-mcp-server]
+  package: "@railway/mcp-server"

@@ -1,0 +1,8 @@
+# description: List comments on Linear issue ENG-1423
+POST /mcp HTTP/1.1
+Host: mcp.linear.app
+Authorization: Bearer opf_linear-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"list_comments","arguments":{"issueId":"ENG-1423","limit":50,"orderBy":"createdAt"}}}

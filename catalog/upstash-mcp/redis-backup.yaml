@@ -1,0 +1,68 @@
+# Upstash MCP server: Redis backups
+operations:
+  - id: upstash-mcp.redis-backup.manage
+    match: { mcp: { tool: redis_database_manage_backup } }
+    class: irreversible
+    when:
+      - if: { arg: operation, equals: "create" }
+        class: write
+    resource: { arg: database_id, kind: database }
+    card: "{operation} a backup of Upstash Redis database {database_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/backup.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      One tool for three operations. create takes a backup (write). delete
+      removes a backup for good, and restore replaces the database's current
+      data with the backup's, so both are irreversible; any other value keeps
+      the strictest class.
+    tests:
+      - fixture: fixtures/redis-backup-create.json
+        expect: write
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-backup-delete.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-backup-restore.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-backup.list
+    match: { mcp: { tool: redis_database_list_backups } }
+    class: read
+    resource: { arg: database_id, kind: database }
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/backup.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    tests:
+      - fixture: fixtures/redis-backup-list.json
+        expect: read
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+
+  - id: upstash-mcp.redis-backup.set-daily
+    match: { mcp: { tool: redis_database_set_daily_backup } }
+    class: irreversible
+    when:
+      - if: { arg: enable, equals: "true" }
+        class: write
+    resource: { arg: database_id, kind: database }
+    card: "Set daily backups of Upstash Redis database {database_id} to {enable}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/backup.ts
+      - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+    notes: >-
+      Enabling is a write. Disabling turns off the safety net, so it is
+      irreversible like deleting the backups it would have kept.
+    tests:
+      - fixture: fixtures/redis-backup-set-daily-on.json
+        expect: write
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-backup-set-daily-off.json
+        expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"

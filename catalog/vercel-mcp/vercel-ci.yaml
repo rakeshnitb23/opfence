@@ -1,0 +1,209 @@
+# Vercel MCP server (mcp.vercel.com): vercel-ci
+operations:
+  - id: vercel-mcp.vercel-ci.list
+    match: { mcp: { tool: list_vercel_ci_invocations } }
+    class: read
+    card: "List Vercel CI invocations"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list.http
+        expect: read
+
+  - id: vercel-mcp.vercel-ci.list-attempts
+    match: { mcp: { tool: list_vercel_ci_invocation_attempts } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "List attempts of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list-attempts.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.get
+    match: { mcp: { tool: get_vercel_ci_invocation } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Show attempt {attempt} of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-get.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.tree
+    match: { mcp: { tool: get_vercel_ci_invocation_tree } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Show the job tree of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-tree.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.logs
+    match: { mcp: { tool: get_vercel_ci_invocation_logs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Read logs of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-logs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.list-jobs
+    match: { mcp: { tool: list_vercel_ci_job_definitions } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "List jobs of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list-jobs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.get-job
+    match: { mcp: { tool: get_vercel_ci_job_definition } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Show job {jobDefinitionId} of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-get-job.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.list-job-runs
+    match: { mcp: { tool: list_vercel_ci_job_runs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "List runs of job {jobDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list-job-runs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.get-job-run
+    match: { mcp: { tool: get_vercel_ci_job_run } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Show run {runAttempt} of job {jobDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-get-job-run.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.job-run-logs
+    match: { mcp: { tool: get_vercel_ci_job_run_logs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Read logs of job {jobDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-job-run-logs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.list-tasks
+    match: { mcp: { tool: list_vercel_ci_task_definitions } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "List tasks of job {jobDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list-tasks.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.list-task-runs
+    match: { mcp: { tool: list_vercel_ci_task_runs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "List task runs of job {jobDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-list-task-runs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.task-logs
+    match: { mcp: { tool: get_vercel_ci_task_logs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Read task logs of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-task-logs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.task-run-logs
+    match: { mcp: { tool: get_vercel_ci_task_run_logs } }
+    class: read
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Read logs of task {taskDefinitionId} in CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-task-run-logs.http
+        expect: read
+        resource: inv_123
+
+  - id: vercel-mcp.vercel-ci.retry
+    match: { mcp: { tool: retry_vercel_ci_invocation } }
+    class: write
+    resource: { arg: invocationId, kind: ci-invocation }
+    card: "Retry attempt {attempt} of CI invocation {invocationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/vercel-ci
+    tests:
+      - fixture: fixtures/vercel-ci-retry.http
+        expect: write
+        resource: inv_123

@@ -1,0 +1,53 @@
+# Firebase MCP server: Developer Knowledge tools (remote, proxied)
+operations:
+  - id: firebase-mcp.developer-knowledge.search
+    match: { mcp: { tool: developerknowledge_search_documents } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://developerknowledge.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://developerknowledge.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it. Searches public Google developer
+      documentation.
+    tests:
+      - fixture: fixtures/developer-knowledge-search.json
+        expect: read
+
+  - id: firebase-mcp.developer-knowledge.answer
+    match: { mcp: { tool: developerknowledge_answer_query } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://developerknowledge.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://developerknowledge.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it.
+    tests:
+      - fixture: fixtures/developer-knowledge-answer.json
+        expect: read
+
+  - id: firebase-mcp.developer-knowledge.get
+    match: { mcp: { tool: developerknowledge_get_documents } }
+    class: read
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/onemcp/index.ts
+      - https://developerknowledge.googleapis.com/mcp
+    notes: >-
+      A Google-hosted tool that the Firebase MCP server lists from
+      https://developerknowledge.googleapis.com/mcp (tools/list) and proxies
+      under its own name; the call leaves the machine from the local server,
+      so only the agent hook sees it.
+    tests:
+      - fixture: fixtures/developer-knowledge-get.json
+        expect: read

@@ -1,0 +1,8 @@
+{
+  "description": "Expose service api on a public domain",
+  "tool": "generate-domain",
+  "arguments": {
+    "workspacePath": "/home/dev/shop-api",
+    "service": "api"
+  }
+}

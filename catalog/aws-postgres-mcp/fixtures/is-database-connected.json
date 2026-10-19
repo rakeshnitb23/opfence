@@ -1,0 +1,8 @@
+{
+  "description": "Check for a cached connection to shop-aurora",
+  "tool": "is_database_connected",
+  "arguments": {
+    "cluster_identifier": "shop-aurora",
+    "database": "shop"
+  }
+}

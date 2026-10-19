@@ -1,0 +1,8 @@
+{
+  "description": "Generate a CDK app for the shop data model",
+  "tool": "generate_resources",
+  "arguments": {
+    "dynamodb_data_model_json_file": "/home/dev/shop/dynamodb/dynamodb_data_model.json",
+    "resource_type": "cdk"
+  }
+}

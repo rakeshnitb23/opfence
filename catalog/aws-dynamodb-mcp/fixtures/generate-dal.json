@@ -1,0 +1,9 @@
+{
+  "description": "Generate Python data access code from schema.json",
+  "tool": "generate_data_access_layer",
+  "arguments": {
+    "schema_path": "/home/dev/shop/dynamodb/schema.json",
+    "language": "python",
+    "generate_sample_usage": true
+  }
+}

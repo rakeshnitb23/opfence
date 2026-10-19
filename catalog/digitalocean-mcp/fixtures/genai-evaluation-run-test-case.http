@@ -1,0 +1,8 @@
+# description: Run evaluation test case b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b as weekly-2026-10-18
+POST /mcp HTTP/1.1
+Host: genai-evaluation.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":191,"method":"tools/call","params":{"name":"genai-run-evaluation-test-case","arguments":{"test_case_uuid":"b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b","run_name":"weekly-2026-10-18","agent_uuids":["b7f1c2e8-2d6c-4a3b-9f5e-1c0d2e3f4a5b"]}}}

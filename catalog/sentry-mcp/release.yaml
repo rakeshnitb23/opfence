@@ -1,0 +1,29 @@
+# Sentry MCP server: releases
+operations:
+  - id: sentry-mcp.release.find
+    match: { mcp: { tool: find_releases } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "List releases in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/find-releases.ts
+    tests:
+      - fixture: fixtures/release-find.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.release.get
+    match: { mcp: { tool: get_release_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show release {releaseVersion} in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-release-details.ts
+    tests:
+      - fixture: fixtures/release-get.http
+        expect: read
+        resource: my-org

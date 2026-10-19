@@ -1,0 +1,8 @@
+# description: Create or update a customer request for ENG-1423
+POST /mcp HTTP/1.1
+Host: mcp.linear.app
+Authorization: Bearer opf_linear-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":15,"method":"tools/call","params":{"name":"save_customer_need","arguments":{"issueId":"ENG-1423","customer":"Acme Corp","body":"Needs SSO before renewal","sourceUrl":"https://support.example.com/tickets/8812"}}}

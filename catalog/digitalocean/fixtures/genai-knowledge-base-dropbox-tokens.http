@@ -1,0 +1,7 @@
+# description: Exchange a Dropbox OAuth code for tokens
+POST /v2/gen-ai/oauth2/dropbox/tokens HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"code": "opf_digitalocean_EXAMPLE", "redirect_url": "https://cloud.digitalocean.com/gen-ai/oauth/dropbox"}

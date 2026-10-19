@@ -1,0 +1,8 @@
+# description: Create app shop-web from a spec
+POST /mcp HTTP/1.1
+Host: apps.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":17,"method":"tools/call","params":{"name":"apps-create-app-from-spec","arguments":{"spec":{"name":"shop-web","region":"nyc","services":[{"name":"web","github":{"repo":"example/shop-web","branch":"main","deploy_on_push":true},"instance_size_slug":"apps-s-1vcpu-1gb","instance_count":1,"http_port":8080}]}}}}

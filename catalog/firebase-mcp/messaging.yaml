@@ -1,0 +1,26 @@
+# Firebase MCP server: Cloud Messaging tools (messaging_ prefix)
+operations:
+  - id: firebase-mcp.messaging.send
+    match: { mcp: { tool: messaging_send_message } }
+    class: write
+    when:
+      - if: { arg: topic, present: true }
+        class: irreversible
+    resource: { arg: topic, kind: topic }
+    card: "Send push notification {title} to topic {topic} or one device"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/messaging/send_message.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      A message to one registration token is a write. A topic message goes to
+      every device subscribed to the topic, possibly every user of a
+      production app, and a sent notification cannot be recalled, so it is
+      irreversible.
+    tests:
+      - fixture: fixtures/messaging-send-token.json
+        expect: write
+      - fixture: fixtures/messaging-send-topic.json
+        expect: irreversible
+        resource: "all-users"

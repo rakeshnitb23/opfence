@@ -2,6 +2,7 @@
 operations:
   - id: turso.subscription.update
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/subscription" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: money
     resource: { arg: organization, kind: organization }
     card: "Change the plan of Turso organization {organization} to {body.plan}"
@@ -18,6 +19,7 @@ operations:
 
   - id: turso.subscription.update-unscoped
     match: { rest: { method: POST, path: "/{version}/subscription" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: money
     card: "Change the Turso plan to {body.plan}"
     status: verified

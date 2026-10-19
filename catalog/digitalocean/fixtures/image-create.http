@@ -1,0 +1,7 @@
+# description: Import custom image ubuntu-18.04-minimal from http://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img
+POST /v2/images HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"name": "ubuntu-18.04-minimal", "url": "http://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img", "distribution": "Ubuntu", "region": "nyc3", "description": "Cloud-optimized image w/ small footprint", "tags": ["base-image", "prod"]}

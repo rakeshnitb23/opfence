@@ -1,0 +1,56 @@
+# GitHub MCP server: label
+operations:
+  - id: github-mcp.label.get
+    match: { mcp: { tool: get_label } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "Show label {name} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/labels.go
+    notes: >-
+      Registered in both the issues and labels toolsets.
+    tests:
+      - fixture: fixtures/label-get.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.label.list
+    match: { mcp: { tool: list_label } }
+    class: read
+    resource: { arg: repo, kind: repository }
+    card: "List labels of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/labels.go
+    notes: >-
+      Toolset labels (not enabled by default).
+    tests:
+      - fixture: fixtures/label-list.http
+        expect: read
+        resource: shop
+
+  - id: github-mcp.label.write
+    match: { mcp: { tool: label_write } }
+    class: write
+    when:
+      - if: { arg: method, equals: "delete" }
+        class: delete
+    resource: { arg: repo, kind: repository }
+    card: "Change label {name} of {owner}/{repo} ({method})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/labels.go
+    notes: >-
+      Toolset labels (not enabled by default). delete removes the label from every issue and
+      pull request; it is delete, as catalog/github classes deleting an issue comment.
+    tests:
+      - fixture: fixtures/label-write.http
+        expect: write
+        resource: shop
+      - fixture: fixtures/label-write-delete.http
+        expect: delete
+        resource: shop

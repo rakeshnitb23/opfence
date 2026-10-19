@@ -1,0 +1,31 @@
+# Vercel MCP server (mcp.vercel.com): blob-store
+operations:
+  - id: vercel-mcp.blob-store.create
+    match: { mcp: { tool: create_storage_stores_blob } }
+    class: write
+    card: "Create Blob store {requestBody.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/storage
+    tests:
+      - fixture: fixtures/blob-store-create.http
+        expect: write
+
+  - id: vercel-mcp.blob-store.get
+    match: { mcp: { tool: get_storage_stores_by_id } }
+    class: credential
+    resource: { arg: id, kind: store }
+    card: "Show storage store {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/storage
+    notes: >-
+      Vercel does not document this response; a store's record can carry its
+      read-write token (BLOB_READ_WRITE_TOKEN), so the read is treated as
+      revealing it.
+    tests:
+      - fixture: fixtures/blob-store-get.http
+        expect: credential
+        resource: store_123

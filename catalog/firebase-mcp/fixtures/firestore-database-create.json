@@ -1,0 +1,12 @@
+{
+  "description": "Create Firestore database analytics",
+  "tool": "firestore_create_database",
+  "arguments": {
+    "parent": "projects/shop-prod",
+    "databaseId": "analytics",
+    "database": {
+      "locationId": "nam5",
+      "type": "FIRESTORE_NATIVE"
+    }
+  }
+}

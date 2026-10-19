@@ -1,0 +1,10 @@
+{
+  "description": "Delete a product row with a mutation",
+  "tool": "dataconnect_execute_graphql",
+  "arguments": {
+    "projectId": "shop-prod",
+    "location": "us-central1",
+    "serviceId": "shop",
+    "query": "mutation { product_delete(id: \"7f3c2a10-1b2c-4d5e-8f90-a1b2c3d4e5f6\") }"
+  }
+}

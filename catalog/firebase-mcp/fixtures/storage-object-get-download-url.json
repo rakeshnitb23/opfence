@@ -1,0 +1,7 @@
+{
+  "description": "Get the download URL of an invoice",
+  "tool": "storage_get_object_download_url",
+  "arguments": {
+    "object_path": "invoices/2026/10/inv-1042.pdf"
+  }
+}

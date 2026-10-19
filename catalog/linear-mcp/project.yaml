@@ -1,0 +1,79 @@
+# Linear MCP server: projects
+operations:
+  - id: linear-mcp.project.list
+    match: { mcp: { tool: list_projects } }
+    class: read
+    card: "List Linear projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Responses include a trashed field for soft-deleted projects
+      (2026-04-02).
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: read
+
+  - id: linear-mcp.project.get
+    match: { mcp: { tool: get_project } }
+    class: read
+    card: "Show Linear project {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+    tests:
+      - fixture: fixtures/project-get.http
+        expect: read
+
+  - id: linear-mcp.project.save
+    match: { mcp: { tool: save_project } }
+    class: write
+    card: "Create or update Linear project {id} ({name})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/2
+      - https://linear.app/changelog/page/4
+      - https://linear.app/changelog/page/3
+    notes: >-
+      Creates or updates a project: name, description, state, lead, members,
+      labels, icon, color, teams and initiatives (changelog 2025-09 to
+      2026-05). Project members are participants, not a permission, and every
+      field can be set back; the changelog lists no project delete or archive
+      tool.
+    tests:
+      - fixture: fixtures/project-save.http
+        expect: write
+
+  - id: linear-mcp.project.create-legacy
+    match: { mcp: { tool: create_project } }
+    class: write
+    card: "Create Linear project {name}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: the changelog names this tool but newer entries use save_*
+      instead, so it is probably no longer registered.
+
+  - id: linear-mcp.project.update-legacy
+    match: { mcp: { tool: update_project } }
+    class: write
+    card: "Update Linear project {id}"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://linear.app/docs/mcp
+      - https://linear.app/changelog/page/3
+      - https://apigene.ai/mcp/official/linear
+    notes: >-
+      Draft: the changelog names this tool but newer entries use save_*
+      instead, so it is probably no longer registered.

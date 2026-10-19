@@ -1,0 +1,109 @@
+# DigitalOcean REST API: project
+operations:
+  - id: digitalocean.project.create
+    match: { rest: { method: POST, path: /v2/projects } }
+    class: write
+    resource: { arg: body.name, kind: project }
+    card: "Create project {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_create.yml
+    tests:
+      - fixture: fixtures/project-create.http
+        expect: write
+        resource: my-web-api
+
+  - id: digitalocean.project.update-default
+    match: { rest: { method: PUT, path: /v2/projects/default } }
+    class: write
+    card: "Replace the default project"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_update_default.yml
+    tests:
+      - fixture: fixtures/project-update-default.http
+        expect: write
+
+  - id: digitalocean.project.patch-default
+    match: { rest: { method: PATCH, path: /v2/projects/default } }
+    class: write
+    card: "Change the default project"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_patch_default.yml
+    tests:
+      - fixture: fixtures/project-patch-default.http
+        expect: write
+
+  - id: digitalocean.project.update
+    match: { rest: { method: PUT, path: "/v2/projects/{project_id}" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Replace project {project_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_update.yml
+    tests:
+      - fixture: fixtures/project-update.http
+        expect: write
+        resource: "4e1bfbc3-dc3e-41f2-a18f-1b4d7ba71679"
+
+  - id: digitalocean.project.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project_id}" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Change project {project_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_patch.yml
+    tests:
+      - fixture: fixtures/project-patch.http
+        expect: write
+        resource: "4e1bfbc3-dc3e-41f2-a18f-1b4d7ba71679"
+
+  - id: digitalocean.project.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project_id}" } }
+    class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Delete project {project_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_delete.yml
+    notes: >-
+      Only an empty project can be deleted.
+    tests:
+      - fixture: fixtures/project-delete.http
+        expect: delete
+        resource: "4e1bfbc3-dc3e-41f2-a18f-1b4d7ba71679"
+
+  - id: digitalocean.project.assign-resources
+    match: { rest: { method: POST, path: "/v2/projects/{project_id}/resources" } }
+    class: write
+    resource: { arg: project_id, kind: project }
+    card: "Move resources {body.resources} into project {project_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_assign_resources.yml
+    tests:
+      - fixture: fixtures/project-assign-resources.http
+        expect: write
+        resource: "4e1bfbc3-dc3e-41f2-a18f-1b4d7ba71679"
+
+  - id: digitalocean.project.assign-resources-default
+    match: { rest: { method: POST, path: /v2/projects/default/resources } }
+    class: write
+    card: "Move resources {body.resources} into the default project"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/projects/projects_assign_resources_default.yml
+    tests:
+      - fixture: fixtures/project-assign-resources-default.http
+        expect: write

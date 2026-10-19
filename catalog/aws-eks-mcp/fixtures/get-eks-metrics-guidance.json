@@ -1,0 +1,7 @@
+{
+  "description": "Show the Container Insights metrics for pods",
+  "tool": "get_eks_metrics_guidance",
+  "arguments": {
+    "resource_type": "pod"
+  }
+}

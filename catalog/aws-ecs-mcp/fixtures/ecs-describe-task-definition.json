@@ -1,0 +1,10 @@
+{
+  "description": "Describe task definition shop-api:12",
+  "tool": "ecs_resource_management",
+  "arguments": {
+    "api_operation": "DescribeTaskDefinition",
+    "api_params": {
+      "taskDefinition": "shop-api:12"
+    }
+  }
+}

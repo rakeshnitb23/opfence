@@ -1,0 +1,66 @@
+# DigitalOcean REST API: tag
+operations:
+  - id: digitalocean.tag.create
+    match: { rest: { method: POST, path: /v2/tags } }
+    class: write
+    resource: { arg: body.name, kind: tag }
+    card: "Create tag {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/tags/tags_create.yml
+    tests:
+      - fixture: fixtures/tag-create.http
+        expect: write
+        resource: extra-awesome
+
+  - id: digitalocean.tag.delete
+    match: { rest: { method: DELETE, path: "/v2/tags/{tag_id}" } }
+    class: access
+    resource: { arg: tag_id, kind: tag }
+    card: "Delete tag {tag_id} from every resource"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/tags/tags_delete.yml
+    notes: >-
+      Firewalls and load balancers can target tags, so tag membership decides
+      what they cover.
+    tests:
+      - fixture: fixtures/tag-delete.http
+        expect: access
+        resource: frontend
+
+  - id: digitalocean.tag.assign
+    match: { rest: { method: POST, path: "/v2/tags/{tag_id}/resources" } }
+    class: access
+    resource: { arg: tag_id, kind: tag }
+    card: "Tag resources {body.resources} with {tag_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/tags/tags_assign_resources.yml
+    notes: >-
+      Firewalls and load balancers can target tags, so tag membership decides
+      what they cover.
+    tests:
+      - fixture: fixtures/tag-assign.http
+        expect: access
+        resource: frontend
+
+  - id: digitalocean.tag.unassign
+    match: { rest: { method: DELETE, path: "/v2/tags/{tag_id}/resources" } }
+    class: access
+    resource: { arg: tag_id, kind: tag }
+    card: "Remove tag {tag_id} from resources {body.resources}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/tags/tags_unassign_resources.yml
+    notes: >-
+      Firewalls and load balancers can target tags, so tag membership decides
+      what they cover.
+    tests:
+      - fixture: fixtures/tag-unassign.http
+        expect: access
+        resource: frontend

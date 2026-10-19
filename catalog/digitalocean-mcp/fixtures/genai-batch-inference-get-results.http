@@ -1,0 +1,8 @@
+# description: Get the results link of batch job batch_EXAMPLE01
+POST /mcp HTTP/1.1
+Host: genai-batchinference.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":174,"method":"tools/call","params":{"name":"genai-batch-inference-get-results","arguments":{"BatchID":"batch_EXAMPLE01"}}}

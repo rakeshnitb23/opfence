@@ -1,0 +1,8 @@
+# description: Add variables API_URL to shop-web
+POST / HTTP/1.1
+Host: mcp.vercel.com
+Authorization: Bearer opf_vercel-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"create_project_env","arguments":{"teamId":"team_acme","requestBody":[{"key":"API_URL","value":"https://api.example.com","type":"plain","target":["preview"]},{"key":"DB_PASSWORD","value":"opf_vercel-mcp_EXAMPLE","type":"encrypted","target":["production"]}],"idOrName":"shop-web"}}}

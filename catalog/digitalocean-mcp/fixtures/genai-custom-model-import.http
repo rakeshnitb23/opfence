@@ -1,0 +1,8 @@
+# description: Import model mistralai/Mistral-7B-Instruct-v0.3 from SOURCE_TYPE_HUGGINGFACE
+POST /mcp HTTP/1.1
+Host: genai-custom-models.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":182,"method":"tools/call","params":{"name":"genai-custom-models-import","arguments":{"source_type":"SOURCE_TYPE_HUGGINGFACE","source_ref":{"repo_id":"mistralai/Mistral-7B-Instruct-v0.3","access_type":"ACCESS_TYPE_PUBLIC"},"accept_terms_and_conditions":true,"name":"mistral-7b"}}}

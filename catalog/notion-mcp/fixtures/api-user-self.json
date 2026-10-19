@@ -1,0 +1,5 @@
+{
+  "description": "Show the Notion integration's bot user",
+  "tool": "API-get-self",
+  "arguments": {}
+}

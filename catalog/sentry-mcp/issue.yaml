@@ -1,0 +1,138 @@
+# Sentry MCP server: issues
+operations:
+  - id: sentry-mcp.issue.search
+    match: { mcp: { tool: search_issues } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Search issues in organization {organizationSlug} for {query}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-issues.ts
+    tests:
+      - fixture: fixtures/issue-search.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.issue.get
+    match: { mcp: { tool: get_issue_details } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-issue-details.ts
+    tests:
+      - fixture: fixtures/issue-get.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.activity
+    match: { mcp: { tool: get_issue_activity } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show the activity of issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-issue-activity.ts
+    tests:
+      - fixture: fixtures/issue-activity.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.breadcrumbs
+    match: { mcp: { tool: get_issue_breadcrumbs } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show the breadcrumbs of issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-issue-breadcrumbs.ts
+    tests:
+      - fixture: fixtures/issue-breadcrumbs.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.user-reports
+    match: { mcp: { tool: get_issue_user_reports } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show user feedback on issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-issue-user-reports.ts
+    tests:
+      - fixture: fixtures/issue-user-reports.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.tag-values
+    match: { mcp: { tool: get_issue_tag_values } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Show values of tag {tagKey} on issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-issue-tag-values.ts
+    tests:
+      - fixture: fixtures/issue-tag-values.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.events
+    match: { mcp: { tool: search_issue_events } }
+    class: read
+    resource: { arg: issueId, kind: issue }
+    card: "Search events of issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-issue-events.ts
+    tests:
+      - fixture: fixtures/issue-events.http
+        expect: read
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.update
+    match: { mcp: { tool: update_issue } }
+    class: write
+    resource: { arg: issueId, kind: issue }
+    card: "Update issue {issueId} (status {status}, assignee {assignedTo})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/update-issue.ts
+    notes: >-
+      Resolve, reopen, ignore, assign or unassign; reason is posted as a
+      comment. Every change can be undone with another update, including
+      status 'ignored' with ignoreMode 'forever', which stops the issue
+      alerting until it is unignored.
+    tests:
+      - fixture: fixtures/issue-update.http
+        expect: write
+        resource: BACKEND-1Z43
+      - fixture: fixtures/issue-update-ignore-forever.http
+        expect: write
+        resource: BACKEND-1Z43
+      - fixture: fixtures/issue-update-assign.http
+        expect: write
+        resource: BACKEND-1Z43
+
+  - id: sentry-mcp.issue.add-note
+    match: { mcp: { tool: add_issue_note } }
+    class: write
+    resource: { arg: issueId, kind: issue }
+    card: "Comment on issue {issueId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/add-issue-note.ts
+    tests:
+      - fixture: fixtures/issue-add-note.http
+        expect: write
+        resource: BACKEND-1Z43

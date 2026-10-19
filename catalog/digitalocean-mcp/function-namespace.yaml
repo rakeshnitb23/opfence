@@ -1,0 +1,77 @@
+# DigitalOcean MCP server: function-namespace
+operations:
+  - id: digitalocean-mcp.function-namespace.deployment-guide
+    match: { mcp: { tool: functions-deployment-guide } }
+    class: read
+    card: "Show the Functions deployment guide"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/deployment_guide_tool.go
+    tests:
+      - fixture: fixtures/function-namespace-deployment-guide.http
+        expect: read
+
+  - id: digitalocean-mcp.function-namespace.list
+    match: { mcp: { tool: functions-list-namespaces } }
+    class: credential
+    card: "List Functions namespaces with their keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/namespace_tools.go
+    notes: >-
+      godo FunctionsNamespace objects carry the namespace key used for
+      data-plane access.
+    tests:
+      - fixture: fixtures/function-namespace-list.http
+        expect: credential
+
+  - id: digitalocean-mcp.function-namespace.get
+    match: { mcp: { tool: functions-get-namespace } }
+    class: credential
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Show Functions namespace {NamespaceID} with its key"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/namespace_tools.go
+    notes: >-
+      The tool says it returns the key for data-plane access.
+    tests:
+      - fixture: fixtures/function-namespace-get.http
+        expect: credential
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397
+
+  - id: digitalocean-mcp.function-namespace.create
+    match: { mcp: { tool: functions-create-namespace } }
+    class: credential
+    resource: { arg: Label, kind: function-namespace }
+    card: "Create Functions namespace {Label} in {Region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/namespace_tools.go
+    notes: >-
+      The returned namespace carries its access key.
+    tests:
+      - fixture: fixtures/function-namespace-create.http
+        expect: credential
+        resource: shop-functions
+
+  - id: digitalocean-mcp.function-namespace.delete
+    match: { mcp: { tool: functions-delete-namespace } }
+    class: irreversible
+    resource: { arg: NamespaceID, kind: function-namespace }
+    card: "Delete Functions namespace {NamespaceID} with all its functions"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/functions/namespace_tools.go
+    notes: >-
+      The tool says this permanently removes every function, package and
+      trigger in it.
+    tests:
+      - fixture: fixtures/function-namespace-delete.http
+        expect: irreversible
+        resource: fn-b90faf52-2b42-49c2-9792-75edfbb6f397

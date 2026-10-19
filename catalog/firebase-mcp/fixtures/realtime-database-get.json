@@ -1,0 +1,7 @@
+{
+  "description": "Read a user node",
+  "tool": "realtimedatabase_get_data",
+  "arguments": {
+    "path": "/users/u7Hk2LmQ9xYz"
+  }
+}

@@ -8,3 +8,54 @@ detect:
   prefixes: [AKIA, ASIA]
 defaults:
   aws_read_actions: read           # Describe*, Get*, List*, Head*, BatchGet*, Scan, Query; exceptions are listed
+# Service models the rules were built from (opfence catalog check-sources);
+# the rules cover each service's riskiest operations, the rest are unknown.
+schemas:
+  - kind: botocore
+    service: cloudformation
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/cloudformation/2010-05-15/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: dynamodb
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: ec2
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/ec2/2016-11-15/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: iam
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/iam/2010-05-08/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: kms
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/kms/2014-11-01/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: lambda
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/lambda/2015-03-31/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: rds
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/rds/2014-10-31/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: route53
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/route53/2013-04-01/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: s3
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/s3/2006-03-01/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: secretsmanager
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/secretsmanager/2017-10-17/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: ssm
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/ssm/2014-11-06/service-2.json
+    coverage: partial
+  - kind: botocore
+    service: sts
+    url: https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/sts/2011-06-15/service-2.json
+    coverage: partial

@@ -1,0 +1,8 @@
+# description: Show replay 5f2a8c1e9b3d4e7f8a6b5c4d3e2f1a0b
+POST /mcp HTTP/1.1
+Host: mcp.sentry.dev
+Authorization: Bearer opf_sentry-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":70,"method":"tools/call","params":{"name":"get_replay_details","arguments":{"organizationSlug":"my-org","replayId":"5f2a8c1e9b3d4e7f8a6b5c4d3e2f1a0b"}}}

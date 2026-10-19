@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.materialize.create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Start a Materialize workflow into keyspace {body.target_keyspace} on branch {branch}"
@@ -19,6 +20,7 @@ operations:
 
   - id: planetscale.materialize.start
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/start" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Start Materialize workflow {workflow} on branch {branch}"
@@ -36,6 +38,7 @@ operations:
 
   - id: planetscale.materialize.stop
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/stop" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Stop Materialize workflow {workflow} on branch {branch}"
@@ -53,6 +56,7 @@ operations:
 
   - id: planetscale.materialize.cancel
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/materialize/workflows/{workflow}/cancel" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: delete
     resource: { arg: database, kind: database }
     card: "Cancel Materialize workflow {workflow} on branch {branch}"

@@ -1,0 +1,64 @@
+# GitHub MCP server: issue comment
+operations:
+  - id: github-mcp.issue-comment.create
+    match: { mcp: { tool: add_issue_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Comment on issue {issue_number} of {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-comment-create.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue-comment.update
+    match: { mcp: { tool: update_issue_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Edit comment {comment_id} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues.go
+    tests:
+      - fixture: fixtures/issue-comment-update.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue-comment.hide
+    match: { mcp: { tool: hide_issue_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Hide comment {comment_id} in {owner}/{repo} as {classifier}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write). Hiding
+      minimizes the comment; unhide_issue_comment restores it.
+    tests:
+      - fixture: fixtures/issue-comment-hide.http
+        expect: write
+        resource: shop
+
+  - id: github-mcp.issue-comment.unhide
+    match: { mcp: { tool: unhide_issue_comment } }
+    class: write
+    resource: { arg: repo, kind: repository }
+    card: "Unhide comment {comment_id} in {owner}/{repo}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/issues_granular.go
+      - https://github.com/github/github-mcp-server/blob/v2.0.2/pkg/github/comment_minimize.go
+    notes: >-
+      Feature flag issues_granular (replaces issue_write and sub_issue_write).
+    tests:
+      - fixture: fixtures/issue-comment-unhide.http
+        expect: write
+        resource: shop

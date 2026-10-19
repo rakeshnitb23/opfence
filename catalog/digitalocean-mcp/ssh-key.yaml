@@ -1,0 +1,61 @@
+# DigitalOcean MCP server: ssh-key
+operations:
+  - id: digitalocean-mcp.ssh-key.list
+    match: { mcp: { tool: key-list } }
+    class: read
+    card: "List SSH keys"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/keys_tools.go
+    tests:
+      - fixture: fixtures/ssh-key-list.http
+        expect: read
+
+  - id: digitalocean-mcp.ssh-key.get
+    match: { mcp: { tool: key-get } }
+    class: read
+    resource: { arg: ID, kind: ssh-key }
+    card: "Show SSH key {ID}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/keys_tools.go
+    tests:
+      - fixture: fixtures/ssh-key-get.http
+        expect: read
+        resource: "512189"
+
+  - id: digitalocean-mcp.ssh-key.create
+    match: { mcp: { tool: key-create } }
+    class: access
+    resource: { arg: Name, kind: ssh-key }
+    card: "Add SSH key {Name} to the account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/keys_tools.go
+    notes: >-
+      An account SSH key can be placed on new Droplets and gives root login to
+      them.
+    tests:
+      - fixture: fixtures/ssh-key-create.http
+        expect: access
+        resource: deploy-laptop
+
+  - id: digitalocean-mcp.ssh-key.delete
+    match: { mcp: { tool: key-delete } }
+    class: access
+    resource: { arg: ID, kind: ssh-key }
+    card: "Remove SSH key {ID} from the account"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean-labs/mcp-digitalocean/blob/main/pkg/registry/account/keys_tools.go
+    notes: >-
+      Changes who can be given login to new Droplets; keys already on Droplets
+      stay.
+    tests:
+      - fixture: fixtures/ssh-key-delete.http
+        expect: access
+        resource: "512189"

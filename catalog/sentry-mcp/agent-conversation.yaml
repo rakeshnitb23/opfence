@@ -1,0 +1,66 @@
+# Sentry MCP server: AI agent conversations (agent monitoring)
+operations:
+  - id: sentry-mcp.agent-conversation.get
+    match: { mcp: { tool: get_agent_conversation_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show agent conversation {conversationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-agent-conversation-details.ts
+    notes: >-
+      Reads recorded LLM spans from Sentry's AI agent monitoring; it runs no
+      model.
+    tests:
+      - fixture: fixtures/agent-conversation-get.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.agent-conversation.get-legacy
+    match: { mcp: { tool: get_ai_conversation_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show agent conversation {conversationId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-agent-conversation-details.ts
+    notes: >-
+      Deprecated alias of get_agent_conversation_details (defined in
+      catalog/index.ts).
+    tests:
+      - fixture: fixtures/agent-conversation-get-legacy.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.agent-conversation.search
+    match: { mcp: { tool: search_agent_conversations } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Search agent conversations in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-agent-conversations.ts
+    tests:
+      - fixture: fixtures/agent-conversation-search.http
+        expect: read
+        resource: my-org
+
+  - id: sentry-mcp.agent-conversation.search-legacy
+    match: { mcp: { tool: search_ai_conversations } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Search agent conversations in organization {organizationSlug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/search-agent-conversations.ts
+    notes: >-
+      Deprecated alias of search_agent_conversations (defined in
+      catalog/index.ts).
+    tests:
+      - fixture: fixtures/agent-conversation-search-legacy.http
+        expect: read
+        resource: my-org

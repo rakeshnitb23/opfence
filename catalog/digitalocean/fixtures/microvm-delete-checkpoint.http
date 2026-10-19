@@ -1,0 +1,5 @@
+# description: Delete MicroVM checkpoint ckpt-3e8d1b20
+DELETE /v2/microvms/checkpoints/ckpt-3e8d1b20 HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+

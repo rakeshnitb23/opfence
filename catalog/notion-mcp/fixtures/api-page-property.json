@@ -1,0 +1,8 @@
+{
+  "description": "Show property title of Notion page 1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+  "tool": "API-retrieve-a-page-property",
+  "arguments": {
+    "page_id": "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6",
+    "property_id": "title"
+  }
+}

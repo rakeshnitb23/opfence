@@ -1,0 +1,5 @@
+{
+  "description": "Show the Firebase MCP environment",
+  "tool": "firebase_get_environment",
+  "arguments": {}
+}

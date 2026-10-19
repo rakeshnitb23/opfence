@@ -1,0 +1,8 @@
+# description: Create load balancer shop-lb in nyc3
+POST /mcp HTTP/1.1
+Host: networking.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":323,"method":"tools/call","params":{"name":"lb-create","arguments":{"Name":"shop-lb","Region":"nyc3","ForwardingRules":["entry_protocol:https,entry_port:443,target_protocol:http,target_port:8080,certificate_id:892071a0-bb95-49bc-8021-3afd67a210bf"],"Tag":"web"}}}

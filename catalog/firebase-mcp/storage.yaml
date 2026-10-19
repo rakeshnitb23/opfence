@@ -1,0 +1,27 @@
+# Firebase MCP server: Cloud Storage tools (storage_ prefix)
+operations:
+  - id: firebase-mcp.storage-object.get-download-url
+    match: { mcp: { tool: storage_get_object_download_url } }
+    class: credential
+    when:
+      - if: { arg: use_emulator, equals: "true" }
+        class: read
+    resource: { arg: object_path, kind: object }
+    card: "Reveal the download token URL of Storage object {object_path} in bucket {bucket}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/storage/get_download_url.ts
+      - https://github.com/firebase/firebase-tools/blob/main/src/mcp/tools/index.ts
+    notes: >-
+      Returns the object's URL with its firebaseStorageDownloadTokens token, a
+      bearer capability anyone holding the URL can use to read the object,
+      bypassing security rules. With use_emulator the URL points at the local
+      emulator and carries no token.
+    tests:
+      - fixture: fixtures/storage-object-get-download-url.json
+        expect: credential
+        resource: "invoices/2026/10/inv-1042.pdf"
+      - fixture: fixtures/storage-object-get-download-url-emulator.json
+        expect: read
+        resource: "invoices/2026/10/inv-1042.pdf"

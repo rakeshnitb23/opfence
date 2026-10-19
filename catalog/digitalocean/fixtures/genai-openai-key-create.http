@@ -1,0 +1,7 @@
+# description: Store OpenAI API key "Production Key"
+POST /v2/gen-ai/openai/keys HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"api_key": "opf_digitalocean_EXAMPLE", "name": "\"Production Key\""}

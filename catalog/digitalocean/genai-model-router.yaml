@@ -1,0 +1,45 @@
+# DigitalOcean REST API: genai-model-router
+operations:
+  - id: digitalocean.genai-model-router.create
+    match: { rest: { method: POST, path: /v2/gen-ai/models/routers } }
+    class: write
+    resource: { arg: body.name, kind: genai-model-router }
+    card: "Create model router {body.name}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_model_router.yml
+    tests:
+      - fixture: fixtures/genai-model-router-create.http
+        expect: write
+        resource: "\"my-model-router\""
+
+  - id: digitalocean.genai-model-router.update
+    match: { rest: { method: PUT, path: "/v2/gen-ai/models/routers/{uuid}" } }
+    class: write
+    resource: { arg: uuid, kind: genai-model-router }
+    card: "Change model router {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_model_router.yml
+    tests:
+      - fixture: fixtures/genai-model-router-update.http
+        expect: write
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"
+
+  - id: digitalocean.genai-model-router.delete
+    match: { rest: { method: DELETE, path: "/v2/gen-ai/models/routers/{uuid}" } }
+    class: delete
+    resource: { arg: uuid, kind: genai-model-router }
+    card: "Delete model router {uuid}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_model_router.yml
+    notes: >-
+      A routing configuration that can be recreated.
+    tests:
+      - fixture: fixtures/genai-model-router-delete.http
+        expect: delete
+        resource: "1b418231-b7d6-11ef-bf8f-4e013e2ddde4"

@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.vdiff.create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Start a VDiff of workflow {workflow} on branch {branch}"
@@ -19,6 +20,7 @@ operations:
 
   - id: planetscale.vdiff.stop
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}/stop" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Stop VDiff {uuid} of workflow {workflow}"
@@ -36,6 +38,7 @@ operations:
 
   - id: planetscale.vdiff.resume
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}/resume" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Resume VDiff {uuid} of workflow {workflow}"
@@ -53,6 +56,7 @@ operations:
 
   - id: planetscale.vdiff.delete
     match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vdiff/workflows/{workflow}/vdiffs/{uuid}" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: delete
     resource: { arg: database, kind: database }
     card: "Delete VDiff {uuid} of workflow {workflow}"

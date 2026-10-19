@@ -1,0 +1,5 @@
+{
+  "description": "Load the DynamoDB data modeling prompt",
+  "tool": "dynamodb_data_modeling",
+  "arguments": {}
+}

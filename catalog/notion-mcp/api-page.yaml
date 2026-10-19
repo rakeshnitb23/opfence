@@ -1,0 +1,155 @@
+# Notion MCP (local): pages
+operations:
+  - id: notion-mcp.api-page.get
+    match: { mcp: { tool: API-retrieve-a-page } }
+    class: read
+    resource: { arg: page_id, kind: page }
+    card: "Show Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-page-get.json
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-page.update
+    match: { mcp: { tool: API-patch-page } }
+    class: write
+    when:
+      - if: { arg: in_trash, equals: "true" }
+        class: delete
+      - if: { arg: archived, equals: "true" }
+        class: delete
+    resource: { arg: page_id, kind: page }
+    card: "Change Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      in_trash=true (or the older archived=true) moves the page to Trash,
+      restorable for 30 days: delete.
+    tests:
+      - fixture: fixtures/api-page-update.json
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/api-page-update-trash.json
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/api-page-update-archive.json
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-page.create
+    match: { mcp: { tool: API-post-page } }
+    class: write
+    card: "Create a Notion page under {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      The new page inherits its parent's permissions.
+    tests:
+      - fixture: fixtures/api-page-create.json
+        expect: write
+
+  - id: notion-mcp.api-page.property
+    match: { mcp: { tool: API-retrieve-a-page-property } }
+    class: read
+    resource: { arg: page_id, kind: page }
+    card: "Show property {property_id} of Notion page {page_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-page-property.json
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-page.move
+    match: { mcp: { tool: API-move-page } }
+    class: access
+    resource: { arg: page_id, kind: page }
+    card: "Move Notion page {page_id} to {parent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      A Notion page inherits its permissions from its parent, so moving a page
+      or database to another parent can share it with a teamspace, a public
+      page's audience, or nobody: access.
+    tests:
+      - fixture: fixtures/api-page-move.json
+        expect: access
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-page.markdown
+    match: { mcp: { tool: API-retrieve-page-markdown } }
+    class: read
+    resource: { arg: page_id, kind: page }
+    card: "Read Notion page {page_id} as Markdown"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    tests:
+      - fixture: fixtures/api-page-markdown.json
+        expect: read
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+
+  - id: notion-mcp.api-page.update-markdown
+    match: { mcp: { tool: API-update-page-markdown } }
+    class: write
+    when:
+      - if: { arg: type, equals: "replace_content" }
+        class: delete
+      - if: { arg: replace_content.allow_deleting_content, equals: "true" }
+        class: delete
+      - if: { arg: update_content.allow_deleting_content, equals: "true" }
+        class: delete
+      - if: { arg: replace_content_range.allow_deleting_content, equals: "true" }
+        class: delete
+      - if: { arg: replace_content, matches: "allow_deleting_content\"?\\s*:\\s*true" }
+        class: delete
+      - if: { arg: update_content, matches: "allow_deleting_content\"?\\s*:\\s*true" }
+        class: delete
+      - if: { arg: replace_content_range, matches: "allow_deleting_content\"?\\s*:\\s*true" }
+        class: delete
+    resource: { arg: page_id, kind: page }
+    card: "Edit Notion page {page_id} as Markdown ({type})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/scripts/notion-openapi.json
+      - https://unpkg.com/@notionhq/notion-mcp-server@2.5.2/src/openapi-mcp-server/mcp/proxy.ts
+    notes: >-
+      replace_content overwrites the whole page and allow_deleting_content
+      lets an edit remove child pages and databases (to Trash); page history
+      and Trash can restore both, so delete. The server also accepts these
+      objects as JSON strings and parses them (deserializeParams), so the
+      string form is matched too. Targeted find-and-replace and inserts are
+      write.
+    tests:
+      - fixture: fixtures/api-page-update-markdown.json
+        expect: write
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/api-page-update-markdown-replace.json
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/api-page-update-markdown-allow-delete.json
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"
+      - fixture: fixtures/api-page-update-markdown-allow-delete-string.json
+        expect: delete
+        resource: "1a2b3c4d-5e6f-47a8-b9c0-d1e2f3a4b5c6"

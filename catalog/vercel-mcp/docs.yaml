@@ -1,0 +1,30 @@
+# Vercel MCP server (mcp.vercel.com): docs
+operations:
+  - id: vercel-mcp.docs.search
+    match: { mcp: { tool: search_vercel_documentation } }
+    class: read
+    card: "Search Vercel docs for {topic}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/documentation
+    tests:
+      - fixture: fixtures/docs-search.http
+        expect: read
+
+  - id: vercel-mcp.docs.cli-guidance
+    match: { mcp: { tool: use_vercel_cli } }
+    class: read
+    card: "Get Vercel CLI guidance for {action}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://vercel.com/docs/agent-resources/vercel-mcp/tools/documentation
+    notes: >-
+      Served at mcp.vercel.com/cli/mcp. Docs: it instructs the model to use
+      Vercel CLI commands with --help; the remote server runs nothing on the
+      user's machine, and any CLI command the agent then runs goes through the
+      agent's own shell, where it is checked separately.
+    tests:
+      - fixture: fixtures/docs-cli-guidance.http
+        expect: read

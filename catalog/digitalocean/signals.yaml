@@ -1,0 +1,61 @@
+# DigitalOcean REST API: signals
+operations:
+  - id: digitalocean.signals.set-team-consent
+    match: { rest: { method: PUT, path: /v1/consent } }
+    class: access
+    card: "Turn Signals collection for serverless inference {body.enabled}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/signals/signals_update_team_consent.yml
+    notes: >-
+      Decides whether DigitalOcean analyses and keeps the team's inference
+      conversations.
+    tests:
+      - fixture: fixtures/signals-set-team-consent.http
+        expect: access
+
+  - id: digitalocean.signals.set-consent
+    match: { rest: { method: PUT, path: "/v1/consent/{agent_id}" } }
+    class: access
+    resource: { arg: agent_id, kind: signals }
+    card: "Turn Signals collection for environment {agent_id} {body.enabled}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/signals/signals_update_consent.yml
+    notes: >-
+      Decides whether DigitalOcean analyses and keeps the environment's
+      conversations.
+    tests:
+      - fixture: fixtures/signals-set-consent.http
+        expect: access
+        resource: env-4f2a91
+
+  - id: digitalocean.signals.create-export
+    match: { rest: { method: POST, path: /v1/signals/exports } }
+    class: write
+    resource: { arg: body.agent_id, kind: signals }
+    card: "Export Signals data for {body.type} {body.agent_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/signals/signals_create_export.yml
+    tests:
+      - fixture: fixtures/signals-create-export.http
+        expect: write
+        resource: "01a0f3d5-b58d-7c99-a743-7ca0397b7f5d"
+
+  - id: digitalocean.signals.delete-data
+    match: { rest: { method: POST, path: /v1/signals/deletions } }
+    class: irreversible
+    resource: { arg: body.agent_id, kind: signals }
+    card: "Delete collected Signals data for {body.type} {body.agent_id}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/signals/signals_create_deletion.yml
+    tests:
+      - fixture: fixtures/signals-delete-data.http
+        expect: irreversible
+        resource: "01a10d3f-2c09-764f-99f8-458e521627f3"

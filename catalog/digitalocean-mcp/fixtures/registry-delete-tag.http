@@ -1,0 +1,8 @@
+# description: Delete tag v1.4.2 of repository web
+POST /mcp HTTP/1.1
+Host: docr.mcp.digitalocean.com
+Authorization: Bearer opf_digitalocean-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":79,"method":"tools/call","params":{"name":"docr-repository-tag-delete","arguments":{"RegistryName":"shop-registry","Repository":"web","Tag":"v1.4.2"}}}

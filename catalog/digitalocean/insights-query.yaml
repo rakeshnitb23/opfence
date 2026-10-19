@@ -1,0 +1,93 @@
+# DigitalOcean REST API: insights-query
+operations:
+  - id: digitalocean.insights-query.query
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/prom/api/v1/query" } }
+    class: read
+    card: "Run a PromQL query in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_promQuery.yml
+    notes: >-
+      A query sent as POST; it reads metrics.
+    tests:
+      - fixture: fixtures/insights-query-query.http
+        expect: read
+
+  - id: digitalocean.insights-query.query-range
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/prom/api/v1/query_range" } }
+    class: read
+    card: "Run a PromQL range query in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_promQueryRange.yml
+    notes: >-
+      A query sent as POST; it reads metrics.
+    tests:
+      - fixture: fixtures/insights-query-query-range.http
+        expect: read
+
+  - id: digitalocean.insights-query.labels
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/prom/api/v1/labels" } }
+    class: read
+    card: "List metric labels in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_promLabels.yml
+    notes: >-
+      A query sent as POST; it reads metrics.
+    tests:
+      - fixture: fixtures/insights-query-labels.http
+        expect: read
+
+  - id: digitalocean.insights-query.series
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/prom/api/v1/series" } }
+    class: read
+    card: "Find metric series in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_promSeries.yml
+    notes: >-
+      A query sent as POST; it reads metrics.
+    tests:
+      - fixture: fixtures/insights-query-series.http
+        expect: read
+
+  - id: digitalocean.insights-query.logs-search
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/logs/search" } }
+    class: read
+    card: "Search logs in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_logsSearch.yml
+    tests:
+      - fixture: fixtures/insights-query-logs-search.http
+        expect: read
+
+  - id: digitalocean.insights-query.traces-search
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/traces/search" } }
+    class: read
+    card: "Search traces in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_tracesSearch.yml
+    tests:
+      - fixture: fixtures/insights-query-traces-search.http
+        expect: read
+
+  - id: digitalocean.insights-query.spans-search
+    match: { rest: { method: POST, path: "/v2/insights/query/{region}/spans/search" } }
+    class: read
+    card: "Search spans in {region}"
+    status: verified
+    verified: 2026-10-18
+    sources:
+      - https://github.com/digitalocean/openapi/blob/main/specification/resources/insights/insights_post_spansSearch.yml
+    tests:
+      - fixture: fixtures/insights-query-spans-search.http
+        expect: read

@@ -1,0 +1,7 @@
+{
+  "description": "Get a Firestore index",
+  "tool": "firestore_get_index",
+  "arguments": {
+    "name": "projects/shop-prod/databases/(default)/collectionGroups/orders/indexes/CICAgOjXh4EK"
+  }
+}

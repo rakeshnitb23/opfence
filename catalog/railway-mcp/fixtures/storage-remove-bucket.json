@@ -1,0 +1,10 @@
+{
+  "description": "Delete bucket bkt-assets and every object in it",
+  "tool": "remove_bucket",
+  "arguments": {
+    "project_id": "9a8b7c6d-1111-4222-8333-444455556666",
+    "environment_id": "env-production",
+    "confirm": true,
+    "bucket_id": "bkt-assets"
+  }
+}

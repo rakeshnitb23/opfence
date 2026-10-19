@@ -1,0 +1,7 @@
+# description: Configure storage autoscaling of cluster 9cc10173-e9ea-4176-9dbc-a4cee4c4ff30
+PUT /v2/databases/9cc10173-e9ea-4176-9dbc-a4cee4c4ff30/autoscale HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"storage": {"enabled": false}}

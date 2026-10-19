@@ -1,0 +1,8 @@
+{
+  "description": "Read a box's logs",
+  "tool": "box_logs",
+  "arguments": {
+    "box_id": "box_7Kp2Qx9Lm4",
+    "limit": 100
+  }
+}

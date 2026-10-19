@@ -1,0 +1,15 @@
+# Sentry MCP server: session replays
+operations:
+  - id: sentry-mcp.replay.get
+    match: { mcp: { tool: get_replay_details } }
+    class: read
+    resource: { arg: organizationSlug, kind: organization }
+    card: "Show replay {replayId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/getsentry/sentry-mcp/blob/0.42.0/packages/mcp-core/src/tools/catalog/get-replay-details.ts
+    tests:
+      - fixture: fixtures/replay-get.http
+        expect: read
+        resource: my-org

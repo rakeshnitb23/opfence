@@ -1,0 +1,7 @@
+{
+  "description": "Fetch the bundled plan for an agent script",
+  "tool": "get_execution_plan",
+  "arguments": {
+    "script_name": "troubleshoot-permissions-with-cloudtrail-events"
+  }
+}

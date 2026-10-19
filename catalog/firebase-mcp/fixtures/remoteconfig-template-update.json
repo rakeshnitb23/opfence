@@ -1,0 +1,15 @@
+{
+  "description": "Publish a new Remote Config template",
+  "tool": "remoteconfig_update_template",
+  "arguments": {
+    "template": {
+      "parameters": {
+        "checkout_v2": {
+          "defaultValue": {
+            "value": "true"
+          }
+        }
+      }
+    }
+  }
+}

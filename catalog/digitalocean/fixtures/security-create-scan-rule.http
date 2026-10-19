@@ -1,0 +1,7 @@
+# description: Create a security scan rule for do:droplet:fe3a2fd7-903d-46e6-ada3-3e4f285fb89d
+POST /v2/security/scans/rules HTTP/1.1
+Host: api.digitalocean.com
+Authorization: Bearer opf_digitalocean_EXAMPLE
+Content-Type: application/json
+
+{"resource": "do:droplet:fe3a2fd7-903d-46e6-ada3-3e4f285fb89d"}

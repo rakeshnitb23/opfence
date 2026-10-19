@@ -41,6 +41,7 @@ operations:
 
   - id: turso.database-token.create-unscoped
     match: { rest: { method: POST, path: "/{version}/databases/{database}/auth/tokens" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: credential
     resource: { arg: database, kind: database }
     card: "Create an auth token for Turso database {database}"
@@ -59,6 +60,7 @@ operations:
 
   - id: turso.database-token.invalidate-unscoped
     match: { rest: { method: POST, path: "/{version}/databases/{database}/auth/rotate" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: database, kind: database }
     card: "Invalidate every auth token of Turso database {database}"
