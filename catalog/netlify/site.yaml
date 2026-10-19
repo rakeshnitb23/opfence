@@ -82,6 +82,7 @@ operations:
 
   - id: netlify.site.replace
     match: { rest: { method: PUT, path: "/api/v1/sites/{site_id}" } }
+    unlisted: "the OpenAPI file lists PATCH only; Netlify's MCP server sends PUT"
     class: write
     when:
       - if: { arg: body.password, present: true }

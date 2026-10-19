@@ -12,3 +12,8 @@ defaults:
   rest_safe_methods: read          # GETs only read, except the ones listed as credential
 # Every path is under /api/v2, the version prefix the spec's server URL
 # (https://console.neon.tech/api/v2) defines.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/neondatabase/neon-pkgs/main/packages/sdk/spec/neon-openapi.json

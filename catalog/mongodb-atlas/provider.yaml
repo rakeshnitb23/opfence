@@ -21,3 +21,8 @@ detect:
   prefixes: [mdb_sa_sk_]             # service account secrets, per the spec's examples
 defaults:
   rest_safe_methods: read
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/mongodb/openapi/main/openapi/v2.yaml

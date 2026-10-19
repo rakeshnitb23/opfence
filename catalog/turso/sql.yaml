@@ -2,6 +2,7 @@
 operations:
   - id: turso.sql.pipeline
     match: { rest: { method: POST, path: "/{version}/pipeline" } }
+    unlisted: "libSQL's HTTP protocol on database hosts, not part of the Platform API"
     class: unknown
     card: "Run SQL on a Turso database over HTTP"
     status: verified
@@ -24,6 +25,7 @@ operations:
 
   - id: turso.sql.cursor
     match: { rest: { method: POST, path: "/{version}/cursor" } }
+    unlisted: "libSQL's HTTP protocol on database hosts, not part of the Platform API"
     class: unknown
     card: "Run a batch of SQL on a Turso database over HTTP"
     status: verified
@@ -43,6 +45,7 @@ operations:
 
   - id: turso.sql.batch
     match: { rest: { method: POST, path: "/" } }
+    unlisted: "libSQL's HTTP protocol on database hosts, not part of the Platform API"
     class: unknown
     card: "Run a batch of SQL on a Turso database over the legacy HTTP API"
     status: verified

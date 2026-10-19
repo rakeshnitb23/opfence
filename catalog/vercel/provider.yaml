@@ -11,3 +11,9 @@ defaults:
   rest_safe_methods: read          # GETs only read, except the ones listed as credential
 # Rules match any version prefix (/{version}/projects/...): Vercel keeps
 # serving older versions of an endpoint, and an agent may use one from old docs.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/vercel/sdk/main/vercel-spec.json
+    coverage: partial              # rules cover the riskiest operations; the rest are unknown

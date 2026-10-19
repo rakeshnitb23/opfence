@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.oauth-token.create
     match: { rest: { method: POST, path: "/api/oauth/token" } }
+    unlisted: "the service account OAuth endpoint, named only as the spec's tokenUrl"
     class: credential
     card: "Exchange service account credentials for an Atlas access token"
     status: verified
@@ -26,6 +27,7 @@ operations:
 
   - id: mongodb-atlas.oauth-token.revoke
     match: { rest: { method: POST, path: "/api/oauth/revoke" } }
+    unlisted: "the service account OAuth endpoint, named only as the spec's tokenUrl"
     class: access
     card: "Revoke an Atlas access token"
     status: verified

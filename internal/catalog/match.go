@@ -119,6 +119,20 @@ func (p *Provider) Match(op decode.Operation, includeDraft bool) (*Rule, map[str
 
 var awsReadPrefixes = []string{"Describe", "Get", "List", "Head", "BatchGet"}
 
+// IsAWSReadAction reports whether an AWS action is a read by its name:
+// Describe*, Get*, List*, Head*, BatchGet*, Scan or Query.
+func IsAWSReadAction(action string) bool {
+	if action == "Scan" || action == "Query" {
+		return true
+	}
+	for _, pre := range awsReadPrefixes {
+		if strings.HasPrefix(action, pre) && len(action) > len(pre) {
+			return true
+		}
+	}
+	return false
+}
+
 // DefaultClass classifies an operation no rule matched, from the provider's
 // defaults and the MCP protocol. It returns Unknown when nothing applies.
 func (p *Provider) DefaultClass(op decode.Operation) (classes.Class, string) {
@@ -136,15 +150,8 @@ func (p *Provider) DefaultClass(op decode.Operation) (classes.Class, string) {
 			return d.RESTSafeMethods, "provider default for " + op.Method
 		}
 	case decode.AWS:
-		if d.AWSReadActions != "" && op.Action != "" {
-			if op.Action == "Scan" || op.Action == "Query" {
-				return d.AWSReadActions, "provider default for AWS read actions"
-			}
-			for _, pre := range awsReadPrefixes {
-				if strings.HasPrefix(op.Action, pre) && len(op.Action) > len(pre) {
-					return d.AWSReadActions, "provider default for AWS read actions"
-				}
-			}
+		if d.AWSReadActions != "" && IsAWSReadAction(op.Action) {
+			return d.AWSReadActions, "provider default for AWS read actions"
 		}
 	case decode.MCP:
 		switch {

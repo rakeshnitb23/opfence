@@ -36,6 +36,9 @@ type Provider struct {
 	Detect   Detect   `yaml:"detect"`
 	Defaults Defaults `yaml:"defaults"`
 	MCP      *MCPInfo `yaml:"mcp"`
+	// Schemas are the published schemas the rules were built from, which
+	// `opfence catalog check-sources` compares them with.
+	Schemas []SchemaSource `yaml:"schemas"`
 
 	Rules []*Rule `yaml:"-"` // in file order, files sorted by name
 	Dir   string  `yaml:"-"` // folder within the catalog FS
@@ -66,6 +69,24 @@ type Defaults struct {
 	GraphQLSecretFields []string `yaml:"graphql_secret_fields"`
 }
 
+// SchemaSource is one published schema of a provider's API.
+type SchemaSource struct {
+	Kind string `yaml:"kind"` // openapi, graphql, heroku or botocore
+	URL  string `yaml:"url"`
+	// Prefix is put in front of every path, when the schema's own base
+	// path (Swagger basePath, the first OpenAPI server URL) is missing or
+	// wrong.
+	Prefix string `yaml:"prefix"`
+	// Service is the SigV4 service a botocore model's rules match.
+	Service string `yaml:"service"`
+	// Coverage is full (the default: rules claim every operation that is
+	// not a read) or partial (rules cover the risky parts only).
+	Coverage string `yaml:"coverage"`
+}
+
+// Schema kinds.
+var SchemaKinds = []string{"openapi", "graphql", "heroku", "botocore"}
+
 // MCPInfo identifies an MCP server.
 type MCPInfo struct {
 	Names   []string `yaml:"names"`   // names users commonly give the server in MCP configs
@@ -93,11 +114,15 @@ type Rule struct {
 	Response *Response     `yaml:"response"`
 	Resource *Resource     `yaml:"resource"`
 	Card     string        `yaml:"card"`
-	Status   Status        `yaml:"status"`
-	Verified string        `yaml:"verified"` // YYYY-MM-DD
-	Sources  []string      `yaml:"sources"`
-	Notes    string        `yaml:"notes"`
-	Tests    []Test        `yaml:"tests"`
+	// Unlisted says why the operation is not in the provider's schemas
+	// (a CLI-only endpoint, an older schema version); the drift check then
+	// skips it.
+	Unlisted string   `yaml:"unlisted"`
+	Status   Status   `yaml:"status"`
+	Verified string   `yaml:"verified"` // YYYY-MM-DD
+	Sources  []string `yaml:"sources"`
+	Notes    string   `yaml:"notes"`
+	Tests    []Test   `yaml:"tests"`
 
 	Provider *Provider `yaml:"-"`
 	File     string    `yaml:"-"` // path within the catalog FS

@@ -34,3 +34,10 @@ defaults:
     - sealedToken                  # Identity
     - token                        # AccessToken, Identity, LimitedAccessToken, ...
     - tokenHeader                  # LimitedAccessToken
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: graphql
+    url: https://raw.githubusercontent.com/superfly/fly-go/main/schema.graphql
+  - kind: openapi
+    url: https://raw.githubusercontent.com/superfly/docs/main/api/machines/openapi.json

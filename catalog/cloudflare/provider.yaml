@@ -17,3 +17,9 @@ defaults:
   rest_safe_methods: read          # GETs only read, except the ones listed as credential
 # Every path is written with the /client/v4 prefix, exactly as the schema's
 # server URL gives it. Non-GET operations without a rule here are unknown.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json
+    coverage: partial

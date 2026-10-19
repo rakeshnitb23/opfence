@@ -2,6 +2,7 @@
 operations:
   - id: turso.database-file.upload
     match: { rest: { method: POST, path: "/v1/upload" } }
+    unlisted: "the database upload endpoint on database hosts, documented outside the Platform API spec"
     class: irreversible
     card: "Upload a SQLite file as the contents of a Turso database"
     status: verified
@@ -18,6 +19,7 @@ operations:
 
   - id: turso.database-file.upload-start
     match: { rest: { method: PUT, path: "/v2/upload/start" } }
+    unlisted: "the database upload endpoint on database hosts, documented outside the Platform API spec"
     class: write
     card: "Start a multipart upload of a SQLite file to a Turso database"
     status: verified
@@ -33,6 +35,7 @@ operations:
 
   - id: turso.database-file.upload-chunk
     match: { rest: { method: PUT, path: "/v2/upload/{uploadId}/chunk/{chunk}" } }
+    unlisted: "the database upload endpoint on database hosts, documented outside the Platform API spec"
     class: write
     card: "Upload chunk {chunk} of a SQLite file to a Turso database"
     status: verified
@@ -47,6 +50,7 @@ operations:
 
   - id: turso.database-file.upload-finalize
     match: { rest: { method: PUT, path: "/v2/upload/{uploadId}/finalize" } }
+    unlisted: "the database upload endpoint on database hosts, documented outside the Platform API spec"
     class: irreversible
     card: "Apply an uploaded SQLite file as the contents of a Turso database"
     status: verified

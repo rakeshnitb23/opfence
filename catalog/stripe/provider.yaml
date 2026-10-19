@@ -21,3 +21,8 @@ defaults:
 #
 # Test and live mode: the key's prefix (sk_test_ / sk_live_) decides the mode,
 # but Opfence only sees placeholders, so no rule depends on the mode.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/stripe/openapi/master/latest/openapi.spec3.json

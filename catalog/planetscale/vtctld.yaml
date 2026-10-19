@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.vtctld.keyspace-routing-rules-update
     match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/keyspace-routing-rules" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Replace the keyspace routing rules of branch {branch} of database {database}"
@@ -19,6 +20,7 @@ operations:
 
   - id: planetscale.vtctld.tablet-control-update
     match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/shard/tablet-control" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Change tablet control for shard {body.shard} of keyspace {body.keyspace}"
@@ -36,6 +38,7 @@ operations:
 
   - id: planetscale.vtctld.refresh-state
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/shard/refresh-state" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Refresh tablet state for shard {body.shard} of keyspace {body.keyspace}"
@@ -53,6 +56,7 @@ operations:
 
   - id: planetscale.vtctld.throttler-check
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/throttler/check" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: read
     resource: { arg: database, kind: database }
     card: "Check the tablet throttler on branch {branch} of database {database}"
@@ -70,6 +74,7 @@ operations:
 
   - id: planetscale.vtctld.throttler-config-update
     match: { rest: { method: PUT, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/throttler/config" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Change the tablet throttler config on branch {branch} of database {database}"
@@ -87,6 +92,7 @@ operations:
 
   - id: planetscale.vtctld.workflow-start
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/workflows/{workflow}/start" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Start Vitess workflow {workflow} on branch {branch}"
@@ -104,6 +110,7 @@ operations:
 
   - id: planetscale.vtctld.workflow-stop
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/vtctld/workflows/{workflow}/stop" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Stop Vitess workflow {workflow} on branch {branch}"
@@ -121,6 +128,7 @@ operations:
 
   - id: planetscale.vtctld.planned-reparent
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/planned-reparent" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Make {body.new_primary} the primary of shard {body.shard} of keyspace {body.keyspace}"

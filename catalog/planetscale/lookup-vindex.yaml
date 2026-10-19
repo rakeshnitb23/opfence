@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.lookup-vindex.create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Create lookup vindex {body.name} on branch {branch}"
@@ -19,6 +20,7 @@ operations:
 
   - id: planetscale.lookup-vindex.externalize
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/externalize" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Externalize lookup vindex {name} on branch {branch}"
@@ -36,6 +38,7 @@ operations:
 
   - id: planetscale.lookup-vindex.internalize
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/internalize" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Internalize lookup vindex {name} on branch {branch}"
@@ -53,6 +56,7 @@ operations:
 
   - id: planetscale.lookup-vindex.cancel
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/cancel" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: delete
     resource: { arg: database, kind: database }
     card: "Cancel lookup vindex {name} on branch {branch}"
@@ -70,6 +74,7 @@ operations:
 
   - id: planetscale.lookup-vindex.complete
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/branches/{branch}/lookup-vindex/vindexes/{name}/complete" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Complete lookup vindex {name} on branch {branch}"

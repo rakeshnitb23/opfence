@@ -111,6 +111,7 @@ operations:
 
   - id: planetscale.deploy-request.retry
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/deploy-requests/{number}/retry-failed-operations" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: delete
     resource: { arg: database, kind: database }
     card: "Retry failed operations of deploy request {number} in database {database}"

@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.workflow.create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/workflows" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Create workflow {body.name} moving tables to keyspace {body.target_keyspace} in database {database}"
@@ -19,6 +20,7 @@ operations:
 
   - id: planetscale.workflow.verify-data
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/verify-data" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Verify the copied data of workflow {number} in database {database}"
@@ -36,6 +38,7 @@ operations:
 
   - id: planetscale.workflow.switch-replicas
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/switch-replicas" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Send replica traffic of workflow {number} to the target keyspace"
@@ -53,6 +56,7 @@ operations:
 
   - id: planetscale.workflow.switch-primaries
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/switch-primaries" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Send primary traffic of workflow {number} to the target keyspace"
@@ -70,6 +74,7 @@ operations:
 
   - id: planetscale.workflow.reverse-traffic
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/reverse-traffic" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Send traffic of workflow {number} back to the source keyspace"
@@ -87,6 +92,7 @@ operations:
 
   - id: planetscale.workflow.cutover
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/cutover" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Cut over workflow {number} in database {database}"
@@ -104,6 +110,7 @@ operations:
 
   - id: planetscale.workflow.reverse-cutover
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/reverse-cutover" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Reverse the cutover of workflow {number} in database {database}"
@@ -121,6 +128,7 @@ operations:
 
   - id: planetscale.workflow.retry
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/retry" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Retry workflow {number} in database {database}"
@@ -138,6 +146,7 @@ operations:
 
   - id: planetscale.workflow.complete
     match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}/complete" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: irreversible
     resource: { arg: database, kind: database }
     card: "Complete workflow {number} in database {database} and clean up the source"
@@ -156,6 +165,7 @@ operations:
 
   - id: planetscale.workflow.cancel
     match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/workflows/{number}" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: delete
     resource: { arg: database, kind: database }
     card: "Cancel workflow {number} in database {database}"

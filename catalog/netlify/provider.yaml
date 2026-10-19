@@ -15,3 +15,8 @@ defaults:
 # file (netlify/open-api swagger.yml); the few endpoints it leaves out (PUT on a
 # site, Blobs, observability queries, certificate renewal) cite the official
 # client that calls them or the OpenAPI text that names them.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/netlify/open-api/master/swagger.yml

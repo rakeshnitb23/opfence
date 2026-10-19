@@ -2,6 +2,7 @@
 operations:
   - id: planetscale.auth-attempt-export.create
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/auth-attempt-exports" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: organization, kind: organization }
     card: "Export database authentication attempts of organization {organization}"

@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.serverless-instance.create
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/serverless" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: money
     resource: { arg: groupId, kind: project }
     card: "Create serverless instance {body.name} in project {groupId}"
@@ -20,6 +21,7 @@ operations:
 
   - id: mongodb-atlas.serverless-instance.update
     match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/serverless/{name}" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     when:
       - if: { arg: body.terminationProtectionEnabled, equals: "false" }
@@ -46,6 +48,7 @@ operations:
 
   - id: mongodb-atlas.serverless-instance.delete
     match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/serverless/{name}" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: irreversible
     resource: { arg: name, kind: serverless-instance }
     card: "Delete serverless instance {name} and its data in project {groupId}"

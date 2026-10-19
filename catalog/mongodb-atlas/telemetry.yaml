@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.telemetry.send
     match: { rest: { method: POST, path: "/api/private/v1.0/telemetry/events" } }
+    unlisted: "a private endpoint the Atlas CLI and MCP server call"
     class: write
     card: "Send client telemetry events to Atlas"
     status: verified
@@ -16,6 +17,7 @@ operations:
 
   - id: mongodb-atlas.telemetry.send-unauthenticated
     match: { rest: { method: POST, path: "/api/private/unauth/telemetry/events" } }
+    unlisted: "a private endpoint the Atlas CLI and MCP server call"
     class: write
     card: "Send anonymous client telemetry events to Atlas"
     status: verified

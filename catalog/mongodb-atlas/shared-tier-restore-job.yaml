@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.shared-tier-restore-job.create
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/clusters/{clusterName}/backup/tenant/restore" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: irreversible
     resource: { arg: clusterName, kind: cluster }
     card: "Restore snapshot {body.snapshotId} of shared-tier cluster {clusterName} onto {body.targetDeploymentItemName}"

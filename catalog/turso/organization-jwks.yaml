@@ -2,6 +2,7 @@
 operations:
   - id: turso.organization-jwks.template
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/jwks-template" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: read
     resource: { arg: organization, kind: organization }
     card: "Generate a JWKS claims template for Turso organization {organization}"
@@ -19,6 +20,7 @@ operations:
 
   - id: turso.organization-jwks.save
     match: { rest: { method: PUT, path: "/{version}/organizations/{organization}/jwks/{name}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: organization, kind: organization }
     card: "Trust JWKS {name} ({body.jwks_url}) for Turso organization {organization}"
@@ -36,6 +38,7 @@ operations:
 
   - id: turso.organization-jwks.remove
     match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}/jwks/{name}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: organization, kind: organization }
     card: "Stop trusting JWKS {name} for Turso organization {organization}"

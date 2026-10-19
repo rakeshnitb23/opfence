@@ -66,6 +66,22 @@
         "names": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" } },
         "package": { "type": "string" }
       }
+    },
+    "schemas": {
+      "type": "array",
+      "description": "Published schemas the rules were built from, for opfence catalog check-sources",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "url"],
+        "properties": {
+          "kind": { "enum": ["openapi", "graphql", "heroku", "botocore"] },
+          "url": { "type": "string", "pattern": "^https://" },
+          "prefix": { "type": "string", "pattern": "^/.*[^/]$" },
+          "service": { "type": "string" },
+          "coverage": { "enum": ["full", "partial"] }
+        }
+      }
     }
   }
 }

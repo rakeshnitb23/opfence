@@ -99,6 +99,7 @@ operations:
 
   - id: turso.database.seed
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/seed" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Create Turso database {database} from an uploaded file"
@@ -116,6 +117,7 @@ operations:
 
   - id: turso.database.upload-dump
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/dumps" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     card: "Upload a SQL dump to seed a new Turso database"
     status: verified
@@ -131,6 +133,7 @@ operations:
 
   - id: turso.database.transfer
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/transfer" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: database, kind: database }
     card: "Transfer Turso database {database} to organization {body.org}"
@@ -149,6 +152,7 @@ operations:
 
   - id: turso.database.wakeup
     match: { rest: { method: POST, path: "/{version}/organizations/{organization}/databases/{database}/wakeup" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Unarchive Turso database {database}"
@@ -180,6 +184,7 @@ operations:
 
   - id: turso.database.create-unscoped
     match: { rest: { method: POST, path: "/{version}/databases" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     when:
       - if: { arg: body.remote_encryption, present: true }
@@ -204,6 +209,7 @@ operations:
 
   - id: turso.database.delete-unscoped
     match: { rest: { method: DELETE, path: "/{version}/databases/{database}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: irreversible
     resource: { arg: database, kind: database }
     card: "Delete Turso database {database} and all its data"
@@ -222,6 +228,7 @@ operations:
 
   - id: turso.database.configure-unscoped
     match: { rest: { method: PATCH, path: "/{version}/databases/{database}/configuration" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: write
     when:
       - if: { arg: body.allowed_ips, present: true }
@@ -252,6 +259,7 @@ operations:
 
   - id: turso.database.transfer-unscoped
     match: { rest: { method: POST, path: "/{version}/databases/{database}/transfer" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: access
     resource: { arg: database, kind: database }
     card: "Transfer Turso database {database} to organization {body.org}"

@@ -114,6 +114,20 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 	if len(p.Hosts) == 0 && p.MCP == nil {
 		l.addf(file, 0, "hosts is required (only local MCP servers may omit it)")
 	}
+	for i, sc := range p.Schemas {
+		switch {
+		case !slices.Contains(SchemaKinds, sc.Kind):
+			l.addf(file, 0, "schemas[%d]: kind %q must be one of %s", i, sc.Kind, strings.Join(SchemaKinds, ", "))
+		case !validHTTPSURL(sc.URL):
+			l.addf(file, 0, "schemas[%d]: url must be an https URL", i)
+		case sc.Prefix != "" && (!strings.HasPrefix(sc.Prefix, "/") || strings.HasSuffix(sc.Prefix, "/")):
+			l.addf(file, 0, "schemas[%d]: prefix %q must start with / and not end with one", i, sc.Prefix)
+		case sc.Coverage != "" && sc.Coverage != "full" && sc.Coverage != "partial":
+			l.addf(file, 0, "schemas[%d]: coverage must be full or partial", i)
+		case (sc.Kind == "botocore") != (sc.Service != ""):
+			l.addf(file, 0, "schemas[%d]: service is required for botocore schemas and only for them", i)
+		}
+	}
 	for _, h := range p.Hosts {
 		if !hostRe.MatchString(h) {
 			l.addf(file, 0, "host %q must be a lower-case DNS name, optionally starting with *.", h)

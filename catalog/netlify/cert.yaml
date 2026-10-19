@@ -26,6 +26,7 @@ operations:
 
   - id: netlify.cert.renew
     match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/ssl/renew" } }
+    unlisted: "named only in provisionSiteTLSCertificate's description"
     class: write
     resource: { arg: site_id, kind: site }
     card: "Renew the Let's Encrypt certificate of Netlify site {site_id}"

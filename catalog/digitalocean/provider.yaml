@@ -22,3 +22,8 @@ defaults:
 # /approvals) and serverless inference (inference.do-ai.run and agent
 # endpoints: /v1/chat/completions, /v1/batches, ...). Those hosts are not
 # claimed here, so their traffic is not covered by this provider.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/digitalocean/openapi/main/specification/DigitalOcean-public.v2.yaml

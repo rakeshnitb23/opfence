@@ -21,3 +21,8 @@ defaults:
 # (/client/v11/databases/..., /postgres/v0/databases/...), which the Heroku
 # CLI uses for pg:reset, pg:backups, pg:credentials:rotate and similar. It is
 # not in any published schema, so this provider does not claim that host.
+# Published schemas the rules were built from; `opfence catalog check-sources`
+# compares them nightly.
+schemas:
+  - kind: heroku
+    url: https://raw.githubusercontent.com/heroku/heroku-go/master/v6/schema.json

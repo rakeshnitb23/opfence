@@ -2,6 +2,7 @@
 operations:
   - id: netlify.blob.set
     match: { rest: { method: PUT, path: "/api/v1/blobs/{site_id}/{store}/{key*}" } }
+    unlisted: "the Blobs API used by @netlify/blobs, not in Netlify's OpenAPI file"
     class: write
     resource: { arg: site_id, kind: site }
     card: "Write blob {key} in store {store} of Netlify site {site_id}"
@@ -21,6 +22,7 @@ operations:
 
   - id: netlify.blob.delete
     match: { rest: { method: DELETE, path: "/api/v1/blobs/{site_id}/{store}/{key*}" } }
+    unlisted: "the Blobs API used by @netlify/blobs, not in Netlify's OpenAPI file"
     class: irreversible
     resource: { arg: site_id, kind: site }
     card: "Delete blob {key} from store {store} of Netlify site {site_id}"
@@ -39,6 +41,7 @@ operations:
 
   - id: netlify.blob.delete-store
     match: { rest: { method: DELETE, path: "/api/v1/blobs/{site_id}/{store}" } }
+    unlisted: "the Blobs API used by @netlify/blobs, not in Netlify's OpenAPI file"
     class: irreversible
     resource: { arg: site_id, kind: site }
     card: "Delete every blob in store {store} of Netlify site {site_id}"

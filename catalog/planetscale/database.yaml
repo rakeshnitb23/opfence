@@ -85,6 +85,7 @@ operations:
 
   - id: planetscale.database.aggressive-cutover-enable
     match: { rest: { method: POST, path: "/v1/organizations/{organization}/databases/{database}/aggressive-cutover" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Turn on aggressive cutover for deploys to database {database}"
@@ -102,6 +103,7 @@ operations:
 
   - id: planetscale.database.aggressive-cutover-disable
     match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/databases/{database}/aggressive-cutover" } }
+    unlisted: "called by planetscale-go and pscale but missing from PlanetScale's published OpenAPI spec"
     class: write
     resource: { arg: database, kind: database }
     card: "Turn off aggressive cutover for deploys to database {database}"

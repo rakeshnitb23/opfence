@@ -2,6 +2,7 @@
 operations:
   - id: turso.organization.create
     match: { rest: { method: POST, path: "/{version}/organizations" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: money
     resource: { arg: body.name, kind: organization }
     card: "Create Turso organization {body.name}"
@@ -55,6 +56,7 @@ operations:
 
   - id: turso.organization.delete
     match: { rest: { method: DELETE, path: "/{version}/organizations/{organization}" } }
+    unlisted: "called by the turso CLI but missing from Turso's published Platform API spec"
     class: irreversible
     resource: { arg: organization, kind: organization }
     card: "Delete Turso organization {organization}"

@@ -2,6 +2,7 @@
 operations:
   - id: mongodb-atlas.data-lake-pipeline.create
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     resource: { arg: groupId, kind: project }
     card: "Create data lake pipeline {body.name} in project {groupId}"
@@ -19,6 +20,7 @@ operations:
 
   - id: mongodb-atlas.data-lake-pipeline.update
     match: { rest: { method: PATCH, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     resource: { arg: pipelineName, kind: pipeline }
     card: "Change data lake pipeline {pipelineName}"
@@ -36,6 +38,7 @@ operations:
 
   - id: mongodb-atlas.data-lake-pipeline.delete
     match: { rest: { method: DELETE, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: delete
     resource: { arg: pipelineName, kind: pipeline }
     card: "Delete data lake pipeline {pipelineName}"
@@ -53,6 +56,7 @@ operations:
 
   - id: mongodb-atlas.data-lake-pipeline.pause
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/pause" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     resource: { arg: pipelineName, kind: pipeline }
     card: "Pause data lake pipeline {pipelineName}"
@@ -67,6 +71,7 @@ operations:
 
   - id: mongodb-atlas.data-lake-pipeline.resume
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/resume" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     resource: { arg: pipelineName, kind: pipeline }
     card: "Resume data lake pipeline {pipelineName}"
@@ -81,6 +86,7 @@ operations:
 
   - id: mongodb-atlas.data-lake-pipeline.trigger
     match: { rest: { method: POST, path: "/api/atlas/v2/groups/{groupId}/pipelines/{pipelineName}/trigger" } }
+    unlisted: "removed from the current Admin API spec; kept while older API versions still answer it"
     class: write
     resource: { arg: pipelineName, kind: pipeline }
     card: "Run data lake pipeline {pipelineName} on a snapshot"

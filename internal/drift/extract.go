@@ -1,0 +1,311 @@
+package drift
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/url"
+	"sort"
+	"strings"
+
+	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/vektah/gqlparser/v2/parser"
+	"go.yaml.in/yaml/v3"
+
+	"github.com/rakeshnitb23/opfence/internal/catalog"
+)
+
+// Extract lists the operations a schema defines. hosts are the provider's
+// hosts: OpenAPI operations whose own servers are all elsewhere are marked
+// Foreign.
+func Extract(sc catalog.SchemaSource, hosts []string, data []byte) ([]Op, error) {
+	var ops []Op
+	var err error
+	switch sc.Kind {
+	case "openapi":
+		ops, err = extractOpenAPI(sc, hosts, data)
+	case "graphql":
+		ops, err = extractGraphQL(data)
+	case "heroku":
+		ops, err = extractHeroku(sc, data)
+	case "botocore":
+		ops, err = extractBotocore(sc, data)
+	default:
+		return nil, fmt.Errorf("unknown schema kind %q", sc.Kind)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if len(ops) == 0 {
+		return nil, errors.New("the schema defines no operations")
+	}
+	for i := range ops {
+		ops[i].Partial = sc.Coverage == "partial"
+	}
+	return ops, nil
+}
+
+// decodeDoc parses JSON or YAML into plain maps and slices.
+func decodeDoc(data []byte) (map[string]any, error) {
+	var doc map[string]any
+	if t := bytes.TrimSpace(data); len(t) > 0 && t[0] == '{' {
+		if err := json.Unmarshal(data, &doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	}
+	if err := yaml.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+var httpMethods = []string{"get", "put", "post", "delete", "patch", "head", "options"}
+
+func extractOpenAPI(sc catalog.SchemaSource, hosts []string, data []byte) ([]Op, error) {
+	doc, err := decodeDoc(data)
+	if err != nil {
+		return nil, err
+	}
+	base := ""
+	switch {
+	case doc["swagger"] != nil:
+		base, _ = doc["basePath"].(string)
+	case doc["openapi"] != nil:
+		if servers, _ := doc["servers"].([]any); len(servers) > 0 {
+			base, _ = serverBase(servers[:1], nil)
+		}
+	default:
+		return nil, errors.New("not an OpenAPI or Swagger document")
+	}
+	if sc.Prefix != "" {
+		base = sc.Prefix
+	}
+	base = strings.TrimSuffix(base, "/")
+	paths, _ := doc["paths"].(map[string]any)
+	var ops []Op
+	for _, p := range sortedKeys(paths) {
+		item, _ := paths[p].(map[string]any)
+		if ref, _ := item["$ref"].(string); ref != "" && !strings.HasPrefix(ref, "#") {
+			return nil, fmt.Errorf("path %s is a $ref to another file; list the bundled schema", p)
+		}
+		itemServers, _ := item["servers"].([]any)
+		for _, m := range httpMethods {
+			raw, ok := item[m]
+			if !ok {
+				continue
+			}
+			op := Op{Kind: "rest", Method: strings.ToUpper(m), Path: base + p}
+			opDoc, _ := raw.(map[string]any)
+			servers, _ := opDoc["servers"].([]any)
+			if servers == nil {
+				servers = itemServers
+			}
+			if servers != nil {
+				// The operation is served elsewhere: its own server's path
+				// replaces the document's base, and a server on another
+				// host takes it out of the provider's view.
+				b, ok := serverBase(servers, hosts)
+				op.Path, op.Foreign = strings.TrimSuffix(b, "/")+p, !ok
+			}
+			if ref, _ := opDoc["$ref"].(string); ref != "" && !strings.HasPrefix(ref, "#") {
+				op.Ref = resolveRef(sc.URL, ref)
+			}
+			ops = append(ops, op)
+		}
+	}
+	return ops, nil
+}
+
+// serverBase returns the path of the first server on one of hosts (any
+// server when hosts is nil; a relative URL is on the document's own host,
+// and an absolute one with no host, such as a presigned upload URL, is on
+// none), and whether there was one.
+func serverBase(servers []any, hosts []string) (string, bool) {
+	for _, sv := range servers {
+		s, _ := sv.(map[string]any)
+		raw, _ := s["url"].(string)
+		u, err := url.Parse(braceRe.ReplaceAllString(raw, "x"))
+		if err != nil {
+			continue
+		}
+		relative := u.Scheme == "" && u.Host == ""
+		if hosts == nil || relative || onHosts(u.Hostname(), hosts) {
+			return u.Path, true
+		}
+	}
+	return "", false
+}
+
+// onHosts reports whether host is one of hosts (with *.example.com
+// wildcards).
+func onHosts(host string, hosts []string) bool {
+	host = strings.ToLower(host)
+	for _, h := range hosts {
+		if h == host || (strings.HasPrefix(h, "*.") && strings.HasSuffix(host, h[1:])) {
+			return true
+		}
+	}
+	return false
+}
+
+// resolveRef makes a $ref to another file absolute, dropping any fragment.
+func resolveRef(base, ref string) string {
+	ref, _, _ = strings.Cut(ref, "#")
+	b, err := url.Parse(base)
+	if err != nil {
+		return ""
+	}
+	r, err := url.Parse(ref)
+	if err != nil {
+		return ""
+	}
+	return b.ResolveReference(r).String()
+}
+
+func extractGraphQL(data []byte) ([]Op, error) {
+	if t := bytes.TrimSpace(data); len(t) > 0 && t[0] == '{' {
+		return extractIntrospection(data)
+	}
+	doc, err := parser.ParseSchema(&ast.Source{Name: "schema", Input: string(data)})
+	if err != nil {
+		return nil, err
+	}
+	roots := map[string]string{"Query": "query", "Mutation": "mutation", "Subscription": "subscription"}
+	for _, list := range []ast.SchemaDefinitionList{doc.Schema, doc.SchemaExtension} {
+		for _, sd := range list {
+			for _, ot := range sd.OperationTypes {
+				roots[ot.Type] = string(ot.Operation)
+			}
+		}
+	}
+	var ops []Op
+	for _, list := range []ast.DefinitionList{doc.Definitions, doc.Extensions} {
+		for _, def := range list {
+			typ, ok := roots[def.Name]
+			if !ok || def.Kind != ast.Object {
+				continue
+			}
+			for _, f := range def.Fields {
+				ops = append(ops, Op{Kind: "graphql", Type: typ, Field: f.Name})
+			}
+		}
+	}
+	return ops, nil
+}
+
+func extractIntrospection(data []byte) ([]Op, error) {
+	type named struct {
+		Name string `json:"name"`
+	}
+	var doc struct {
+		Data struct {
+			Schema json.RawMessage `json:"__schema"`
+		} `json:"data"`
+		Schema json.RawMessage `json:"__schema"`
+	}
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	raw := doc.Schema
+	if raw == nil {
+		raw = doc.Data.Schema
+	}
+	if raw == nil {
+		return nil, errors.New("not a GraphQL introspection result")
+	}
+	var s struct {
+		QueryType        *named `json:"queryType"`
+		MutationType     *named `json:"mutationType"`
+		SubscriptionType *named `json:"subscriptionType"`
+		Types            []struct {
+			Name   string  `json:"name"`
+			Fields []named `json:"fields"`
+		} `json:"types"`
+	}
+	if err := json.Unmarshal(raw, &s); err != nil {
+		return nil, err
+	}
+	roots := map[string]string{}
+	for typ, n := range map[string]*named{"query": s.QueryType, "mutation": s.MutationType, "subscription": s.SubscriptionType} {
+		if n != nil {
+			roots[n.Name] = typ
+		}
+	}
+	var ops []Op
+	for _, t := range s.Types {
+		typ, ok := roots[t.Name]
+		if !ok {
+			continue
+		}
+		for _, f := range t.Fields {
+			ops = append(ops, Op{Kind: "graphql", Type: typ, Field: f.Name})
+		}
+	}
+	return ops, nil
+}
+
+// extractHeroku reads a JSON hyper-schema's links.
+func extractHeroku(sc catalog.SchemaSource, data []byte) ([]Op, error) {
+	var doc struct {
+		Definitions map[string]struct {
+			Links []struct {
+				Href   string `json:"href"`
+				Method string `json:"method"`
+			} `json:"links"`
+		} `json:"definitions"`
+	}
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	var ops []Op
+	for _, name := range sortedKeys(doc.Definitions) {
+		for _, l := range doc.Definitions[name].Links {
+			if l.Href == "" || l.Method == "" {
+				continue
+			}
+			ops = append(ops, Op{Kind: "rest", Method: strings.ToUpper(l.Method), Path: sc.Prefix + l.Href})
+		}
+	}
+	return ops, nil
+}
+
+// extractBotocore reads an AWS service model. Paths are kept only for
+// REST protocols, where rules can match by method and path.
+func extractBotocore(sc catalog.SchemaSource, data []byte) ([]Op, error) {
+	var doc struct {
+		Metadata struct {
+			Protocol string `json:"protocol"`
+		} `json:"metadata"`
+		Operations map[string]struct {
+			HTTP struct {
+				Method     string `json:"method"`
+				RequestURI string `json:"requestUri"`
+			} `json:"http"`
+		} `json:"operations"`
+	}
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	rest := strings.HasPrefix(doc.Metadata.Protocol, "rest")
+	var ops []Op
+	for _, name := range sortedKeys(doc.Operations) {
+		o := Op{Kind: "aws", Service: sc.Service, Action: name}
+		if h := doc.Operations[name].HTTP; rest && h.RequestURI != "" {
+			o.Method = strings.ToUpper(h.Method)
+			o.Path, _, _ = strings.Cut(h.RequestURI, "?")
+		}
+		ops = append(ops, o)
+	}
+	return ops, nil
+}
+
+func sortedKeys[V any](m map[string]V) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}

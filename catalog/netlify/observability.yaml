@@ -2,6 +2,7 @@
 operations:
   - id: netlify.observability.query
     match: { rest: { method: POST, path: "/api/v1/sites/{site_id}/observability/query/{query}" } }
+    unlisted: "used by Netlify's MCP server, not in the OpenAPI file"
     class: read
     resource: { arg: site_id, kind: site }
     card: "Query {query} of the edge traffic of Netlify site {site_id}"

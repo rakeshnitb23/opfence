@@ -40,7 +40,7 @@ func newCatalogCmd(g *globalOptions) *cobra.Command {
 		Use:   "catalog",
 		Short: "Inspect and validate the operation catalog",
 	}
-	cmd.AddCommand(newCatalogValidateCmd(g), newCatalogListCmd(g), newCatalogProvidersCmd(g))
+	cmd.AddCommand(newCatalogValidateCmd(g), newCatalogListCmd(g), newCatalogProvidersCmd(g), newCatalogCheckSourcesCmd(g))
 	return cmd
 }
 
