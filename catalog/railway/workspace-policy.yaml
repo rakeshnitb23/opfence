@@ -1,0 +1,52 @@
+# Railway GraphQL API: workspace-policy
+operations:
+  - id: railway.workspace-policy.allowlist-add
+    match: { graphql: { type: mutation, field: workspacePolicyDeploySourceAllowlistAdd } }
+    class: access
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Allow deploys from {sourceType} {sourceId} in workspace {workspaceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Workspace policies decide where code may be deployed from and what may be
+      made public; changing them is access.
+    tests:
+      - fixture: fixtures/workspace-policy-allowlist-add.http
+        expect: access
+        resource: ws-acme
+
+  - id: railway.workspace-policy.allowlist-remove
+    match: { graphql: { type: mutation, field: workspacePolicyDeploySourceAllowlistRemove } }
+    class: access
+    resource: { arg: id, kind: workspace-policy-allowlist }
+    card: "Remove deploy source {id} from the workspace allowlist"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-policy-allowlist-remove.http
+        expect: access
+        resource: wpa-1
+
+  - id: railway.workspace-policy.update
+    match: { graphql: { type: mutation, field: workspacePolicyItemUpdate } }
+    class: access
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Set workspace {workspaceId} policy {input.policy} to {input.enabled}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Policies restrict deploy sources, public TCP proxies and Railway domain
+      generation; turning one off allows exposing services.
+    tests:
+      - fixture: fixtures/workspace-policy-update.http
+        expect: access
+        resource: ws-acme

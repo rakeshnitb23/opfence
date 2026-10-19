@@ -37,6 +37,22 @@ jobs:
       - name: compare rules with the providers' published schemas
         run: go run ./cmd/opfence catalog check-sources --catalog catalog
 
+  codex:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: install the latest Codex
+        run: npm install -g @openai/codex@latest && codex --version
+      - name: check opfence run's Codex options and hook trust against it
+        run: OPFENCE_CODEX="$(command -v codex)" go test ./internal/launch -run TestCodexIntegration -v
+
   vulncheck:
     runs-on: ubuntu-latest
     steps:

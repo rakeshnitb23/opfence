@@ -1,0 +1,7 @@
+# description: Turn off feature flag PLACEHOLDER for project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ProjectFeatureFlagRemove($input: ProjectFeatureFlagToggleInput!) { projectFeatureFlagRemove(input: $input) }","variables":{"input":{"projectId":"prj-shop","flag":"PLACEHOLDER"}}}

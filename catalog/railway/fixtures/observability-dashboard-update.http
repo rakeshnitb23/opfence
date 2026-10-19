@@ -1,0 +1,7 @@
+# description: Change observability dashboard od-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ObservabilityDashboardUpdate($id: String!, $input: [ObservabilityDashboardUpdateInput!]!) { observabilityDashboardUpdate(id: $id, input: $input) }","variables":{"id":"od-1","input":[]}}

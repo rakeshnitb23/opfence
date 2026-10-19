@@ -1,0 +1,88 @@
+# Railway GraphQL API: database-ha
+operations:
+  - id: railway.database-ha.pitr-cancel
+    match: { graphql: { type: mutation, field: cancelPitrHaWorkflow } }
+    class: write
+    resource: { arg: rootServiceId, kind: service }
+    card: "Stop the PITR workflow of HA cluster {rootServiceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/database-ha-pitr-cancel.http
+        expect: write
+        resource: svc-pg
+
+  - id: railway.database-ha.pitr-clear-progress
+    match: { graphql: { type: mutation, field: clearPitrHaWorkflowProgress } }
+    class: write
+    resource: { arg: rootServiceId, kind: service }
+    card: "Clear the finished PITR workflow status of HA cluster {rootServiceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/database-ha-pitr-clear-progress.http
+        expect: write
+        resource: svc-pg
+
+  - id: railway.database-ha.pitr-disable
+    match: { graphql: { type: mutation, field: disablePitrForHaCluster } }
+    class: write
+    resource: { arg: input.rootServiceId, kind: service }
+    card: "Turn off point-in-time recovery for HA cluster {input.rootServiceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The schema says the backup bucket is left intact so backup history is
+      kept, so this is not irreversible like discarding a recovery window; it
+      restarts every member and stops new WAL archiving, so it stays a write
+      that the dev policy may allow and staging asks for. A reviewer may prefer
+      irreversible.
+    tests:
+      - fixture: fixtures/database-ha-pitr-disable.http
+        expect: write
+        resource: svc-pg
+
+  - id: railway.database-ha.pitr-enable
+    match: { graphql: { type: mutation, field: enablePitrForHaCluster } }
+    class: write
+    resource: { arg: input.rootServiceId, kind: service }
+    card: "Turn on point-in-time recovery for HA cluster {input.rootServiceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Creates a bucket, sets WAL archive variables and restarts every member one
+      at a time.
+    tests:
+      - fixture: fixtures/database-ha-pitr-enable.http
+        expect: write
+        resource: svc-pg
+
+  - id: railway.database-ha.revert
+    match: { graphql: { type: mutation, field: templateRevert } }
+    class: irreversible
+    resource: { arg: input.rootServiceId, kind: service }
+    card: "Revert HA cluster {input.rootServiceId} to a standalone database"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Removes the cluster's HA variables and members; deleted variables and
+      replica volumes cannot be brought back.
+    tests:
+      - fixture: fixtures/database-ha-revert.http
+        expect: irreversible
+        resource: svc-pg

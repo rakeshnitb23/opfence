@@ -1,0 +1,7 @@
+# description: Keep backup bak-nightly of volume instance vi-pg-data without expiry
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VolumeInstanceBackupLock($volumeInstanceBackupId: String!, $volumeInstanceId: String!) { volumeInstanceBackupLock(volumeInstanceBackupId: $volumeInstanceBackupId, volumeInstanceId: $volumeInstanceId) }","variables":{"volumeInstanceBackupId":"bak-nightly","volumeInstanceId":"vi-pg-data"}}

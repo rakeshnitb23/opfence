@@ -1,0 +1,7 @@
+# description: Start a check run on deployment dpl_123
+POST /v2/deployments/dpl_123/check-runs HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"checkId":"chk_1"}

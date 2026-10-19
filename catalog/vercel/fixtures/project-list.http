@@ -1,0 +1,5 @@
+# description: List projects with their bypass secrets
+GET /v10/projects HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

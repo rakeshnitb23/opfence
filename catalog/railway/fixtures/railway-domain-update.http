@@ -1,0 +1,7 @@
+# description: Set auto-renew of domain rd-1 to false
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RailwayDomainUpdate($input: RailwayDomainUpdateInput!) { railwayDomainUpdate(input: $input) { id } }","variables":{"input":{"id":"rd-1","autoRenewEnabled":false}}}

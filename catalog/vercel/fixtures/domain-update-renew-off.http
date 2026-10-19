@@ -1,0 +1,7 @@
+# description: Update or move domain example.com (update)
+PATCH /v3/domains/example.com HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"op":"update","renew":false}

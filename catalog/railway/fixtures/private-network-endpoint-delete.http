@@ -1,0 +1,7 @@
+# description: Remove private network endpoint pne-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PrivateNetworkEndpointDelete($id: String!) { privateNetworkEndpointDelete(id: $id) }","variables":{"id":"pne-1"}}

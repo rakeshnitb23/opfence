@@ -1,0 +1,7 @@
+# description: Upload an avatar for project shop-web
+POST /v1/projects/shop-web/avatar HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: image/png
+
+example-image-bytes

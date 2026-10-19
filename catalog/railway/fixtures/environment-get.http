@@ -1,0 +1,7 @@
+# description: Read environment env-production
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"query Environment($id: String!) { environment(id: $id) { id name } }","variables":{"id":"env-production"}}

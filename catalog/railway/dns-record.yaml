@@ -14,3 +14,39 @@ operations:
       - fixture: fixtures/dns-record-delete.http
         expect: delete
         resource: example.com
+
+  - id: railway.dns-record.create
+    match: { graphql: { type: mutation, field: railwayDomainDnsRecordCreate } }
+    class: access
+    resource: { arg: input.domain, kind: domain }
+    card: "Add DNS record {input.type} {input.host}.{input.domain} -> {input.answer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A DNS record decides where a public name (and its mail) goes; pointing it
+      elsewhere can route users or email to another host, so it is access like
+      creating a custom domain.
+    tests:
+      - fixture: fixtures/dns-record-create.http
+        expect: access
+        resource: example.com
+
+  - id: railway.dns-record.update
+    match: { graphql: { type: mutation, field: railwayDomainDnsRecordUpdate } }
+    class: access
+    resource: { arg: input.domain, kind: domain }
+    card: "Change DNS record {input.recordId} of {input.domain} to {input.type} {input.host} -> {input.answer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway.dns-record.create.
+    tests:
+      - fixture: fixtures/dns-record-update.http
+        expect: access
+        resource: example.com

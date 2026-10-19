@@ -11,3 +11,18 @@ operations:
     tests:
       - fixture: fixtures/integration-delete.http
         expect: delete
+
+  - id: vercel.integration.products-list
+    match: { rest: { method: GET, path: "/{version}/integrations/configuration/{id}/products" } }
+    class: credential
+    card: "List the products of integration configuration {id} with their drain headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Each product's log and trace drain protocol settings include headers, which
+      can carry the partner's ingest token; assumed to be secret.
+    tests:
+      - fixture: fixtures/integration-products-list.http
+        expect: credential

@@ -1,0 +1,7 @@
+# description: Register the SSH key of signup ssh-code-1 on this account
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SshSignupApprove($code: String!) { sshSignupApprove(code: $code) }","variables":{"code":"ssh-code-1"}}

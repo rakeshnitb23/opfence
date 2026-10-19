@@ -1,0 +1,7 @@
+# description: Remove the template upstream URL of service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceRemoveUpstreamUrl($id: String!) { serviceRemoveUpstreamUrl(id: $id) { id } }","variables":{"id":"svc-api"}}

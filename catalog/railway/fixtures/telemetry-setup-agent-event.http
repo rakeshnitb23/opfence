@@ -1,0 +1,7 @@
+# description: Send a Railway setup agent telemetry event
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SetupAgentEventTrack($input: SetupAgentEventTrackInput!) { setupAgentEventTrack(input: $input) }","variables":{"input":{"phase":"install","success":true}}}

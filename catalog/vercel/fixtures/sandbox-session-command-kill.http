@@ -1,0 +1,7 @@
+# description: Send SIGTERM to command cmd_1 in sandbox session sbx_1
+POST /v2/sandboxes/sessions/sbx_1/cmd/cmd_1/kill HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"signal":"SIGTERM"}

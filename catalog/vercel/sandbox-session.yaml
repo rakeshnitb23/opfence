@@ -1,0 +1,166 @@
+# Vercel REST API: sandbox-session
+operations:
+  - id: vercel.sandbox-session.command-run
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/cmd" } }
+    class: irreversible
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Run {body.command} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Runs any command in the session, as root with sudo. ARCHITECTURE 4.5 treats
+      arbitrary commands as irreversible: the session can hold mounted drives,
+      secrets in its environment and network access.
+    tests:
+      - fixture: fixtures/sandbox-session-command-run.http
+        expect: irreversible
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.command-kill
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/cmd/{cmdId}/kill" } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Send {body.signal} to command {cmdId} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/sandbox-session-command-kill.http
+        expect: write
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.command-stdin
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/cmd/{cmdId}/stdin" } }
+    class: irreversible
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Write to the input of command {cmdId} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Input to a running shell is a command.
+    tests:
+      - fixture: fixtures/sandbox-session-command-stdin.http
+        expect: irreversible
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.stop
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/stop" } }
+    class: irreversible
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Stop sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Ends every process and cannot be undone; a session that is not persistent
+      loses its filesystem.
+    tests:
+      - fixture: fixtures/sandbox-session-stop.http
+        expect: irreversible
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.extend-timeout
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/extend-timeout" } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Extend sandbox session {sessionId} by {body.duration} ms"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/sandbox-session-extend-timeout.http
+        expect: write
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.network-policy
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/network-policy" } }
+    class: access
+    when:
+      - if: { arg: body.injectionRules, present: true }
+        class: credential
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Replace the network policy of sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Decides which hosts the session can reach; injectionRules set credentials
+      its outgoing requests carry.
+    tests:
+      - fixture: fixtures/sandbox-session-network-policy.http
+        expect: access
+        resource: sbx_1
+      - fixture: fixtures/sandbox-session-network-policy-injection.http
+        expect: credential
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.file-read
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/fs/read" } }
+    class: read
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Read file {body.path} from sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A download sent as POST; it changes nothing.
+    tests:
+      - fixture: fixtures/sandbox-session-file-read.http
+        expect: read
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.mkdir
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/fs/mkdir" } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Create directory {body.path} in sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/sandbox-session-mkdir.http
+        expect: write
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.file-write
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/fs/write" } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Write files into sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Extracts a tarball over the session's files; running them needs a command.
+    tests:
+      - fixture: fixtures/sandbox-session-file-write.http
+        expect: write
+        resource: sbx_1
+
+  - id: vercel.sandbox-session.snapshot
+    match: { rest: { method: POST, path: "/{version}/sandboxes/sessions/{sessionId}/snapshot" } }
+    class: write
+    resource: { arg: sessionId, kind: sandbox-session }
+    card: "Snapshot sandbox session {sessionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The session ends after the snapshot, which keeps its filesystem. One rule
+      covers v2 and v3.
+    tests:
+      - fixture: fixtures/sandbox-session-snapshot.http
+        expect: write
+        resource: sbx_1

@@ -1,0 +1,7 @@
+# description: Set flags ["BETA"] on the user
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation UserFlagsSet($input: UserFlagsSetInput!) { userFlagsSet(input: $input) }","variables":{"input":{"flags":["BETA"]}}}

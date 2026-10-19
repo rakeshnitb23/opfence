@@ -1,0 +1,5 @@
+# description: Activate signing key key_2 of KMS issuer iss_1
+POST /v1/kms/issuers/iss_1/keys/key_2/activate HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

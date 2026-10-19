@@ -13,3 +13,43 @@ operations:
     tests:
       - fixture: fixtures/edge-cache-dangerously-delete.http
         expect: delete
+
+  - id: vercel.edge-cache.invalidate-by-tags
+    match: { rest: { method: POST, path: "/{version}/edge-cache/invalidate-by-tags" } }
+    class: write
+    card: "Mark edge cache entries tagged {body.tags} stale"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Entries revalidate in the background; nothing is served uncached.
+    tests:
+      - fixture: fixtures/edge-cache-invalidate-by-tags.http
+        expect: write
+
+  - id: vercel.edge-cache.invalidate-by-src-images
+    match: { rest: { method: POST, path: "/{version}/edge-cache/invalidate-by-src-images" } }
+    class: write
+    card: "Mark transformed images of {body.srcImages} stale"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-cache-invalidate-by-src-images.http
+        expect: write
+
+  - id: vercel.edge-cache.dangerously-delete-by-src-images
+    match: { rest: { method: POST, path: "/{version}/edge-cache/dangerously-delete-by-src-images" } }
+    class: delete
+    card: "Delete edge cache entries of source images {body.srcImages}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Every request for those images then goes to the origin at once.
+    tests:
+      - fixture: fixtures/edge-cache-dangerously-delete-by-src-images.http
+        expect: delete

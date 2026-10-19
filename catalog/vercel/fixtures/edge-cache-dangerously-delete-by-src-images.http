@@ -1,0 +1,7 @@
+# description: Delete edge cache entries of source images ["/hero.png"]
+POST /v1/edge-cache/dangerously-delete-by-src-images?projectIdOrName=shop-web HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"srcImages":["/hero.png"]}

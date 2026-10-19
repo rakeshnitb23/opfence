@@ -31,3 +31,21 @@ operations:
       - fixture: fixtures/service-domain-delete.http
         expect: delete
         resource: sd-1
+
+  - id: railway.service-domain.update
+    match: { graphql: { type: mutation, field: serviceDomainUpdate } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Change service domain {input.serviceDomainId} to {input.domain} (port {input.targetPort})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway-mcp's domain update: renames a public domain or changes which
+      port it reaches.
+    tests:
+      - fixture: fixtures/service-domain-update.http
+        expect: access
+        resource: svc-api

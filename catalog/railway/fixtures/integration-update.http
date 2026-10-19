@@ -1,0 +1,7 @@
+# description: Change integration int-1 of project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation IntegrationUpdate($id: String!, $input: IntegrationUpdateInput!) { integrationUpdate(id: $id, input: $input) { id } }","variables":{"id":"int-1","input":{"projectId":"prj-shop","name":"vercel","config":{"vercelProjectId":"prj_web"}}}}

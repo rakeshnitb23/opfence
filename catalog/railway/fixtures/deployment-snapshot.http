@@ -1,0 +1,7 @@
+# description: Read the variables deployment dep-123 was built with
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"query DeploymentSnapshot($deploymentId: String!) { deploymentSnapshot(deploymentId: $deploymentId) { variables } }","variables":{"deploymentId":"dep-123"}}

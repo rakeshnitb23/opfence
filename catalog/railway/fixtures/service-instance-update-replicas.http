@@ -1,0 +1,7 @@
+# description: Run service svc-api with 10 replicas
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceUpdate($serviceId: String!, $environmentId: String, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) }","variables":{"serviceId":"svc-api","environmentId":"env-production","input":{"numReplicas":10}}}

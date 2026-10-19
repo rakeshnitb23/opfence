@@ -1,0 +1,7 @@
+# description: Rename legacy plugin plg-postgres to db
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PluginUpdate($id: String!, $input: PluginUpdateInput!) { pluginUpdate(id: $id, input: $input) { id } }","variables":{"id":"plg-postgres","input":{"friendlyName":"db"}}}

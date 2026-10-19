@@ -1,0 +1,7 @@
+# description: Mint a trace session token for shop-web-git-main.vercel.app
+POST /v1/projects/traces/session HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_shop","hostname":"shop-web-git-main.vercel.app"}

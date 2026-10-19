@@ -93,6 +93,23 @@ var sampleRepo = map[string]string{
 `,
 	".cursor/mcp.json": `{"mcpServers": {"vercel": {"command": "vercel-mcp", "env": {"VERCEL_TOKEN": "` + vercelTok + `"}}}}
 `,
+	".gemini/settings.json": `{"mcpServers": {"vercel": {"command": "vercel-mcp", "env": {"VERCEL_TOKEN": "` + vercelTok + `"}}}}
+`,
+	".vscode/mcp.json": `{
+  // VS Code allows comments here.
+  "servers": {"supabase": {"url": "https://mcp.supabase.com/mcp", "headers": {"Authorization": "Bearer ` + sbpRemote + `"}}}
+}
+`,
+	".codex/config.toml": `[mcp_servers.railway]
+command = "railway-mcp"
+
+[mcp_servers.railway.env]
+RAILWAY_API_TOKEN = "` + railwayTok + `"
+
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp"
+http_headers = { Authorization = "Bearer ` + sbpRemote + `" }
+`,
 }
 
 func writeRepo(t *testing.T) string {
@@ -144,7 +161,11 @@ func TestInitRoundTrip(t *testing.T) {
 		".mcp.json mcpServers.supabase.args.3 supabase-mcp\n",
 		".mcp.json mcpServers.supabase.env.SUPABASE_ACCESS_TOKEN supabase-mcp\n",
 		".mcp.json mcpServers.supabase-remote.headers.Authorization supabase-mcp\n",
-		".cursor/mcp.json mcpServers.vercel.env.VERCEL_TOKEN vercel SKIP this editor's MCP servers are not started by opfence run",
+		".cursor/mcp.json mcpServers.vercel.env.VERCEL_TOKEN vercel SKIP the Cursor editor starts these servers without opfence run",
+		".gemini/settings.json mcpServers.vercel.env.VERCEL_TOKEN vercel SKIP Gemini CLI starts these servers without opfence run",
+		".codex/config.toml RAILWAY_API_TOKEN railway SKIP Codex starts these servers without opfence run",
+		".codex/config.toml http_headers supabase-mcp SKIP Codex starts",
+		".vscode/mcp.json servers supabase-mcp SKIP VS Code starts",
 		".mcp.json mcpServers.railway.env.RAILWAY_API_TOKEN railway SKIP a reference",
 	} {
 		if !strings.Contains(got, want) {
@@ -184,7 +205,8 @@ func TestInitRoundTrip(t *testing.T) {
 			t.Errorf("%s changed length", name)
 		}
 		for _, tok := range []string{railwayTok, vercelTok, githubTok, sbpTok, sbpRemote} {
-			moved := name != ".env.example" && name != "node_modules/x/.env" && name != ".cursor/mcp.json"
+			moved := name != ".env.example" && name != "node_modules/x/.env" && name != ".cursor/mcp.json" &&
+				name != ".gemini/settings.json" && name != ".codex/config.toml" && name != ".vscode/mcp.json"
 			if moved && strings.Contains(string(data), tok) {
 				t.Errorf("%s still holds %s", name, tok)
 			}

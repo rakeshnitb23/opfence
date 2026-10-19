@@ -1,0 +1,7 @@
+# description: Point alias shop.example.com at deployment dpl_123
+POST /v2/deployments/dpl_123/aliases HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"alias":"shop.example.com"}

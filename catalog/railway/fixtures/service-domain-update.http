@@ -1,0 +1,7 @@
+# description: Change service domain sd-1 to shop-api.up.railway.app (port 8080)
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceDomainUpdate($input: ServiceDomainUpdateInput!) { serviceDomainUpdate(input: $input) }","variables":{"input":{"environmentId":"env-production","serviceId":"svc-api","serviceDomainId":"sd-1","domain":"shop-api.up.railway.app","targetPort":8080}}}

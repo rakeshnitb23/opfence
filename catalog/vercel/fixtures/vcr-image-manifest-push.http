@@ -1,0 +1,7 @@
+# description: Push image web-images:latest
+PUT /v2/acme/shop-web/web-images/manifests/latest HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/vnd.oci.image.manifest.v1+json
+
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","layers":[]}

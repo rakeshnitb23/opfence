@@ -1,0 +1,5 @@
+# description: Delete sandbox drive cache and its data
+DELETE /v2/sandboxes/drives/cache?projectId=prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

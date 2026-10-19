@@ -89,3 +89,56 @@ operations:
       - fixture: fixtures/deployment-cancel.http
         expect: write
         resource: dep-123
+
+  - id: railway.deployment.approve
+    match: { graphql: { type: mutation, field: deploymentApprove } }
+    class: write
+    resource: { arg: id, kind: deployment }
+    card: "Approve Railway deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Lets a deployment that waits for approval go ahead; deploying code is a
+      write, as railway.service-instance.deploy.
+    tests:
+      - fixture: fixtures/deployment-approve.http
+        expect: write
+        resource: dep-123
+
+  - id: railway.deployment.execute
+    match: { graphql: { type: mutation, field: deploymentInstanceExecutionCreate } }
+    class: write
+    resource: { arg: input.serviceInstanceId, kind: service-instance }
+    card: "Run the deployed command of service instance {input.serviceInstanceId} now"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Runs the deployed code (a cron or function run) once more, as a restart is
+      a write.
+    tests:
+      - fixture: fixtures/deployment-execute.http
+        expect: write
+        resource: si-cron
+
+  - id: railway.deployment.snapshot
+    match: { graphql: { type: query, field: deploymentSnapshot } }
+    class: credential
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Read the variables deployment {deploymentId} was built with"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      DeploymentSnapshot.variables holds the deployment's variable values.
+    tests:
+      - fixture: fixtures/deployment-snapshot.http
+        expect: credential
+        resource: dep-123

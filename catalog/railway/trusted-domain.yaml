@@ -14,3 +14,48 @@ operations:
       - fixture: fixtures/trusted-domain-create.http
         expect: access
         resource: ws-acme
+
+  - id: railway.trusted-domain.delete
+    match: { graphql: { type: mutation, field: trustedDomainDelete } }
+    class: access
+    resource: { arg: id, kind: trusted-domain }
+    card: "Delete trusted domain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/trusted-domain-delete.http
+        expect: access
+        resource: td-1
+
+  - id: railway.trusted-domain.retrigger
+    match: { graphql: { type: mutation, field: trustedDomainRetriggerVerification } }
+    class: write
+    resource: { arg: id, kind: trusted-domain }
+    card: "Retry verification of trusted domain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/trusted-domain-retrigger.http
+        expect: write
+        resource: td-1
+
+  - id: railway.trusted-domain.update
+    match: { graphql: { type: mutation, field: trustedDomainUpdate } }
+    class: access
+    resource: { arg: input.id, kind: trusted-domain }
+    card: "Give members from trusted domain {input.id} the role {input.role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/trusted-domain-update.http
+        expect: access
+        resource: td-1

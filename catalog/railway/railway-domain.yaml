@@ -1,0 +1,36 @@
+# Railway GraphQL API: railway-domain
+operations:
+  - id: railway.railway-domain.nameservers
+    match: { graphql: { type: mutation, field: railwayDomainNameserversSet } }
+    class: access
+    resource: { arg: input.id, kind: domain }
+    card: "Delegate domain {input.id} to nameservers {input.nameservers}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Whoever runs the named nameservers controls every record of the domain.
+    tests:
+      - fixture: fixtures/railway-domain-nameservers.http
+        expect: access
+        resource: rd-1
+
+  - id: railway.railway-domain.update
+    match: { graphql: { type: mutation, field: railwayDomainUpdate } }
+    class: money
+    resource: { arg: input.id, kind: domain }
+    card: "Set auto-renew of domain {input.id} to {input.autoRenewEnabled}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Auto-renew decides whether the registered domain is paid for again;
+      turning it off can lose the domain at expiry.
+    tests:
+      - fixture: fixtures/railway-domain-update.http
+        expect: money
+        resource: rd-1

@@ -1,0 +1,7 @@
+# description: Report the session state of cloud agent ca-dev
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CloudAgentStateReport($input: CloudAgentStateReportInput!) { cloudAgentStateReport(input: $input) }","variables":{"input":{"cloudAgentId":"ca-dev","reportedAt":"2026-10-19T10:00:00Z","agents":[]}}}

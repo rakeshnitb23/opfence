@@ -13,3 +13,96 @@ operations:
       - fixture: fixtures/edge-config-delete.http
         expect: irreversible
         resource: ecfg_1
+
+  - id: vercel.edge-config.create
+    match: { rest: { method: POST, path: "/{version}/global-config" } }
+    class: write
+    card: "Create Edge Config {body.slug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-create.http
+        expect: write
+
+  - id: vercel.edge-config.update
+    match: { rest: { method: PUT, path: "/{version}/global-config/{edgeConfigId}" } }
+    class: write
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Rename Edge Config {edgeConfigId} to {body.slug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-update.http
+        expect: write
+        resource: ecfg_1
+
+  - id: vercel.edge-config.items-update
+    match: { rest: { method: PATCH, path: "/{version}/global-config/{edgeConfigId}/items" } }
+    class: write
+    when:
+      - if: { arg: body.items.operation, equals: "delete" }
+        class: delete
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Change items of Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Edge Config keeps backups, so deleted items can be restored.
+    tests:
+      - fixture: fixtures/edge-config-items-update.http
+        expect: write
+        resource: ecfg_1
+      - fixture: fixtures/edge-config-items-delete.http
+        expect: delete
+        resource: ecfg_1
+
+  - id: vercel.edge-config.schema-update
+    match: { rest: { method: POST, path: "/{version}/global-config/{edgeConfigId}/schema" } }
+    class: write
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Change the schema of Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-schema-update.http
+        expect: write
+        resource: ecfg_1
+
+  - id: vercel.edge-config.schema-delete
+    match: { rest: { method: DELETE, path: "/{version}/global-config/{edgeConfigId}/schema" } }
+    class: delete
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Delete the schema of Edge Config {edgeConfigId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/edge-config-schema-delete.http
+        expect: delete
+        resource: ecfg_1
+
+  - id: vercel.edge-config.backup-restore
+    match: { rest: { method: POST, path: "/{version}/global-config/{edgeConfigId}/backups/{edgeConfigBackupVersionId}/restore" } }
+    class: delete
+    resource: { arg: edgeConfigId, kind: edge-config }
+    card: "Restore Edge Config {edgeConfigId} to backup {edgeConfigBackupVersionId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Replaces every current item with the backup's; the replaced state is itself
+      kept as a backup.
+    tests:
+      - fixture: fixtures/edge-config-backup-restore.http
+        expect: delete
+        resource: ecfg_1

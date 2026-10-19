@@ -1,0 +1,79 @@
+# Vercel REST API: kms-issuer
+operations:
+  - id: vercel.kms-issuer.create
+    match: { rest: { method: POST, path: "/{version}/kms/issuers" } }
+    class: credential
+    card: "Create KMS issuer {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates signing keys; importKey can carry a private key.
+    tests:
+      - fixture: fixtures/kms-issuer-create.http
+        expect: credential
+
+  - id: vercel.kms-issuer.update
+    match: { rest: { method: PATCH, path: "/{version}/kms/issuers/{issuerId}" } }
+    class: write
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Change KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/kms-issuer-update.http
+        expect: write
+        resource: iss_1
+
+  - id: vercel.kms-issuer.delete
+    match: { rest: { method: DELETE, path: "/{version}/kms/issuers/{issuerId}" } }
+    class: irreversible
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Delete KMS issuer {issuerId} and its signing keys"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The private keys are gone; tokens they signed can no longer be verified
+      against a new key.
+    tests:
+      - fixture: fixtures/kms-issuer-delete.http
+        expect: irreversible
+        resource: iss_1
+
+  - id: vercel.kms-issuer.sign-message
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/sign/message" } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Sign a message with KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A signature from the issuer's key proves identity to whoever trusts its
+      JWKS.
+    tests:
+      - fixture: fixtures/kms-issuer-sign-message.http
+        expect: credential
+        resource: iss_1
+
+  - id: vercel.kms-issuer.sign-token
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/sign/token" } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Sign a token with KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Mints a JWT that services trusting the issuer accept.
+    tests:
+      - fixture: fixtures/kms-issuer-sign-token.http
+        expect: credential
+        resource: iss_1

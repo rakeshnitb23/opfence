@@ -9,6 +9,7 @@ package catalog
 import (
 	"io/fs"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
@@ -220,6 +221,11 @@ type Classify struct {
 	SQL string `yaml:"sql"` // argument holding SQL text
 }
 
+// Paths are every path the response transform acts on.
+func (x *Response) Paths() []string {
+	return slices.Concat(x.Redact, x.Clear, x.Mint)
+}
+
 // Response describes what the proxy does to the response of a read that
 // returns secrets (docs/ARCHITECTURE.md §8.4). Only the proxy can do it, so
 // only the proxy uses Class; everything else keeps the rule's own class.
@@ -227,6 +233,10 @@ type Response struct {
 	// Redact lists JSON paths whose strings, at any depth below, are
 	// replaced with RedactedValue.
 	Redact []string `yaml:"redact"`
+	// Clear lists JSON paths whose values are replaced with the empty value
+	// of the same type ({}, [] or ""), for secrets in places redaction
+	// cannot reach, such as an object keyed by its tokens.
+	Clear []string `yaml:"clear"`
 	// Mint lists JSON paths of tokens the response creates. Each is
 	// replaced with a placeholder, and the real value is held for the
 	// session like a stored secret of the provider.

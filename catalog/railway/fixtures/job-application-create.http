@@ -1,0 +1,7 @@
+# description: Apply for Railway job job-1 as Sam
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation JobApplicationCreate($input: JobApplicationCreateInput!, $resume: Upload!) { jobApplicationCreate(input: $input, resume: $resume) }","variables":{"input":{"jobId":"job-1","name":"Sam","email":"someone@example.com","why":"Infra"},"resume":null}}

@@ -1,0 +1,7 @@
+# description: Let project prj_shop sign with KMS issuer iss_1
+POST /v1/kms/issuers/iss_1/policies HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"kind":"project-grant","projectId":"prj_shop","environments":["production"]}

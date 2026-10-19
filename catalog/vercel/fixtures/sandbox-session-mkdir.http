@@ -1,0 +1,7 @@
+# description: Create directory out in sandbox session sbx_1
+POST /v2/sandboxes/sessions/sbx_1/fs/mkdir HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"path":"out"}

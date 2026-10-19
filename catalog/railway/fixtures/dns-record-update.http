@@ -1,0 +1,7 @@
+# description: Change DNS record 7 of example.com to MX @ -> mail.example.net
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RailwayDomainDnsRecordUpdate($input: RailwayDomainDnsRecordUpdateInput!) { railwayDomainDnsRecordUpdate(input: $input) { __typename } }","variables":{"input":{"workspaceId":"ws-acme","domain":"example.com","recordId":7,"host":"@","type":"MX","answer":"mail.example.net","priority":10}}}

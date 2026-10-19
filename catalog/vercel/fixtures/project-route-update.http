@@ -1,0 +1,7 @@
+# description: Change routing rule rt_1 of project prj_shop
+PATCH /v1/projects/prj_shop/routes/rt_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"route":{"src":"/a","dest":"/c"}}

@@ -1,0 +1,5 @@
+# description: Read drain drn_1 with its delivery secret
+GET /v1/drains/drn_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

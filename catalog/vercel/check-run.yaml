@@ -1,0 +1,31 @@
+# Vercel REST API: check-run
+operations:
+  - id: vercel.check-run.create
+    match: { rest: { method: POST, path: "/{version}/deployments/{deploymentId}/check-runs" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Start a check run on deployment {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/check-run-create.http
+        expect: write
+        resource: dpl_123
+
+  - id: vercel.check-run.update
+    match: { rest: { method: PATCH, path: "/{version}/deployments/{deploymentId}/check-runs/{checkRunId}" } }
+    class: write
+    resource: { arg: deploymentId, kind: deployment }
+    card: "Report check run {checkRunId} on deployment {deploymentId} as {body.conclusion}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A conclusion can unblock promotion of the deployment.
+    tests:
+      - fixture: fixtures/check-run-update.http
+        expect: write
+        resource: dpl_123

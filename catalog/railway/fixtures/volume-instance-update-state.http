@@ -1,0 +1,7 @@
+# description: Change mount or service of volume vol-pg-data
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VolumeInstanceUpdate($volumeId: String!, $environmentId: String, $input: VolumeInstanceUpdateInput!) { volumeInstanceUpdate(volumeId: $volumeId, environmentId: $environmentId, input: $input) }","variables":{"volumeId":"vol-pg-data","environmentId":"env-production","input":{"state":"DELETED"}}}

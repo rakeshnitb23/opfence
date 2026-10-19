@@ -1,0 +1,87 @@
+# Vercel REST API: microfrontends
+operations:
+  - id: vercel.microfrontends.group-create
+    match: { rest: { method: POST, path: "/{version}/microfrontends/group" } }
+    class: write
+    card: "Create microfrontends group {body.groupName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/microfrontends-group-create.http
+        expect: write
+
+  - id: vercel.microfrontends.group-update
+    match: { rest: { method: PATCH, path: "/{version}/teams/{teamId}/microfrontends/{groupId}" } }
+    class: write
+    resource: { arg: teamId, kind: team }
+    card: "Change microfrontends group {groupId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/microfrontends-group-update.http
+        expect: write
+        resource: team_acme
+
+  - id: vercel.microfrontends.group-delete
+    match: { rest: { method: DELETE, path: "/{version}/teams/{teamId}/microfrontends/{groupId}" } }
+    class: delete
+    resource: { arg: teamId, kind: team }
+    card: "Delete microfrontends group {groupId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The projects stay; routing between them stops until a group is made again.
+    tests:
+      - fixture: fixtures/microfrontends-group-delete.http
+        expect: delete
+        resource: team_acme
+
+  - id: vercel.microfrontends.project-update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectId}/microfrontends" } }
+    class: credential
+    resource: { arg: projectId, kind: project }
+    card: "Change microfrontends settings of project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
+    notes: >-
+      The response is the project, whose protectionBypass map is keyed by its
+      Protection Bypass for Automation secrets. Map keys cannot be redacted, so
+      under opfence run the proxy empties the map and the call is write;
+      anywhere else it is credential.
+    tests:
+      - fixture: fixtures/microfrontends-project-update.http
+        expect: credential
+        response: fixtures/microfrontends-project-update-response.json
+        resource: prj_shop
+
+  - id: vercel.microfrontends.group-projects
+    match: { rest: { method: GET, path: "/{version}/microfrontends/groups/{groupId}/projects" } }
+    class: credential
+    card: "List the projects of microfrontends group {groupId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [projects.protectionBypass]
+      class: read
+    notes: >-
+      Each project's protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). Map keys
+      cannot be redacted, so under opfence run the proxy empties the map and the
+      call is read; anywhere else it is credential.
+    tests:
+      - fixture: fixtures/microfrontends-group-projects.http
+        expect: credential
+        response: fixtures/microfrontends-group-projects-response.json

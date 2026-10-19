@@ -1,0 +1,22 @@
+{
+  "id": "drn_1",
+  "name": "prod logs",
+  "projectIds": [
+    "prj_shop"
+  ],
+  "schemas": {
+    "log": {
+      "version": "v1"
+    }
+  },
+  "createdAt": 1760000000000,
+  "delivery": {
+    "type": "http",
+    "endpoint": "https://logs.example.com/vercel",
+    "encoding": "json",
+    "secret": "opf_vercel_EXAMPLE_drainsigningsecret01",
+    "headers": {
+      "Authorization": "Bearer opf_vercel_EXAMPLE_logsinktoken0123"
+    }
+  }
+}

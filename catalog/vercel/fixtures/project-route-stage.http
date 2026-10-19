@@ -1,0 +1,7 @@
+# description: Stage routing rules for project prj_shop
+PUT /v1/projects/prj_shop/routes HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"overwrite":true,"routes":[{"src":"/old","dest":"/new"}]}

@@ -1,0 +1,7 @@
+# description: Apply promote to routing version ver_2 of project prj_shop
+POST /v1/projects/prj_shop/routes/versions HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"id":"ver_2","action":"promote"}

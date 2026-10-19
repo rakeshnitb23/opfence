@@ -1,0 +1,7 @@
+# description: Create a webhook to https://hooks.example.com/vercel
+POST /v1/webhooks HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"url":"https://hooks.example.com/vercel","events":["deployment.created"]}

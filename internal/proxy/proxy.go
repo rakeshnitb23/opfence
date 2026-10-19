@@ -90,6 +90,11 @@ type Config struct {
 	// Passthrough lists hosts tunnelled without inspection (exact names or
 	// *.suffix); nil takes the policy's list.
 	Passthrough []string
+	// AgentHosts are the backend hosts of the agent the session runs (its
+	// model API and sign-in), tunnelled without inspection like the built-in
+	// passthrough hosts: on port 443, with the TLS server name checked, and
+	// never to private addresses.
+	AgentHosts []string
 	// DialContext dials upstream connections. Nil uses a dialer that refuses
 	// loopback, private and link-local addresses (tests replace it).
 	DialContext func(ctx context.Context, network, addr string) (net.Conn, error)
@@ -299,9 +304,16 @@ func (s *Server) isCatalogHost(host string) bool {
 	return s.cfg.Engine.Catalog.ProviderForHost(host) != nil
 }
 
-// passthrough reports whether host is on the passthrough list.
+// passthrough reports whether host is on the passthrough list or is one of
+// the agent's backend hosts.
 func (s *Server) passthrough(host string) bool {
-	for _, p := range s.cfg.Passthrough {
+	return hostIn(host, s.cfg.Passthrough) || hostIn(host, s.cfg.AgentHosts)
+}
+
+// hostIn reports whether host matches one of patterns (exact names or
+// *.suffix).
+func hostIn(host string, patterns []string) bool {
+	for _, p := range patterns {
 		if host == p || (strings.HasPrefix(p, "*.") && strings.HasSuffix(host, p[1:])) {
 			return true
 		}

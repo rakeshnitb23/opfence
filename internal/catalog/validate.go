@@ -250,10 +250,10 @@ func (l *loader) validateRule(r *Rule) {
 		if r.Match.REST == nil && r.Match.GraphQL == nil {
 			l.addf(f, ln, "%s: response transforms are for rest and graphql rules", r.ID)
 		}
-		if len(x.Redact)+len(x.Mint) == 0 {
-			l.addf(f, ln, "%s: response needs redact or mint paths", r.ID)
+		if len(x.Paths()) == 0 {
+			l.addf(f, ln, "%s: response needs redact, clear or mint paths", r.ID)
 		}
-		for _, p := range append(append([]string{}, x.Redact...), x.Mint...) {
+		for _, p := range x.Paths() {
 			if !argPathRe.MatchString(p) {
 				l.addf(f, ln, "%s: response path %q is not a dotted path", r.ID, p)
 			}

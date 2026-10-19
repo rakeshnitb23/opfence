@@ -1,0 +1,7 @@
+# description: Set workspace ws-acme policy RESTRICT_PUBLIC_TCP_PROXIES to false
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspacePolicyItemUpdate($workspaceId: String!, $input: WorkspacePolicyItemUpdateInput) { workspacePolicyItemUpdate(workspaceId: $workspaceId, input: $input) }","variables":{"workspaceId":"ws-acme","input":{"policy":"RESTRICT_PUBLIC_TCP_PROXIES","enabled":false}}}

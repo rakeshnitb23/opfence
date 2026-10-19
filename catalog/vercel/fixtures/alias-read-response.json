@@ -1,0 +1,14 @@
+{
+  "alias": "shop-git-feature-acme.vercel.app",
+  "uid": "als_1",
+  "deploymentId": "dpl_123",
+  "projectId": "prj_shop",
+  "createdAt": 1760000000000,
+  "protectionBypass": {
+    "opf_vercel_EXAMPLE_shareablelink01234567": {
+      "createdAt": 1760000000000,
+      "createdBy": "usr_1",
+      "scope": "shareable-link"
+    }
+  }
+}

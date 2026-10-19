@@ -1,0 +1,7 @@
+# description: Create segment beta in project shop-web
+PUT /v1/projects/shop-web/feature-flags/segments HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"slug":"beta","label":"Beta users","data":{}}

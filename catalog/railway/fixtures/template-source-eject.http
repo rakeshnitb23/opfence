@@ -1,0 +1,7 @@
+# description: Copy the template source of services ["svc-api"] into repo acme/shop-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateServiceSourceEject($input: TemplateServiceSourceEjectInput!) { templateServiceSourceEject(input: $input) }","variables":{"input":{"projectId":"prj-shop","serviceIds":["svc-api"],"repoOwner":"acme","repoName":"shop-api","upstreamUrl":"https://github.com/railwayapp-templates/example"}}}

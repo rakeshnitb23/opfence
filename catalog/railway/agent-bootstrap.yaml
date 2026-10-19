@@ -1,0 +1,38 @@
+# Railway GraphQL API: agent-bootstrap
+operations:
+  - id: railway.agent-bootstrap.delete
+    match: { graphql: { type: mutation, field: agentBootstrapDelete } }
+    class: irreversible
+    resource: { arg: id, kind: agent-bootstrap }
+    card: "Delete cloud agent bootstrap {id} and every version's disk snapshot"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The schema says the delete removes every version's disk snapshot; nothing
+      restores them.
+    tests:
+      - fixture: fixtures/agent-bootstrap-delete.http
+        expect: irreversible
+        resource: abs-base
+
+  - id: railway.agent-bootstrap.save
+    match: { graphql: { type: mutation, field: agentBootstrapSave } }
+    class: write
+    resource: { arg: input.cloudAgentId, kind: cloud-agent }
+    card: "Save cloud agent {input.cloudAgentId}'s disk as bootstrap {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Captures a disk as a new bootstrap version, or renames it and changes its
+      variables; earlier versions stay. Bootstrap variables are generic
+      variables, so setting them is a write.
+    tests:
+      - fixture: fixtures/agent-bootstrap-save.http
+        expect: write
+        resource: ca-dev

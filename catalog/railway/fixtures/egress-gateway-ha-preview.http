@@ -1,0 +1,7 @@
+# description: Preview HA static egress IPs for service svc-api
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EgressGatewayHAMigrationPreview($input: EgressGatewayServiceTargetInput!) { egressGatewayHAMigrationPreview(input: $input) { __typename } }","variables":{"input":{"environmentId":"env-production","serviceId":"svc-api"}}}

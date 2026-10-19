@@ -16,3 +16,82 @@ operations:
       - fixture: fixtures/integration-resource-delete.http
         expect: irreversible
         resource: res_pg
+
+  - id: vercel.integration-resource.connect
+    match: { rest: { method: POST, path: "/{version}/integrations/installations/{integrationConfigurationId}/resources/{resourceId}/connections" } }
+    class: credential
+    resource: { arg: body.projectId, kind: project }
+    card: "Connect Marketplace resource {resourceId} to project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Connecting writes the resource's credentials (database URLs with passwords)
+      into the project's environment variables.
+    tests:
+      - fixture: fixtures/integration-resource-connect.http
+        expect: credential
+        resource: prj_shop
+
+  - id: vercel.integration-resource.import
+    match: { rest: { method: PUT, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}" } }
+    class: credential
+    card: "Import Marketplace resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API; the body carries the resource's secrets.
+    tests:
+      - fixture: fixtures/integration-resource-import.http
+        expect: credential
+
+  - id: vercel.integration-resource.update
+    match: { rest: { method: PATCH, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}" } }
+    class: write
+    when:
+      - if: { arg: body.secrets, present: true }
+        class: credential
+      - if: { arg: body.billingPlan, present: true }
+        class: money
+    card: "Change Marketplace resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Partner API. Setting secrets is credential; changing the billing plan is
+      money.
+    tests:
+      - fixture: fixtures/integration-resource-update.http
+        expect: write
+      - fixture: fixtures/integration-resource-update-secrets.http
+        expect: credential
+
+  - id: vercel.integration-resource.secrets-update
+    match: { rest: { method: PUT, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}/secrets" } }
+    class: credential
+    card: "Replace the secrets of Marketplace resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-resource-secrets-update.http
+        expect: credential
+
+  - id: vercel.integration-resource.secrets-update-by-product
+    match: { rest: { method: PUT, path: "/{version}/installations/{integrationConfigurationId}/products/{integrationProductIdOrSlug}/resources/{resourceId}/secrets" } }
+    class: credential
+    card: "Replace the secrets of Marketplace resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Deprecated form of the same endpoint.
+    tests:
+      - fixture: fixtures/integration-resource-secrets-update-by-product.http
+        expect: credential

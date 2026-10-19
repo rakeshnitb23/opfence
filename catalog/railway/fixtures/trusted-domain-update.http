@@ -1,0 +1,7 @@
+# description: Give members from trusted domain td-1 the role ADMIN
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TrustedDomainUpdate($input: WorkspaceTrustedDomainUpdateInput!) { trustedDomainUpdate(input: $input) { id } }","variables":{"input":{"id":"td-1","role":"ADMIN"}}}

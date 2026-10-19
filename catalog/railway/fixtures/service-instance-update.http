@@ -4,4 +4,4 @@ Host: backboard.railway.com
 Authorization: Bearer opf_railway_EXAMPLE
 Content-Type: application/json
 
-{"query":"mutation ServiceInstanceUpdate($serviceId: String!, $environmentId: String, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) }","variables":{"serviceId":"svc-api","environmentId":"env-production","input":{"numReplicas":0}}}
+{"query":"mutation ServiceInstanceUpdate($serviceId: String!, $environmentId: String, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) }","variables":{"serviceId":"svc-api","environmentId":"env-production","input":{"startCommand":"node server.js","healthcheckPath":"/health"}}}

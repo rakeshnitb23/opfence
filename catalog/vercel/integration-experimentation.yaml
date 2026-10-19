@@ -1,0 +1,49 @@
+# Vercel REST API: integration-experimentation
+operations:
+  - id: vercel.integration-experimentation.item-create
+    match: { rest: { method: POST, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/items" } }
+    class: write
+    card: "Create experimentation items for resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-experimentation-item-create.http
+        expect: write
+
+  - id: vercel.integration-experimentation.item-update
+    match: { rest: { method: PATCH, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/items/{itemId}" } }
+    class: write
+    card: "Change experimentation item {itemId} of resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-experimentation-item-update.http
+        expect: write
+
+  - id: vercel.integration-experimentation.item-delete
+    match: { rest: { method: DELETE, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/items/{itemId}" } }
+    class: delete
+    card: "Delete experimentation item {itemId} of resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-experimentation-item-delete.http
+        expect: delete
+
+  - id: vercel.integration-experimentation.global-config-push
+    match: { rest: { method: PUT, path: "/{version}/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/global-config" } }
+    class: write
+    card: "Push experimentation data into the Edge Config of resource {resourceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/integration-experimentation-global-config-push.http
+        expect: write

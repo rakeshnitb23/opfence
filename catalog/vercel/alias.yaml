@@ -11,3 +11,101 @@ operations:
     tests:
       - fixture: fixtures/alias-delete.http
         expect: delete
+
+  - id: vercel.alias.assign
+    match: { rest: { method: POST, path: "/{version}/deployments/{id}/aliases" } }
+    class: access
+    resource: { arg: id, kind: deployment }
+    card: "Point alias {body.alias} at deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Serves the deployment, possibly a preview, on the alias; production custom
+      domains are exempt from Standard Deployment Protection, and the alias is
+      taken from whichever deployment had it.
+    tests:
+      - fixture: fixtures/alias-assign.http
+        expect: access
+        resource: dpl_123
+
+  - id: vercel.alias.protection-bypass
+    match: { rest: { method: PATCH, path: "/aliases/{id}/protection-bypass" } }
+    class: credential
+    card: "Change the protection bypass of URL {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates or revokes shareable-link secrets and user access that skip Vercel
+      Authentication on that URL.
+    tests:
+      - fixture: fixtures/alias-protection-bypass.http
+        expect: credential
+
+  - id: vercel.alias.list
+    match: { rest: { method: GET, path: "/{version}/aliases" } }
+    class: credential
+    card: "List aliases"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [aliases.protectionBypass]
+      class: read
+    notes: >-
+      Each alias's protectionBypass map is keyed by its shareable-link secrets,
+      which skip Vercel Authentication. Map keys cannot be redacted, so under
+      opfence run the proxy empties the map and the call is read; anywhere else
+      it is credential.
+    tests:
+      - fixture: fixtures/alias-list.http
+        expect: credential
+        response: fixtures/alias-list-response.json
+
+  - id: vercel.alias.read
+    match: { rest: { method: GET, path: "/{version}/aliases/{idOrAlias}" } }
+    class: credential
+    card: "Read alias {idOrAlias}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: read
+    notes: >-
+      Each alias's protectionBypass map is keyed by its shareable-link secrets,
+      which skip Vercel Authentication. Map keys cannot be redacted, so under
+      opfence run the proxy empties the map and the call is read; anywhere else
+      it is credential.
+    tests:
+      - fixture: fixtures/alias-read.http
+        expect: credential
+        response: fixtures/alias-read-response.json
+
+  - id: vercel.alias.deployment-list
+    match: { rest: { method: GET, path: "/{version}/deployments/{id}/aliases" } }
+    class: credential
+    resource: { arg: id, kind: deployment }
+    card: "List aliases of deployment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [aliases.protectionBypass]
+      class: read
+    notes: >-
+      Each alias's protectionBypass map is keyed by its shareable-link secrets,
+      which skip Vercel Authentication. Map keys cannot be redacted, so under
+      opfence run the proxy empties the map and the call is read; anywhere else
+      it is credential.
+    tests:
+      - fixture: fixtures/alias-deployment-list.http
+        expect: credential
+        response: fixtures/alias-deployment-list-response.json
+        resource: dpl_123

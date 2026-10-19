@@ -1,0 +1,48 @@
+# Vercel REST API: kms-signing-key
+operations:
+  - id: vercel.kms-signing-key.create
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/keys" } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Create a signing key for KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates or imports a private key; revokePreviousAfterHours also schedules
+      the old key's revocation.
+    tests:
+      - fixture: fixtures/kms-signing-key-create.http
+        expect: credential
+        resource: iss_1
+
+  - id: vercel.kms-signing-key.activate
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/keys/{keyId}/activate" } }
+    class: credential
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Activate signing key {keyId} of KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Rotates the key the issuer signs with.
+    tests:
+      - fixture: fixtures/kms-signing-key-activate.http
+        expect: credential
+        resource: iss_1
+
+  - id: vercel.kms-signing-key.revoke
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/keys/{keyId}/revoke" } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Revoke signing key {keyId} of KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/kms-signing-key-revoke.http
+        expect: access
+        resource: iss_1

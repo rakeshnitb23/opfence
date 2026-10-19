@@ -1,0 +1,7 @@
+# description: Change check chk_1 of project shop-web
+PATCH /v2/projects/shop-web/checks/chk_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"blocks":"none"}

@@ -1,0 +1,7 @@
+# description: Delegate domain rd-1 to nameservers ["ns1.example.net","ns2.example.net"]
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation RailwayDomainNameserversSet($input: RailwayDomainNameserversSetInput!) { railwayDomainNameserversSet(input: $input) { __typename } }","variables":{"input":{"id":"rd-1","nameservers":["ns1.example.net","ns2.example.net"]}}}

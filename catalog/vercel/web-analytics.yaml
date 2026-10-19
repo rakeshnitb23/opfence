@@ -1,0 +1,17 @@
+# Vercel REST API: web-analytics
+operations:
+  - id: vercel.web-analytics.toggle
+    match: { rest: { method: POST, path: "/web/insights/toggle" } }
+    class: money
+    resource: { arg: query.projectId, kind: project }
+    card: "Turn Web Analytics {body.value} for project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Web Analytics is billed per event when on.
+    tests:
+      - fixture: fixtures/web-analytics-toggle.http
+        expect: money
+        resource: prj_shop

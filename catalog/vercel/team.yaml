@@ -30,3 +30,31 @@ operations:
       - fixture: fixtures/team-update.http
         expect: access
         resource: team_acme
+
+  - id: vercel.team.create
+    match: { rest: { method: POST, path: "/{version}/teams" } }
+    class: money
+    card: "Create Vercel team {body.slug}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Teams are on the paid Pro plan once the trial ends.
+    tests:
+      - fixture: fixtures/team-create.http
+        expect: money
+
+  - id: vercel.team.dsync-roles
+    match: { rest: { method: POST, path: "/{version}/teams/{teamId}/dsync-roles" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Change Directory Sync role mappings of team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-dsync-roles.http
+        expect: access
+        resource: team_acme

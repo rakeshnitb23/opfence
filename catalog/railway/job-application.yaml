@@ -1,0 +1,18 @@
+# Railway GraphQL API: job-application
+operations:
+  - id: railway.job-application.create
+    match: { graphql: { type: mutation, field: jobApplicationCreate } }
+    class: write
+    resource: { arg: input.jobId, kind: job }
+    card: "Apply for Railway job {input.jobId} as {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Sends a job application to Railway; it touches no infrastructure.
+    tests:
+      - fixture: fixtures/job-application-create.http
+        expect: write
+        resource: job-1

@@ -1,0 +1,7 @@
+# description: Spread service svc-api over two regions
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceUpdate($serviceId: String!, $environmentId: String, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) }","variables":{"serviceId":"svc-api","environmentId":"env-production","input":{"multiRegionConfig":{"us-west2":{"numReplicas":3},"europe-west4-drams3a":{"numReplicas":3}}}}}

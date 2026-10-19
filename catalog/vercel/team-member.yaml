@@ -41,3 +41,31 @@ operations:
       - fixture: fixtures/team-member-update.http
         expect: access
         resource: team_acme
+
+  - id: vercel.team-member.request-access
+    match: { rest: { method: POST, path: "/{version}/teams/{teamId}/request" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Request to join team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-member-request-access.http
+        expect: access
+        resource: team_acme
+
+  - id: vercel.team-member.join
+    match: { rest: { method: POST, path: "/{version}/teams/{teamId}/members/teams/join" } }
+    class: access
+    resource: { arg: teamId, kind: team }
+    card: "Join team {teamId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/team-member-join.http
+        expect: access
+        resource: team_acme

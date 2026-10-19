@@ -1,0 +1,5 @@
+# description: Disconnect shared variable env_1 from project prj_shop
+PATCH /v1/env/env_1/unlink/prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

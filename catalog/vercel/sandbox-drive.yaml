@@ -1,0 +1,47 @@
+# Vercel REST API: sandbox-drive
+operations:
+  - id: vercel.sandbox-drive.create
+    match: { rest: { method: POST, path: "/{version}/sandboxes/drives/{name}" } }
+    class: money
+    resource: { arg: name, kind: sandbox-drive }
+    card: "Get or create sandbox drive {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates billed storage when the drive does not exist.
+    tests:
+      - fixture: fixtures/sandbox-drive-create.http
+        expect: money
+        resource: cache
+
+  - id: vercel.sandbox-drive.delete
+    match: { rest: { method: DELETE, path: "/{version}/sandboxes/drives/{name}" } }
+    class: irreversible
+    resource: { arg: name, kind: sandbox-drive }
+    card: "Delete sandbox drive {name} and its data"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/sandbox-drive-delete.http
+        expect: irreversible
+        resource: cache
+
+  - id: vercel.sandbox-drive.fork
+    match: { rest: { method: POST, path: "/{version}/sandboxes/drives/{name}/fork" } }
+    class: money
+    resource: { arg: name, kind: sandbox-drive }
+    card: "Fork sandbox drive {name} as {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Creates a new billed drive.
+    tests:
+      - fixture: fixtures/sandbox-drive-fork.http
+        expect: money
+        resource: cache

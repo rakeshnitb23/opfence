@@ -1,0 +1,7 @@
+# description: Create integration log drain logs to https://logs.example.com
+POST /v2/integrations/log-drains HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"name":"logs","url":"https://logs.example.com","deliveryFormat":"json","secret":"opf_vercel_EXAMPLE"}

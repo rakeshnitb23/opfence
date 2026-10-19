@@ -1,0 +1,7 @@
+# description: Mint a token for the harness of cloud agent ca-dev
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation CloudAgentHarnessToken($id: ID!, $environmentId: String!) { cloudAgentHarnessToken(id: $id, environmentId: $environmentId) }","variables":{"id":"ca-dev","environmentId":"env-production"}}

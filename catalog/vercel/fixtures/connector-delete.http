@@ -1,0 +1,5 @@
+# description: Delete connector con_slack with its project connections and installations
+DELETE /v1/connect/connectors/con_slack HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

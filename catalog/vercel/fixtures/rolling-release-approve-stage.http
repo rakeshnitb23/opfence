@@ -1,0 +1,7 @@
+# description: Advance the rolling release of project shop-web to stage 1
+POST /v1/projects/shop-web/rolling-release/approve-stage HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"nextStageIndex":1,"canaryDeploymentId":"dpl_123"}

@@ -1,0 +1,7 @@
+# description: Write files into sandbox session sbx_1
+POST /v2/sandboxes/sessions/sbx_1/fs/write HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/gzip
+
+example-tarball-bytes

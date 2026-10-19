@@ -51,3 +51,44 @@ operations:
       - fixture: fixtures/volume-pitr-restore.http
         expect: write
         resource: vi-pg-data
+
+  - id: railway.volume.instance-update
+    match: { graphql: { type: mutation, field: volumeInstanceUpdate } }
+    class: write
+    when:
+      - if: { arg: input.state, present: true }
+        class: irreversible
+    resource: { arg: volumeId, kind: volume }
+    card: "Change mount or service of volume {volumeId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Moving or mounting a volume is a write, as railway-mcp's update_volume
+      (leaving out serviceId detaches it). The input also takes a raw state
+      (DELETED, DELETING, MIGRATING and others) that Opfence cannot tell is
+      safe, so any state is irreversible.
+    tests:
+      - fixture: fixtures/volume-instance-update.http
+        expect: write
+        resource: vol-pg-data
+      - fixture: fixtures/volume-instance-update-state.http
+        expect: irreversible
+        resource: vol-pg-data
+
+  - id: railway.volume.update
+    match: { graphql: { type: mutation, field: volumeUpdate } }
+    class: write
+    resource: { arg: volumeId, kind: volume }
+    card: "Rename volume {volumeId} to {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/volume-update.http
+        expect: write
+        resource: vol-pg-data

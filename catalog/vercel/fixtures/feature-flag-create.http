@@ -1,0 +1,7 @@
+# description: Create feature flag new-checkout in project shop-web
+PUT /v1/projects/shop-web/feature-flags/flags HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"slug":"new-checkout","kind":"boolean","environments":{}}

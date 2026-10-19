@@ -1,0 +1,43 @@
+# Vercel REST API: feature-flag-segment
+operations:
+  - id: vercel.feature-flag-segment.create
+    match: { rest: { method: PUT, path: "/{version}/projects/{projectIdOrName}/feature-flags/segments" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create segment {body.slug} in project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-segment-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.feature-flag-segment.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectIdOrName}/feature-flags/segments/{segmentIdOrSlug}" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Change segment {segmentIdOrSlug} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-segment-update.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.feature-flag-segment.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{projectIdOrName}/feature-flags/segments/{segmentIdOrSlug}" } }
+    class: delete
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Delete segment {segmentIdOrSlug} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-segment-delete.http
+        expect: delete
+        resource: shop-web

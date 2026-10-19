@@ -22,13 +22,20 @@ operations:
     verified: 2026-10-16
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
+    notes: >-
+      A new project has no bypass secrets, so the call is write; the proxy still
+      empties protectionBypass in the response in case it holds any.
     tests:
       - fixture: fixtures/project-create.http
         expect: write
+        response: fixtures/project-create-response.json
 
   - id: vercel.project.update
     match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}" } }
-    class: write
+    class: credential
     when:
       - if: { arg: body.ssoProtection, present: true }
         class: access
@@ -48,13 +55,20 @@ operations:
     verified: 2026-10-16
     sources:
       - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
     notes: >-
       Deployment protection, trusted IPs, public source and OIDC settings
       change who can reach the project or its source. Setting ssoProtection to
-      null turns protection off.
+      null turns protection off. The response is the project, whose
+      protectionBypass map is keyed by its Protection Bypass for Automation
+      secrets; under opfence run the proxy empties the map and other changes
+      are write, anywhere else they are credential.
     tests:
       - fixture: fixtures/project-update.http
-        expect: write
+        expect: credential
+        response: fixtures/project-update-response.json
         resource: shop-web
       - fixture: fixtures/project-update-protection-off.http
         expect: access
@@ -149,3 +163,152 @@ operations:
     tests:
       - fixture: fixtures/project-transfer-accept.http
         expect: access
+
+  - id: vercel.project.read
+    match: { rest: { method: GET, path: "/{version}/projects/{idOrName}" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Read project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: read
+    notes: >-
+      Each project's protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). Map keys
+      cannot be redacted, so under opfence run the proxy empties the map and the
+      call is read; anywhere else it is credential.
+    tests:
+      - fixture: fixtures/project-read.http
+        expect: credential
+        response: fixtures/project-read-response.json
+        resource: shop-web
+
+  - id: vercel.project.list
+    match: { rest: { method: GET, path: "/{version}/projects" } }
+    class: credential
+    card: "List projects"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [projects.protectionBypass]
+      class: read
+    notes: >-
+      Each project's protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets (the VERCEL_AUTOMATION_BYPASS_SECRET value). Map keys
+      cannot be redacted, so under opfence run the proxy empties the map and the
+      call is read; anywhere else it is credential.
+    tests:
+      - fixture: fixtures/project-list.http
+        expect: credential
+        response: fixtures/project-list-response.json
+
+  - id: vercel.project.trace-read
+    match: { rest: { method: GET, path: "/{version}/projects/traces" } }
+    class: read
+    card: "Read a request trace"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Listed so the project read rule does not claim this path.
+    tests:
+      - fixture: fixtures/project-trace-read.http
+        expect: read
+
+  - id: vercel.project.trace-session
+    match: { rest: { method: POST, path: "/{version}/projects/traces/session" } }
+    class: credential
+    card: "Mint a trace session token for {body.hostname}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Returns a short-lived JWT that the Vercel proxy accepts for that
+      deployment.
+    tests:
+      - fixture: fixtures/project-trace-session.http
+        expect: credential
+
+  - id: vercel.project.avatar-upload
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/avatar" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Upload an avatar for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
+    notes: >-
+      The response is the project, whose protectionBypass map is keyed by its
+      Protection Bypass for Automation secrets. Map keys cannot be redacted, so
+      under opfence run the proxy empties the map and the call is write;
+      anywhere else it is credential.
+    tests:
+      - fixture: fixtures/project-avatar-upload.http
+        expect: credential
+        response: fixtures/project-avatar-upload-response.json
+        resource: shop-web
+
+  - id: vercel.project.avatar-delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}/avatar" } }
+    class: credential
+    resource: { arg: idOrName, kind: project }
+    card: "Remove the avatar of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    response:
+      clear: [protectionBypass]
+      class: write
+    notes: >-
+      Clears the chosen avatar; the stored image is kept. The response is the
+      project, whose protectionBypass map is keyed by its Protection Bypass for
+      Automation secrets; under opfence run the proxy empties the map and the
+      call is write, anywhere else it is credential.
+    tests:
+      - fixture: fixtures/project-avatar-delete.http
+        expect: credential
+        response: fixtures/project-avatar-delete-response.json
+        resource: shop-web
+
+  - id: vercel.project.static-ips
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/shared-connect-links" } }
+    class: money
+    resource: { arg: idOrName, kind: project }
+    card: "Configure Static IPs for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Static IPs are a paid add-on.
+    tests:
+      - fixture: fixtures/project-static-ips.http
+        expect: money
+        resource: shop-web
+
+  - id: vercel.project.rollback-description
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectId}/rollback/{deploymentId}/update-description" } }
+    class: write
+    resource: { arg: projectId, kind: project }
+    card: "Change the reason given for rolling project {projectId} back to {deploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-rollback-description.http
+        expect: write
+        resource: prj_shop

@@ -1,0 +1,74 @@
+# Vercel REST API: rolling-release
+operations:
+  - id: vercel.rolling-release.config-delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{idOrName}/rolling-release/config" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Turn off rolling releases for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Affects the next production deployment; a rollout already running
+      continues.
+    tests:
+      - fixture: fixtures/rolling-release-config-delete.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.rolling-release.config-update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{idOrName}/rolling-release/config" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Change rolling release settings of project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/rolling-release-config-update.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.rolling-release.approve-stage
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/rolling-release/approve-stage" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Advance the rolling release of project {idOrName} to stage {body.nextStageIndex}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/rolling-release-approve-stage.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.rolling-release.start
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/rolling-release/start" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Start a rolling release of {body.canaryDeploymentId} for project {idOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/rolling-release-start.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.rolling-release.complete
+    match: { rest: { method: POST, path: "/{version}/projects/{idOrName}/rolling-release/complete" } }
+    class: write
+    resource: { arg: idOrName, kind: project }
+    card: "Send all traffic of project {idOrName} to {body.canaryDeploymentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/rolling-release-complete.http
+        expect: write
+        resource: shop-web

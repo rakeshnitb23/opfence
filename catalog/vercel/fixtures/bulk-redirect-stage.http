@@ -1,0 +1,7 @@
+# description: Stage redirects for project prj_shop
+PUT /v1/bulk-redirects HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_shop","redirects":[{"source":"/old","destination":"/new"}]}

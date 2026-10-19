@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -30,9 +31,12 @@ type Finding struct {
 // Files opfence init reads, relative to the repository root, besides .env
 // files anywhere in the tree.
 var jsonFiles = []string{
-	".mcp.json", ".cursor/mcp.json", ".vscode/mcp.json",
+	".mcp.json", ".cursor/mcp.json", ".vscode/mcp.json", ".gemini/settings.json",
 	".claude/settings.json", ".claude/settings.local.json",
 }
+
+// tomlFiles are TOML configs opfence init reads, relative to the root.
+var tomlFiles = []string{".codex/config.toml"}
 
 var skipDirs = map[string]bool{
 	".git": true, "node_modules": true, "vendor": true, ".venv": true, "venv": true,
@@ -41,14 +45,17 @@ var skipDirs = map[string]bool{
 
 const maxDepth = 6
 
-// editorSkip explains why keys in other editors' MCP configs stay in place:
-// opfence run starts Claude Code, whose MCP servers reach their APIs through
-// the proxy, but not Cursor or VS Code, whose servers would get a
-// placeholder they cannot use.
-const editorSkip = "this editor's MCP servers are not started by opfence run, so a placeholder would break them; move it by hand if you only use the server from Claude Code"
-
-// editorConfigs are MCP configs that belong to other editors.
-var editorConfigs = []string{".cursor/mcp.json", ".vscode/mcp.json"}
+// editorSkip explains why keys in other tools' MCP configs stay in place.
+// Claude Code is run through opfence run, so its servers reach their APIs
+// through the proxy and a placeholder works. These files are also read
+// when the tool starts without opfence run (the Cursor and VS Code editors
+// always do), and a placeholder would break the server there.
+var editorSkip = map[string]string{
+	".cursor/mcp.json":      "the Cursor editor starts these servers without opfence run, so a placeholder would break them; move it by hand if you only use the server under opfence run",
+	".vscode/mcp.json":      "VS Code starts these servers without opfence run, so a placeholder would break them; move it by hand if you only use the server from Claude Code",
+	".gemini/settings.json": "Gemini CLI starts these servers without opfence run too, so a placeholder would break them; move it by hand if you always start gemini with opfence run --srt",
+	".codex/config.toml":    "Codex starts these servers without opfence run too, so a placeholder would break them; move it by hand if you always start codex with opfence run --srt",
+}
 
 // isEnvFile reports whether name is a dotenv file that may hold real values
 // (.env, .env.local, .env.production), not a committed template.
@@ -89,7 +96,7 @@ func CandidateFiles(root string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, f := range jsonFiles {
+	for _, f := range slices.Concat(jsonFiles, tomlFiles) {
 		p := filepath.Join(root, filepath.FromSlash(f))
 		if info, err := os.Lstat(p); err == nil && info.Mode().IsRegular() {
 			out = append(out, p)
@@ -166,24 +173,31 @@ func Discover(root string, c *catalog.Catalog, known *Set) ([]Finding, error) {
 		if err != nil {
 			return nil, err
 		}
-		if strings.HasSuffix(f, ".json") {
-			fs, err := d.json(f, data)
-			if err != nil {
-				return nil, err
+		rel, _ := filepath.Rel(root, f)
+		skip, reportOnly := editorSkip[filepath.ToSlash(rel)]
+		var fs []Finding
+		switch {
+		case strings.HasSuffix(f, ".json"):
+			if fs, err = d.json(f, data); err != nil {
+				if !reportOnly {
+					return nil, err
+				}
+				// VS Code and Gemini CLI allow comments in their JSON.
+				fs = d.lines(f, data)
 			}
-			for _, e := range editorConfigs {
-				if strings.HasSuffix(filepath.ToSlash(f), "/"+e) {
-					for i := range fs {
-						if fs[i].Skip == "" {
-							fs[i].Skip = editorSkip
-						}
-					}
+		case strings.HasSuffix(f, ".toml"):
+			fs = d.lines(f, data)
+		default:
+			fs = d.dotenv(f, data)
+		}
+		if reportOnly {
+			for i := range fs {
+				if fs[i].Skip == "" {
+					fs[i].Skip = skip
 				}
 			}
-			out = append(out, fs...)
-		} else {
-			out = append(out, d.dotenv(f, data)...)
 		}
+		out = append(out, fs...)
 	}
 	return out, nil
 }
@@ -243,6 +257,46 @@ func dotenvValue(raw string) (string, bool) {
 		raw = raw[:i]
 	}
 	return strings.TrimSpace(raw), false
+}
+
+var quotedRe = regexp.MustCompile(`"((?:[^"\\]|\\.)*)"|'([^']*)'`)
+
+// lines reports keys in a TOML file, or a JSON file with comments: a key a
+// provider names set to a string (as in an MCP server's env table) and any
+// string with a known token prefix, such as an Authorization header in an
+// inline table. It reads lines, not the format, which is enough for a
+// report: these files are only reported, never rewritten.
+func (d *detector) lines(file string, data []byte) []Finding {
+	var out []Finding
+	for i, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(strings.TrimRight(line, "\r"))
+		if line == "" || line[0] == '#' || line[0] == '[' {
+			continue
+		}
+		if m := envKeyRe.FindStringSubmatch(line); m != nil {
+			if prov := d.byEnv[m[1]]; prov != nil {
+				if v, _ := dotenvValue(m[2]); v != "" {
+					out = append(out, d.finding(file, i+1, m[1], m[1], prov, v))
+					continue
+				}
+			}
+		}
+		for _, m := range quotedRe.FindAllStringSubmatch(line, -1) {
+			s := m[1] + m[2]
+			if j := strings.LastIndexByte(s, ' '); j >= 0 {
+				s = s[j+1:] // "Bearer <token>"
+			}
+			if prov, tok := d.byPrefix(s); prov != nil {
+				key := line
+				if j := strings.IndexAny(key, "=:"); j >= 0 {
+					key = key[:j]
+				}
+				key = strings.Trim(key, ` "'`)
+				out = append(out, d.finding(file, i+1, key, key, prov, tok))
+			}
+		}
+	}
+	return out
 }
 
 func (d *detector) json(file string, data []byte) ([]Finding, error) {

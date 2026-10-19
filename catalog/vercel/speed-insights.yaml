@@ -1,0 +1,17 @@
+# Vercel REST API: speed-insights
+operations:
+  - id: vercel.speed-insights.toggle
+    match: { rest: { method: POST, path: "/speed-insights/toggle" } }
+    class: money
+    resource: { arg: query.projectId, kind: project }
+    card: "Turn Speed Insights {body.value} for project {query.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Speed Insights is billed per data point when on.
+    tests:
+      - fixture: fixtures/speed-insights-toggle.http
+        expect: money
+        resource: prj_shop

@@ -31,3 +31,38 @@ operations:
       - fixture: fixtures/custom-domain-delete.http
         expect: delete
         resource: cd-1
+
+  - id: railway.custom-domain.issue-certificate
+    match: { graphql: { type: mutation, field: customDomainIssueCertificate } }
+    class: write
+    resource: { arg: id, kind: custom-domain }
+    card: "Issue a new certificate for custom domain {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway-mcp's domain retry-certificate.
+    tests:
+      - fixture: fixtures/custom-domain-issue-certificate.http
+        expect: write
+        resource: cd-1
+
+  - id: railway.custom-domain.update
+    match: { graphql: { type: mutation, field: customDomainUpdate } }
+    class: access
+    resource: { arg: id, kind: custom-domain }
+    card: "Point custom domain {id} at port {targetPort}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes which port the public domain reaches, as railway-mcp's domain
+      update (access).
+    tests:
+      - fixture: fixtures/custom-domain-update.http
+        expect: access
+        resource: cd-1

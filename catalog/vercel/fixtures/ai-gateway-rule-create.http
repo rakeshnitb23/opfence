@@ -1,0 +1,7 @@
+# description: Create an AI Gateway routing rule
+POST /ai-gateway/rules HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"type":"deny","match":{"model":"openai/gpt-5"},"enabled":true}

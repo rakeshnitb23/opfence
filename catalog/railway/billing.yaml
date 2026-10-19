@@ -1,0 +1,37 @@
+# Railway GraphQL API: billing
+operations:
+  - id: railway.billing.free-plan
+    match: { graphql: { type: mutation, field: customerCreateFreePlanSubscription } }
+    class: money
+    resource: { arg: id, kind: customer }
+    card: "Put customer {id} on the free plan"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes the account's subscription, which decides what it is billed and
+      which limits apply.
+    tests:
+      - fixture: fixtures/billing-free-plan.http
+        expect: money
+        resource: cus-1
+
+  - id: railway.billing.payouts-to-credits
+    match: { graphql: { type: mutation, field: customerTogglePayoutsToCredits } }
+    class: money
+    resource: { arg: customerId, kind: customer }
+    card: "Set whether customer {customerId} turns payouts into credits ({input.isWithdrawingToCredits})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Moves template kickback earnings into account credit instead of paying
+      them out.
+    tests:
+      - fixture: fixtures/billing-payouts-to-credits.http
+        expect: money
+        resource: cus-1

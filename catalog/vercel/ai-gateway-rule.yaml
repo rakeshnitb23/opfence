@@ -1,0 +1,46 @@
+# Vercel REST API: ai-gateway-rule
+operations:
+  - id: vercel.ai-gateway-rule.create
+    match: { rest: { method: POST, path: "/ai-gateway/rules" } }
+    class: access
+    card: "Create an AI Gateway routing rule"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Rules deny or rewrite the models a team may call. The spec publishes no
+      request body, so every change is treated as a change to who may use what.
+    tests:
+      - fixture: fixtures/ai-gateway-rule-create.http
+        expect: access
+
+  - id: vercel.ai-gateway-rule.update
+    match: { rest: { method: PATCH, path: "/ai-gateway/rules" } }
+    class: access
+    card: "Change an AI Gateway routing rule"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Rules deny or rewrite the models a team may call. The spec publishes no
+      request body, so every change is treated as a change to who may use what.
+    tests:
+      - fixture: fixtures/ai-gateway-rule-update.http
+        expect: access
+
+  - id: vercel.ai-gateway-rule.delete
+    match: { rest: { method: DELETE, path: "/ai-gateway/rules" } }
+    class: access
+    card: "Delete AI Gateway routing rule {query.ruleId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Rules deny or rewrite the models a team may call. The spec publishes no
+      request body, so every change is treated as a change to who may use what.
+    tests:
+      - fixture: fixtures/ai-gateway-rule-delete.http
+        expect: access

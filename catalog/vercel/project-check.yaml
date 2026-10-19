@@ -1,0 +1,45 @@
+# Vercel REST API: project-check
+operations:
+  - id: vercel.project-check.create
+    match: { rest: { method: POST, path: "/{version}/projects/{projectIdOrName}/checks" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create check {body.name} for project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-check-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.project-check.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectIdOrName}/checks/{checkId}" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Change check {checkId} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/project-check-update.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.project-check.delete
+    match: { rest: { method: DELETE, path: "/{version}/projects/{projectIdOrName}/checks/{checkId}" } }
+    class: delete
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Delete check {checkId} of project {projectIdOrName} and its runs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The check can be created again; the history of its runs is gone.
+    tests:
+      - fixture: fixtures/project-check-delete.http
+        expect: delete
+        resource: shop-web

@@ -1,0 +1,117 @@
+# Vercel REST API: connector
+operations:
+  - id: vercel.connector.create
+    match: { rest: { method: POST, path: "/{version}/connect/connectors" } }
+    class: credential
+    card: "Create a Connect connector"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The body can carry the connector's client secret, signing secret, API token
+      or private key.
+    tests:
+      - fixture: fixtures/connector-create.http
+        expect: credential
+
+  - id: vercel.connector.update
+    match: { rest: { method: PATCH, path: "/{version}/connect/connectors/{connector}" } }
+    class: credential
+    card: "Change connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The body can carry the connector's client secret, signing secret, API token
+      or private key.
+    tests:
+      - fixture: fixtures/connector-update.http
+        expect: credential
+
+  - id: vercel.connector.delete
+    match: { rest: { method: DELETE, path: "/{version}/connect/connectors/{connector}" } }
+    class: irreversible
+    card: "Delete connector {connector} with its project connections and installations"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Deletes the stored client credentials and user grants with it; they cannot
+      be read back to recreate it.
+    tests:
+      - fixture: fixtures/connector-delete.http
+        expect: irreversible
+
+  - id: vercel.connector.trigger-destinations
+    match: { rest: { method: PATCH, path: "/{version}/connect/connectors/{connector}/trigger-destinations" } }
+    class: access
+    card: "Replace where connector {connector} sends trigger requests"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Trigger requests carry the outside service's events; choosing where they go
+      decides who receives them.
+    tests:
+      - fixture: fixtures/connector-trigger-destinations.http
+        expect: access
+
+  - id: vercel.connector.eject
+    match: { rest: { method: POST, path: "/{version}/connect/connectors/{connector}/managed/eject" } }
+    class: write
+    card: "Detach connector {connector} from its provider-side manager"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/connector-eject.http
+        expect: write
+
+  - id: vercel.connector.project-connect
+    match: { rest: { method: POST, path: "/{version}/connect/connectors/{connector}/projects/{projectId}" } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Connect connector {connector} to project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The project's deployments can then obtain tokens from the connector.
+    tests:
+      - fixture: fixtures/connector-project-connect.http
+        expect: access
+        resource: prj_shop
+
+  - id: vercel.connector.project-disconnect
+    match: { rest: { method: DELETE, path: "/{version}/connect/connectors/{connector}/projects/{projectId}" } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Disconnect connector {connector} from project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/connector-project-disconnect.http
+        expect: access
+        resource: prj_shop
+
+  - id: vercel.connector.authorize
+    match: { rest: { method: POST, path: "/{version}/connect/authorize/{connector}" } }
+    class: credential
+    card: "Start an authorization request for connector {connector}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Returns the URL and verifier that complete a grant of a user token.
+    tests:
+      - fixture: fixtures/connector-authorize.http
+        expect: credential

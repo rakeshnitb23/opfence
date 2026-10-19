@@ -1,0 +1,7 @@
+# description: Create container repository web-images
+POST /v1/vcr/repository HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_shop","name":"web-images"}

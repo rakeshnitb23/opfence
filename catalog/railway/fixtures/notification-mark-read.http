@@ -1,0 +1,7 @@
+# description: Mark notifications ["nd-1"] as read
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation NotificationDeliveriesMarkAsRead($deliveryIds: [String!]!) { notificationDeliveriesMarkAsRead(deliveryIds: $deliveryIds) }","variables":{"deliveryIds":["nd-1"]}}

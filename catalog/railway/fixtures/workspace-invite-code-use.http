@@ -1,0 +1,7 @@
+# description: Join a workspace with invite code winv-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspaceInviteCodeUse($code: String!) { workspaceInviteCodeUse(code: $code) { id } }","variables":{"code":"winv-1"}}

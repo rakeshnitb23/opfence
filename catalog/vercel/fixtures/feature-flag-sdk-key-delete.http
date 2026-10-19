@@ -1,0 +1,5 @@
+# description: Revoke Flags SDK key hk_1 of project shop-web
+DELETE /v1/projects/shop-web/feature-flags/sdk-keys/hk_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

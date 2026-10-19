@@ -1,0 +1,43 @@
+# Vercel REST API: kms-policy
+operations:
+  - id: vercel.kms-policy.create
+    match: { rest: { method: POST, path: "/{version}/kms/issuers/{issuerId}/policies" } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Let project {body.projectId} sign with KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/kms-policy-create.http
+        expect: access
+        resource: iss_1
+
+  - id: vercel.kms-policy.update
+    match: { rest: { method: PATCH, path: "/{version}/kms/issuers/{issuerId}/policies/{kind}/{policyKey}" } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Change policy {policyKey} of KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/kms-policy-update.http
+        expect: access
+        resource: iss_1
+
+  - id: vercel.kms-policy.delete
+    match: { rest: { method: DELETE, path: "/{version}/kms/issuers/{issuerId}/policies/{kind}/{policyKey}" } }
+    class: access
+    resource: { arg: issuerId, kind: kms-issuer }
+    card: "Remove policy {policyKey} from KMS issuer {issuerId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/kms-policy-delete.http
+        expect: access
+        resource: iss_1

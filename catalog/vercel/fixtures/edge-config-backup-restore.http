@@ -1,0 +1,5 @@
+# description: Restore Edge Config ecfg_1 to backup bak_1
+POST /v1/global-config/ecfg_1/backups/bak_1/restore HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

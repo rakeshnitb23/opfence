@@ -29,3 +29,81 @@ operations:
       - fixture: fixtures/project-invite-create.http
         expect: access
         resource: prj-shop
+
+  - id: railway.project-invite.code-use
+    match: { graphql: { type: mutation, field: inviteCodeUse } }
+    class: access
+    resource: { arg: code, kind: invite-code }
+    card: "Join a project with invite code {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-code-use.http
+        expect: access
+        resource: inv-code-1
+
+  - id: railway.project-invite.accept
+    match: { graphql: { type: mutation, field: projectInvitationAccept } }
+    class: access
+    resource: { arg: code, kind: invite-code }
+    card: "Accept project invitation {code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-accept.http
+        expect: access
+        resource: inv-code-1
+
+  - id: railway.project-invite.delete
+    match: { graphql: { type: mutation, field: projectInvitationDelete } }
+    class: access
+    resource: { arg: id, kind: project-invitation }
+    card: "Revoke project invitation {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-delete.http
+        expect: access
+        resource: pinv-1
+
+  - id: railway.project-invite.resend
+    match: { graphql: { type: mutation, field: projectInvitationResend } }
+    class: access
+    resource: { arg: id, kind: project-invitation }
+    card: "Resend project invitation {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/project-invite-resend.http
+        expect: access
+        resource: pinv-1
+
+  - id: railway.project-invite.code
+    match: { graphql: { type: query, field: projectInviteCode } }
+    class: credential
+    resource: { arg: projectId, kind: project }
+    card: "Read the invite code that joins project {projectId} as {role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Anyone holding the code can join the project with that role, so reading it
+      is like reading a token.
+    tests:
+      - fixture: fixtures/project-invite-code.http
+        expect: credential
+        resource: prj-shop

@@ -29,3 +29,65 @@ operations:
       - fixture: fixtures/workspace-two-factor.http
         expect: access
         resource: ws-acme
+
+  - id: railway.workspace.slack-channel
+    match: { graphql: { type: mutation, field: upsertSlackChannel } }
+    class: write
+    resource: { arg: workspaceId, kind: workspace }
+    card: "Create a Slack support channel for workspace {workspaceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-slack-channel.http
+        expect: write
+        resource: ws-acme
+
+  - id: railway.workspace.slack-channel-by-id
+    match: { graphql: { type: mutation, field: workspaceUpsertSlackChannel } }
+    class: write
+    resource: { arg: id, kind: workspace }
+    card: "Create a Slack support channel for workspace {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-slack-channel-by-id.http
+        expect: write
+        resource: ws-acme
+
+  - id: railway.workspace.leave
+    match: { graphql: { type: mutation, field: workspaceLeave } }
+    class: access
+    resource: { arg: id, kind: workspace }
+    card: "Leave workspace {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      As railway.project.leave.
+    tests:
+      - fixture: fixtures/workspace-leave.http
+        expect: access
+        resource: ws-acme
+
+  - id: railway.workspace.update
+    match: { graphql: { type: mutation, field: workspaceUpdate } }
+    class: write
+    resource: { arg: id, kind: workspace }
+    card: "Change name, avatar or region of workspace {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/workspace-update.http
+        expect: write
+        resource: ws-acme

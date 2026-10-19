@@ -1,0 +1,5 @@
+# description: List aliases of deployment dpl_123 with their shareable-link secrets
+GET /v2/deployments/dpl_123/aliases HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

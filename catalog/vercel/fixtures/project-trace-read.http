@@ -1,0 +1,5 @@
+# description: Read a request trace
+GET /v1/projects/traces?requestId=req_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

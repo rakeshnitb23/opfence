@@ -1,0 +1,7 @@
+# description: Change an AI Gateway routing rule
+PATCH /ai-gateway/rules HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"ruleId":"rule_1","enabled":false}

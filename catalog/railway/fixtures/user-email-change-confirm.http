@@ -1,0 +1,7 @@
+# description: Confirm a change of the Railway account email
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EmailChangeConfirm($nonce: String!) { emailChangeConfirm(nonce: $nonce) }","variables":{"nonce":"nonce-1"}}

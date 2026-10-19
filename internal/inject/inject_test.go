@@ -196,6 +196,16 @@ func TestTransform(t *testing.T) {
 			t.Errorf("%q: no error", bad)
 		}
 	}
+	// clear empties a value of any shape, keeping its type; numbers stay.
+	cx := &catalog.Response{Clear: []string{"projects.protectionBypass", "projects.list", "projects.secret", "projects.n"}}
+	out, res, err = Transform([]byte(`{"projects":[{"protectionBypass":{"bypass-secret-0123456789":{"scope":"automation-bypass"}},"list":["a"],"secret":"s","n":7,"name":"web"},{"name":"api"}]}`), cx, nil)
+	if err != nil || string(out) != `{"projects":[{"list":[],"n":7,"name":"web","protectionBypass":{},"secret":""},{"name":"api"}]}` {
+		t.Fatalf("clear: %s %v", out, err)
+	}
+	if res.Hits["projects.protectionBypass"] != 1 {
+		t.Fatalf("clear hits %v", res.Hits)
+	}
+
 	boom := errors.New("boom")
 	if _, _, err := Transform([]byte(`{"token":"tok-0123456789abcdef"}`), x, func(string) (string, error) { return "", boom }); !errors.Is(err, boom) {
 		t.Fatalf("mint error: %v", err)

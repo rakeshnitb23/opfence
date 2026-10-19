@@ -39,3 +39,20 @@ operations:
       - fixture: fixtures/dns-record-delete.http
         expect: delete
         resource: example.com
+
+  - id: vercel.dns-record.replace
+    match: { rest: { method: PUT, path: "/domains/{domain}/records" } }
+    class: delete
+    resource: { arg: domain, kind: domain }
+    card: "Replace the DNS records of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The spec documents no body for this unversioned endpoint; replacing a
+      domain's records drops the ones left out.
+    tests:
+      - fixture: fixtures/dns-record-replace.http
+        expect: delete
+        resource: example.com

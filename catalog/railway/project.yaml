@@ -173,3 +173,21 @@ operations:
       - fixture: fixtures/project-leave.http
         expect: access
         resource: prj-shop
+
+  - id: railway.project.claim
+    match: { graphql: { type: mutation, field: projectClaim } }
+    class: access
+    resource: { arg: id, kind: project }
+    card: "Claim project {id} into workspace {workspaceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Moves ownership of a project into a workspace, as
+      railway.project.transfer.
+    tests:
+      - fixture: fixtures/project-claim.http
+        expect: access
+        resource: prj-shop

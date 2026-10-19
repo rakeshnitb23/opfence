@@ -12,3 +12,39 @@ operations:
     tests:
       - fixture: fixtures/ssh-key-delete.http
         expect: access
+
+  - id: railway.ssh-key.create
+    match: { graphql: { type: mutation, field: sshPublicKeyCreate } }
+    class: access
+    resource: { arg: input.workspaceId, kind: workspace }
+    card: "Add SSH key {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The key signs in over native SSH; a workspace-owned key works for anyone
+      using it.
+    tests:
+      - fixture: fixtures/ssh-key-create.http
+        expect: access
+        resource: ws-acme
+
+  - id: railway.ssh-key.signup-approve
+    match: { graphql: { type: mutation, field: sshSignupApprove } }
+    class: access
+    resource: { arg: code, kind: ssh-signup }
+    card: "Register the SSH key of signup {code} on this account"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Registers someone's offered SSH key on the authenticated account, which
+      lets that key sign in as it.
+    tests:
+      - fixture: fixtures/ssh-key-signup-approve.http
+        expect: access
+        resource: ssh-code-1

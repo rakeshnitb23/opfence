@@ -1,0 +1,99 @@
+# Railway GraphQL API: edge
+operations:
+  - id: railway.edge.cdn-disable
+    match: { graphql: { type: mutation, field: disableServiceCdn } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Turn off the CDN for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Soft-deletes the edge config; traffic goes straight to the service.
+    tests:
+      - fixture: fixtures/edge-cdn-disable.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.edge.cdn-enable
+    match: { graphql: { type: mutation, field: enableServiceCdn } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Turn on the CDN for service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/edge-cdn-enable.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.edge.cache-purge
+    match: { graphql: { type: mutation, field: purgeServiceCache } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Purge the CDN cache ({input.scope}) of service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/edge-cache-purge.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.edge.under-attack
+    match: { graphql: { type: mutation, field: setServiceUnderAttackMode } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Set Under Attack Mode of service {input.serviceId} to {input.enabled}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Decides who may reach the service's public domains (a browser challenge;
+      API clients get 429), so either direction is an access change.
+    tests:
+      - fixture: fixtures/edge-under-attack.http
+        expect: access
+        resource: svc-api
+
+  - id: railway.edge.config-update
+    match: { graphql: { type: mutation, field: updateServiceEdgeConfig } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Change the CDN caching settings of service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/edge-config-update.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.edge.rules-update
+    match: { graphql: { type: mutation, field: updateServiceEdgeRules } }
+    class: access
+    resource: { arg: input.serviceId, kind: service }
+    card: "Replace the edge rules of service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Edge rules block, allow or challenge requests before they reach the
+      service, and null clears them all: an access control change.
+    tests:
+      - fixture: fixtures/edge-rules-update.http
+        expect: access
+        resource: svc-api

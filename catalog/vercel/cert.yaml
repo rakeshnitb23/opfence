@@ -11,3 +11,29 @@ operations:
     tests:
       - fixture: fixtures/cert-delete.http
         expect: delete
+
+  - id: vercel.cert.issue
+    match: { rest: { method: POST, path: "/{version}/certs" } }
+    class: write
+    card: "Issue a certificate for {body.cns}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/cert-issue.http
+        expect: write
+
+  - id: vercel.cert.upload
+    match: { rest: { method: PUT, path: "/{version}/certs" } }
+    class: credential
+    card: "Upload a certificate with its private key"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The body carries the certificate's private key.
+    tests:
+      - fixture: fixtures/cert-upload.http
+        expect: credential

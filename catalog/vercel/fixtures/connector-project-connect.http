@@ -1,0 +1,7 @@
+# description: Connect connector con_slack to project prj_shop
+POST /v1/connect/connectors/con_slack/projects/prj_shop HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"environments":["production"]}

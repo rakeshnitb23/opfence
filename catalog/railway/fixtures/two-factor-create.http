@@ -1,0 +1,7 @@
+# description: Turn on two-factor authentication and get recovery codes
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TwoFactorInfoCreate($input: TwoFactorInfoCreateInput!) { twoFactorInfoCreate(input: $input) { recoveryCodes } }","variables":{"input":{"token":"123456"}}}

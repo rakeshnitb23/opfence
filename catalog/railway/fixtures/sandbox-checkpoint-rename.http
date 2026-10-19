@@ -1,0 +1,7 @@
+# description: Rename sandbox checkpoint ready to base
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SandboxCheckpointRename($environmentId: String!, $id: ID!, $name: String!) { sandboxCheckpointRename(environmentId: $environmentId, id: $id, name: $name) { __typename } }","variables":{"environmentId":"env-production","id":"ready","name":"base"}}

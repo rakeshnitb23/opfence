@@ -92,3 +92,38 @@ operations:
       - fixture: fixtures/variable-list-for-deployment.http
         expect: credential
         resource: env-production
+
+  - id: railway.variable.heroku-import
+    match: { graphql: { type: mutation, field: herokuImportVariables } }
+    class: write
+    resource: { arg: input.environmentId, kind: environment }
+    card: "Import the variables of Heroku app {input.herokuAppId} into service {input.serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Sets variables (a write, as railway.variable.upsert) and returns only how
+      many; it can overwrite existing values.
+    tests:
+      - fixture: fixtures/variable-heroku-import.http
+        expect: write
+        resource: env-production
+
+  - id: railway.variable.shared-configure
+    match: { graphql: { type: mutation, field: sharedVariableConfigure } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Choose which services get shared variable {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes which services see a shared variable; Railway variables are not
+      secrets, so this is a write as railway.variable.upsert.
+    tests:
+      - fixture: fixtures/variable-shared-configure.http
+        expect: write

@@ -1,0 +1,7 @@
+# description: Apply the Postgres security update to service svc-pg now
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation ServiceInstanceVulnRemediationPatchNow($serviceId: String!, $environmentId: String!) { serviceInstanceVulnRemediationPatchNow(serviceId: $serviceId, environmentId: $environmentId) }","variables":{"serviceId":"svc-pg","environmentId":"env-production"}}

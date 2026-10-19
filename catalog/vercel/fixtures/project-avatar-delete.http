@@ -1,0 +1,5 @@
+# description: Remove the avatar of project shop-web
+DELETE /v1/projects/shop-web/avatar HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

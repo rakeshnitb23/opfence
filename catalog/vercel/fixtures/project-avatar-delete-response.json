@@ -1,0 +1,14 @@
+{
+  "id": "prj_shop",
+  "name": "shop-web",
+  "accountId": "team_acme",
+  "framework": "nextjs",
+  "updatedAt": 1760000000000,
+  "protectionBypass": {
+    "opf_vercel_EXAMPLE_automationbypass0123": {
+      "createdAt": 1760000000000,
+      "createdBy": "usr_1",
+      "scope": "automation-bypass"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+# description: Remove deploy source wpa-1 from the workspace allowlist
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation WorkspacePolicyDeploySourceAllowlistRemove($id: String!) { workspacePolicyDeploySourceAllowlistRemove(id: $id) }","variables":{"id":"wpa-1"}}

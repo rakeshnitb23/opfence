@@ -1,0 +1,117 @@
+# Railway GraphQL API: signal
+operations:
+  - id: railway.signal.create
+    match: { graphql: { type: mutation, field: signalCreate } }
+    class: write
+    resource: { arg: input.name, kind: signal }
+    card: "Create signal {input.name} for {input.owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/signal-create.http
+        expect: write
+        resource: new-checkout
+
+  - id: railway.signal.default-set
+    match: { graphql: { type: mutation, field: signalDefaultSet } }
+    class: write
+    resource: { arg: input.name, kind: signal }
+    card: "Change the default of signal {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Changes application behaviour and keeps no data, as railway-mcp's feature-
+      flag set.
+    tests:
+      - fixture: fixtures/signal-default-set.http
+        expect: write
+        resource: new-checkout
+
+  - id: railway.signal.delete
+    match: { graphql: { type: mutation, field: signalDelete } }
+    class: irreversible
+    resource: { arg: input.name, kind: signal }
+    card: "Delete signal {input.name} and its audit log"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Deletes the signal with its change history, so not even signalRollback can
+      restore it; as railway-mcp's feature-flag delete.
+    tests:
+      - fixture: fixtures/signal-delete.http
+        expect: irreversible
+        resource: new-checkout
+
+  - id: railway.signal.replace
+    match: { graphql: { type: mutation, field: signalReplace } }
+    class: delete
+    resource: { arg: input.name, kind: signal }
+    card: "Replace signal {input.name}, clearing all its rules"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The schema calls it destructive; the change log keeps the previous state,
+      which signalRollback restores, so delete rather than irreversible.
+    tests:
+      - fixture: fixtures/signal-replace.http
+        expect: delete
+        resource: new-checkout
+
+  - id: railway.signal.rollback
+    match: { graphql: { type: mutation, field: signalRollback } }
+    class: write
+    resource: { arg: input.name, kind: signal }
+    card: "Roll signal {input.name} back to before change {input.seq}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/signal-rollback.http
+        expect: write
+        resource: new-checkout
+
+  - id: railway.signal.rule-set
+    match: { graphql: { type: mutation, field: signalRuleSet } }
+    class: write
+    resource: { arg: input.name, kind: signal }
+    card: "Set rule {input.ruleId} on signal {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/signal-rule-set.http
+        expect: write
+        resource: new-checkout
+
+  - id: railway.signal.rule-unset
+    match: { graphql: { type: mutation, field: signalRuleUnset } }
+    class: write
+    resource: { arg: input.name, kind: signal }
+    card: "Remove rule {input.ruleId} from signal {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Restorable with signalRollback.
+    tests:
+      - fixture: fixtures/signal-rule-unset.http
+        expect: write
+        resource: new-checkout

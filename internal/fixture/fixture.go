@@ -112,7 +112,7 @@ func checkResponse(c *catalog.Catalog, r *catalog.Rule, t catalog.Test) string {
 		return file + ": " + err.Error()
 	}
 	var missed []string
-	for _, p := range append(append([]string{}, r.Response.Redact...), r.Response.Mint...) {
+	for _, p := range r.Response.Paths() {
 		if res.Hits[p] == 0 {
 			missed = append(missed, p)
 		}

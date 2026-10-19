@@ -23,11 +23,12 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 | `opfence init [--undo]`, `opfence secrets list / rm` (keys into your keychain, placeholders in files) | available (preview) |
 | `opfence approve` (answer held requests from another terminal; desktop dialogs) | available (preview) |
 | `opfence phone setup / test / off` (approve from your phone with the ntfy app) | available (preview) |
-| `opfence run -- claude` (Claude Code in its sandbox behind Opfence), `opfence run --srt / --weak -- <command>`, `opfence trust [--uninstall]`, `opfence doctor` | available (preview) |
+| `opfence run -- claude` (Claude Code in its sandbox behind Opfence), `opfence run --srt -- codex / cursor-agent / gemini`, `opfence run --srt / --weak -- <command>`, `opfence trust [--uninstall]`, `opfence doctor` | available (preview) |
+| `opfence hook codex` (Codex's PreToolUse and PermissionRequest hook, installed by `opfence run`) | available (preview) |
 
 ## Catalog
 
-5,397 rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB Atlas and Turso, and 28 MCP servers: Supabase, GitHub, Vercel, Railway, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB, Turso, Firebase, Upstash, Sentry, Notion, Linear and eight AWS Labs servers, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. A nightly job (`opfence catalog check-sources`) compares the rules with the schemas providers publish, so a renamed or new endpoint shows up the night it ships. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
+5,770 rules for Railway, Vercel, GitHub (its APIs and git over HTTPS), AWS, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB Atlas and Turso, and 28 MCP servers: Supabase, GitHub, Vercel, Railway, Cloudflare, Fly.io, Render, Netlify, Heroku, Stripe, DigitalOcean, Neon, PlanetScale, MongoDB, Turso, Firebase, Upstash, Sentry, Notion, Linear and eight AWS Labs servers, each checked against the provider's own schema and replayed from a recorded request by `opfence test`. A nightly job (`opfence catalog check-sources`) compares the rules with the schemas providers publish, so a renamed or new endpoint shows up the night it ships. Browse them with `opfence catalog list`, or see why a request gets its decision with `opfence explain request.http`.
 
 ## Use with Claude Code
 
@@ -36,6 +37,16 @@ opfence export --target claude-code -o opfence-settings.json
 ```
 
 Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` is allowed, a `DROP TABLE` needs confirmation), and adds ask rules for tools that are risky whatever their arguments. Map your production and development project ids in `opfence.yaml` so the hook knows which is which; until then everything counts as production.
+
+## Use with Codex, Cursor or Gemini CLI
+
+```sh
+opfence run --srt -- codex
+opfence run --srt -- cursor-agent
+opfence run --srt -- gemini
+```
+
+Each runs inside Anthropic's sandbox runtime (`npm install -g @anthropic-ai/sandbox-runtime`) behind Opfence, with your keys as placeholders and its own sandbox turned off, since srt is the sandbox. Its model backend is tunnelled; everything else it or its tools reach goes through the catalog. For Codex, Opfence also installs its hook for this session only, so each local MCP tool call is decided with its arguments like in Claude Code, and passes the proxy settings to Codex's MCP servers. Nothing in `~/.codex` changes.
 
 For NVIDIA OpenShell, `opfence export --target openshell --environment production` writes network policies to merge into your sandbox policy.
 

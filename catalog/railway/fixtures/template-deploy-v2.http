@@ -1,0 +1,7 @@
+# description: Deploy template tpl-postgres into project prj-shop
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation TemplateDeployV2($input: TemplateDeployV2Input!) { templateDeployV2(input: $input) { projectId } }","variables":{"input":{"projectId":"prj-shop","environmentId":"env-production","templateId":"tpl-postgres","serializedConfig":{}}}}

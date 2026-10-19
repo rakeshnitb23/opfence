@@ -1,0 +1,7 @@
+# description: Change domain shop.example.com of project shop-web
+PATCH /v9/projects/shop-web/domains/shop.example.com HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"redirect":"www.example.com","redirectStatusCode":308}

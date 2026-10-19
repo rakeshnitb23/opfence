@@ -1,0 +1,7 @@
+# description: Set the base environment of deployment trigger trg-main to env-staging
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation BaseEnvironmentOverride($id: String!, $input: BaseEnvironmentOverrideInput!) { baseEnvironmentOverride(id: $id, input: $input) }","variables":{"id":"trg-main","input":{"baseEnvironmentOverrideId":"env-staging"}}}

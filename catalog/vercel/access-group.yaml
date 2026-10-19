@@ -23,3 +23,57 @@ operations:
     tests:
       - fixture: fixtures/access-group-delete.http
         expect: access
+
+  - id: vercel.access-group.create
+    match: { rest: { method: POST, path: "/{version}/access-groups" } }
+    class: access
+    card: "Create access group {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-create.http
+        expect: access
+
+  - id: vercel.access-group.project-add
+    match: { rest: { method: POST, path: "/{version}/access-groups/{accessGroupIdOrName}/projects" } }
+    class: access
+    resource: { arg: body.projectId, kind: project }
+    card: "Give access group {accessGroupIdOrName} role {body.role} on project {body.projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-project-add.http
+        expect: access
+        resource: prj_shop
+
+  - id: vercel.access-group.project-update
+    match: { rest: { method: PATCH, path: "/{version}/access-groups/{accessGroupIdOrName}/projects/{projectId}" } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Change the role of access group {accessGroupIdOrName} on project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-project-update.http
+        expect: access
+        resource: prj_shop
+
+  - id: vercel.access-group.project-remove
+    match: { rest: { method: DELETE, path: "/{version}/access-groups/{accessGroupIdOrName}/projects/{projectId}" } }
+    class: access
+    resource: { arg: projectId, kind: project }
+    card: "Remove access group {accessGroupIdOrName} from project {projectId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/access-group-project-remove.http
+        expect: access
+        resource: prj_shop

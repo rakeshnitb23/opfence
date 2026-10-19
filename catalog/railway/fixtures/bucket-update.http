@@ -1,0 +1,7 @@
+# description: Rename bucket bkt-assets to media
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation BucketUpdate($id: String!, $input: BucketUpdateInput!) { bucketUpdate(id: $id, input: $input) { __typename } }","variables":{"id":"bkt-assets","input":{"name":"media"}}}

@@ -29,3 +29,206 @@ operations:
       - fixture: fixtures/environment-create.http
         expect: write
         resource: prj-shop
+
+  - id: railway.environment.compose-import
+    match: { graphql: { type: mutation, field: dockerComposeImport } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Create services and volumes in environment {environmentId} from a docker compose file"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Creates (or stages) services and volumes; it does not remove existing
+      ones.
+    tests:
+      - fixture: fixtures/environment-compose-import.http
+        expect: write
+        resource: env-production
+
+  - id: railway.environment.apply-change-set
+    match: { graphql: { type: mutation, field: environmentApplyChangeSet } }
+    class: irreversible
+    resource: { arg: environmentId, kind: environment }
+    card: "Apply a change set to environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Experimental. A change set can delete services, volumes and variables, and
+      its JSON is not checked here, so it takes the strictest class it can reach
+      (as railway-mcp's accept-staged).
+    tests:
+      - fixture: fixtures/environment-apply-change-set.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.environment.patch-commit
+    match: { graphql: { type: mutation, field: environmentPatchCommit } }
+    class: irreversible
+    resource: { arg: environmentId, kind: environment }
+    card: "Commit a config patch to environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      An environment patch can delete services, volumes and variables (as
+      railway-mcp's accept-staged).
+    tests:
+      - fixture: fixtures/environment-patch-commit.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.environment.commit-staged
+    match: { graphql: { type: mutation, field: environmentPatchCommitStaged } }
+    class: irreversible
+    resource: { arg: environmentId, kind: environment }
+    card: "Commit the staged changes of environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Commits whatever is staged, which the call does not show; as railway-mcp's
+      accept-staged.
+    tests:
+      - fixture: fixtures/environment-commit-staged.http
+        expect: irreversible
+        resource: env-production
+
+  - id: railway.environment.preview-change-set
+    match: { graphql: { type: mutation, field: environmentPreviewChangeSet } }
+    class: read
+    resource: { arg: environmentId, kind: environment }
+    card: "Preview a change set for environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      A mutation by type; the schema says it has no side effects.
+    tests:
+      - fixture: fixtures/environment-preview-change-set.http
+        expect: read
+        resource: env-production
+
+  - id: railway.environment.rename
+    match: { graphql: { type: mutation, field: environmentRename } }
+    class: write
+    resource: { arg: id, kind: environment }
+    card: "Rename environment {id} to {input.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/environment-rename.http
+        expect: write
+        resource: env-staging
+
+  - id: railway.environment.stage-changes
+    match: { graphql: { type: mutation, field: environmentStageChanges } }
+    class: write
+    resource: { arg: environmentId, kind: environment }
+    card: "Stage config changes for environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Only stages; nothing changes until a commit (railway.environment.commit-
+      staged). Selecting patch returns the staged config, which can hold
+      variable values, so it is also credential (provider.yaml
+      graphql_secret_fields).
+    tests:
+      - fixture: fixtures/environment-stage-changes.http
+        expect: write
+        resource: env-production
+      - fixture: fixtures/environment-stage-changes-decrypted.http
+        expect: credential
+        resource: env-production
+
+  - id: railway.environment.triggers-deploy
+    match: { graphql: { type: mutation, field: environmentTriggersDeploy } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Deploy the connected triggers of service {input.serviceId} in environment {input.environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/environment-triggers-deploy.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.environment.unskip-service
+    match: { graphql: { type: mutation, field: environmentUnskipService } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Deploy skipped service {serviceId} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/environment-unskip-service.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.environment.get
+    match: { graphql: { type: query, field: environment } }
+    class: read
+    resource: { arg: id, kind: environment }
+    card: "Read environment {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The default for queries, written out to test graphql_secret_fields:
+      Environment.config(decryptVariables: true) returns every variable value
+      (the CLI's own comment says the non-decrypted config masks them as null).
+      Opfence does not see nested arguments, so any query selecting config (or
+      patch) is credential.
+    tests:
+      - fixture: fixtures/environment-get.http
+        expect: read
+        resource: env-production
+      - fixture: fixtures/environment-get-config.http
+        expect: credential
+        resource: env-production
+
+  - id: railway.environment.staged-changes
+    match: { graphql: { type: query, field: environmentStagedChanges } }
+    class: read
+    resource: { arg: environmentId, kind: environment }
+    card: "Read the staged changes of environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Metadata is a read; selecting patch is credential through
+      graphql_secret_fields, as for environmentPatch and environmentPatches.
+    tests:
+      - fixture: fixtures/environment-staged-changes.http
+        expect: read
+        resource: env-production
+      - fixture: fixtures/environment-staged-changes-patch.http
+        expect: credential
+        resource: env-production

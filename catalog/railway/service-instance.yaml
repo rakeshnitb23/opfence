@@ -3,16 +3,39 @@ operations:
   - id: railway.service-instance.update
     match: { graphql: { type: mutation, field: serviceInstanceUpdate } }
     class: write
+    when:
+      - if: { arg: input.numReplicas, present: true }
+        class: money
+      - if: { arg: input.multiRegionConfig, present: true }
+        class: money
+      - if: { arg: input.registryCredentials, present: true }
+        class: credential
     resource: { arg: serviceId, kind: service }
     card: "Change the settings of service {serviceId} in environment {environmentId}"
     status: verified
-    verified: 2026-10-16
+    verified: 2026-10-19
     sources:
       - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
       - https://docs.railway.com/integrations/api
+    notes: >-
+      Settings are a write. A start, build or pre-deploy command runs on the
+      next deploy with the service's variables, the same power as deploying
+      code, so it stays a write (as railway-mcp's update_service).
+      numReplicas and multiRegionConfig (replicas per region) multiply what
+      the service bills, so they are money like railway-mcp's scale_service.
+      registryCredentials sets a private registry password, a secret.
     tests:
       - fixture: fixtures/service-instance-update.http
         expect: write
+        resource: svc-api
+      - fixture: fixtures/service-instance-update-replicas.http
+        expect: money
+        resource: svc-api
+      - fixture: fixtures/service-instance-update-regions.http
+        expect: money
+        resource: svc-api
+      - fixture: fixtures/service-instance-update-registry.http
+        expect: credential
         resource: svc-api
 
   - id: railway.service-instance.limits
@@ -61,3 +84,70 @@ operations:
       - fixture: fixtures/service-instance-deploy.http
         expect: write
         resource: svc-api
+
+  - id: railway.service-instance.auto-deploy
+    match: { graphql: { type: mutation, field: serviceInstanceAutoDeployUpdate } }
+    class: write
+    resource: { arg: input.serviceId, kind: service }
+    card: "Set auto-deploy of service {input.serviceId} to {input.enabled}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    tests:
+      - fixture: fixtures/service-instance-auto-deploy.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service-instance.deploy-v1
+    match: { graphql: { type: mutation, field: serviceInstanceDeploy } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Deploy service {serviceId} in environment {environmentId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      The older form of railway.service-instance.deploy.
+    tests:
+      - fixture: fixtures/service-instance-deploy-v1.http
+        expect: write
+        resource: svc-api
+
+  - id: railway.service-instance.vuln-dismiss
+    match: { graphql: { type: mutation, field: serviceInstanceVulnRemediationDismiss } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Dismiss the Postgres security update for service {serviceId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Cancels a scheduled security redeploy; the update can still be applied
+      later.
+    tests:
+      - fixture: fixtures/service-instance-vuln-dismiss.http
+        expect: write
+        resource: svc-pg
+
+  - id: railway.service-instance.vuln-patch
+    match: { graphql: { type: mutation, field: serviceInstanceVulnRemediationPatchNow } }
+    class: write
+    resource: { arg: serviceId, kind: service }
+    card: "Apply the Postgres security update to service {serviceId} now"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Takes a backup, then redeploys; a redeploy is a write.
+    tests:
+      - fixture: fixtures/service-instance-vuln-patch.http
+        expect: write
+        resource: svc-pg

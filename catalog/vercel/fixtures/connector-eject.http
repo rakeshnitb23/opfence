@@ -1,0 +1,5 @@
+# description: Detach connector con_slack from its provider-side manager
+POST /v1/connect/connectors/con_slack/managed/eject HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

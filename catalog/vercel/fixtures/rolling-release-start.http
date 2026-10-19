@@ -1,0 +1,7 @@
+# description: Start a rolling release of dpl_123 for project shop-web
+POST /v1/projects/shop-web/rolling-release/start HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"canaryDeploymentId":"dpl_123"}

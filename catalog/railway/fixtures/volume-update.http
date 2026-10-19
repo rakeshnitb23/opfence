@@ -1,0 +1,7 @@
+# description: Rename volume vol-pg-data to pg-data
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation VolumeUpdate($volumeId: String!, $input: VolumeUpdateInput!) { volumeUpdate(volumeId: $volumeId, input: $input) { id } }","variables":{"volumeId":"vol-pg-data","input":{"name":"pg-data"}}}

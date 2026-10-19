@@ -1,0 +1,19 @@
+# Railway GraphQL API: webhook
+operations:
+  - id: railway.webhook.test
+    match: { graphql: { type: mutation, field: webhookTest } }
+    class: write
+    resource: { arg: url, kind: url }
+    card: "Send a test webhook to {url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/railwayapp/cli/blob/master/src/gql/schema.json
+      - https://docs.railway.com/integrations/api
+    notes: >-
+      Railway sends the given payload to the given URL and returns the status
+      code; it changes nothing in the account.
+    tests:
+      - fixture: fixtures/webhook-test.http
+        expect: write
+        resource: https://hooks.example.com/railway

@@ -1,0 +1,7 @@
+# description: Give access group ag_admins role ADMIN on project prj_shop
+POST /v1/access-groups/ag_admins/projects HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"projectId":"prj_shop","role":"ADMIN"}

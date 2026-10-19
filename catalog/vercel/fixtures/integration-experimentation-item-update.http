@@ -1,0 +1,7 @@
+# description: Change experimentation item exp_1 of resource res_ff
+PATCH /v1/installations/icfg_1/resources/res_ff/experimentation/items/exp_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"isArchived":true}

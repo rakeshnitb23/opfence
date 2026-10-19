@@ -1,0 +1,7 @@
+# description: Rename private network endpoint pne-1 to api-internal
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation PrivateNetworkEndpointRename($id: String!, $privateNetworkId: String!, $dnsName: String!) { privateNetworkEndpointRename(id: $id, privateNetworkId: $privateNetworkId, dnsName: $dnsName) }","variables":{"id":"pne-1","privateNetworkId":"pn-1","dnsName":"api-internal"}}

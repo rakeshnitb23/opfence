@@ -1,0 +1,5 @@
+# description: Delete check chk_1 of project shop-web and its runs
+DELETE /v2/projects/shop-web/checks/chk_1 HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

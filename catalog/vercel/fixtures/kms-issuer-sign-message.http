@@ -1,0 +1,7 @@
+# description: Sign a message with KMS issuer iss_1
+POST /v1/kms/issuers/iss_1/sign/message HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+Content-Type: application/json
+
+{"message":"aGVsbG8="}

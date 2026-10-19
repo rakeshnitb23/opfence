@@ -1,0 +1,15 @@
+# Vercel REST API: sandbox-snapshot
+operations:
+  - id: vercel.sandbox-snapshot.delete
+    match: { rest: { method: DELETE, path: "/{version}/sandboxes/snapshots/{snapshotId}" } }
+    class: irreversible
+    card: "Delete sandbox snapshot {snapshotId}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The spec says it cannot be undone.
+    tests:
+      - fixture: fixtures/sandbox-snapshot-delete.http
+        expect: irreversible

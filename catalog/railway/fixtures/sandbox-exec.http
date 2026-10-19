@@ -1,0 +1,7 @@
+# description: Run ls / in sandbox sbx-1
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation SandboxExec($environmentId: String!, $id: String!, $command: String!) { sandboxExec(environmentId: $environmentId, id: $id, command: $command) { exitCode } }","variables":{"environmentId":"env-production","id":"sbx-1","command":"ls /"}}

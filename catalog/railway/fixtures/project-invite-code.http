@@ -1,0 +1,7 @@
+# description: Read the invite code that joins project prj-shop as MEMBER
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"query ProjectInviteCode($projectId: String!, $role: ProjectRole!) { projectInviteCode(projectId: $projectId, role: $role) { code } }","variables":{"projectId":"prj-shop","role":"MEMBER"}}

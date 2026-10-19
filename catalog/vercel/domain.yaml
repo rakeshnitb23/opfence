@@ -85,3 +85,155 @@ operations:
       - fixture: fixtures/domain-nameservers.http
         expect: write
         resource: example.com
+
+  - id: vercel.domain.search
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/search" } }
+    class: read
+    card: "Check availability and prices of domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A lookup sent as POST; it buys nothing.
+    tests:
+      - fixture: fixtures/domain-search.http
+        expect: read
+
+  - id: vercel.domain.price
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/price" } }
+    class: read
+    card: "Get prices of domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A lookup sent as POST; it buys nothing.
+    tests:
+      - fixture: fixtures/domain-price.http
+        expect: read
+
+  - id: vercel.domain.availability
+    match: { rest: { method: POST, path: "/{version}/registrar/domains/availability" } }
+    class: read
+    card: "Check availability of domains"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      A lookup sent as POST; it buys nothing.
+    tests:
+      - fixture: fixtures/domain-availability.http
+        expect: read
+
+  - id: vercel.domain.auto-renew
+    match: { rest: { method: PATCH, path: "/{version}/registrar/domains/{domain}/auto-renew" } }
+    class: money
+    when:
+      - if: { arg: body.autoRenew, equals: "false" }
+        class: irreversible
+    resource: { arg: domain, kind: domain }
+    card: "Set auto-renew of {domain} to {body.autoRenew}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Turning auto-renew on commits to yearly charges; turning it off lets the
+      domain expire, and an expired domain can be registered by someone else.
+    tests:
+      - fixture: fixtures/domain-auto-renew.http
+        expect: money
+        resource: example.com
+      - fixture: fixtures/domain-auto-renew-off.http
+        expect: irreversible
+        resource: example.com
+
+  - id: vercel.domain.auth-code
+    match: { rest: { method: GET, path: "/{version}/registrar/domains/{domain}/auth-code" } }
+    class: credential
+    resource: { arg: domain, kind: domain }
+    card: "Read the transfer auth code of {domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      The auth code lets whoever holds it transfer the domain to another
+      registrar.
+    tests:
+      - fixture: fixtures/domain-auth-code.http
+        expect: credential
+        resource: example.com
+
+  - id: vercel.domain.claim
+    match: { rest: { method: POST, path: "/{version}/domains/{domain}/claim" } }
+    class: access
+    resource: { arg: domain, kind: domain }
+    card: "Claim ownership of {domain} for this team"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      Moves the domain to the caller's team, even from another owner, once the
+      TXT record verifies.
+    tests:
+      - fixture: fixtures/domain-claim.http
+        expect: access
+        resource: example.com
+
+  - id: vercel.domain.add
+    match: { rest: { method: POST, path: "/{version}/domains" } }
+    class: write
+    when:
+      - if: { arg: body.method, equals: "move-in" }
+        class: access
+    resource: { arg: body.name, kind: domain }
+    card: "Add domain {body.name} to Vercel ({body.method})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      method move-in takes the domain over from another Vercel account.
+    tests:
+      - fixture: fixtures/domain-add.http
+        expect: write
+        resource: example.com
+      - fixture: fixtures/domain-add-move-in.http
+        expect: access
+        resource: example.com
+
+  - id: vercel.domain.update
+    match: { rest: { method: PATCH, path: "/{version}/domains/{domain}" } }
+    class: write
+    when:
+      - if: { arg: body.op, equals: "move-out" }
+        class: access
+      - if: { arg: body.renew, equals: "true" }
+        class: money
+      - if: { arg: body.renew, equals: "false" }
+        class: irreversible
+    resource: { arg: domain, kind: domain }
+    card: "Update or move domain {domain} ({body.op})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    notes: >-
+      op move-out gives the domain to another user or team; the deprecated renew
+      field turns auto-renew on (yearly charges) or off (the domain can expire
+      and be lost).
+    tests:
+      - fixture: fixtures/domain-update.http
+        expect: write
+        resource: example.com
+      - fixture: fixtures/domain-update-move-out.http
+        expect: access
+        resource: example.com
+      - fixture: fixtures/domain-update-renew-off.http
+        expect: irreversible
+        resource: example.com

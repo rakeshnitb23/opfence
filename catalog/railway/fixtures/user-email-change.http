@@ -1,0 +1,7 @@
+# description: Change the Railway account email to someone@example.com
+POST /graphql/v2 HTTP/1.1
+Host: backboard.railway.com
+Authorization: Bearer opf_railway_EXAMPLE
+Content-Type: application/json
+
+{"query":"mutation EmailChangeInitiate($newEmail: String!) { emailChangeInitiate(newEmail: $newEmail) }","variables":{"newEmail":"someone@example.com"}}

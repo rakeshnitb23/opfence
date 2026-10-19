@@ -1,0 +1,5 @@
+# description: Delete segment beta of project shop-web
+DELETE /v1/projects/shop-web/feature-flags/segments/beta HTTP/1.1
+Host: api.vercel.com
+Authorization: Bearer opf_vercel_EXAMPLE
+

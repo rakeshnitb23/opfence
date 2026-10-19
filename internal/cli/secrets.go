@@ -27,12 +27,15 @@ func newInitCmd(g *globalOptions) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Move API keys from .env and MCP config files into your keychain",
-		Long: `Init finds credentials for APIs in the catalog in .env files and in MCP and
-Claude Code config files (.mcp.json, .cursor/mcp.json, .vscode/mcp.json,
-.claude/settings*.json), stores the real values in your OS keychain, and
-writes placeholders of the same length and shape in their place. Agents then
-only ever see placeholders; the Opfence proxy swaps the real key back in for
-requests to that key's own API.
+		Long: `Init finds credentials for APIs in the catalog in .env files and in Claude
+Code's config files (.mcp.json, .claude/settings*.json), stores the real
+values in your OS keychain, and writes placeholders of the same length and
+shape in their place. Agents then only ever see placeholders; the Opfence
+proxy swaps the real key back in for requests to that key's own API.
+
+Keys in other tools' MCP configs (.cursor/mcp.json, .vscode/mcp.json,
+.gemini/settings.json, .codex/config.toml) are reported but left in place,
+because those tools also start their servers without opfence run.
 
 Every value is stored and read back from the keychain before any file is
 changed. "opfence init --undo" writes the real values back.`,

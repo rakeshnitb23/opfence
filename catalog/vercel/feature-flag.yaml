@@ -13,3 +13,45 @@ operations:
       - fixture: fixtures/feature-flag-delete.http
         expect: delete
         resource: shop-web
+
+  - id: vercel.feature-flag.create
+    match: { rest: { method: PUT, path: "/{version}/projects/{projectIdOrName}/feature-flags/flags" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Create feature flag {body.slug} in project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-create.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.feature-flag.update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectIdOrName}/feature-flags/flags/{flagIdOrSlug}" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Change feature flag {flagIdOrSlug} of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-update.http
+        expect: write
+        resource: shop-web
+
+  - id: vercel.feature-flag.settings-update
+    match: { rest: { method: PATCH, path: "/{version}/projects/{projectIdOrName}/feature-flags/settings" } }
+    class: write
+    resource: { arg: projectIdOrName, kind: project }
+    card: "Change feature flag settings of project {projectIdOrName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/vercel/sdk/blob/main/vercel-spec.json
+    tests:
+      - fixture: fixtures/feature-flag-settings-update.http
+        expect: write
+        resource: shop-web
