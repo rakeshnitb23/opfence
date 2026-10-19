@@ -22,8 +22,17 @@ var methodOverrideHeaders = []string{"X-Http-Method-Override", "X-Http-Method", 
 
 func decodeREST(r *request.Request) []Operation {
 	op := Operation{Protocol: REST, Method: r.Method, Path: r.Path, Args: map[string]any{}}
-	op.Args["query"] = valuesToMap(r.Query)
 	decodeRESTBody(r, &op)
+	query, err := formArgs(r.Query)
+	if err != nil {
+		// Conditions on the body fail closed; ones on the query see the
+		// keys unnested.
+		query = valuesToMap(r.Query)
+		if op.BodyErr == "" {
+			op.BodyErr = "query string: " + err.Error()
+		}
+	}
+	op.Args["query"] = query
 	ops := []Operation{op}
 	methods := []string{r.Method}
 	for _, h := range methodOverrideHeaders {
@@ -69,7 +78,12 @@ func decodeRESTBody(r *request.Request, op *Operation) {
 			op.BodyErr = "invalid form body: " + err.Error()
 			return
 		}
-		op.Args["body"] = valuesToMap(vals)
+		m, err := formArgs(vals)
+		if err != nil {
+			op.BodyErr = "invalid form body: " + err.Error()
+			return
+		}
+		op.Args["body"] = m
 	case ct == "multipart/form-data":
 		v, err := parseMultipart(r.Header.Get("Content-Type"), r.Body)
 		if err != nil {
