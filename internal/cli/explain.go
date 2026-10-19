@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/rakeshnitb23/opfence/internal/catalog"
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/engine"
 	"github.com/rakeshnitb23/opfence/internal/fixture"
@@ -71,6 +72,9 @@ request from standard input.`,
 			if err != nil {
 				return err
 			}
+			// Saved HTTP requests are what the proxy decides, and it
+			// applies rules' response transforms.
+			eng.TransformsResponses = true
 			for _, w := range eng.Policy.Warnings {
 				fmt.Fprintln(cmd.ErrOrStderr(), "warning:", w)
 			}
@@ -131,10 +135,25 @@ func printResult(w io.Writer, name string, req *request.Request, res engine.Resu
 		fmt.Fprintf(w, "  environment %s (%s)\n", ev.Environment, ev.EnvSource)
 		fmt.Fprintf(w, "  decision    %s (%s)\n", strings.ToUpper(ev.Decision.String()), ev.DecisionSource)
 		fmt.Fprintf(w, "  card        %s\n", ev.Card)
+		if x := ev.Transform; x != nil {
+			fmt.Fprintf(w, "  response    %s\n", describeTransform(x))
+		}
 	}
 	if len(res.Evaluations) > 1 {
 		fmt.Fprintf(w, "  request     %s (strictest of %d operations)\n", strings.ToUpper(res.Decision.String()), len(res.Evaluations))
 	}
+}
+
+// describeTransform says what the proxy does to the response.
+func describeTransform(x *catalog.Response) string {
+	var parts []string
+	if len(x.Redact) > 0 {
+		parts = append(parts, "redacts "+strings.Join(x.Redact, ", "))
+	}
+	if len(x.Mint) > 0 {
+		parts = append(parts, "holds the token at "+strings.Join(x.Mint, ", ")+" and hands out a placeholder")
+	}
+	return strings.Join(parts, "; ")
 }
 
 func describeOp(ev engine.Evaluation) string {
@@ -176,6 +195,7 @@ type jsonEval struct {
 	DecisionSource string   `json:"decision_source"`
 	Resource       string   `json:"resource,omitempty"`
 	Card           string   `json:"card"`
+	Response       string   `json:"response,omitempty"` // what the proxy does to the response
 }
 
 type jsonResult struct {
@@ -199,6 +219,9 @@ func toJSON(name string, req *request.Request, res engine.Result) jsonResult {
 			Decision: ev.Decision.String(), DecisionSource: ev.DecisionSource, Resource: ev.Resource, Card: ev.Card}
 		if ev.Rule != nil {
 			je.Rule = ev.Rule.ID
+		}
+		if ev.Transform != nil {
+			je.Response = describeTransform(ev.Transform)
 		}
 		for _, c := range ev.Classes {
 			je.Classes = append(je.Classes, string(c))

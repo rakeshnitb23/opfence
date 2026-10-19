@@ -62,6 +62,15 @@ defaults: { rest_safe_methods: read }
         class: access
     card: "Update project {idOrName}"
     status: community
+  - id: vercel.token.create
+    match: { rest: { method: POST, path: "/v3/user/tokens" } }
+    class: credential
+    when:
+      - if: { arg: body.scope, equals: full }
+        class: access
+    response: { mint: [bearerToken], class: write }
+    card: "Create token {body.name}"
+    status: community
 `)},
 	"supabase/provider.yaml": {Data: []byte(`provider: supabase
 title: Supabase MCP
@@ -300,6 +309,31 @@ func TestGraphQLSecretFields(t *testing.T) {
 		ev := eval(t, e, q(query)).Evaluations[0]
 		if !slices.Contains(ev.Classes, want) || (want == classes.Read && len(ev.Classes) != 1) {
 			t.Errorf("%s: classes %v (%s), want %s", query, ev.Classes, ev.ClassSource, want)
+		}
+	}
+}
+
+// A rule's response class counts only for an engine whose caller applies
+// the transform, and only when no condition or SQL decided the class.
+func TestResponseClass(t *testing.T) {
+	const create = "POST /v3/user/tokens HTTP/1.1\nHost: api.vercel.com\nContent-Type: application/json\n\n"
+	plain := newEngine(t, "", "")
+	proxy := newEngine(t, "", "")
+	proxy.TransformsResponses = true
+	cases := []struct {
+		e     *Engine
+		body  string
+		class classes.Class
+		xform bool
+	}{
+		{plain, `{"name":"ci"}`, classes.Credential, false},
+		{proxy, `{"name":"ci"}`, classes.Write, true},
+		{proxy, `{"name":"ci","scope":"full"}`, classes.Access, true},
+	}
+	for _, c := range cases {
+		ev := eval(t, c.e, create+c.body).Evaluations[0]
+		if !slices.Equal(ev.Classes, []classes.Class{c.class}) || (ev.Transform != nil) != c.xform {
+			t.Errorf("transforms=%v %s: %v (%s), transform %v", c.e.TransformsResponses, c.body, ev.Classes, ev.ClassSource, ev.Transform)
 		}
 	}
 }

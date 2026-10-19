@@ -26,6 +26,9 @@ type Engine struct {
 	// IncludeDraft also applies draft rules (the fixture runner sets it;
 	// otherwise the policy decides).
 	IncludeDraft bool
+	// TransformsResponses says the caller applies rules' response
+	// transforms (only the proxy can), so their response.class counts.
+	TransformsResponses bool
 }
 
 // New returns an engine. A nil policy means defaults only.
@@ -55,6 +58,11 @@ type Evaluation struct {
 
 	Resource string // value of the rule's resource argument, if any
 	Card     string // human description, from decoded arguments only
+
+	// Transform is the response transform the caller must apply before the
+	// response reaches the agent; set only when the engine was told it
+	// transforms responses.
+	Transform *catalog.Response
 }
 
 // Result is the verdict on a whole request.
@@ -134,6 +142,15 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 		if rule != nil {
 			ev.Rule = rule
 			ev.Classes, ev.ClassSource = rule.ClassesFor(op, ev.Args)
+			if e.TransformsResponses && rule.Response != nil {
+				ev.Transform = rule.Response
+				// The transform removes what made the rule's own class
+				// stricter; a condition or SQL that holds still counts.
+				if ev.ClassSource == "rule class" {
+					ev.Classes = []classes.Class{rule.Response.Class}
+					ev.ClassSource = "rule class with the response transformed"
+				}
+			}
 		} else {
 			c, src := p.DefaultClass(op)
 			ev.Classes, ev.ClassSource = []classes.Class{c}, src

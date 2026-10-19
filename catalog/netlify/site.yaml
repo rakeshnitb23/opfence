@@ -157,14 +157,20 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/netlify/open-api/blob/master/swagger.yml
+    response:
+      redact: [password, deploy_hook, build_settings.env, repo.env, default_hooks_data]
+      class: read
     notes: >-
       The site object carries password (the visitor password),
       build_settings.env and repo.env (legacy environment variable
       values), deploy_hook (a build hook URL) and
       default_hooks_data.access_token, so reading a site reads secrets.
+      Under opfence run the proxy redacts those fields and the read is
+      just a read; anywhere else it stays credential.
     tests:
       - fixture: fixtures/site-list.http
         expect: credential
+        response: fixtures/site-list-response.json
 
   - id: netlify.site.get
     match: { rest: { method: GET, path: "/api/v1/sites/{site_id}" } }
@@ -175,14 +181,20 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/netlify/open-api/blob/master/swagger.yml
+    response:
+      redact: [password, deploy_hook, build_settings.env, repo.env, default_hooks_data]
+      class: read
     notes: >-
       The site object carries password (the visitor password),
       build_settings.env and repo.env (legacy environment variable
       values), deploy_hook (a build hook URL) and
       default_hooks_data.access_token, so reading a site reads secrets.
+      Under opfence run the proxy redacts those fields and the read is
+      just a read; anywhere else it stays credential.
     tests:
       - fixture: fixtures/site-get.http
         expect: credential
+        response: fixtures/site-get-response.json
         resource: 3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f
 
   - id: netlify.site.list-for-team
@@ -194,14 +206,20 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/netlify/open-api/blob/master/swagger.yml
+    response:
+      redact: [password, deploy_hook, build_settings.env, repo.env, default_hooks_data]
+      class: read
     notes: >-
       The site object carries password (the visitor password),
       build_settings.env and repo.env (legacy environment variable
       values), deploy_hook (a build hook URL) and
       default_hooks_data.access_token, so reading a site reads secrets.
+      Under opfence run the proxy redacts those fields and the read is
+      just a read; anywhere else it stays credential.
     tests:
       - fixture: fixtures/site-list-for-team.http
         expect: credential
+        response: fixtures/site-list-for-team-response.json
         resource: acme-web
 
   - id: netlify.site.enable

@@ -12,10 +12,17 @@ operations:
     notes: >-
       The client credentials grant (tokenUrl in the spec's ServiceAccounts
       security scheme). The response is a bearer token for the whole Admin API,
-      valid for an hour, which the agent would see in clear text.
+      valid for an hour, which the agent would see in clear text. Under
+      opfence run the proxy keeps the token and hands the agent a
+      placeholder it swaps back in on later Atlas calls, so the exchange
+      is just a read; anywhere else it stays credential.
+    response:
+      mint: [access_token]
+      class: read
     tests:
       - fixture: fixtures/oauth-token-create.http
         expect: credential
+        response: fixtures/oauth-token-create-response.json
 
   - id: mongodb-atlas.oauth-token.revoke
     match: { rest: { method: POST, path: "/api/oauth/revoke" } }

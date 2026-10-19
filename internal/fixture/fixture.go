@@ -13,6 +13,7 @@ import (
 	"github.com/rakeshnitb23/opfence/internal/catalog"
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/engine"
+	"github.com/rakeshnitb23/opfence/internal/inject"
 	"github.com/rakeshnitb23/opfence/internal/request"
 )
 
@@ -85,7 +86,41 @@ func runOne(eng *engine.Engine, c *catalog.Catalog, r *catalog.Rule, t catalog.T
 		}
 		return fail("fixture host %s belongs to %s, not %s", req.Host, owner, r.Provider.ID)
 	}
-	return check(o, r, t, res)
+	if o = check(o, r, t, res); !o.Pass || t.Response == "" {
+		return o
+	}
+	if problem := checkResponse(c, r, t); problem != "" {
+		o.Pass = false
+		return fail("%s", problem)
+	}
+	return o
+}
+
+// checkResponse applies r's response transform to the test's recorded
+// response and checks that every path finds something, so a transform
+// cannot silently miss the field it is there to hide.
+func checkResponse(c *catalog.Catalog, r *catalog.Rule, t catalog.Test) string {
+	file := path.Join(r.Provider.Dir, t.Response)
+	data, err := fs.ReadFile(c.FS, file)
+	if err != nil {
+		return err.Error()
+	}
+	_, res, err := inject.Transform(data, r.Response, func(v string) (string, error) {
+		return strings.Repeat("x", len(v)), nil
+	})
+	if err != nil {
+		return file + ": " + err.Error()
+	}
+	var missed []string
+	for _, p := range append(append([]string{}, r.Response.Redact...), r.Response.Mint...) {
+		if res.Hits[p] == 0 {
+			missed = append(missed, p)
+		}
+	}
+	if len(missed) > 0 {
+		return fmt.Sprintf("%s: response transform finds nothing at %s", file, strings.Join(missed, ", "))
+	}
+	return ""
 }
 
 // ToolCall is a .json fixture: one MCP tool call with its arguments.

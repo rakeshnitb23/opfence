@@ -163,3 +163,70 @@ func TestScrubKeepsReadErrors(t *testing.T) {
 		t.Fatalf("%q %v", out, err)
 	}
 }
+
+func TestTransform(t *testing.T) {
+	x := &catalog.Response{Redact: []string{"password", "build.env"}, Mint: []string{"token"}}
+	body := `[{"name":"a","password":"hunter2hunter2","build":{"env":{"K":"v1","N":{"deep":"v2"},"Z":3}},"token":"tok-0123456789abcdef"},` +
+		`{"name":"b","password":"","token":null}]`
+	var minted []string
+	out, res, err := Transform([]byte(body), x, func(v string) (string, error) {
+		minted = append(minted, v)
+		return "ph-" + v[4:], nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `[{"build":{"env":{"K":"[redacted by opfence]","N":{"deep":"[redacted by opfence]"},"Z":3}},"name":"a","password":"[redacted by opfence]","token":"ph-0123456789abcdef"},` +
+		`{"name":"b","password":"","token":null}]`
+	if string(out) != want {
+		t.Fatalf("got  %s\nwant %s", out, want)
+	}
+	if res.Hits["password"] != 2 || res.Hits["build.env"] != 1 || res.Hits["token"] != 1 || len(res.Minted) != 1 || len(minted) != 1 {
+		t.Fatalf("result %+v, minted %v", res, minted)
+	}
+
+	// Numbers keep their exact text, and HTML stays unescaped.
+	out, _, err = Transform([]byte(`{"n":12345678901234567890,"html":"<a>&","password":"x"}`), x, nil)
+	if err != nil || string(out) != `{"html":"<a>&","n":12345678901234567890,"password":"[redacted by opfence]"}` {
+		t.Fatalf("%s %v", out, err)
+	}
+
+	for _, bad := range []string{"", "<html>", `{"a":1} {"b":2}`, `{"a":`} {
+		if _, _, err := Transform([]byte(bad), x, nil); err == nil {
+			t.Errorf("%q: no error", bad)
+		}
+	}
+	boom := errors.New("boom")
+	if _, _, err := Transform([]byte(`{"token":"tok-0123456789abcdef"}`), x, func(string) (string, error) { return "", boom }); !errors.Is(err, boom) {
+		t.Fatalf("mint error: %v", err)
+	}
+}
+
+// Secrets added while responses stream are scrubbed from responses read
+// after, and AddSecret is safe alongside readers.
+func TestScrubberAddSecret(t *testing.T) {
+	var s Scrubber
+	if s.Active() {
+		t.Fatal("zero scrubber is active")
+	}
+	value := "abc" + strings.Repeat("Z9", 10)
+	sec := &secrets.Secret{Provider: "x", Name: "minted", Value: value, Placeholder: strings.Repeat("p", len(value))}
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		for range 100 {
+			_, _ = io.ReadAll(s.Reader(io.NopCloser(strings.NewReader(value)), nil))
+		}
+	}()
+	s.AddSecret(sec)
+	<-done
+	got, _ := io.ReadAll(s.Reader(io.NopCloser(strings.NewReader("a "+value+" b")), nil))
+	if !s.Active() || string(got) != "a "+sec.Placeholder+" b" {
+		t.Fatalf("scrubbed %q", got)
+	}
+	h := http.Header{"X": {value}}
+	s.Header(h)
+	if h.Get("X") != sec.Placeholder {
+		t.Fatalf("header %q", h.Get("X"))
+	}
+}

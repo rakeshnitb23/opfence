@@ -1,0 +1,44 @@
+[
+  {
+    "id": "3f1c2a9e-7b4d-4c1a-9e2f-6a8b0c1d2e3f",
+    "state": "current",
+    "name": "acme-web",
+    "url": "https://acme-web.netlify.app",
+    "ssl_url": "https://acme-web.netlify.app",
+    "admin_url": "https://app.netlify.com/projects/acme-web",
+    "password": "opf_netlify_EXAMPLE_visitor_password",
+    "ssl": true,
+    "force_ssl": true,
+    "account_slug": "acme-web",
+    "deploy_hook": "https://api.netlify.com/hooks/github",
+    "build_settings": {
+      "provider": "github",
+      "repo_path": "acme/web",
+      "repo_branch": "main",
+      "cmd": "npm run build",
+      "dir": "dist",
+      "public_repo": false,
+      "private_logs": true,
+      "env": {
+        "DATABASE_URL": "postgres://app:opf_netlify_EXAMPLE@db.example.com/app",
+        "STRIPE_SECRET_KEY": "opf_stripe_EXAMPLE"
+      }
+    },
+    "repo": {
+      "provider": "github",
+      "repo_path": "acme/web",
+      "env": {
+        "API_TOKEN": "opf_netlify_EXAMPLE"
+      }
+    },
+    "default_hooks_data": {
+      "access_token": "opf_netlify_EXAMPLE_hooks_token"
+    },
+    "published_deploy": {
+      "id": "6530f0c4e1a2b3c4d5e6f708",
+      "state": "ready",
+      "branch": "main"
+    },
+    "functions_region": "us-east-2"
+  }
+]
