@@ -2,30 +2,58 @@
 operations:
   - id: digitalocean.genai-workspace.create
     match: { rest: { method: POST, path: /v2/gen-ai/workspaces } }
-    class: write
+    class: credential
     resource: { arg: body.name, kind: genai-workspace }
     card: "Create GenAI workspace {body.name}"
     status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_create_workspace.yml
+    response:
+      redact: [workspace.agents.api_key_infos.secret_key, workspace.agents.api_keys.api_key, workspace.agents.functions.api_key, workspace.agents.mcp_servers.authorization, workspace.agents.mcp_servers.headers, workspace.agents.child_agents, workspace.agents.parent_agents, workspace.agents.workspace.agents]
+      class: write
+    notes: >-
+      The workspace lists its agents. The response is a GenAI agent object,
+      which carries its API keys (api_keys[].api_key,
+      api_key_infos[].secret_key), function route keys (functions[].api_key)
+      and MCP server authorization and headers, plus nested child_agents,
+      parent_agents and workspace.agents with the same fields; the schema does
+      not say any of them are masked. The nested agent lists are redacted
+      whole because they can nest without limit. Under opfence run the proxy
+      redacts those fields and the call is write; anywhere else it is
+      credential.
     tests:
       - fixture: fixtures/genai-workspace-create.http
-        expect: write
+        expect: credential
+        response: fixtures/genai-workspace-create-response.json
         resource: "example name"
 
   - id: digitalocean.genai-workspace.update
     match: { rest: { method: PUT, path: "/v2/gen-ai/workspaces/{workspace_uuid}" } }
-    class: write
+    class: credential
     resource: { arg: workspace_uuid, kind: genai-workspace }
     card: "Change GenAI workspace {workspace_uuid}"
     status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_workspace.yml
+    response:
+      redact: [workspace.agents.api_key_infos.secret_key, workspace.agents.api_keys.api_key, workspace.agents.functions.api_key, workspace.agents.mcp_servers.authorization, workspace.agents.mcp_servers.headers, workspace.agents.child_agents, workspace.agents.parent_agents, workspace.agents.workspace.agents]
+      class: write
+    notes: >-
+      The workspace lists its agents. The response is a GenAI agent object,
+      which carries its API keys (api_keys[].api_key,
+      api_key_infos[].secret_key), function route keys (functions[].api_key)
+      and MCP server authorization and headers, plus nested child_agents,
+      parent_agents and workspace.agents with the same fields; the schema does
+      not say any of them are masked. The nested agent lists are redacted
+      whole because they can nest without limit. Under opfence run the proxy
+      redacts those fields and the call is write; anywhere else it is
+      credential.
     tests:
       - fixture: fixtures/genai-workspace-update.http
-        expect: write
+        expect: credential
+        response: fixtures/genai-workspace-update-response.json
         resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
 
   - id: digitalocean.genai-workspace.delete
@@ -47,16 +75,30 @@ operations:
 
   - id: digitalocean.genai-workspace.move-agents
     match: { rest: { method: PUT, path: "/v2/gen-ai/workspaces/{workspace_uuid}/agents" } }
-    class: write
+    class: credential
     resource: { arg: workspace_uuid, kind: genai-workspace }
     card: "Move agents {body.agent_uuids} into workspace {workspace_uuid}"
     status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_agents_workspace.yml
+    response:
+      redact: [workspace.agents.api_key_infos.secret_key, workspace.agents.api_keys.api_key, workspace.agents.functions.api_key, workspace.agents.mcp_servers.authorization, workspace.agents.mcp_servers.headers, workspace.agents.child_agents, workspace.agents.parent_agents, workspace.agents.workspace.agents]
+      class: write
+    notes: >-
+      The workspace lists its agents. The response is a GenAI agent object,
+      which carries its API keys (api_keys[].api_key,
+      api_key_infos[].secret_key), function route keys (functions[].api_key)
+      and MCP server authorization and headers, plus nested child_agents,
+      parent_agents and workspace.agents with the same fields; the schema does
+      not say any of them are masked. The nested agent lists are redacted
+      whole because they can nest without limit. Under opfence run the proxy
+      redacts those fields and the call is write; anywhere else it is
+      credential.
     tests:
       - fixture: fixtures/genai-workspace-move-agents.http
-        expect: write
+        expect: credential
+        response: fixtures/genai-workspace-move-agents-response.json
         resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
 
   - id: digitalocean.genai-workspace.list
@@ -67,12 +109,23 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_workspaces.yml
+    response:
+      redact: [workspaces.agents.api_key_infos.secret_key, workspaces.agents.api_keys.api_key, workspaces.agents.functions.api_key, workspaces.agents.mcp_servers.authorization, workspaces.agents.mcp_servers.headers, workspaces.agents.child_agents, workspaces.agents.parent_agents, workspaces.agents.workspace.agents]
+      class: read
     notes: >-
-      Agent objects include their API keys (api_keys[].api_key,
-      api_key_infos[].secret_key); the schema does not say they are masked.
+      Each workspace lists its agents. The response is a GenAI agent object,
+      which carries its API keys (api_keys[].api_key,
+      api_key_infos[].secret_key), function route keys (functions[].api_key)
+      and MCP server authorization and headers, plus nested child_agents,
+      parent_agents and workspace.agents with the same fields; the schema does
+      not say any of them are masked. The nested agent lists are redacted
+      whole because they can nest without limit. Under opfence run the proxy
+      redacts those fields and the call is just a read; anywhere else it is
+      credential.
     tests:
       - fixture: fixtures/genai-workspace-list.http
         expect: credential
+        response: fixtures/genai-workspace-list-response.json
 
   - id: digitalocean.genai-workspace.read
     match: { rest: { method: GET, path: "/v2/gen-ai/workspaces/{workspace_uuid}" } }
@@ -83,12 +136,23 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_get_workspace.yml
+    response:
+      redact: [workspace.agents.api_key_infos.secret_key, workspace.agents.api_keys.api_key, workspace.agents.functions.api_key, workspace.agents.mcp_servers.authorization, workspace.agents.mcp_servers.headers, workspace.agents.child_agents, workspace.agents.parent_agents, workspace.agents.workspace.agents]
+      class: read
     notes: >-
-      Agent objects include their API keys (api_keys[].api_key,
-      api_key_infos[].secret_key); the schema does not say they are masked.
+      The workspace lists its agents. The response is a GenAI agent object,
+      which carries its API keys (api_keys[].api_key,
+      api_key_infos[].secret_key), function route keys (functions[].api_key)
+      and MCP server authorization and headers, plus nested child_agents,
+      parent_agents and workspace.agents with the same fields; the schema does
+      not say any of them are masked. The nested agent lists are redacted
+      whole because they can nest without limit. Under opfence run the proxy
+      redacts those fields and the call is just a read; anywhere else it is
+      credential.
     tests:
       - fixture: fixtures/genai-workspace-read.http
         expect: credential
+        response: fixtures/genai-workspace-read-response.json
         resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"
 
   - id: digitalocean.genai-workspace.list-agents
@@ -100,10 +164,20 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_agents_by_workspace.yml
+    response:
+      redact: [agents.api_key_infos.secret_key, agents.api_keys.api_key, agents.functions.api_key, agents.mcp_servers.authorization, agents.mcp_servers.headers, agents.child_agents, agents.parent_agents, agents.workspace.agents]
+      class: read
     notes: >-
-      Agent objects include their API keys (api_keys[].api_key,
-      api_key_infos[].secret_key); the schema does not say they are masked.
+      The response is a GenAI agent object, which carries its API keys
+      (api_keys[].api_key, api_key_infos[].secret_key), function route keys
+      (functions[].api_key) and MCP server authorization and headers, plus
+      nested child_agents, parent_agents and workspace.agents with the same
+      fields; the schema does not say any of them are masked. The nested agent
+      lists are redacted whole because they can nest without limit. Under
+      opfence run the proxy redacts those fields and the call is just a read;
+      anywhere else it is credential.
     tests:
       - fixture: fixtures/genai-workspace-list-agents.http
         expect: credential
+        response: fixtures/genai-workspace-list-agents-response.json
         resource: "1448d64a-b7d7-11ef-bf8f-4e013e2ddde4"

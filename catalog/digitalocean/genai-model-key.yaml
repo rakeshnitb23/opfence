@@ -18,30 +18,46 @@ operations:
 
   - id: digitalocean.genai-model-key.rename
     match: { rest: { method: PUT, path: "/v2/gen-ai/models/api_keys/{api_key_uuid}" } }
-    class: write
+    class: credential
     resource: { arg: api_key_uuid, kind: genai-model-key }
     card: "Rename model access key {api_key_uuid}"
     status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_update_model_api_key.yml
+    response:
+      redact: [api_key_info.secret_key]
+      class: write
+    notes: >-
+      The response returns the key object with its secret_key. Under opfence
+      run the proxy redacts those fields and the call is write; anywhere else
+      it is credential.
     tests:
       - fixture: fixtures/genai-model-key-rename.http
-        expect: write
+        expect: credential
+        response: fixtures/genai-model-key-rename-response.json
         resource: "5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4"
 
   - id: digitalocean.genai-model-key.delete
     match: { rest: { method: DELETE, path: "/v2/gen-ai/models/api_keys/{api_key_uuid}" } }
-    class: access
+    class: credential
     resource: { arg: api_key_uuid, kind: genai-model-key }
     card: "Revoke model access key {api_key_uuid}"
     status: verified
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_delete_model_api_key.yml
+    response:
+      redact: [api_key_info.secret_key]
+      class: access
+    notes: >-
+      The response returns the key object with its secret_key. Under opfence
+      run the proxy redacts those fields and the call is access; anywhere else
+      it is credential.
     tests:
       - fixture: fixtures/genai-model-key-delete.http
-        expect: access
+        expect: credential
+        response: fixtures/genai-model-key-delete-response.json
         resource: "5d8c1a2e-b7d6-11ef-bf8f-4e013e2ddde4"
 
   - id: digitalocean.genai-model-key.regenerate
@@ -68,8 +84,14 @@ operations:
     verified: 2026-10-18
     sources:
       - https://github.com/digitalocean/openapi/blob/main/specification/resources/gen-ai/genai_list_model_api_keys.yml
+    response:
+      redact: [api_key_infos.secret_key]
+      class: read
     notes: >-
-      Key infos include secret_key; the schema does not say it is masked.
+      The key objects carry secret_key, and the schema does not say it is
+      masked. Under opfence run the proxy redacts those fields and the call is
+      just a read; anywhere else it is credential.
     tests:
       - fixture: fixtures/genai-model-key-list.http
         expect: credential
+        response: fixtures/genai-model-key-list-response.json
