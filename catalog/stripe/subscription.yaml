@@ -53,10 +53,10 @@ operations:
     sources:
       - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
     notes: >-
-      Can change prices, quantities, trials and proration, which changes what
-      the customer is charged. Stripe sends items as form keys like
-      items[0][price], which conditions cannot address, so every update is
-      money.
+      Most fields change what the customer is charged (items,
+      proration_behavior, billing_cycle_anchor, trial_end, discounts,
+      cancel_at, pause_collection, default_payment_method), so every update is
+      money rather than a list of triggers that could miss one.
     tests:
       - fixture: fixtures/subscription-update.http
         expect: money

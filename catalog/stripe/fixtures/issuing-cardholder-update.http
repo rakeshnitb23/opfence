@@ -4,4 +4,4 @@ Host: api.stripe.com
 Authorization: Bearer opf_stripe_EXAMPLE
 Content-Type: application/x-www-form-urlencoded
 
-spending_controls[spending_limits][0][amount]=500000&spending_controls[spending_limits][0][interval]=monthly
+metadata[team]=sales&billing[address][line1]=2%20Main%20St

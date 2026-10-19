@@ -4,4 +4,4 @@ Host: api.stripe.com
 Authorization: Bearer opf_stripe_EXAMPLE
 Content-Type: application/x-www-form-urlencoded
 
-features[outbound_payments][ach][requested]=true
+nickname=Operating

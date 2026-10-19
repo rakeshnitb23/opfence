@@ -4,4 +4,4 @@ Host: api.stripe.com
 Authorization: Bearer opf_stripe_EXAMPLE
 Content-Type: application/x-www-form-urlencoded
 
-cardholder=ich_ShopJane0001&currency=usd&type=virtual&expand[]=number&expand[]=cvc
+cardholder=ich_ShopJane0001&currency=usd&type=virtual

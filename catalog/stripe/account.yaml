@@ -41,9 +41,10 @@ operations:
     sources:
       - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
     notes: >-
-      Can replace external_account (where payouts go) and change the payout
-      schedule; nested form keys cannot be told apart, so every update is
-      money.
+      Can replace external_account (where payouts go), the payout schedule
+      (settings.payouts), capabilities and the people on record through
+      account_token, individual or company; too many fields carry money or
+      access risk to list, so every update is money.
     tests:
       - fixture: fixtures/account-update.http
         expect: money

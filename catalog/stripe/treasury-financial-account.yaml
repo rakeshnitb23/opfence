@@ -14,7 +14,14 @@ operations:
 
   - id: stripe.treasury-financial-account.update
     match: { rest: { method: POST, path: "/v1/treasury/financial_accounts/{financial_account}" } }
-    class: access
+    class: write
+    when:
+      - if: { arg: body.features, present: true }
+        class: access
+      - if: { arg: body.platform_restrictions, present: true }
+        class: access
+      - if: { arg: body.forwarding_settings, present: true }
+        class: money
     resource: { arg: financial_account, kind: financial_account }
     card: "Update financial account {financial_account}"
     status: verified
@@ -22,11 +29,20 @@ operations:
     sources:
       - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
     notes: >-
-      Can turn on money-movement features and change forwarding settings;
-      nested form keys cannot be told apart, so every update is access.
+      features and platform_restrictions turn money movement on or off;
+      forwarding_settings names the bank account the balance is moved to.
     tests:
       - fixture: fixtures/treasury-financial-account-update.http
+        expect: write
+        resource: fa_ShopTreasury01
+      - fixture: fixtures/treasury-financial-account-update-set-features.http
         expect: access
+        resource: fa_ShopTreasury01
+      - fixture: fixtures/treasury-financial-account-update-restrictions.http
+        expect: access
+        resource: fa_ShopTreasury01
+      - fixture: fixtures/treasury-financial-account-update-forwarding.http
+        expect: money
         resource: fa_ShopTreasury01
 
   - id: stripe.treasury-financial-account.close
