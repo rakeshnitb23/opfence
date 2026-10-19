@@ -129,12 +129,6 @@ operations:
     match: { mcp: { tool: update_service } }
     class: write
     when:
-      - if: { arg: start_command, present: true }
-        class: irreversible
-      - if: { arg: build_command, present: true }
-        class: irreversible
-      - if: { arg: pre_deploy_command, present: true }
-        class: irreversible
       - if: { arg: num_replicas, present: true }
         class: money
     resource: { arg: service_id, kind: service }
@@ -149,15 +143,15 @@ operations:
       Local server only (railway mcp local). Settings are a write (as
       railway.service-instance.update). A start, build or pre-deploy command is
       an arbitrary command that Railway runs on the next deploy with the
-      service's variables (and, for the start command, its volume), so setting
-      one is irreversible. num_replicas multiplies what the service bills, so it
-      is money like scale_service.
+      service's variables and volume, which is the same power as deploying
+      code (deploy, a write), so it stays a write. num_replicas multiplies what
+      the service bills, so it is money like scale_service.
     tests:
       - fixture: fixtures/service-update.json
         expect: write
         resource: svc-api
       - fixture: fixtures/service-update-start-command.json
-        expect: irreversible
+        expect: write
         resource: svc-api
       - fixture: fixtures/service-update-replicas.json
         expect: money
