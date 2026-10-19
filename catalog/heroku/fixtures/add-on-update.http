@@ -1,0 +1,8 @@
+# description: Change add-on postgresql-shaped-48213 of app shop-api to plan heroku-postgresql:standard-2
+PATCH /apps/shop-api/addons/postgresql-shaped-48213 HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"plan":"heroku-postgresql:standard-2"}

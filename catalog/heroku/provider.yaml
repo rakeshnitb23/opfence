@@ -1,0 +1,23 @@
+provider: heroku
+title: Heroku
+docs: https://devcenter.heroku.com/articles/platform-api-reference
+hosts: [api.heroku.com]
+auth:
+  - header: Authorization
+    scheme: Bearer                 # what the Heroku CLI (@heroku-cli/command) and the MCP server send
+  - basic: password                # curl -n / .netrc: email as user name, the token as password
+detect:
+  env: [HEROKU_API_KEY]            # read by the Heroku CLI and @heroku/mcp-server
+  prefixes: [HRKU-]                # the oauth-token token example in Heroku's own schema; older tokens are bare UUIDs
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# Every operation comes from Heroku's JSON Hyper-Schema, vendored in
+# heroku/heroku-go (v6/schema.json; v5/schema.json for the outbound ruleset
+# that v6 dropped). Paths have no version prefix: Heroku selects the API
+# version with the Accept header (application/vnd.heroku+json; version=3).
+# Path parameter names follow the Platform API reference (app_id_or_name, ...).
+#
+# Not covered: the Heroku Postgres/Data API at api.data.heroku.com
+# (/client/v11/databases/..., /postgres/v0/databases/...), which the Heroku
+# CLI uses for pg:reset, pg:backups, pg:credentials:rotate and similar. It is
+# not in any published schema, so this provider does not claim that host.

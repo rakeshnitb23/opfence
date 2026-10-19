@@ -1,0 +1,15 @@
+# Heroku Platform API: app-feature
+operations:
+  - id: heroku.app-feature.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/features/{app_feature_id_or_name}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Turn feature {app_feature_id_or_name} on or off for app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/app-feature-update.http
+        expect: write
+        resource: shop-api

@@ -1,0 +1,8 @@
+# description: Create a review app for branch feature-checkout
+POST /review-apps HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"branch":"feature-checkout","pipeline":"9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d","source_blob":{"url":"https://example.com/shop-api.tgz"}}

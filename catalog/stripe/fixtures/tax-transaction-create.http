@@ -1,0 +1,7 @@
+# description: Record tax transaction order-1042
+POST /v1/tax/transactions/create_from_calculation HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+calculation=taxcalc_ShopCalc0001&reference=order-1042

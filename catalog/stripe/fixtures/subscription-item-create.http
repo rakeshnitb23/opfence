@@ -1,0 +1,7 @@
+# description: Add price price_ShopSeat0001 to subscription sub_ShopPro0001
+POST /v1/subscription_items HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+subscription=sub_ShopPro0001&price=price_ShopSeat0001&quantity=3

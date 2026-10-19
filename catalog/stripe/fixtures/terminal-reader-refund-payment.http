@@ -1,0 +1,7 @@
+# description: Refund pi_3ShopPay0001 in person on reader tmr_ShopFront0001
+POST /v1/terminal/readers/tmr_ShopFront0001/refund_payment HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+payment_intent=pi_3ShopPay0001&amount=1000

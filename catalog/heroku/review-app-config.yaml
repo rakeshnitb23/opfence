@@ -1,0 +1,48 @@
+# Heroku Platform API: review-app-config
+operations:
+  - id: heroku.review-app-config.enable
+    match: { rest: { method: POST, path: "/pipelines/{pipeline_id}/review-app-config" } }
+    class: money
+    resource: { arg: pipeline_id, kind: pipeline }
+    card: "Turn on review apps for pipeline {pipeline_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Lets Heroku create a billed app for every pull request.
+    tests:
+      - fixture: fixtures/review-app-config-enable.http
+        expect: money
+        resource: 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+
+  - id: heroku.review-app-config.update
+    match: { rest: { method: PATCH, path: "/pipelines/{pipeline_id}/review-app-config" } }
+    class: money
+    resource: { arg: pipeline_id, kind: pipeline }
+    card: "Change review app settings of pipeline {pipeline_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Automatic creation, stale app cleanup and the deploy target (a Private Space) all change what
+      is billed.
+    tests:
+      - fixture: fixtures/review-app-config-update.http
+        expect: money
+        resource: 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+
+  - id: heroku.review-app-config.delete
+    match: { rest: { method: DELETE, path: "/pipelines/{pipeline_id}/review-app-config" } }
+    class: delete
+    resource: { arg: pipeline_id, kind: pipeline }
+    card: "Turn off review apps for pipeline {pipeline_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/review-app-config-delete.http
+        expect: delete
+        resource: 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d

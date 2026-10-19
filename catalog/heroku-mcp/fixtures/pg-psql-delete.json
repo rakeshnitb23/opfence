@@ -1,0 +1,8 @@
+{
+  "description": "Run SQL on the Postgres database of app shop-api",
+  "tool": "pg_psql",
+  "arguments": {
+    "app": "shop-api",
+    "command": "DELETE FROM sessions"
+  }
+}

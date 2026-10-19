@@ -1,0 +1,15 @@
+# Stripe REST API: issuing settlement
+operations:
+  - id: stripe.issuing-settlement.update
+    match: { rest: { method: POST, path: "/v1/issuing/settlements/{settlement}" } }
+    class: write
+    resource: { arg: settlement, kind: settlement }
+    card: "Update settlement {settlement}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-settlement-update.http
+        expect: write
+        resource: ist_ShopSettle0001

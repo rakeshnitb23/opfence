@@ -1,0 +1,15 @@
+# Stripe REST API: token
+operations:
+  - id: stripe.token.create
+    match: { rest: { method: POST, path: "/v1/tokens" } }
+    class: write
+    card: "Create a token"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Turns card, bank, account or person details into a single-use token.
+    tests:
+      - fixture: fixtures/token-create.http
+        expect: write

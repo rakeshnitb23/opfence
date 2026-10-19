@@ -1,0 +1,8 @@
+# description: Release a slug or roll back app shop-api
+POST /apps/shop-api/releases HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"slug":"01234567-89ab-cdef-0123-456789abcdef","description":"Deploy slug"}

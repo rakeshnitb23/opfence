@@ -1,0 +1,7 @@
+# description: Create promotion code SPRING25
+POST /v1/promotion_codes HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+promotion[type]=coupon&promotion[coupon]=SPRING25&code=SPRING25

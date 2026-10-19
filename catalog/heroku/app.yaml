@@ -1,0 +1,109 @@
+# Heroku Platform API: app
+operations:
+  - id: heroku.app.create
+    match: { rest: { method: POST, path: "/apps" } }
+    class: write
+    resource: { arg: body.name, kind: app }
+    card: "Create Heroku app {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      An empty app costs nothing until dynos are scaled or add-ons are provisioned, which have their
+      own rules.
+    tests:
+      - fixture: fixtures/app-create.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.app.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Change app {app_id_or_name} (name, maintenance mode, stack)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Maintenance mode takes the app offline and renaming changes its herokuapp.com URL; both can be
+      undone.
+    tests:
+      - fixture: fixtures/app-update.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.app.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}" } }
+    class: irreversible
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Delete Heroku app {app_id_or_name} with its add-ons, config vars and releases"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Deleting an app deprovisions its add-ons (databases included) and discards its config vars.
+    tests:
+      - fixture: fixtures/app-delete.http
+        expect: irreversible
+        resource: shop-api
+
+  - id: heroku.app.acm-enable
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/acm" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Turn on automated certificate management for app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/app-acm-enable.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.app.acm-refresh
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/acm" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Refresh automated certificates of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/app-acm-refresh.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.app.acm-disable
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/acm" } }
+    class: delete
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Turn off automated certificate management for app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Custom domains stop getting certificates until it is turned back on.
+    tests:
+      - fixture: fixtures/app-acm-disable.http
+        expect: delete
+        resource: shop-api
+
+  - id: heroku.app.filter
+    match: { rest: { method: POST, path: "/filters/apps" } }
+    class: read
+    card: "List apps by id"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      A query sent as POST.
+    tests:
+      - fixture: fixtures/app-filter.http
+        expect: read

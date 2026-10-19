@@ -1,0 +1,8 @@
+# description: Change the invoice address of your account
+PUT /account/invoice-address HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"address_1":"40 Main St","city":"Springfield","country":"US","postal_code":"01101","state":"MA","use_invoice_address":true}

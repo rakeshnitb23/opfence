@@ -1,0 +1,8 @@
+# description: Create VPN connection office from 203.0.113.10 into space acme-prod
+POST /spaces/acme-prod/vpn-connections HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"name":"office","public_ip":"203.0.113.10","routable_cidrs":["192.168.0.0/16"]}

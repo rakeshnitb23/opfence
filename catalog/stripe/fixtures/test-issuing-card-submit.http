@@ -1,0 +1,5 @@
+# description: Submit test card ic_ShopVirtual01 for shipping
+POST /v1/test_helpers/issuing/cards/ic_ShopVirtual01/shipping/submit HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,17 @@
+# Stripe REST API: v2 person token
+operations:
+  - id: stripe.v2-person-token.create
+    match: { rest: { method: POST, path: "/v2/core/accounts/{account_id}/person_tokens" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a person token for account {account_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A single-use token carrying person details for a later create or update.
+    tests:
+      - fixture: fixtures/v2-person-token-create.http
+        expect: write
+        resource: acct_1ShopConnect01

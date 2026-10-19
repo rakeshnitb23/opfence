@@ -1,0 +1,5 @@
+# description: Accept a team invitation
+POST /teams/invitations/invite-token-example/accept HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

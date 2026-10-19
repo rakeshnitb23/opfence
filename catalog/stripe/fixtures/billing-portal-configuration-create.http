@@ -1,0 +1,7 @@
+# description: Create customer portal configuration
+POST /v1/billing_portal/configurations HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+features[subscription_cancel][enabled]=true&business_profile[headline]=Manage%20billing

@@ -1,0 +1,45 @@
+# Stripe REST API: climate order
+operations:
+  - id: stripe.climate-order.create
+    match: { rest: { method: POST, path: "/v1/climate/orders" } }
+    class: money
+    card: "Buy {body.metric_tons} t of carbon removal from {body.product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Paid from the account balance.
+    tests:
+      - fixture: fixtures/climate-order-create.http
+        expect: money
+
+  - id: stripe.climate-order.update
+    match: { rest: { method: POST, path: "/v1/climate/orders/{order}" } }
+    class: write
+    resource: { arg: order, kind: order }
+    card: "Update climate order {order}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/climate-order-update.http
+        expect: write
+        resource: climorder_ShopOrder01
+
+  - id: stripe.climate-order.cancel
+    match: { rest: { method: POST, path: "/v1/climate/orders/{order}/cancel" } }
+    class: money
+    resource: { arg: order, kind: order }
+    card: "Cancel climate order {order}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Refunds the order to the balance.
+    tests:
+      - fixture: fixtures/climate-order-cancel.http
+        expect: money
+        resource: climorder_ShopOrder01

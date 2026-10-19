@@ -1,0 +1,47 @@
+# Stripe REST API: app install
+operations:
+  - id: stripe.app-install.create
+    match: { rest: { method: POST, path: "/v1/apps/installs" } }
+    class: access
+    card: "Install Stripe app {body.app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The install grants the app the permissions its manifest asks for.
+    tests:
+      - fixture: fixtures/app-install-create.http
+        expect: access
+
+  - id: stripe.app-install.reauthorize
+    match: { rest: { method: POST, path: "/v1/apps/installs/{id}" } }
+    class: access
+    resource: { arg: id, kind: app_install }
+    card: "Reauthorize app install {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Grants the permissions the newest version requests.
+    tests:
+      - fixture: fixtures/app-install-reauthorize.http
+        expect: access
+        resource: appinst_ShopHelper01
+
+  - id: stripe.app-install.uninstall
+    match: { rest: { method: POST, path: "/v1/apps/installs/{id}/uninstall" } }
+    class: access
+    resource: { arg: id, kind: app_install }
+    card: "Uninstall app install {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Revokes the app's access; its settings may be lost.
+    tests:
+      - fixture: fixtures/app-install-uninstall.http
+        expect: access
+        resource: appinst_ShopHelper01

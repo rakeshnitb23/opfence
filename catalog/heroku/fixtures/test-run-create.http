@@ -1,0 +1,8 @@
+# description: Start a Heroku CI test run of main
+POST /test-runs HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"commit_branch":"main","commit_message":"Fix totals","commit_sha":"0123456789abcdef0123456789abcdef01234567","pipeline":"9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d","source_blob_url":"https://example.com/shop-api.tgz"}

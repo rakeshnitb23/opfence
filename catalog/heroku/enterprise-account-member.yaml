@@ -1,0 +1,43 @@
+# Heroku Platform API: enterprise-account-member
+operations:
+  - id: heroku.enterprise-account-member.create
+    match: { rest: { method: POST, path: "/enterprise-accounts/{enterprise_account_id_or_name}/members" } }
+    class: access
+    resource: { arg: enterprise_account_id_or_name, kind: enterprise-account }
+    card: "Add {body.user} to enterprise account {enterprise_account_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/enterprise-account-member-create.http
+        expect: access
+        resource: acme-enterprise
+
+  - id: heroku.enterprise-account-member.update
+    match: { rest: { method: PATCH, path: "/enterprise-accounts/{enterprise_account_id_or_name}/members/{enterprise_account_member_user_identity}" } }
+    class: access
+    resource: { arg: enterprise_account_id_or_name, kind: enterprise-account }
+    card: "Change the permissions of {enterprise_account_member_user_identity} in enterprise account {enterprise_account_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/enterprise-account-member-update.http
+        expect: access
+        resource: acme-enterprise
+
+  - id: heroku.enterprise-account-member.delete
+    match: { rest: { method: DELETE, path: "/enterprise-accounts/{enterprise_account_id_or_name}/members/{enterprise_account_member_user_identity}" } }
+    class: access
+    resource: { arg: enterprise_account_id_or_name, kind: enterprise-account }
+    card: "Remove {enterprise_account_member_user_identity} from enterprise account {enterprise_account_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/enterprise-account-member-delete.http
+        expect: access
+        resource: acme-enterprise

@@ -1,0 +1,5 @@
+# description: Regenerate the tokens of OAuth authorization 0f1e2d3c-4b5a-4968-8776-655443322110
+POST /oauth/authorizations/0f1e2d3c-4b5a-4968-8776-655443322110/actions/regenerate-tokens HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

@@ -1,0 +1,30 @@
+# Stripe REST API: payment link
+operations:
+  - id: stripe.payment-link.create
+    match: { rest: { method: POST, path: "/v1/payment_links" } }
+    class: write
+    card: "Create a payment link"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A payment page meant to be shared; money moves only when a customer
+      pays.
+    tests:
+      - fixture: fixtures/payment-link-create.http
+        expect: write
+
+  - id: stripe.payment-link.update
+    match: { rest: { method: POST, path: "/v1/payment_links/{payment_link}" } }
+    class: write
+    resource: { arg: payment_link, kind: payment_link }
+    card: "Update payment link {payment_link}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-link-update.http
+        expect: write
+        resource: plink_ShopTee0001

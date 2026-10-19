@@ -1,0 +1,7 @@
+# description: Update feedback option bfo_ShopTooCostly01
+POST /v1/billing/feedback_options/bfo_ShopTooCostly01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+label=Too%20costly

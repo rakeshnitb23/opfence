@@ -1,0 +1,9 @@
+{
+  "description": "Create pipeline shop with app shop-api as production",
+  "tool": "pipelines_create",
+  "arguments": {
+    "name": "shop",
+    "stage": "production",
+    "app": "shop-api"
+  }
+}

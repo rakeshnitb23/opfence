@@ -1,0 +1,8 @@
+# description: Change the add-on controls of team acme
+PATCH /teams/acme/preferences HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"addons-controls":false}

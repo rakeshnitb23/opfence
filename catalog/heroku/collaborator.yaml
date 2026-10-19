@@ -1,0 +1,29 @@
+# Heroku Platform API: collaborator
+operations:
+  - id: heroku.collaborator.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/collaborators" } }
+    class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Give {body.user} access to app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/collaborator-create.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.collaborator.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/collaborators/{collaborator_email_or_id}" } }
+    class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Remove {collaborator_email_or_id} from app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/collaborator-delete.http
+        expect: access
+        resource: shop-api

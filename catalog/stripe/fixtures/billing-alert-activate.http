@@ -1,0 +1,5 @@
+# description: Activate billing alert alrt_ShopUsage0001
+POST /v1/billing/alerts/alrt_ShopUsage0001/activate HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

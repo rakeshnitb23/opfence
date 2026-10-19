@@ -1,0 +1,8 @@
+# description: Add dev@example.com to team acme as admin
+PUT /teams/acme/members HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"email":"dev@example.com","role":"admin"}

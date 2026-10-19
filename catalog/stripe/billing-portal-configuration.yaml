@@ -1,0 +1,27 @@
+# Stripe REST API: billing portal configuration
+operations:
+  - id: stripe.billing-portal-configuration.create
+    match: { rest: { method: POST, path: "/v1/billing_portal/configurations" } }
+    class: write
+    card: "Create customer portal configuration"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/billing-portal-configuration-create.http
+        expect: write
+
+  - id: stripe.billing-portal-configuration.update
+    match: { rest: { method: POST, path: "/v1/billing_portal/configurations/{configuration}" } }
+    class: write
+    resource: { arg: configuration, kind: configuration }
+    card: "Update customer portal configuration {configuration}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/billing-portal-configuration-update.http
+        expect: write
+        resource: bpc_ShopPortal0001

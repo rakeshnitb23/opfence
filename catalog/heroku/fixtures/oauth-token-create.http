@@ -1,0 +1,8 @@
+# description: Exchange a grant or refresh token for an access token
+POST /oauth/tokens HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"grant":{"type":"refresh_token"},"refresh_token":{"token":"example-refresh"},"client":{"secret":"example-client-secret"}}

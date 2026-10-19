@@ -1,0 +1,8 @@
+{
+  "description": "Rename app shop-api to shop-api-v2",
+  "tool": "rename_app",
+  "arguments": {
+    "app": "shop-api",
+    "newName": "shop-api-v2"
+  }
+}

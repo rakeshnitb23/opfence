@@ -1,0 +1,52 @@
+# Stripe REST API: v2 person
+operations:
+  - id: stripe.v2-person.create
+    match: { rest: { method: POST, path: "/v2/core/accounts/{account_id}/persons" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add a person to account {account_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/v2-person-create.http
+        expect: access
+        resource: acct_1ShopConnect01
+
+  - id: stripe.v2-person.update
+    match: { rest: { method: POST, path: "/v2/core/accounts/{account_id}/persons/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update person {id} of account {account_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/v2-person-update.http
+        expect: access
+        resource: acct_1ShopConnect01
+
+  - id: stripe.v2-person.delete
+    match: { rest: { method: DELETE, path: "/v2/core/accounts/{account_id}/persons/{id}" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Remove person {id} from account {account_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Persons are the owners, directors and representative on record for a
+      connected account; changing them changes who controls the account.
+    tests:
+      - fixture: fixtures/v2-person-delete.http
+        expect: access
+        resource: acct_1ShopConnect01

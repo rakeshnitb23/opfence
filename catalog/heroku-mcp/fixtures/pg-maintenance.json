@@ -1,0 +1,7 @@
+{
+  "description": "Show maintenance status of the database of app shop-api",
+  "tool": "pg_maintenance",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

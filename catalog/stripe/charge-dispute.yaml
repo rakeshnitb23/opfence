@@ -1,0 +1,40 @@
+# Stripe REST API: charge dispute
+operations:
+  - id: stripe.charge-dispute.update
+    match: { rest: { method: POST, path: "/v1/charges/{charge}/dispute" } }
+    class: write
+    when:
+      - if: { arg: body.submit, equals: "true" }
+        class: irreversible
+    resource: { arg: charge, kind: charge }
+    card: "Update the dispute on charge {charge}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Deprecated endpoint, still served. submit=true sends the evidence to the
+      bank; Stripe accepts one submission, so it cannot be corrected.
+    tests:
+      - fixture: fixtures/charge-dispute-update.http
+        expect: write
+        resource: ch_3ShopCharge0001
+      - fixture: fixtures/charge-dispute-update-submit.http
+        expect: irreversible
+        resource: ch_3ShopCharge0001
+
+  - id: stripe.charge-dispute.close
+    match: { rest: { method: POST, path: "/v1/charges/{charge}/dispute/close" } }
+    class: money
+    resource: { arg: charge, kind: charge }
+    card: "Accept the dispute on charge {charge} and give up the funds"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Closing concedes the dispute; Stripe documents that it cannot be undone.
+    tests:
+      - fixture: fixtures/charge-dispute-close.http
+        expect: money
+        resource: ch_3ShopCharge0001

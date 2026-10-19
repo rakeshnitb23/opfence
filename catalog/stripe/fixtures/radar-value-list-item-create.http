@@ -1,0 +1,7 @@
+# description: Add fraud@example.com to Radar list rsl_ShopBlock0001
+POST /v1/radar/value_list_items HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+value_list=rsl_ShopBlock0001&value=fraud%40example.com

@@ -1,0 +1,7 @@
+# description: Change subscription sub_ShopPro0001 of customer cus_ShopAcme0001
+POST /v1/customers/cus_ShopAcme0001/subscriptions/sub_ShopPro0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+items[0][id]=si_ShopItem0001&items[0][quantity]=5

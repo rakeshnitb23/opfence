@@ -1,0 +1,18 @@
+# Heroku MCP server (@heroku/mcp-server): logs
+operations:
+  - id: heroku-mcp.logs.get-app-logs
+    match: { mcp: { tool: get_app_logs } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "Read the logs of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/logs.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku logs.
+    tests:
+      - fixture: fixtures/get-app-logs.json
+        expect: read
+        resource: shop-api

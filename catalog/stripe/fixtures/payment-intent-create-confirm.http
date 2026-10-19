@@ -1,0 +1,7 @@
+# description: Create a payment of 2000 usd for cus_ShopAcme0001
+POST /v1/payment_intents HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amount=2000&currency=usd&customer=cus_ShopAcme0001&payment_method=pm_ShopVisa0001&confirm=true&off_session=true

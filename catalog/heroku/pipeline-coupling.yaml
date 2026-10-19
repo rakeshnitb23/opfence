@@ -1,0 +1,45 @@
+# Heroku Platform API: pipeline-coupling
+operations:
+  - id: heroku.pipeline-coupling.create
+    match: { rest: { method: POST, path: "/pipeline-couplings" } }
+    class: write
+    resource: { arg: body.app, kind: app }
+    card: "Add app {body.app} to pipeline {body.pipeline} as {body.stage}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/pipeline-coupling-create.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.pipeline-coupling.update
+    match: { rest: { method: PATCH, path: "/pipeline-couplings/{pipeline_coupling_id}" } }
+    class: write
+    resource: { arg: pipeline_coupling_id, kind: pipeline-coupling }
+    card: "Move pipeline coupling {pipeline_coupling_id} to stage {body.stage}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/pipeline-coupling-update.http
+        expect: write
+        resource: 4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a
+
+  - id: heroku.pipeline-coupling.delete
+    match: { rest: { method: DELETE, path: "/pipeline-couplings/{pipeline_coupling_id}" } }
+    class: delete
+    resource: { arg: pipeline_coupling_id, kind: pipeline-coupling }
+    card: "Remove an app from its pipeline (coupling {pipeline_coupling_id})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The app stays and can be added again.
+    tests:
+      - fixture: fixtures/pipeline-coupling-delete.http
+        expect: delete
+        resource: 4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a

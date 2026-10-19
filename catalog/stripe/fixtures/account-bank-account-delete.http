@@ -1,0 +1,5 @@
+# description: Remove external account ba_ShopPayout0001 from acct_1ShopConnect01
+DELETE /v1/accounts/acct_1ShopConnect01/bank_accounts/ba_ShopPayout0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,5 @@
+# description: Void credit grant credgr_ShopPromo0001
+POST /v1/billing/credit_grants/credgr_ShopPromo0001/void HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

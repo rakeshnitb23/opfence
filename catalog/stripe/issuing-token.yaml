@@ -1,0 +1,24 @@
+# Stripe REST API: issuing token
+operations:
+  - id: stripe.issuing-token.update
+    match: { rest: { method: POST, path: "/v1/issuing/tokens/{token}" } }
+    class: money
+    when:
+      - if: { arg: body.status, equals: "deleted" }
+        class: irreversible
+    resource: { arg: token, kind: token }
+    card: "Set wallet token {token} to {body.status}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      An active wallet token can spend from the card; a deleted one cannot be
+      restored.
+    tests:
+      - fixture: fixtures/issuing-token-update.http
+        expect: money
+        resource: intok_ShopWallet01
+      - fixture: fixtures/issuing-token-update-deleted.http
+        expect: irreversible
+        resource: intok_ShopWallet01

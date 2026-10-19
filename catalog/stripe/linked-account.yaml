@@ -1,0 +1,34 @@
+# Stripe REST API: linked account
+operations:
+  - id: stripe.linked-account.disconnect
+    match: { rest: { method: POST, path: "/v1/linked_accounts/{account}/disconnect" } }
+    class: irreversible
+    resource: { arg: account, kind: linked_account }
+    card: "Disconnect linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Older name of financial_connections/accounts; the data can no longer be
+      accessed.
+    tests:
+      - fixture: fixtures/linked-account-disconnect.http
+        expect: irreversible
+        resource: fca_ShopChecking01
+
+  - id: stripe.linked-account.refresh
+    match: { rest: { method: POST, path: "/v1/linked_accounts/{account}/refresh" } }
+    class: money
+    resource: { arg: account, kind: linked_account }
+    card: "Refresh linked bank account {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Older name of financial_connections/accounts; refreshes are billed.
+    tests:
+      - fixture: fixtures/linked-account-refresh.http
+        expect: money
+        resource: fca_ShopChecking01

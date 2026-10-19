@@ -1,0 +1,29 @@
+# Heroku Platform API: oauth-token
+operations:
+  - id: heroku.oauth-token.create
+    match: { rest: { method: POST, path: "/oauth/tokens" } }
+    class: credential
+    card: "Exchange a grant or refresh token for an access token"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns a new access token.
+    tests:
+      - fixture: fixtures/oauth-token-create.http
+        expect: credential
+
+  - id: heroku.oauth-token.delete
+    match: { rest: { method: DELETE, path: "/oauth/tokens/{oauth_token_id}" } }
+    class: access
+    resource: { arg: oauth_token_id, kind: oauth-token }
+    card: "Revoke OAuth token {oauth_token_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/oauth-token-delete.http
+        expect: access
+        resource: 7e8f9a0b-1c2d-4e3f-8a4b-5c6d7e8f9a0b

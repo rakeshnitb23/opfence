@@ -1,0 +1,73 @@
+# Heroku Platform API: app-webhook
+operations:
+  - id: heroku.app-webhook.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/webhooks" } }
+    class: access
+    when:
+      - if: { arg: body.url, present: true }
+        class: access
+      - if: { arg: body.url, present: true }
+        class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Send app events of {app_id_or_name} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Sends events about the app to an outside URL (access). The request may set the signing secret
+      and an Authorization header value, and Heroku's webhook docs say a secret it generates is
+      returned on create, so it is credential too (url is required, so both conditions hold for
+      every valid request).
+    tests:
+      - fixture: fixtures/app-webhook-create.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/app-webhook-create.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.app-webhook.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/webhooks/{app_webhook_id}" } }
+    class: access
+    when:
+      - if: { arg: body.secret, present: true }
+        class: credential
+      - if: { arg: body.authorization, present: true }
+        class: credential
+      - if: { arg: body.secret, present: true }
+        class: access
+      - if: { arg: body.authorization, present: true }
+        class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Change webhook {app_webhook_id} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can point the events at another URL (access); setting secret or authorization sets a secret.
+    tests:
+      - fixture: fixtures/app-webhook-update.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/app-webhook-update-secret.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.app-webhook.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/webhooks/{app_webhook_id}" } }
+    class: delete
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Delete webhook {app_webhook_id} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can be created again; Heroku keeps no copy of its secret, but the receiver's copy can be
+      reused.
+    tests:
+      - fixture: fixtures/app-webhook-delete.http
+        expect: delete
+        resource: shop-api

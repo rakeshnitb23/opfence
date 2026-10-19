@@ -1,0 +1,41 @@
+# Stripe REST API: feedback option
+operations:
+  - id: stripe.feedback-option.create
+    match: { rest: { method: POST, path: "/v1/billing/feedback_options" } }
+    class: write
+    card: "Create cancellation feedback option"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/feedback-option-create.http
+        expect: write
+
+  - id: stripe.feedback-option.update
+    match: { rest: { method: POST, path: "/v1/billing/feedback_options/{id}" } }
+    class: write
+    resource: { arg: id, kind: feedback_option }
+    card: "Update feedback option {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/feedback-option-update.http
+        expect: write
+        resource: bfo_ShopTooCostly01
+
+  - id: stripe.feedback-option.deactivate
+    match: { rest: { method: POST, path: "/v1/billing/feedback_options/{id}/deactivate" } }
+    class: write
+    resource: { arg: id, kind: feedback_option }
+    card: "Deactivate feedback option {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/feedback-option-deactivate.http
+        expect: write
+        resource: bfo_ShopTooCostly01

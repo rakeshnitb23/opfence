@@ -1,0 +1,60 @@
+# Stripe REST API: customer bank account
+operations:
+  - id: stripe.customer-bank-account.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/bank_accounts" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Attach a payment source to customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-bank-account-create.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-bank-account.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/bank_accounts/{id}" } }
+    class: irreversible
+    resource: { arg: customer, kind: customer }
+    card: "Delete payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a detached or deleted payment method cannot be
+      used again or re-attached; the customer has to enter it again.
+    tests:
+      - fixture: fixtures/customer-bank-account-delete.http
+        expect: irreversible
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-bank-account.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/bank_accounts/{id}" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Update payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-bank-account-update.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-bank-account.verify
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/bank_accounts/{id}/verify" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Verify bank account {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-bank-account-verify.http
+        expect: write
+        resource: cus_ShopAcme0001

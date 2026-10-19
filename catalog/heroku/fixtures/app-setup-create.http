@@ -1,0 +1,8 @@
+# description: Create and deploy an app from an app.json archive
+POST /app-setups HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"app":{"name":"shop-api"},"source_blob":{"url":"https://example.com/shop-api.tgz"}}

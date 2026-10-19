@@ -1,0 +1,22 @@
+# Heroku Platform API: release
+operations:
+  - id: heroku.release.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/releases" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Release a slug or roll back app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The same endpoint creates a release from a slug or rolls back to an earlier release
+      (body.release). A rollback restores that release's code and config vars and can itself be
+      rolled back.
+    tests:
+      - fixture: fixtures/release-create.http
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/release-rollback.http
+        expect: write
+        resource: shop-api

@@ -1,0 +1,33 @@
+# Heroku Platform API: formation
+operations:
+  - id: heroku.formation.batch-update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/formation" } }
+    class: money
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Scale or resize the dynos of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Dynos are billed by size and count.
+    tests:
+      - fixture: fixtures/formation-batch-update.http
+        expect: money
+        resource: shop-api
+
+  - id: heroku.formation.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/formation/{formation_id_or_type}" } }
+    class: money
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Scale the {formation_id_or_type} dynos of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Dynos are billed by size and count.
+    tests:
+      - fixture: fixtures/formation-update.http
+        expect: money
+        resource: shop-api

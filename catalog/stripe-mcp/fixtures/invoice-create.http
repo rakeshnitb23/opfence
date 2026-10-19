@@ -1,0 +1,8 @@
+# description: Create a draft invoice for customer cus_ShopAcme0001
+POST / HTTP/1.1
+Host: mcp.stripe.com
+Authorization: Bearer opf_stripe-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"create_invoice","arguments":{"customer":"cus_ShopAcme0001","days_until_due":30}}}

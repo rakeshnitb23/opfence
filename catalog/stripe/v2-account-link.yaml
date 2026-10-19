@@ -1,0 +1,17 @@
+# Stripe REST API: v2 account link
+operations:
+  - id: stripe.v2-account-link.create
+    match: { rest: { method: POST, path: "/v2/core/account_links" } }
+    class: credential
+    card: "Create an onboarding link for account {body.account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The URL lets whoever opens it fill in and change the account's details.
+      The response hands out a secret or URL that gives its holder access to
+      the account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/v2-account-link-create.http
+        expect: credential

@@ -1,0 +1,13 @@
+# Stripe REST API: terminal refund
+operations:
+  - id: stripe.terminal-refund.create
+    match: { rest: { method: POST, path: "/v1/terminal/refunds" } }
+    class: money
+    card: "Refund {body.payment_intent} on a Terminal device"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-refund-create.http
+        expect: money

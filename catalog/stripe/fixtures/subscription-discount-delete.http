@@ -1,0 +1,5 @@
+# description: Remove the discount of subscription sub_ShopPro0001
+DELETE /v1/subscriptions/sub_ShopPro0001/discount HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

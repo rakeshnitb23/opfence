@@ -1,0 +1,8 @@
+# description: Add dev@example.com to enterprise account acme-enterprise
+POST /enterprise-accounts/acme-enterprise/members HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"user":"dev@example.com","permissions":["view","manage"]}

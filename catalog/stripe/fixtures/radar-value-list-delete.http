@@ -1,0 +1,5 @@
+# description: Delete Radar list rsl_ShopBlock0001 and all its items
+DELETE /v1/radar/value_lists/rsl_ShopBlock0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

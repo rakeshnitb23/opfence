@@ -1,0 +1,15 @@
+# Stripe REST API: balance settings
+operations:
+  - id: stripe.balance-settings.update
+    match: { rest: { method: POST, path: "/v1/balance_settings" } }
+    class: money
+    card: "Change balance and payout settings"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes payout schedule, minimum balance and negative-balance debits.
+    tests:
+      - fixture: fixtures/balance-settings-update.http
+        expect: money

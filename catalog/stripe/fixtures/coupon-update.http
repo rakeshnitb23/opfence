@@ -1,0 +1,7 @@
+# description: Update coupon SPRING25
+POST /v1/coupons/SPRING25 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+name=SPRING25-ENDED

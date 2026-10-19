@@ -1,0 +1,18 @@
+# Stripe REST API: invoice line
+operations:
+  - id: stripe.invoice-line.update
+    match: { rest: { method: POST, path: "/v1/invoices/{invoice}/lines/{line_item_id}" } }
+    class: write
+    resource: { arg: invoice, kind: invoice }
+    card: "Change line {line_item_id} of draft invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only draft invoices can be changed; nothing is charged until
+      finalization.
+    tests:
+      - fixture: fixtures/invoice-line-update.http
+        expect: write
+        resource: in_ShopInvoice0001

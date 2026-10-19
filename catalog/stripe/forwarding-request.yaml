@@ -1,0 +1,15 @@
+# Stripe REST API: forwarding request
+operations:
+  - id: stripe.forwarding-request.create
+    match: { rest: { method: POST, path: "/v1/forwarding/requests" } }
+    class: credential
+    card: "Send the full card details of {body.payment_method} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Forwards the stored card number and CVC to a third-party endpoint.
+    tests:
+      - fixture: fixtures/forwarding-request-create.http
+        expect: credential

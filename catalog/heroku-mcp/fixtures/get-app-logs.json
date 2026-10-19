@@ -1,0 +1,8 @@
+{
+  "description": "Read the logs of app shop-api",
+  "tool": "get_app_logs",
+  "arguments": {
+    "app": "shop-api",
+    "processType": "web"
+  }
+}

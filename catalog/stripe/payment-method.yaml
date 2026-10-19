@@ -1,0 +1,58 @@
+# Stripe REST API: payment method
+operations:
+  - id: stripe.payment-method.create
+    match: { rest: { method: POST, path: "/v1/payment_methods" } }
+    class: write
+    card: "Create a {body.type} payment method"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-create.http
+        expect: write
+
+  - id: stripe.payment-method.update
+    match: { rest: { method: POST, path: "/v1/payment_methods/{payment_method}" } }
+    class: write
+    resource: { arg: payment_method, kind: payment_method }
+    card: "Update payment method {payment_method}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-update.http
+        expect: write
+        resource: pm_ShopVisa0001
+
+  - id: stripe.payment-method.attach
+    match: { rest: { method: POST, path: "/v1/payment_methods/{payment_method}/attach" } }
+    class: write
+    resource: { arg: payment_method, kind: payment_method }
+    card: "Attach payment method {payment_method} to customer {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-attach.http
+        expect: write
+        resource: pm_ShopVisa0001
+
+  - id: stripe.payment-method.detach
+    match: { rest: { method: POST, path: "/v1/payment_methods/{payment_method}/detach" } }
+    class: irreversible
+    resource: { arg: payment_method, kind: payment_method }
+    card: "Detach payment method {payment_method} from its customer"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a detached or deleted payment method cannot be
+      used again or re-attached; the customer has to enter it again.
+    tests:
+      - fixture: fixtures/payment-method-detach.http
+        expect: irreversible
+        resource: pm_ShopVisa0001

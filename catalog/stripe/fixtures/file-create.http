@@ -1,0 +1,16 @@
+# description: Upload a file for dispute_evidence
+POST /v1/files HTTP/1.1
+Host: files.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: multipart/form-data; boundary=----opfstripe7MA4YWxk
+
+------opfstripe7MA4YWxk
+Content-Disposition: form-data; name="purpose"
+
+dispute_evidence
+------opfstripe7MA4YWxk
+Content-Disposition: form-data; name="file"; filename="receipt.pdf"
+Content-Type: application/pdf
+
+%PDF-1.4 receipt
+------opfstripe7MA4YWxk--

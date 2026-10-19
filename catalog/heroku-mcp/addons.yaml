@@ -1,0 +1,80 @@
+# Heroku MCP server (@heroku/mcp-server): addons
+operations:
+  - id: heroku-mcp.addons.list-addons
+    match: { mcp: { tool: list_addons } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List the add-ons of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/addons.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku addons; names and plans, no config values.
+    tests:
+      - fixture: fixtures/list-addons.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.addons.get-addon-info
+    match: { mcp: { tool: get_addon_info } }
+    class: read
+    resource: { arg: addon, kind: add-on }
+    card: "Show add-on {addon}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/addons.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku addons:info; plan, state and attachments, no config values.
+    tests:
+      - fixture: fixtures/get-addon-info.json
+        expect: read
+        resource: DATABASE
+
+  - id: heroku-mcp.addons.create-addon
+    match: { mcp: { tool: create_addon } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Provision add-on {serviceAndPlan} for app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/addons.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku addons:create; most plans are billed and the price is not in the arguments.
+    tests:
+      - fixture: fixtures/create-addon.json
+        expect: money
+        resource: shop-api
+
+  - id: heroku-mcp.addons.list-addon-services
+    match: { mcp: { tool: list_addon_services } }
+    class: read
+    card: "List add-on services"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/addons.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/list-addon-services.json
+        expect: read
+
+  - id: heroku-mcp.addons.list-addon-plans
+    match: { mcp: { tool: list_addon_plans } }
+    class: read
+    resource: { arg: service, kind: add-on-service }
+    card: "List the plans of add-on service {service}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/addons.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/list-addon-plans.json
+        expect: read
+        resource: heroku-postgresql

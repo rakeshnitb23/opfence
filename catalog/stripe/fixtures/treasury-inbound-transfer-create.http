@@ -1,0 +1,7 @@
+# description: Pull 10000 usd into financial account fa_ShopTreasury01
+POST /v1/treasury/inbound_transfers HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+financial_account=fa_ShopTreasury01&amount=10000&currency=usd&origin_payment_method=pm_ShopBank0001

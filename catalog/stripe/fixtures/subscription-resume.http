@@ -1,0 +1,7 @@
+# description: Resume subscription sub_ShopPro0001
+POST /v1/subscriptions/sub_ShopPro0001/resume HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+billing_cycle_anchor=now&proration_behavior=create_prorations

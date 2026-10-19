@@ -1,0 +1,7 @@
+{
+  "description": "List the plans of add-on service heroku-postgresql",
+  "tool": "list_addon_plans",
+  "arguments": {
+    "service": "heroku-postgresql"
+  }
+}

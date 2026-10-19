@@ -1,0 +1,13 @@
+# Stripe REST API: report run
+operations:
+  - id: stripe.report-run.create
+    match: { rest: { method: POST, path: "/v1/reporting/report_runs" } }
+    class: write
+    card: "Run report {body.report_type}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/report-run-create.http
+        expect: write

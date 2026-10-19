@@ -1,0 +1,17 @@
+# Stripe REST API: review
+operations:
+  - id: stripe.review.approve
+    match: { rest: { method: POST, path: "/v1/reviews/{review}/approve" } }
+    class: write
+    resource: { arg: review, kind: review }
+    card: "Approve Radar review {review}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Closes the review; the payment itself already happened.
+    tests:
+      - fixture: fixtures/review-approve.http
+        expect: write
+        resource: prv_ShopReview0001

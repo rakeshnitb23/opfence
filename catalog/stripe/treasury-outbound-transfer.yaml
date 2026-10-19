@@ -1,0 +1,27 @@
+# Stripe REST API: treasury outbound transfer
+operations:
+  - id: stripe.treasury-outbound-transfer.create
+    match: { rest: { method: POST, path: "/v1/treasury/outbound_transfers" } }
+    class: money
+    card: "Move {body.amount} {body.currency} out of financial account {body.financial_account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-outbound-transfer-create.http
+        expect: money
+
+  - id: stripe.treasury-outbound-transfer.cancel
+    match: { rest: { method: POST, path: "/v1/treasury/outbound_transfers/{outbound_transfer}/cancel" } }
+    class: money
+    resource: { arg: outbound_transfer, kind: outbound_transfer }
+    card: "Cancel outbound transfer {outbound_transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/treasury-outbound-transfer-cancel.http
+        expect: money
+        resource: obt_ShopMove0001

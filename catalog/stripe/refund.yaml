@@ -1,0 +1,41 @@
+# Stripe REST API: refund
+operations:
+  - id: stripe.refund.create
+    match: { rest: { method: POST, path: "/v1/refunds" } }
+    class: money
+    card: "Refund {body.amount} of payment {body.payment_intent}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/refund-create.http
+        expect: money
+
+  - id: stripe.refund.update
+    match: { rest: { method: POST, path: "/v1/refunds/{refund}" } }
+    class: write
+    resource: { arg: refund, kind: refund }
+    card: "Update refund {refund}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/refund-update.http
+        expect: write
+        resource: re_3ShopRefund0001
+
+  - id: stripe.refund.cancel
+    match: { rest: { method: POST, path: "/v1/refunds/{refund}/cancel" } }
+    class: money
+    resource: { arg: refund, kind: refund }
+    card: "Cancel refund {refund}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/refund-cancel.http
+        expect: money
+        resource: re_3ShopRefund0001

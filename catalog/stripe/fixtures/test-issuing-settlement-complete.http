@@ -1,0 +1,5 @@
+# description: Complete test settlement ist_ShopSettle0001
+POST /v1/test_helpers/issuing/settlements/ist_ShopSettle0001/complete HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

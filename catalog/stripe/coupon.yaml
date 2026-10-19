@@ -1,0 +1,47 @@
+# Stripe REST API: coupon
+operations:
+  - id: stripe.coupon.create
+    match: { rest: { method: POST, path: "/v1/coupons" } }
+    class: write
+    card: "Create coupon {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A coupon reduces revenue only once applied to a customer or
+      subscription.
+    tests:
+      - fixture: fixtures/coupon-create.http
+        expect: write
+
+  - id: stripe.coupon.delete
+    match: { rest: { method: DELETE, path: "/v1/coupons/{coupon}" } }
+    class: delete
+    resource: { arg: coupon, kind: coupon }
+    card: "Delete coupon {coupon}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Existing discounts keep working; an equivalent coupon can be created
+      again.
+    tests:
+      - fixture: fixtures/coupon-delete.http
+        expect: delete
+        resource: SPRING25
+
+  - id: stripe.coupon.update
+    match: { rest: { method: POST, path: "/v1/coupons/{coupon}" } }
+    class: write
+    resource: { arg: coupon, kind: coupon }
+    card: "Update coupon {coupon}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/coupon-update.http
+        expect: write
+        resource: SPRING25

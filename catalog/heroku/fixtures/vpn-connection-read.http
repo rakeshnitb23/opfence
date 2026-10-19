@@ -1,0 +1,5 @@
+# description: Show VPN connection office of space acme-prod with its pre-shared keys
+GET /spaces/acme-prod/vpn-connections/office HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

@@ -1,0 +1,7 @@
+# description: Create a token
+POST /v1/tokens HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+bank_account[country]=US&bank_account[currency]=usd&bank_account[routing_number]=110000000&bank_account[account_number]=000123456789&bank_account[account_holder_name]=Jane%20Doe

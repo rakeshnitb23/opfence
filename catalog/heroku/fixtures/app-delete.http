@@ -1,0 +1,5 @@
+# description: Delete Heroku app shop-api with its add-ons, config vars and releases
+DELETE /apps/shop-api HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

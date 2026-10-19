@@ -1,0 +1,5 @@
+# description: Mark test card ic_ShopVirtual01 returned
+POST /v1/test_helpers/issuing/cards/ic_ShopVirtual01/shipping/return HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

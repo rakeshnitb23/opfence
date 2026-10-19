@@ -1,0 +1,16 @@
+# Stripe REST API: v2 meter event stream
+operations:
+  - id: stripe.v2-meter-event-stream.create
+    match: { rest: { method: POST, path: "/v2/billing/meter_event_stream" } }
+    class: money
+    card: "Send a batch of usage events"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Served on meter-events.stripe.com. Usage events decide what customers on
+      metered prices are billed.
+    tests:
+      - fixture: fixtures/v2-meter-event-stream-create.http
+        expect: money

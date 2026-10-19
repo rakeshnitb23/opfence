@@ -1,0 +1,7 @@
+# description: Create an embedded-components session for connected account acct_1ShopConnect01
+POST /v1/account_sessions HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+account=acct_1ShopConnect01&components[payouts][enabled]=true

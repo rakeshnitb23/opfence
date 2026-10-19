@@ -1,0 +1,7 @@
+{
+  "description": "List your Heroku teams",
+  "tool": "list_teams",
+  "arguments": {
+    "json": true
+  }
+}

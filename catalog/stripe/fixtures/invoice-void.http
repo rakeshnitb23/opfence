@@ -1,0 +1,5 @@
+# description: Void invoice in_ShopInvoice0001
+POST /v1/invoices/in_ShopInvoice0001/void HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

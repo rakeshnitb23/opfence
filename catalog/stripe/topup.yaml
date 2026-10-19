@@ -1,0 +1,41 @@
+# Stripe REST API: topup
+operations:
+  - id: stripe.topup.create
+    match: { rest: { method: POST, path: "/v1/topups" } }
+    class: money
+    card: "Top up the balance with {body.amount} {body.currency}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/topup-create.http
+        expect: money
+
+  - id: stripe.topup.update
+    match: { rest: { method: POST, path: "/v1/topups/{topup}" } }
+    class: write
+    resource: { arg: topup, kind: topup }
+    card: "Update top-up {topup}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/topup-update.http
+        expect: write
+        resource: tu_ShopFloat0001
+
+  - id: stripe.topup.cancel
+    match: { rest: { method: POST, path: "/v1/topups/{topup}/cancel" } }
+    class: money
+    resource: { arg: topup, kind: topup }
+    card: "Cancel top-up {topup}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/topup-cancel.http
+        expect: money
+        resource: tu_ShopFloat0001

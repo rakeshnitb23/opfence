@@ -1,0 +1,5 @@
+# description: Disconnect linked bank account fca_ShopChecking01
+POST /v1/linked_accounts/fca_ShopChecking01/disconnect HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

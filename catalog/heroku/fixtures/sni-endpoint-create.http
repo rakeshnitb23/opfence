@@ -1,0 +1,8 @@
+# description: Upload a TLS certificate and private key to app shop-api
+POST /apps/shop-api/sni-endpoints HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"certificate_chain":"-----BEGIN CERTIFICATE-----\nexample\n-----END CERTIFICATE-----","private_key":"example-key"}

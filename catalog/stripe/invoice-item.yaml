@@ -1,0 +1,49 @@
+# Stripe REST API: invoice item
+operations:
+  - id: stripe.invoice-item.create
+    match: { rest: { method: POST, path: "/v1/invoiceitems" } }
+    class: money
+    card: "Add {body.amount} {body.currency} to the next invoice of {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Pending items go onto the customer's next invoice, which subscriptions
+      charge automatically.
+    tests:
+      - fixture: fixtures/invoice-item-create.http
+        expect: money
+
+  - id: stripe.invoice-item.delete
+    match: { rest: { method: DELETE, path: "/v1/invoiceitems/{invoiceitem}" } }
+    class: delete
+    resource: { arg: invoiceitem, kind: invoice_item }
+    card: "Delete invoice item {invoiceitem}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Only items not yet on a finalized invoice can be deleted; they can be
+      added again.
+    tests:
+      - fixture: fixtures/invoice-item-delete.http
+        expect: delete
+        resource: ii_ShopSetup0001
+
+  - id: stripe.invoice-item.update
+    match: { rest: { method: POST, path: "/v1/invoiceitems/{invoiceitem}" } }
+    class: money
+    resource: { arg: invoiceitem, kind: invoice_item }
+    card: "Change invoice item {invoiceitem}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can change the amount the customer is charged.
+    tests:
+      - fixture: fixtures/invoice-item-update.http
+        expect: money
+        resource: ii_ShopSetup0001

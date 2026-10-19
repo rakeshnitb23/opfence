@@ -1,0 +1,8 @@
+# description: Send the logs of app shop-api to syslog+tls://logs.example.com:6514
+POST /apps/shop-api/log-drains HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"url":"syslog+tls://logs.example.com:6514"}

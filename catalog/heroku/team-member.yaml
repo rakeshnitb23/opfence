@@ -1,0 +1,57 @@
+# Heroku Platform API: team-member
+operations:
+  - id: heroku.team-member.create-or-update
+    match: { rest: { method: PUT, path: "/teams/{team_name_or_id}/members" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Add {body.email} to team {team_name_or_id} as {body.role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-member-create-or-update.http
+        expect: access
+        resource: acme
+
+  - id: heroku.team-member.create
+    match: { rest: { method: POST, path: "/teams/{team_name_or_id}/members" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Add {body.email} to team {team_name_or_id} as {body.role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-member-create.http
+        expect: access
+        resource: acme
+
+  - id: heroku.team-member.update
+    match: { rest: { method: PATCH, path: "/teams/{team_name_or_id}/members" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Change the role of {body.email} in team {team_name_or_id} to {body.role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-member-update.http
+        expect: access
+        resource: acme
+
+  - id: heroku.team-member.delete
+    match: { rest: { method: DELETE, path: "/teams/{team_name_or_id}/members/{team_member_email_or_id}" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Remove {team_member_email_or_id} from team {team_name_or_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-member-delete.http
+        expect: access
+        resource: acme

@@ -1,0 +1,15 @@
+# Heroku Platform API: slug
+operations:
+  - id: heroku.slug.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/slugs" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Create a slug for app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/slug-create.http
+        expect: write
+        resource: shop-api

@@ -1,0 +1,54 @@
+# Stripe REST API: account external account
+operations:
+  - id: stripe.account-external-account.create
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/external_accounts" } }
+    class: money
+    resource: { arg: account, kind: account }
+    card: "Add an external account for payouts to {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      External accounts are the bank accounts and debit cards payouts go to;
+      changing them changes where money goes, so the class is money rather
+      than access.
+    tests:
+      - fixture: fixtures/account-external-account-create.http
+        expect: money
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account-external-account.delete
+    match: { rest: { method: DELETE, path: "/v1/accounts/{account}/external_accounts/{id}" } }
+    class: delete
+    resource: { arg: account, kind: account }
+    card: "Remove external account {id} from {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe refuses to delete the default account for a currency; the bank
+      account can be added again.
+    tests:
+      - fixture: fixtures/account-external-account-delete.http
+        expect: delete
+        resource: acct_1ShopConnect01
+
+  - id: stripe.account-external-account.update
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/external_accounts/{id}" } }
+    class: money
+    resource: { arg: account, kind: account }
+    card: "Update external account {id} of {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      default_for_currency makes it the payout destination. External accounts
+      are the bank accounts and debit cards payouts go to; changing them
+      changes where money goes, so the class is money rather than access.
+    tests:
+      - fixture: fixtures/account-external-account-update.http
+        expect: money
+        resource: acct_1ShopConnect01

@@ -1,0 +1,7 @@
+{
+  "description": "Put app shop-api into maintenance mode",
+  "tool": "maintenance_on",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

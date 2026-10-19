@@ -1,0 +1,43 @@
+# Stripe REST API: terminal configuration
+operations:
+  - id: stripe.terminal-configuration.create
+    match: { rest: { method: POST, path: "/v1/terminal/configurations" } }
+    class: write
+    card: "Create Terminal configuration {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-configuration-create.http
+        expect: write
+
+  - id: stripe.terminal-configuration.delete
+    match: { rest: { method: DELETE, path: "/v1/terminal/configurations/{configuration}" } }
+    class: delete
+    resource: { arg: configuration, kind: configuration }
+    card: "Delete Terminal configuration {configuration}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Settings only; it can be created again.
+    tests:
+      - fixture: fixtures/terminal-configuration-delete.http
+        expect: delete
+        resource: tmc_ShopStore0001
+
+  - id: stripe.terminal-configuration.update
+    match: { rest: { method: POST, path: "/v1/terminal/configurations/{configuration}" } }
+    class: write
+    resource: { arg: configuration, kind: configuration }
+    card: "Update Terminal configuration {configuration}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/terminal-configuration-update.http
+        expect: write
+        resource: tmc_ShopStore0001

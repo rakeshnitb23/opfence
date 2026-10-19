@@ -1,0 +1,43 @@
+# Stripe REST API: product
+operations:
+  - id: stripe.product.create
+    match: { rest: { method: POST, path: "/v1/products" } }
+    class: write
+    card: "Create product {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/product-create.http
+        expect: write
+
+  - id: stripe.product.delete
+    match: { rest: { method: DELETE, path: "/v1/products/{id}" } }
+    class: irreversible
+    resource: { arg: id, kind: product }
+    card: "Delete product {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents no undo (only products without prices can be deleted).
+    tests:
+      - fixture: fixtures/product-delete.http
+        expect: irreversible
+        resource: prod_ShopPro0001
+
+  - id: stripe.product.update
+    match: { rest: { method: POST, path: "/v1/products/{id}" } }
+    class: write
+    resource: { arg: id, kind: product }
+    card: "Update product {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/product-update.http
+        expect: write
+        resource: prod_ShopPro0001

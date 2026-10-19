@@ -1,0 +1,9 @@
+{
+  "description": "Upgrade the Postgres version of the database of app shop-api",
+  "tool": "pg_upgrade",
+  "arguments": {
+    "app": "shop-api",
+    "version": "17",
+    "confirm": "shop-api"
+  }
+}

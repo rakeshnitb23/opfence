@@ -1,0 +1,19 @@
+provider: stripe-mcp
+title: Stripe MCP
+docs: https://docs.stripe.com/mcp
+hosts: [mcp.stripe.com]              # remote server, Streamable HTTP at /
+auth:
+  - header: Authorization            # OAuth access token, or a secret/restricted key
+    scheme: Bearer
+# No detect block: the server takes the same STRIPE_SECRET_KEY as the REST
+# API, which catalog/stripe detects.
+mcp:
+  names: [stripe, Stripe, stripe-mcp, mcp-stripe]
+  package: "@stripe/mcp"
+# @stripe/mcp 0.3.x (and @stripe/agent-toolkit 0.9) no longer define tools:
+# they forward stdio to https://mcp.stripe.com and list its tools at run time,
+# so every call of the local package also crosses this host. The tool names
+# and arguments below come from @stripe/agent-toolkit 0.7.12, the last
+# published source that defines them (the shared tools list behind
+# @stripe/mcp 0.2.5). Tools the hosted server added later are drafts; any
+# other tool is unknown, which asks.

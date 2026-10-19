@@ -1,0 +1,7 @@
+# description: Create an onboarding link for connected account acct_1ShopConnect01
+POST /v1/account_links HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+account=acct_1ShopConnect01&type=account_onboarding&refresh_url=https%3A%2F%2Fshop.example.com%2Freauth&return_url=https%3A%2F%2Fshop.example.com%2Fdone

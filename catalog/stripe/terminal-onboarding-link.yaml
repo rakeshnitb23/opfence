@@ -1,0 +1,17 @@
+# Stripe REST API: terminal onboarding link
+operations:
+  - id: stripe.terminal-onboarding-link.create
+    match: { rest: { method: POST, path: "/v1/terminal/onboarding_links" } }
+    class: credential
+    card: "Create a Tap to Pay onboarding link"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A redirect URL that onboards a device to take payments for the account.
+      The response hands out a secret or URL that gives its holder access to
+      the account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/terminal-onboarding-link-create.http
+        expect: credential

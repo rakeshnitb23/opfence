@@ -1,0 +1,13 @@
+# Heroku Platform API: credit
+operations:
+  - id: heroku.credit.create
+    match: { rest: { method: POST, path: "/account/credits" } }
+    class: money
+    card: "Redeem a credit code on your account"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/credit-create.http
+        expect: money

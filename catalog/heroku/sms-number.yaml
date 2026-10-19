@@ -1,0 +1,33 @@
+# Heroku Platform API: sms-number
+operations:
+  - id: heroku.sms-number.recover
+    match: { rest: { method: POST, path: "/users/{account_email_or_id_or_self}/sms-number/actions/recover" } }
+    class: access
+    resource: { arg: account_email_or_id_or_self, kind: account }
+    card: "Recover account {account_email_or_id_or_self} with an SMS code"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Account recovery: an auth setting.
+    tests:
+      - fixture: fixtures/sms-number-recover.http
+        expect: access
+        resource: "~"
+
+  - id: heroku.sms-number.confirm
+    match: { rest: { method: POST, path: "/users/{account_email_or_id_or_self}/sms-number/actions/confirm" } }
+    class: access
+    resource: { arg: account_email_or_id_or_self, kind: account }
+    card: "Confirm the SMS recovery number of account {account_email_or_id_or_self}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Changes the phone number used to recover the account.
+    tests:
+      - fixture: fixtures/sms-number-confirm.http
+        expect: access
+        resource: "~"

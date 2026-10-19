@@ -1,0 +1,7 @@
+# description: Update credit note cn_ShopCredit0001
+POST /v1/credit_notes/cn_ShopCredit0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+memo=Damaged%20item

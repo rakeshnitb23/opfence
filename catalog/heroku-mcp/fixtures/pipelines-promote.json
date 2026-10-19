@@ -1,0 +1,8 @@
+{
+  "description": "Promote app shop-api-staging to shop-api",
+  "tool": "pipelines_promote",
+  "arguments": {
+    "app": "shop-api-staging",
+    "to": "shop-api"
+  }
+}

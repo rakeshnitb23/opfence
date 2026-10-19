@@ -1,0 +1,7 @@
+{
+  "description": "List the add-ons of app shop-api",
+  "tool": "list_addons",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

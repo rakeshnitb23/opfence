@@ -1,0 +1,7 @@
+# description: Attach a payment source to customer cus_ShopAcme0001
+POST /v1/customers/cus_ShopAcme0001/sources HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+source=tok_visa

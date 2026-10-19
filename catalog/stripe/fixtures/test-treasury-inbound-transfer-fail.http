@@ -1,0 +1,5 @@
+# description: Fail test inbound transfer ibt_ShopPull0001
+POST /v1/test_helpers/treasury/inbound_transfers/ibt_ShopPull0001/fail HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,17 @@
+# Stripe REST API: account session
+operations:
+  - id: stripe.account-session.create
+    match: { rest: { method: POST, path: "/v1/account_sessions" } }
+    class: credential
+    card: "Create an embedded-components session for connected account {body.account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Returns a client_secret for Connect embedded components, which can
+      manage payouts and balances. The response hands out a secret or URL that
+      gives its holder access to the account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/account-session-create.http
+        expect: credential

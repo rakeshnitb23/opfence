@@ -1,0 +1,8 @@
+# description: Transfer Private Space acme-prod to team acme-west
+POST /spaces/acme-prod/transfer HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"new_owner":"acme-west"}

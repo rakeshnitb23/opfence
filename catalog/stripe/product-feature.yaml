@@ -1,0 +1,31 @@
+# Stripe REST API: product feature
+operations:
+  - id: stripe.product-feature.attach
+    match: { rest: { method: POST, path: "/v1/products/{product}/features" } }
+    class: write
+    resource: { arg: product, kind: product }
+    card: "Attach feature {body.entitlement_feature} to product {product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/product-feature-attach.http
+        expect: write
+        resource: prod_ShopPro0001
+
+  - id: stripe.product-feature.delete
+    match: { rest: { method: DELETE, path: "/v1/products/{product}/features/{id}" } }
+    class: delete
+    resource: { arg: product, kind: product }
+    card: "Remove feature {id} from product {product}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The feature can be attached again.
+    tests:
+      - fixture: fixtures/product-feature-delete.http
+        expect: delete
+        resource: prod_ShopPro0001

@@ -1,0 +1,33 @@
+# Stripe REST API: ephemeral key
+operations:
+  - id: stripe.ephemeral-key.create
+    match: { rest: { method: POST, path: "/v1/ephemeral_keys" } }
+    class: credential
+    card: "Create an ephemeral key for customer {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Returns a key the mobile SDK uses to act on the customer's objects. The
+      response hands out a secret or URL that gives its holder access to the
+      account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/ephemeral-key-create.http
+        expect: credential
+
+  - id: stripe.ephemeral-key.delete
+    match: { rest: { method: DELETE, path: "/v1/ephemeral_keys/{key}" } }
+    class: access
+    resource: { arg: key, kind: ephemeral_key }
+    card: "Invalidate ephemeral key {key}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Revoking a key is access, as for other providers' tokens.
+    tests:
+      - fixture: fixtures/ephemeral-key-delete.http
+        expect: access
+        resource: ephkey_ShopMobile01

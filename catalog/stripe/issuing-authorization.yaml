@@ -1,0 +1,47 @@
+# Stripe REST API: issuing authorization
+operations:
+  - id: stripe.issuing-authorization.update
+    match: { rest: { method: POST, path: "/v1/issuing/authorizations/{authorization}" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Update card authorization {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-authorization-update.http
+        expect: write
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.issuing-authorization.approve
+    match: { rest: { method: POST, path: "/v1/issuing/authorizations/{authorization}/approve" } }
+    class: money
+    resource: { arg: authorization, kind: authorization }
+    card: "Approve card purchase {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Lets a cardholder spend from the Issuing balance.
+    tests:
+      - fixture: fixtures/issuing-authorization-approve.http
+        expect: money
+        resource: iauth_ShopPurchase01
+
+  - id: stripe.issuing-authorization.decline
+    match: { rest: { method: POST, path: "/v1/issuing/authorizations/{authorization}/decline" } }
+    class: write
+    resource: { arg: authorization, kind: authorization }
+    card: "Decline card purchase {authorization}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Declining moves no money.
+    tests:
+      - fixture: fixtures/issuing-authorization-decline.http
+        expect: write
+        resource: iauth_ShopPurchase01

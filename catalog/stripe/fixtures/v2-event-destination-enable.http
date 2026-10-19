@@ -1,0 +1,6 @@
+# description: Enable event destination ed_ShopOrders0001
+POST /v2/core/event_destinations/ed_ShopOrders0001/enable HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+

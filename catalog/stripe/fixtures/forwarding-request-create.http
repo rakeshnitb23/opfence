@@ -1,0 +1,7 @@
+# description: Send the full card details of pm_ShopVisa0001 to https://api.processor.example/charge
+POST /v1/forwarding/requests HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+payment_method=pm_ShopVisa0001&url=https%3A%2F%2Fapi.processor.example%2Fcharge&replacements[0]=card_number&replacements[1]=card_cvc&request[body]=%7B%7D

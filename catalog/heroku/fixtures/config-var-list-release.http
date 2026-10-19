@@ -1,0 +1,5 @@
+# description: Read the config var values of release v42 of app shop-api
+GET /apps/shop-api/releases/v42/config-vars HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

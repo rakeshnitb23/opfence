@@ -1,0 +1,7 @@
+{
+  "description": "List locks on the database of app shop-api",
+  "tool": "pg_locks",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

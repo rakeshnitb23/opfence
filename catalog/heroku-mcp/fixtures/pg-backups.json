@@ -1,0 +1,7 @@
+{
+  "description": "List the database backups of app shop-api",
+  "tool": "pg_backups",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

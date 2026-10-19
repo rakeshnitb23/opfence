@@ -1,0 +1,46 @@
+# Heroku MCP server (@heroku/mcp-server): deploy-to-heroku
+operations:
+  - id: heroku-mcp.deploy.deploy-to-heroku
+    match: { mcp: { tool: deploy_to_heroku } }
+    class: money
+    when:
+      - if: { arg: env, present: true }
+        class: money
+      - if: { arg: env, present: true }
+        class: credential
+    resource: { arg: name, kind: app }
+    card: "Deploy {rootUri} to Heroku app {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/deploy-to-heroku.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Uploads the workspace and builds it on an existing app, or creates the app with an app setup
+      whose app.json can provision paid add-ons and dyno sizes; whether the app exists is not in the
+      arguments, so money. env sets config vars (secrets) on a new app.
+    tests:
+      - fixture: fixtures/deploy-to-heroku.json
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/deploy-to-heroku-env.json
+        expect: credential
+        resource: shop-api
+
+  - id: heroku-mcp.deploy.deploy-one-off-dyno
+    match: { mcp: { tool: deploy_one_off_dyno } }
+    class: irreversible
+    resource: { arg: name, kind: app }
+    card: "Run `{command}` in a one-off dyno of app {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/deploy-to-heroku.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Creates a run dyno (POST /apps/{app}/dynos) that executes an arbitrary command with the app's
+      config vars, database credentials included.
+    tests:
+      - fixture: fixtures/deploy-one-off-dyno.json
+        expect: irreversible
+        resource: shop-api

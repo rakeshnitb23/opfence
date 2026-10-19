@@ -1,0 +1,47 @@
+# Stripe REST API: subscription item
+operations:
+  - id: stripe.subscription-item.create
+    match: { rest: { method: POST, path: "/v1/subscription_items" } }
+    class: money
+    card: "Add price {body.price} to subscription {body.subscription}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes what the customer is billed.
+    tests:
+      - fixture: fixtures/subscription-item-create.http
+        expect: money
+
+  - id: stripe.subscription-item.delete
+    match: { rest: { method: DELETE, path: "/v1/subscription_items/{item}" } }
+    class: money
+    resource: { arg: item, kind: subscription_item }
+    card: "Remove item {item} from its subscription"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes what the customer is billed and can prorate credits.
+    tests:
+      - fixture: fixtures/subscription-item-delete.http
+        expect: money
+        resource: si_ShopItem0001
+
+  - id: stripe.subscription-item.update
+    match: { rest: { method: POST, path: "/v1/subscription_items/{item}" } }
+    class: money
+    resource: { arg: item, kind: subscription_item }
+    card: "Change subscription item {item}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes what the customer is billed.
+    tests:
+      - fixture: fixtures/subscription-item-update.http
+        expect: money
+        resource: si_ShopItem0001

@@ -1,0 +1,7 @@
+{
+  "description": "List the dynos of app shop-api",
+  "tool": "ps_list",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

@@ -1,0 +1,15 @@
+# Stripe REST API: issuing transaction
+operations:
+  - id: stripe.issuing-transaction.update
+    match: { rest: { method: POST, path: "/v1/issuing/transactions/{transaction}" } }
+    class: write
+    resource: { arg: transaction, kind: transaction }
+    card: "Update card transaction {transaction}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/issuing-transaction-update.http
+        expect: write
+        resource: ipi_ShopTxn0001

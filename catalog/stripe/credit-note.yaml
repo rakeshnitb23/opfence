@@ -1,0 +1,45 @@
+# Stripe REST API: credit note
+operations:
+  - id: stripe.credit-note.create
+    match: { rest: { method: POST, path: "/v1/credit_notes" } }
+    class: money
+    card: "Issue a credit note on invoice {body.invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Credits the customer's balance or refunds money.
+    tests:
+      - fixture: fixtures/credit-note-create.http
+        expect: money
+
+  - id: stripe.credit-note.update
+    match: { rest: { method: POST, path: "/v1/credit_notes/{id}" } }
+    class: write
+    resource: { arg: id, kind: credit_note }
+    card: "Update credit note {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/credit-note-update.http
+        expect: write
+        resource: cn_ShopCredit0001
+
+  - id: stripe.credit-note.void
+    match: { rest: { method: POST, path: "/v1/credit_notes/{id}/void" } }
+    class: money
+    resource: { arg: id, kind: credit_note }
+    card: "Void credit note {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Takes back the credit given to the customer.
+    tests:
+      - fixture: fixtures/credit-note-void.http
+        expect: money
+        resource: cn_ShopCredit0001

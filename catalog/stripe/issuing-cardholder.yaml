@@ -1,0 +1,51 @@
+# Stripe REST API: issuing cardholder
+operations:
+  - id: stripe.issuing-cardholder.create
+    match: { rest: { method: POST, path: "/v1/issuing/cardholders" } }
+    class: write
+    card: "Create cardholder {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A cardholder cannot spend until a card is issued.
+    tests:
+      - fixture: fixtures/issuing-cardholder-create.http
+        expect: write
+
+  - id: stripe.issuing-cardholder.update
+    match: { rest: { method: POST, path: "/v1/issuing/cardholders/{cardholder}" } }
+    class: write
+    when:
+      - if: { arg: body.spending_controls, present: true }
+        class: money
+      - if: { arg: body.status, present: true }
+        class: money
+      - if: { arg: body.phone_number, present: true }
+        class: access
+      - if: { arg: body.email, present: true }
+        class: access
+    resource: { arg: cardholder, kind: cardholder }
+    card: "Update cardholder {cardholder}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      spending_controls and status decide what the cardholder can spend. The
+      phone number (and email) receive 3D Secure one-time codes, so changing
+      them is access.
+    tests:
+      - fixture: fixtures/issuing-cardholder-update.http
+        expect: write
+        resource: ich_ShopJane0001
+      - fixture: fixtures/issuing-cardholder-update-spending-controls.http
+        expect: money
+        resource: ich_ShopJane0001
+      - fixture: fixtures/issuing-cardholder-update-status.http
+        expect: money
+        resource: ich_ShopJane0001
+      - fixture: fixtures/issuing-cardholder-update-phone.http
+        expect: access
+        resource: ich_ShopJane0001

@@ -1,0 +1,5 @@
+# description: Remove an app from its pipeline (coupling 4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a)
+DELETE /pipeline-couplings/4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

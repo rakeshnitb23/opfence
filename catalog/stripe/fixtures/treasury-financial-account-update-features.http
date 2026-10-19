@@ -1,0 +1,7 @@
+# description: Change features of financial account fa_ShopTreasury01
+POST /v1/treasury/financial_accounts/fa_ShopTreasury01/features HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+outbound_transfers[ach][requested]=true

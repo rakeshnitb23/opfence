@@ -1,0 +1,5 @@
+# description: Cancel identity verification vs_ShopVerify0001
+POST /v1/identity/verification_sessions/vs_ShopVerify0001/cancel HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

@@ -1,0 +1,43 @@
+# Stripe REST API: radar value list
+operations:
+  - id: stripe.radar-value-list.create
+    match: { rest: { method: POST, path: "/v1/radar/value_lists" } }
+    class: write
+    card: "Create Radar list {body.alias}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/radar-value-list-create.http
+        expect: write
+
+  - id: stripe.radar-value-list.delete
+    match: { rest: { method: DELETE, path: "/v1/radar/value_lists/{value_list}" } }
+    class: irreversible
+    resource: { arg: value_list, kind: value_list }
+    card: "Delete Radar list {value_list} and all its items"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe deletes every item in the list with it.
+    tests:
+      - fixture: fixtures/radar-value-list-delete.http
+        expect: irreversible
+        resource: rsl_ShopBlock0001
+
+  - id: stripe.radar-value-list.update
+    match: { rest: { method: POST, path: "/v1/radar/value_lists/{value_list}" } }
+    class: write
+    resource: { arg: value_list, kind: value_list }
+    card: "Update Radar list {value_list}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/radar-value-list-update.http
+        expect: write
+        resource: rsl_ShopBlock0001

@@ -1,0 +1,8 @@
+# description: Serve app shop-api on www.example.com
+POST /apps/shop-api/domains HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"hostname":"www.example.com","sni_endpoint":null}

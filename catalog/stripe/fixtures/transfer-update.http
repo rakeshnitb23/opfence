@@ -1,0 +1,7 @@
+# description: Update transfer tr_ShopSeller0001
+POST /v1/transfers/tr_ShopSeller0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+description=October%20payout

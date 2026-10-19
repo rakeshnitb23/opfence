@@ -1,0 +1,47 @@
+# Heroku Platform API: domain
+operations:
+  - id: heroku.domain.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/domains" } }
+    class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Serve app {app_id_or_name} on {body.hostname}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Exposes the app on a public hostname.
+    tests:
+      - fixture: fixtures/domain-create.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.domain.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/domains/{domain_id_or_hostname}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Change the certificate of domain {domain_id_or_hostname} on app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/domain-update.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.domain.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/domains/{domain_id_or_hostname}" } }
+    class: delete
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Remove domain {domain_id_or_hostname} from app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can be added again (with a new DNS target).
+    tests:
+      - fixture: fixtures/domain-delete.http
+        expect: delete
+        resource: shop-api

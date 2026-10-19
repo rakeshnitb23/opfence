@@ -1,0 +1,70 @@
+# Stripe REST API: subscription schedule
+operations:
+  - id: stripe.subscription-schedule.create
+    match: { rest: { method: POST, path: "/v1/subscription_schedules" } }
+    class: money
+    card: "Schedule subscription changes for {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A schedule starts and changes billing on its own.
+    tests:
+      - fixture: fixtures/subscription-schedule-create.http
+        expect: money
+
+  - id: stripe.subscription-schedule.update
+    match: { rest: { method: POST, path: "/v1/subscription_schedules/{schedule}" } }
+    class: money
+    resource: { arg: schedule, kind: subscription_schedule }
+    card: "Change subscription schedule {schedule}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Changes future billing.
+    tests:
+      - fixture: fixtures/subscription-schedule-update.http
+        expect: money
+        resource: sub_sched_ShopAnnual01
+
+  - id: stripe.subscription-schedule.cancel
+    match: { rest: { method: POST, path: "/v1/subscription_schedules/{schedule}/cancel" } }
+    class: irreversible
+    when:
+      - if: { arg: body.invoice_now, equals: "true" }
+        class: money
+      - if: { arg: body.prorate, equals: "true" }
+        class: money
+    resource: { arg: schedule, kind: subscription_schedule }
+    card: "Cancel subscription schedule {schedule} and its subscription"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Cancels the attached subscription immediately; Stripe documents that a
+      canceled subscription cannot be reactivated. invoice_now or prorate also
+      bill or credit the customer at once.
+    tests:
+      - fixture: fixtures/subscription-schedule-cancel.http
+        expect: irreversible
+        resource: sub_sched_ShopAnnual01
+
+  - id: stripe.subscription-schedule.release
+    match: { rest: { method: POST, path: "/v1/subscription_schedules/{schedule}/release" } }
+    class: write
+    resource: { arg: schedule, kind: subscription_schedule }
+    card: "Release subscription schedule {schedule}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The subscription keeps running without the schedule.
+    tests:
+      - fixture: fixtures/subscription-schedule-release.http
+        expect: write
+        resource: sub_sched_ShopAnnual01

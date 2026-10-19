@@ -1,0 +1,5 @@
+# description: Detach payment method pm_ShopVisa0001 from its customer
+POST /v1/payment_methods/pm_ShopVisa0001/detach HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

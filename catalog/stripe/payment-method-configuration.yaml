@@ -1,0 +1,27 @@
+# Stripe REST API: payment method configuration
+operations:
+  - id: stripe.payment-method-configuration.create
+    match: { rest: { method: POST, path: "/v1/payment_method_configurations" } }
+    class: write
+    card: "Create payment method configuration {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-configuration-create.http
+        expect: write
+
+  - id: stripe.payment-method-configuration.update
+    match: { rest: { method: POST, path: "/v1/payment_method_configurations/{configuration}" } }
+    class: write
+    resource: { arg: configuration, kind: payment_method_configuration }
+    card: "Update payment method configuration {configuration}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-configuration-update.http
+        expect: write
+        resource: pmc_ShopEu0001

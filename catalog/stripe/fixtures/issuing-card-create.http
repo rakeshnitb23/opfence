@@ -1,0 +1,7 @@
+# description: Issue a virtual card for cardholder ich_ShopJane0001
+POST /v1/issuing/cards HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+cardholder=ich_ShopJane0001&currency=usd&type=virtual

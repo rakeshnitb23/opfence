@@ -1,0 +1,5 @@
+# description: Read issuing card ic_ShopVirtual01
+GET /v1/issuing/cards/ic_ShopVirtual01?expand[]=cardholder HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

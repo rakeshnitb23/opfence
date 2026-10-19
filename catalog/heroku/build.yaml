@@ -1,0 +1,47 @@
+# Heroku Platform API: build
+operations:
+  - id: heroku.build.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/builds" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Build and deploy {body.source_blob.url} to app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      A deploy: a successful build creates a release. Earlier releases stay available for rollback.
+    tests:
+      - fixture: fixtures/build-create.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.build.cancel
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/builds/{build_id}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Cancel build {build_id} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/build-cancel.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.build.delete-cache
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/build-cache" } }
+    class: delete
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Clear the build cache of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The next build rebuilds it.
+    tests:
+      - fixture: fixtures/build-delete-cache.http
+        expect: delete
+        resource: shop-api

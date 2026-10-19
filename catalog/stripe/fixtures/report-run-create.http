@@ -1,0 +1,7 @@
+# description: Run report balance.summary.1
+POST /v1/reporting/report_runs HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+report_type=balance.summary.1&parameters[interval_start]=1759276800&parameters[interval_end]=1761955200

@@ -1,0 +1,5 @@
+# description: Delete draft invoice in_ShopInvoice0001
+DELETE /v1/invoices/in_ShopInvoice0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

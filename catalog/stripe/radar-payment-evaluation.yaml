@@ -1,0 +1,13 @@
+# Stripe REST API: radar payment evaluation
+operations:
+  - id: stripe.radar-payment-evaluation.create
+    match: { rest: { method: POST, path: "/v1/radar/payment_evaluations" } }
+    class: write
+    card: "Request a fraud score for a payment"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/radar-payment-evaluation-create.http
+        expect: write

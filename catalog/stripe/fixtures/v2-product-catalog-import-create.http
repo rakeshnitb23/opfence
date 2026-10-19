@@ -1,0 +1,8 @@
+# description: Import product catalog data (upsert)
+POST /v2/commerce/product_catalog/imports HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+Content-Type: application/json
+
+{"feed_type":"product","mode":"upsert","metadata":{"source":"erp"}}

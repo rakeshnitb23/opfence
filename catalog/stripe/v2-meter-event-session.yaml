@@ -1,0 +1,16 @@
+# Stripe REST API: v2 meter event session
+operations:
+  - id: stripe.v2-meter-event-session.create
+    match: { rest: { method: POST, path: "/v2/billing/meter_event_session" } }
+    class: credential
+    card: "Create a meter event stream session"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Returns an authentication_token for the high-throughput meter event
+      stream.
+    tests:
+      - fixture: fixtures/v2-meter-event-session-create.http
+        expect: credential

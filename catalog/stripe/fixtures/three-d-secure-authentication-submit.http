@@ -1,0 +1,5 @@
+# description: Submit 3D Secure authentication threeds_ShopAuth0001
+POST /v1/three_d_secure/authentications/threeds_ShopAuth0001/submit HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

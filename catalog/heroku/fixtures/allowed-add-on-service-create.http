@@ -1,0 +1,8 @@
+# description: Allow add-on service heroku-redis in team acme
+POST /teams/acme/allowed-addon-services HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"addon_service":"heroku-redis"}

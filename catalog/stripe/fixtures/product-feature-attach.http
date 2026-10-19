@@ -1,0 +1,7 @@
+# description: Attach feature feat_ShopSupport01 to product prod_ShopPro0001
+POST /v1/products/prod_ShopPro0001/features HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+entitlement_feature=feat_ShopSupport01

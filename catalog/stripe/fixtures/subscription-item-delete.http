@@ -1,0 +1,5 @@
+# description: Remove item si_ShopItem0001 from its subscription
+DELETE /v1/subscription_items/si_ShopItem0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

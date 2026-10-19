@@ -1,0 +1,41 @@
+# Stripe REST API: source
+operations:
+  - id: stripe.source.create
+    match: { rest: { method: POST, path: "/v1/sources" } }
+    class: write
+    card: "Create a {body.type} source"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/source-create.http
+        expect: write
+
+  - id: stripe.source.update
+    match: { rest: { method: POST, path: "/v1/sources/{source}" } }
+    class: write
+    resource: { arg: source, kind: source }
+    card: "Update source {source}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/source-update.http
+        expect: write
+        resource: src_ShopAch0001
+
+  - id: stripe.source.verify
+    match: { rest: { method: POST, path: "/v1/sources/{source}/verify" } }
+    class: write
+    resource: { arg: source, kind: source }
+    card: "Verify source {source}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/source-verify.http
+        expect: write
+        resource: src_ShopAch0001

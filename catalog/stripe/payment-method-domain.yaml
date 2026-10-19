@@ -1,0 +1,41 @@
+# Stripe REST API: payment method domain
+operations:
+  - id: stripe.payment-method-domain.create
+    match: { rest: { method: POST, path: "/v1/payment_method_domains" } }
+    class: write
+    card: "Register payment method domain {body.domain_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-domain-create.http
+        expect: write
+
+  - id: stripe.payment-method-domain.update
+    match: { rest: { method: POST, path: "/v1/payment_method_domains/{payment_method_domain}" } }
+    class: write
+    resource: { arg: payment_method_domain, kind: payment_method_domain }
+    card: "Update payment method domain {payment_method_domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-domain-update.http
+        expect: write
+        resource: pmd_ShopDomain0001
+
+  - id: stripe.payment-method-domain.validate
+    match: { rest: { method: POST, path: "/v1/payment_method_domains/{payment_method_domain}/validate" } }
+    class: write
+    resource: { arg: payment_method_domain, kind: payment_method_domain }
+    card: "Validate payment method domain {payment_method_domain}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/payment-method-domain-validate.http
+        expect: write
+        resource: pmd_ShopDomain0001

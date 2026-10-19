@@ -1,0 +1,17 @@
+# Heroku Platform API: team-preferences
+operations:
+  - id: heroku.team-preferences.update
+    match: { rest: { method: PATCH, path: "/teams/{team_preferences_identity}/preferences" } }
+    class: access
+    resource: { arg: team_preferences_identity, kind: team }
+    card: "Change the add-on controls of team {team_preferences_identity}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      addons-controls decides whether members may install any add-on.
+    tests:
+      - fixture: fixtures/team-preferences-update.http
+        expect: access
+        resource: acme

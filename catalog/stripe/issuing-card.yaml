@@ -1,0 +1,90 @@
+# Stripe REST API: issuing card
+operations:
+  - id: stripe.issuing-card.create
+    match: { rest: { method: POST, path: "/v1/issuing/cards" } }
+    class: money
+    when:
+      - if: { arg: body.expand, in: ["number", "cvc"] }
+        class: credential
+      - if: { arg: query.expand, in: ["number", "cvc"] }
+        class: credential
+      - if: { arg: body.pin, present: true }
+        class: credential
+    card: "Issue a {body.type} card for cardholder {body.cardholder}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A card spends from the Issuing balance. expand number or cvc returns the
+      card number and CVC, and pin sets the card's PIN.
+    tests:
+      - fixture: fixtures/issuing-card-create.http
+        expect: money
+      - fixture: fixtures/issuing-card-create-expand.http
+        expect: credential
+      - fixture: fixtures/issuing-card-create-pin.http
+        expect: credential
+
+  - id: stripe.issuing-card.update
+    match: { rest: { method: POST, path: "/v1/issuing/cards/{card}" } }
+    class: money
+    when:
+      - if: { arg: body.expand, in: ["number", "cvc"] }
+        class: credential
+      - if: { arg: query.expand, in: ["number", "cvc"] }
+        class: credential
+      - if: { arg: body.pin, present: true }
+        class: credential
+      - if: { arg: body.status, equals: "canceled" }
+        class: irreversible
+    resource: { arg: card, kind: card }
+    card: "Update issuing card {card}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Can activate the card, raise its spending limits or change where a
+      physical card ships (money). expand number or cvc returns the card
+      number and CVC, pin sets the PIN, and Stripe documents that a canceled
+      card cannot be reactivated.
+    tests:
+      - fixture: fixtures/issuing-card-update.http
+        expect: money
+        resource: ic_ShopVirtual01
+      - fixture: fixtures/issuing-card-update-expand.http
+        expect: credential
+        resource: ic_ShopVirtual01
+      - fixture: fixtures/issuing-card-update-pin.http
+        expect: credential
+        resource: ic_ShopVirtual01
+      - fixture: fixtures/issuing-card-update-cancel.http
+        expect: irreversible
+        resource: ic_ShopVirtual01
+
+  - id: stripe.issuing-card.get
+    match: { rest: { method: GET, path: "/v1/issuing/cards/{card}" } }
+    class: read
+    when:
+      - if: { arg: query.expand, in: ["number", "cvc"] }
+        class: credential
+    resource: { arg: card, kind: card }
+    card: "Read issuing card {card}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe returns the full number and CVC of virtual cards only on this
+      endpoint, and only when expanded.
+    tests:
+      - fixture: fixtures/issuing-card-get.http
+        expect: read
+        resource: ic_ShopVirtual01
+      - fixture: fixtures/issuing-card-get-number.http
+        expect: credential
+        resource: ic_ShopVirtual01
+      - fixture: fixtures/issuing-card-get-cvc-indexed.http
+        expect: credential
+        resource: ic_ShopVirtual01

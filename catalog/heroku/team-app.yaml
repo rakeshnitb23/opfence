@@ -1,0 +1,35 @@
+# Heroku Platform API: team-app
+operations:
+  - id: heroku.team-app.create
+    match: { rest: { method: POST, path: "/teams/apps" } }
+    class: write
+    resource: { arg: body.name, kind: app }
+    card: "Create app {body.name} in team {body.team}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-app-create.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.team-app.update
+    match: { rest: { method: PATCH, path: "/teams/apps/{team_app_name}" } }
+    class: access
+    resource: { arg: team_app_name, kind: app }
+    card: "Lock, unlock or transfer team app {team_app_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      One endpoint for three operations: locked restricts which members can use the app, owner
+      transfers it to another team or account. All change who controls the app.
+    tests:
+      - fixture: fixtures/team-app-update.http
+        expect: access
+        resource: shop-api
+      - fixture: fixtures/team-app-update-locked.http
+        expect: access
+        resource: shop-api

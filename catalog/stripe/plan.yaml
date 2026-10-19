@@ -1,0 +1,44 @@
+# Stripe REST API: plan
+operations:
+  - id: stripe.plan.create
+    match: { rest: { method: POST, path: "/v1/plans" } }
+    class: write
+    card: "Create plan {body.id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/plan-create.http
+        expect: write
+
+  - id: stripe.plan.delete
+    match: { rest: { method: DELETE, path: "/v1/plans/{plan}" } }
+    class: irreversible
+    resource: { arg: plan, kind: plan }
+    card: "Delete plan {plan}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents no undo; a new plan gets a new ID that existing
+      integrations do not use.
+    tests:
+      - fixture: fixtures/plan-delete.http
+        expect: irreversible
+        resource: pro-monthly
+
+  - id: stripe.plan.update
+    match: { rest: { method: POST, path: "/v1/plans/{plan}" } }
+    class: write
+    resource: { arg: plan, kind: plan }
+    card: "Update plan {plan}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/plan-update.http
+        expect: write
+        resource: pro-monthly

@@ -1,0 +1,7 @@
+# description: Subscribe to daily refreshes of linked bank account fca_ShopChecking01
+POST /v1/financial_connections/accounts/fca_ShopChecking01/subscribe HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+features[0]=transactions

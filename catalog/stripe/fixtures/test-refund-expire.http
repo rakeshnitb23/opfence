@@ -1,0 +1,5 @@
+# description: Expire test refund re_3ShopRefund0001
+POST /v1/test_helpers/refunds/re_3ShopRefund0001/expire HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

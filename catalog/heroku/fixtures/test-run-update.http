@@ -1,0 +1,8 @@
+# description: Set the status of test run 42
+PATCH /test-runs/42 HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"status":"succeeded","message":null}

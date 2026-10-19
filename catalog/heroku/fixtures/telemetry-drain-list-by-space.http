@@ -1,0 +1,5 @@
+# description: List the telemetry drains of space acme-prod with their exporter headers
+GET /spaces/acme-prod/telemetry-drains HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

@@ -1,0 +1,8 @@
+# description: List customers
+POST / HTTP/1.1
+Host: mcp.stripe.com
+Authorization: Bearer opf_stripe-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_customers","arguments":{"email":"jane@example.com","limit":10}}}

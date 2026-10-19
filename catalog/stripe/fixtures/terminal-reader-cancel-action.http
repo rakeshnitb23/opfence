@@ -1,0 +1,5 @@
+# description: Cancel the current action on reader tmr_ShopFront0001
+POST /v1/terminal/readers/tmr_ShopFront0001/cancel_action HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

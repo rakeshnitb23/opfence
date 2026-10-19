@@ -1,0 +1,7 @@
+# description: Add an external account for payouts to acct_1ShopConnect01
+POST /v1/accounts/acct_1ShopConnect01/bank_accounts HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+external_account=btok_1ShopBank0001

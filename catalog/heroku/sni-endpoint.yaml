@@ -1,0 +1,49 @@
+# Heroku Platform API: sni-endpoint
+operations:
+  - id: heroku.sni-endpoint.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/sni-endpoints" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Upload a TLS certificate and private key to app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The request carries the certificate's private key.
+    tests:
+      - fixture: fixtures/sni-endpoint-create.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.sni-endpoint.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/sni-endpoints/{sni_endpoint_id_or_name}" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Replace the certificate and private key of {sni_endpoint_id_or_name} on app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The request carries the certificate's private key; the old one is discarded.
+    tests:
+      - fixture: fixtures/sni-endpoint-update.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.sni-endpoint.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/sni-endpoints/{sni_endpoint_id_or_name}" } }
+    class: irreversible
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Delete certificate {sni_endpoint_id_or_name} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Heroku never returns the private key, so a deleted endpoint cannot be put back from Heroku.
+    tests:
+      - fixture: fixtures/sni-endpoint-delete.http
+        expect: irreversible
+        resource: shop-api

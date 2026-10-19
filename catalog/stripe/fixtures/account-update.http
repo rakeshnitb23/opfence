@@ -1,0 +1,7 @@
+# description: Update connected account acct_1ShopConnect01
+POST /v1/accounts/acct_1ShopConnect01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+business_profile[name]=Acme%20Goods&settings[payouts][schedule][interval]=weekly

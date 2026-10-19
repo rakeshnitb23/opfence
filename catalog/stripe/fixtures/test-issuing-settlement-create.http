@@ -1,0 +1,7 @@
+# description: Create a test settlement
+POST /v1/test_helpers/issuing/settlements HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+bin=424242&clearing_date=1760000000&currency=usd&net_total_amount=10000

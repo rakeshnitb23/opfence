@@ -1,0 +1,7 @@
+# description: Create a test received credit
+POST /v1/test_helpers/treasury/received_credits HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+financial_account=fa_ShopTreasury01&amount=10000&currency=usd&network=ach

@@ -1,0 +1,7 @@
+# description: Raise the authorized amount of pi_3ShopPay0001 to 2500
+POST /v1/payment_intents/pi_3ShopPay0001/increment_authorization HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amount=2500

@@ -1,0 +1,5 @@
+# description: Delete payment source ba_ShopCustBank01 of customer cus_ShopAcme0001
+DELETE /v1/customers/cus_ShopAcme0001/sources/ba_ShopCustBank01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

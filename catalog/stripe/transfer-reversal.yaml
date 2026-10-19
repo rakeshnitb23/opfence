@@ -1,0 +1,29 @@
+# Stripe REST API: transfer reversal
+operations:
+  - id: stripe.transfer-reversal.create
+    match: { rest: { method: POST, path: "/v1/transfers/{id}/reversals" } }
+    class: money
+    resource: { arg: id, kind: transfer }
+    card: "Reverse transfer {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/transfer-reversal-create.http
+        expect: money
+        resource: tr_ShopSeller0001
+
+  - id: stripe.transfer-reversal.update
+    match: { rest: { method: POST, path: "/v1/transfers/{transfer}/reversals/{id}" } }
+    class: write
+    resource: { arg: transfer, kind: transfer }
+    card: "Update reversal {id} of transfer {transfer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/transfer-reversal-update.http
+        expect: write
+        resource: tr_ShopSeller0001

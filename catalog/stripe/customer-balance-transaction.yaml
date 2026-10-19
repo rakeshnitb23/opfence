@@ -1,0 +1,29 @@
+# Stripe REST API: customer balance transaction
+operations:
+  - id: stripe.customer-balance-transaction.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/balance_transactions" } }
+    class: money
+    resource: { arg: customer, kind: customer }
+    card: "Adjust the balance of customer {customer} by {body.amount} {body.currency}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-balance-transaction-create.http
+        expect: money
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-balance-transaction.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/balance_transactions/{transaction}" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Update balance transaction {transaction} of {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-balance-transaction-update.http
+        expect: write
+        resource: cus_ShopAcme0001

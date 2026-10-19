@@ -1,0 +1,8 @@
+# description: Add price price_ShopSetup0001 to invoice in_ShopInvoice0001 of customer cus_ShopAcme0001
+POST / HTTP/1.1
+Host: mcp.stripe.com
+Authorization: Bearer opf_stripe-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":10,"method":"tools/call","params":{"name":"create_invoice_item","arguments":{"customer":"cus_ShopAcme0001","price":"price_ShopSetup0001","invoice":"in_ShopInvoice0001"}}}

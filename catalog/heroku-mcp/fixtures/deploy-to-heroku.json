@@ -1,0 +1,9 @@
+{
+  "description": "Deploy /home/dev/shop-api to Heroku app shop-api",
+  "tool": "deploy_to_heroku",
+  "arguments": {
+    "name": "shop-api",
+    "rootUri": "/home/dev/shop-api",
+    "appJson": "{\"name\":\"shop-api\",\"formation\":{\"web\":{\"quantity\":1,\"size\":\"basic\"}}}"
+  }
+}

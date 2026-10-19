@@ -1,0 +1,30 @@
+# Stripe MCP server: coupon
+operations:
+  - id: stripe-mcp.coupon.list
+    match: { mcp: { tool: list_coupons } }
+    class: read
+    card: "List coupons"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/coupon-list.http
+        expect: read
+
+  - id: stripe-mcp.coupon.create
+    match: { mcp: { tool: create_coupon } }
+    class: write
+    card: "Create coupon {name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      A coupon reduces revenue only once applied to a customer or
+      subscription.
+    tests:
+      - fixture: fixtures/coupon-create.http
+        expect: write

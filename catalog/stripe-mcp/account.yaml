@@ -1,0 +1,16 @@
+# Stripe MCP server: account
+operations:
+  - id: stripe-mcp.account.get
+    match: { mcp: { tool: get_stripe_account_info } }
+    class: read
+    card: "Show the Stripe account"
+    status: draft
+    verified: 2026-10-19
+    sources:
+      - https://docs.stripe.com/mcp
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Listed for the hosted server at docs.stripe.com/mcp, which this machine
+      cannot reach; the published npm source (0.7.12) does not define it and
+      newer packages fetch tools from mcp.stripe.com at run time, so the name
+      and arguments are unverified.

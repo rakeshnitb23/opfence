@@ -1,0 +1,7 @@
+# description: Register Terminal reader Front desk
+POST /v1/terminal/readers HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+registration_code=puppies-plug-could&label=Front%20desk&location=tml_ShopStore0001

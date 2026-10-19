@@ -1,0 +1,7 @@
+# description: Confirm payment pi_3ShopPay0001
+POST /v1/payment_intents/pi_3ShopPay0001/confirm HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+payment_method=pm_ShopVisa0001

@@ -1,0 +1,5 @@
+# description: Close financial account fa_ShopTreasury01
+POST /v1/treasury/financial_accounts/fa_ShopTreasury01/close HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

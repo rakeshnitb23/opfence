@@ -1,0 +1,8 @@
+# description: Create Heroku app shop-api
+POST /apps HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"name":"shop-api","region":"us","stack":"heroku-24"}

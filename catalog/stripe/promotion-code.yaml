@@ -1,0 +1,27 @@
+# Stripe REST API: promotion code
+operations:
+  - id: stripe.promotion-code.create
+    match: { rest: { method: POST, path: "/v1/promotion_codes" } }
+    class: write
+    card: "Create promotion code {body.code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/promotion-code-create.http
+        expect: write
+
+  - id: stripe.promotion-code.update
+    match: { rest: { method: POST, path: "/v1/promotion_codes/{promotion_code}" } }
+    class: write
+    resource: { arg: promotion_code, kind: promotion_code }
+    card: "Update promotion code {promotion_code}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/promotion-code-update.http
+        expect: write
+        resource: promo_ShopSpring01

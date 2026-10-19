@@ -1,0 +1,5 @@
+# description: Restart dyno web.1 of app shop-api
+DELETE /apps/shop-api/dynos/web.1 HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

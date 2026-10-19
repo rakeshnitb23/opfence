@@ -1,0 +1,5 @@
+# description: Cancel inbound transfer ibt_ShopPull0001
+POST /v1/treasury/inbound_transfers/ibt_ShopPull0001/cancel HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

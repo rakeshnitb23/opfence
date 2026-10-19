@@ -1,0 +1,33 @@
+# Heroku Platform API: peering
+operations:
+  - id: heroku.peering.accept
+    match: { rest: { method: POST, path: "/spaces/{space_id_or_name}/peerings/{peering_pcx_id}/actions/accept" } }
+    class: access
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Accept VPC peering {peering_pcx_id} into space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Connects another network to the space.
+    tests:
+      - fixture: fixtures/peering-accept.http
+        expect: access
+        resource: acme-prod
+
+  - id: heroku.peering.delete
+    match: { rest: { method: DELETE, path: "/spaces/{space_id_or_name}/peerings/{peering_pcx_id}" } }
+    class: delete
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Destroy VPC peering {peering_pcx_id} of space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Cuts the network link; a new peering request can restore it.
+    tests:
+      - fixture: fixtures/peering-delete.http
+        expect: delete
+        resource: acme-prod

@@ -1,0 +1,17 @@
+# Stripe REST API: customer discount
+operations:
+  - id: stripe.customer-discount.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/discount" } }
+    class: delete
+    resource: { arg: customer, kind: customer }
+    card: "Remove the discount of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The coupon can be applied again while it exists.
+    tests:
+      - fixture: fixtures/customer-discount-delete.http
+        expect: delete
+        resource: cus_ShopAcme0001

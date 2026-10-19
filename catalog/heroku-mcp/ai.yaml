@@ -1,0 +1,56 @@
+# Heroku MCP server (@heroku/mcp-server): ai
+operations:
+  - id: heroku-mcp.ai.list-ai-available-models
+    match: { mcp: { tool: list_ai_available_models } }
+    class: read
+    card: "List Heroku AI models"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ai.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/list-ai-available-models.json
+        expect: read
+
+  - id: heroku-mcp.ai.provision-ai-model
+    match: { mcp: { tool: provision_ai_model } }
+    class: money
+    resource: { arg: app, kind: app }
+    card: "Provision AI model {modelName} for app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ai.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku ai:models:create, which creates a billed heroku-inference add-on.
+    tests:
+      - fixture: fixtures/provision-ai-model.json
+        expect: money
+        resource: shop-api
+
+  - id: heroku-mcp.ai.make-ai-inference
+    match: { mcp: { tool: make_ai_inference } }
+    class: money
+    when:
+      - if: { arg: opts.tools, present: true }
+        class: irreversible
+    resource: { arg: app, kind: app }
+    card: "Call AI model {modelResource} of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ai.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku ai:agents:call; inference is billed per use. opts.tools can hand the agent Heroku
+      tools such as dyno_run_command (runs commands on a dyno of runtime_params.target_app_name) and
+      postgres_run_query, so any tools list is irreversible.
+    tests:
+      - fixture: fixtures/make-ai-inference.json
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/make-ai-inference-tools.json
+        expect: irreversible
+        resource: shop-api

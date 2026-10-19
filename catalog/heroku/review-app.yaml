@@ -1,0 +1,33 @@
+# Heroku Platform API: review-app
+operations:
+  - id: heroku.review-app.create
+    match: { rest: { method: POST, path: "/review-apps" } }
+    class: money
+    resource: { arg: body.pipeline, kind: pipeline }
+    card: "Create a review app for branch {body.branch}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Creates a new app with the dynos and add-ons its app.json declares, which are billed.
+    tests:
+      - fixture: fixtures/review-app-create.http
+        expect: money
+        resource: 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+
+  - id: heroku.review-app.delete
+    match: { rest: { method: DELETE, path: "/review-apps/{review_app_id}" } }
+    class: delete
+    resource: { arg: review_app_id, kind: review-app }
+    card: "Delete review app {review_app_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      A review app is rebuilt from its branch; its throwaway add-ons go with it.
+    tests:
+      - fixture: fixtures/review-app-delete.http
+        expect: delete
+        resource: b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e

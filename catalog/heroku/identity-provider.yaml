@@ -1,0 +1,45 @@
+# Heroku Platform API: identity-provider
+operations:
+  - id: heroku.identity-provider.create
+    match: { rest: { method: POST, path: "/teams/{team_name}/identity-providers" } }
+    class: access
+    resource: { arg: team_name, kind: team }
+    card: "Set up SSO for team {team_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Decides who can sign in as the team's members.
+    tests:
+      - fixture: fixtures/identity-provider-create.http
+        expect: access
+        resource: acme
+
+  - id: heroku.identity-provider.update
+    match: { rest: { method: PATCH, path: "/teams/{team_name}/identity-providers/{identity_provider_id}" } }
+    class: access
+    resource: { arg: team_name, kind: team }
+    card: "Change the SSO identity provider of team {team_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/identity-provider-update.http
+        expect: access
+        resource: acme
+
+  - id: heroku.identity-provider.delete
+    match: { rest: { method: DELETE, path: "/teams/{team_name}/identity-providers/{identity_provider_id}" } }
+    class: access
+    resource: { arg: team_name, kind: team }
+    card: "Remove the SSO identity provider of team {team_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/identity-provider-delete.http
+        expect: access
+        resource: acme

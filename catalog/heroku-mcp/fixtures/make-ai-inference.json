@@ -1,0 +1,17 @@
+{
+  "description": "Call AI model INFERENCE of app shop-api",
+  "tool": "make_ai_inference",
+  "arguments": {
+    "app": "shop-api",
+    "modelResource": "INFERENCE",
+    "opts": {
+      "model": "claude-4-sonnet",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Summarize the README"
+        }
+      ]
+    }
+  }
+}

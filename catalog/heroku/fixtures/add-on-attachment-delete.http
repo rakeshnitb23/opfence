@@ -1,0 +1,5 @@
+# description: Detach add-on attachment 8b1e2c4d-3f5a-4b6c-9d7e-1f2a3b4c5d6e
+DELETE /addon-attachments/8b1e2c4d-3f5a-4b6c-9d7e-1f2a3b4c5d6e HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

@@ -1,0 +1,61 @@
+# Stripe REST API: credit grant
+operations:
+  - id: stripe.credit-grant.create
+    match: { rest: { method: POST, path: "/v1/billing/credit_grants" } }
+    class: money
+    card: "Grant billing credit to {body.customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Credits pay for future invoices, reducing what the customer is charged.
+    tests:
+      - fixture: fixtures/credit-grant-create.http
+        expect: money
+
+  - id: stripe.credit-grant.update
+    match: { rest: { method: POST, path: "/v1/billing/credit_grants/{id}" } }
+    class: write
+    resource: { arg: id, kind: credit_grant }
+    card: "Update credit grant {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/credit-grant-update.http
+        expect: write
+        resource: credgr_ShopPromo0001
+
+  - id: stripe.credit-grant.expire
+    match: { rest: { method: POST, path: "/v1/billing/credit_grants/{id}/expire" } }
+    class: money
+    resource: { arg: id, kind: credit_grant }
+    card: "Expire credit grant {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The customer loses the unused credit.
+    tests:
+      - fixture: fixtures/credit-grant-expire.http
+        expect: money
+        resource: credgr_ShopPromo0001
+
+  - id: stripe.credit-grant.void
+    match: { rest: { method: POST, path: "/v1/billing/credit_grants/{id}/void" } }
+    class: money
+    resource: { arg: id, kind: credit_grant }
+    card: "Void credit grant {id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      The customer loses the unused credit.
+    tests:
+      - fixture: fixtures/credit-grant-void.http
+        expect: money
+        resource: credgr_ShopPromo0001

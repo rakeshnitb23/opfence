@@ -1,0 +1,23 @@
+provider: stripe
+title: Stripe
+docs: https://docs.stripe.com/api
+# api.stripe.com serves v1 and v2; files.stripe.com takes file uploads
+# (POST /v1/files) and quote PDFs; meter-events.stripe.com takes the v2 meter
+# event stream.
+hosts: [api.stripe.com, files.stripe.com, meter-events.stripe.com]
+auth:
+  - header: Authorization          # "Bearer sk_..." (Stripe-Account is not a secret)
+    scheme: Bearer
+  - basic: username                # curl -u sk_...: the key as user name, empty password
+detect:
+  env: [STRIPE_SECRET_KEY, STRIPE_API_KEY]
+  prefixes: [sk_live_, sk_test_, rk_live_, rk_test_]
+defaults:
+  rest_safe_methods: read          # GETs only read, except the ones listed as credential
+# v1 bodies and query strings use bracket keys (metadata[order]=1,
+# items[0][price]=..., expand[]=number). The decoder nests them, so
+# conditions name them with dotted paths: expand[]=number and expand[0]=number
+# are both the list query.expand (or body.expand). v2 bodies are JSON.
+#
+# Test and live mode: the key's prefix (sk_test_ / sk_live_) decides the mode,
+# but Opfence only sees placeholders, so no rule depends on the mode.

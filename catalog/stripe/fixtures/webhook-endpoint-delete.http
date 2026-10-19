@@ -1,0 +1,5 @@
+# description: Delete webhook endpoint we_ShopOrders0001
+DELETE /v1/webhook_endpoints/we_ShopOrders0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

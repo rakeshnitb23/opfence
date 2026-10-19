@@ -1,0 +1,8 @@
+# description: Create an onboarding link for account acct_1ShopConnect01
+POST /v2/core/account_links HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Stripe-Version: 2026-09-30.endive
+Content-Type: application/json
+
+{"account":"acct_1ShopConnect01","use_case":{"type":"account_onboarding","account_onboarding":{"configurations":["recipient"],"refresh_url":"https://shop.example.com/reauth","return_url":"https://shop.example.com/done"}}}

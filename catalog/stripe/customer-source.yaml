@@ -1,0 +1,60 @@
+# Stripe REST API: customer source
+operations:
+  - id: stripe.customer-source.create
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/sources" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Attach a payment source to customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-source-create.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-source.delete
+    match: { rest: { method: DELETE, path: "/v1/customers/{customer}/sources/{id}" } }
+    class: irreversible
+    resource: { arg: customer, kind: customer }
+    card: "Delete payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Stripe documents that a detached or deleted payment method cannot be
+      used again or re-attached; the customer has to enter it again.
+    tests:
+      - fixture: fixtures/customer-source-delete.http
+        expect: irreversible
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-source.update
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/sources/{id}" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Update payment source {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-source-update.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe.customer-source.verify
+    match: { rest: { method: POST, path: "/v1/customers/{customer}/sources/{id}/verify" } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Verify bank account {id} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    tests:
+      - fixture: fixtures/customer-source-verify.http
+        expect: write
+        resource: cus_ShopAcme0001

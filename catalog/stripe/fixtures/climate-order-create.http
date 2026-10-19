@@ -1,0 +1,7 @@
+# description: Buy 2 t of carbon removal from climsku_frontier_offtake_portfolio_2027
+POST /v1/climate/orders HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+product=climsku_frontier_offtake_portfolio_2027&metric_tons=2

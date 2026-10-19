@@ -1,0 +1,7 @@
+# description: Update evidence for dispute dp_ShopDispute0001
+POST /v1/disputes/dp_ShopDispute0001 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+evidence[uncategorized_text]=Delivered%20on%202026-10-01

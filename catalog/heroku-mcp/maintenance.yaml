@@ -1,0 +1,33 @@
+# Heroku MCP server (@heroku/mcp-server): maintenance
+operations:
+  - id: heroku-mcp.maintenance.maintenance-on
+    match: { mcp: { tool: maintenance_on } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Put app {app} into maintenance mode"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/maintenance.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Takes the app offline until maintenance_off.
+    tests:
+      - fixture: fixtures/maintenance-on.json
+        expect: write
+        resource: shop-api
+
+  - id: heroku-mcp.maintenance.maintenance-off
+    match: { mcp: { tool: maintenance_off } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Take app {app} out of maintenance mode"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/maintenance.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/maintenance-off.json
+        expect: write
+        resource: shop-api

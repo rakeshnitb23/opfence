@@ -1,0 +1,8 @@
+{
+  "description": "Scale the dynos of app shop-api (web=3:Standard-2X)",
+  "tool": "ps_scale",
+  "arguments": {
+    "app": "shop-api",
+    "dyno": "web=3:Standard-2X"
+  }
+}

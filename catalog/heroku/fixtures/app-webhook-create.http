@@ -1,0 +1,8 @@
+# description: Send app events of shop-api to https://hooks.example.com/heroku
+POST /apps/shop-api/webhooks HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"include":["api:release","api:build"],"level":"notify","url":"https://hooks.example.com/heroku"}

@@ -1,0 +1,19 @@
+# Stripe REST API: account login link
+operations:
+  - id: stripe.account-login-link.create
+    match: { rest: { method: POST, path: "/v1/accounts/{account}/login_links" } }
+    class: credential
+    resource: { arg: account, kind: account }
+    card: "Create an Express dashboard login link for {account}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      A single-use URL that signs its holder into the account's Express
+      dashboard. The response hands out a secret or URL that gives its holder
+      access to the account or customer beyond one payment.
+    tests:
+      - fixture: fixtures/account-login-link-create.http
+        expect: credential
+        resource: acct_1ShopConnect01

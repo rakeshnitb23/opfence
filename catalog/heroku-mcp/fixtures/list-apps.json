@@ -1,0 +1,7 @@
+{
+  "description": "List Heroku apps",
+  "tool": "list_apps",
+  "arguments": {
+    "all": true
+  }
+}

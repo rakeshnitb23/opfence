@@ -1,0 +1,17 @@
+# Heroku Platform API: log-session
+operations:
+  - id: heroku.log-session.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/log-sessions" } }
+    class: read
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Read the logs of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns a URL to stream the app's logs; nothing changes.
+    tests:
+      - fixture: fixtures/log-session-create.http
+        expect: read
+        resource: shop-api

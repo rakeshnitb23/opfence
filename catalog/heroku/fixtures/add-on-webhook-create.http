@@ -1,0 +1,8 @@
+# description: Send add-on events of postgresql-shaped-48213 to https://hooks.example.com/heroku
+POST /addons/postgresql-shaped-48213/webhooks HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"include":["api:release","api:build"],"level":"notify","url":"https://hooks.example.com/heroku"}

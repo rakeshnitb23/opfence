@@ -1,0 +1,5 @@
+# description: Uninstall app install appinst_ShopHelper01
+POST /v1/apps/installs/appinst_ShopHelper01/uninstall HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

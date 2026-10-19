@@ -1,0 +1,5 @@
+# description: Delete test clock clock_ShopRenewal01 and every object attached to it
+DELETE /v1/test_helpers/test_clocks/clock_ShopRenewal01 HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+

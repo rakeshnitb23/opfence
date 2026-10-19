@@ -1,0 +1,15 @@
+# Stripe REST API: tax calculation
+operations:
+  - id: stripe.tax-calculation.create
+    match: { rest: { method: POST, path: "/v1/tax/calculations" } }
+    class: write
+    card: "Calculate tax"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/stripe/openapi/blob/master/latest/openapi.spec3.json
+    notes: >-
+      Creates a short-lived calculation; nothing is charged to the customer.
+    tests:
+      - fixture: fixtures/tax-calculation-create.http
+        expect: write

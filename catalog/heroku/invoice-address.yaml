@@ -1,0 +1,13 @@
+# Heroku Platform API: invoice-address
+operations:
+  - id: heroku.invoice-address.update
+    match: { rest: { method: PUT, path: "/account/invoice-address" } }
+    class: write
+    card: "Change the invoice address of your account"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/invoice-address-update.http
+        expect: write

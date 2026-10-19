@@ -1,0 +1,7 @@
+# description: Record refund on payment record pr_ShopOutside01
+POST /v1/payment_records/pr_ShopOutside01/report_refund HTTP/1.1
+Host: api.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+amount[value]=500&amount[currency]=usd&initiated_at=1760000200&outcome=refunded&processor_details[type]=custom&processor_details[custom][refund_reference]=ref_42&refunded[refunded_at]=1760000300

@@ -1,0 +1,69 @@
+# Stripe MCP server: invoice
+operations:
+  - id: stripe-mcp.invoice.create
+    match: { mcp: { tool: create_invoice } }
+    class: write
+    resource: { arg: customer, kind: customer }
+    card: "Create a draft invoice for customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      The tool always creates a draft with collection_method send_invoice;
+      nothing is charged until it is finalized.
+    tests:
+      - fixture: fixtures/invoice-create.http
+        expect: write
+        resource: cus_ShopAcme0001
+
+  - id: stripe-mcp.invoice.list
+    match: { mcp: { tool: list_invoices } }
+    class: read
+    resource: { arg: customer, kind: customer }
+    card: "List invoices of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    tests:
+      - fixture: fixtures/invoice-list.http
+        expect: read
+        resource: cus_ShopAcme0001
+
+  - id: stripe-mcp.invoice-item.create
+    match: { mcp: { tool: create_invoice_item } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Add price {price} to invoice {invoice} of customer {customer}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      Adds a charge the customer will pay; same class as POST /v1/invoiceitems
+      in catalog/stripe.
+    tests:
+      - fixture: fixtures/invoice-item-create.http
+        expect: money
+        resource: in_ShopInvoice0001
+
+  - id: stripe-mcp.invoice.finalize
+    match: { mcp: { tool: finalize_invoice } }
+    class: money
+    resource: { arg: invoice, kind: invoice }
+    card: "Finalize invoice {invoice}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://unpkg.com/@stripe/agent-toolkit@0.7.12/modelcontextprotocol/index.js
+      - https://unpkg.com/@stripe/mcp@0.3.3/dist/index.js
+    notes: >-
+      A finalized invoice can no longer be edited and is sent or collected.
+    tests:
+      - fixture: fixtures/invoice-finalize.http
+        expect: money
+        resource: in_ShopInvoice0001
