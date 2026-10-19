@@ -1,0 +1,29 @@
+{
+  "description": "Call AI model INFERENCE of app shop-api",
+  "tool": "make_ai_inference",
+  "arguments": {
+    "app": "shop-api",
+    "modelResource": "INFERENCE",
+    "opts": {
+      "model": "claude-4-sonnet",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Clean up old rows"
+        }
+      ],
+      "tools": [
+        {
+          "type": "heroku_tool",
+          "name": "dyno_run_command",
+          "runtime_params": {
+            "target_app_name": "shop-api",
+            "tool_params": {
+              "cmd": "bash"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

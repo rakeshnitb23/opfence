@@ -1,0 +1,8 @@
+# description: Change the permissions of dev@example.com on team app shop-api
+PATCH /teams/apps/shop-api/collaborators/dev@example.com HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"permissions":["view","deploy","operate","manage"]}

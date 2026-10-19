@@ -1,0 +1,8 @@
+# description: Change the certificate of domain www.example.com on app shop-api
+PATCH /apps/shop-api/domains/www.example.com HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"sni_endpoint":"tokyo-12345"}

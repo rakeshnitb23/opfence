@@ -1,0 +1,8 @@
+{
+  "description": "Run `node scripts/backfill.js` in a one-off dyno of app shop-api",
+  "tool": "deploy_one_off_dyno",
+  "arguments": {
+    "name": "shop-api",
+    "command": "node scripts/backfill.js"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Deploy /home/dev/shop-api to Heroku app shop-api",
+  "tool": "deploy_to_heroku",
+  "arguments": {
+    "name": "shop-api",
+    "rootUri": "/home/dev/shop-api",
+    "appJson": "{\"name\":\"shop-api\"}",
+    "env": {
+      "STRIPE_KEY": "sk_x"
+    }
+  }
+}

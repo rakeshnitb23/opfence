@@ -1,0 +1,5 @@
+# description: Clear the build cache of app shop-api
+DELETE /apps/shop-api/build-cache HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

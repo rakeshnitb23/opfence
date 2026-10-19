@@ -1,0 +1,8 @@
+{
+  "description": "Show add-on DATABASE",
+  "tool": "get_addon_info",
+  "arguments": {
+    "addon": "DATABASE",
+    "app": "shop-api"
+  }
+}

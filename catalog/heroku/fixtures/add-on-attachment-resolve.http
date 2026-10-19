@@ -1,0 +1,8 @@
+# description: Look up add-on attachment DATABASE
+POST /actions/addon-attachments/resolve HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"addon_attachment":"DATABASE","app":"shop-api"}

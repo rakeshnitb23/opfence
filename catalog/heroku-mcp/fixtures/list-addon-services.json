@@ -1,0 +1,7 @@
+{
+  "description": "List add-on services",
+  "tool": "list_addon_services",
+  "arguments": {
+    "json": true
+  }
+}

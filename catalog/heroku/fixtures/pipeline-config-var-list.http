@@ -1,0 +1,5 @@
+# description: Read the config var values of stage production of pipeline 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+GET /pipelines/9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d/stage/production/config-vars HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

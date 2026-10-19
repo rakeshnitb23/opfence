@@ -1,0 +1,14 @@
+# Heroku MCP server (@heroku/mcp-server): teams
+operations:
+  - id: heroku-mcp.teams.list-teams
+    match: { mcp: { tool: list_teams } }
+    class: read
+    card: "List your Heroku teams"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/teams.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/list-teams.json
+        expect: read

@@ -1,0 +1,43 @@
+# Heroku Platform API: team-app-collaborator
+operations:
+  - id: heroku.team-app-collaborator.create
+    match: { rest: { method: POST, path: "/teams/apps/{app_id_or_name}/collaborators" } }
+    class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Give {body.user} access to team app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-app-collaborator-create.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.team-app-collaborator.update
+    match: { rest: { method: PATCH, path: "/teams/apps/{team_app_name}/collaborators/{team_app_collaborator_email}" } }
+    class: access
+    resource: { arg: team_app_name, kind: app }
+    card: "Change the permissions of {team_app_collaborator_email} on team app {team_app_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-app-collaborator-update.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.team-app-collaborator.delete
+    match: { rest: { method: DELETE, path: "/teams/apps/{team_app_name}/collaborators/{team_app_collaborator_email}" } }
+    class: access
+    resource: { arg: team_app_name, kind: app }
+    card: "Remove {team_app_collaborator_email} from team app {team_app_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-app-collaborator-delete.http
+        expect: access
+        resource: shop-api

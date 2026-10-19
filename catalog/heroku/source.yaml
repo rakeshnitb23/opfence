@@ -1,0 +1,31 @@
+# Heroku Platform API: source
+operations:
+  - id: heroku.source.create
+    match: { rest: { method: POST, path: "/sources" } }
+    class: write
+    card: "Create upload and download URLs for source code"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns presigned URLs for one upload; nothing is deployed.
+    tests:
+      - fixture: fixtures/source-create.http
+        expect: write
+
+  - id: heroku.source.create-for-app
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/sources" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Create upload and download URLs for source code of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Deprecated in favour of POST /sources.
+    tests:
+      - fixture: fixtures/source-create-for-app.http
+        expect: write
+        resource: shop-api

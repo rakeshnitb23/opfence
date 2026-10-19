@@ -1,0 +1,5 @@
+{
+  "description": "List Heroku AI models",
+  "tool": "list_ai_available_models",
+  "arguments": {}
+}

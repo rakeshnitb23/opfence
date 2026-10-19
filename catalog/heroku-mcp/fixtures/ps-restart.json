@@ -1,0 +1,8 @@
+{
+  "description": "Restart dynos of app shop-api",
+  "tool": "ps_restart",
+  "arguments": {
+    "app": "shop-api",
+    "process-type": "web"
+  }
+}

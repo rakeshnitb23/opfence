@@ -1,0 +1,8 @@
+# description: Lock, unlock or transfer team app shop-api
+PATCH /teams/apps/shop-api HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"owner":"other-team"}

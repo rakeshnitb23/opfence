@@ -1,0 +1,7 @@
+{
+  "description": "Scale the dynos of app shop-api ({dyno})",
+  "tool": "ps_scale",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

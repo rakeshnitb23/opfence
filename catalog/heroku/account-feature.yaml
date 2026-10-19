@@ -1,0 +1,15 @@
+# Heroku Platform API: account-feature
+operations:
+  - id: heroku.account-feature.update
+    match: { rest: { method: PATCH, path: "/account/features/{account_feature_id_or_name}" } }
+    class: write
+    resource: { arg: account_feature_id_or_name, kind: account-feature }
+    card: "Turn account feature {account_feature_id_or_name} on or off"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/account-feature-update.http
+        expect: write
+        resource: dashboard-beta

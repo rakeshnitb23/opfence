@@ -1,0 +1,8 @@
+{
+  "description": "List active queries on the database of app shop-api",
+  "tool": "pg_ps",
+  "arguments": {
+    "app": "shop-api",
+    "verbose": true
+  }
+}

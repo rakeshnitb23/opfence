@@ -1,0 +1,98 @@
+# Heroku Platform API: vpn-connection
+operations:
+  - id: heroku.vpn-connection.list
+    match: { rest: { method: GET, path: "/spaces/{space_id_or_name}/vpn-connections" } }
+    class: credential
+    resource: { arg: space_id_or_name, kind: space }
+    card: "List the VPN connections of space {space_id_or_name} with their pre-shared keys"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Each tunnel includes its pre_shared_key.
+    tests:
+      - fixture: fixtures/vpn-connection-list.http
+        expect: credential
+        resource: acme-prod
+
+  - id: heroku.vpn-connection.read
+    match: { rest: { method: GET, path: "/spaces/{space_id_or_name}/vpn-connections/{vpn_connection_id_or_name}" } }
+    class: credential
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Show VPN connection {vpn_connection_id_or_name} of space {space_id_or_name} with its pre-shared keys"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Each tunnel includes its pre_shared_key.
+    tests:
+      - fixture: fixtures/vpn-connection-read.http
+        expect: credential
+        resource: acme-prod
+
+  - id: heroku.vpn-connection.create
+    match: { rest: { method: POST, path: "/spaces/{space_id_or_name}/vpn-connections" } }
+    class: access
+    when:
+      - if: { arg: body.public_ip, present: true }
+        class: access
+      - if: { arg: body.public_ip, present: true }
+        class: credential
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Create VPN connection {body.name} from {body.public_ip} into space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Connects an outside network to the space (access) and the response carries the tunnels'
+      pre-shared keys (credential); public_ip is required, so both hold for every valid request.
+    tests:
+      - fixture: fixtures/vpn-connection-create.http
+        expect: access
+        resource: acme-prod
+      - fixture: fixtures/vpn-connection-create.http
+        expect: credential
+        resource: acme-prod
+
+  - id: heroku.vpn-connection.update
+    match: { rest: { method: PATCH, path: "/spaces/{space_id_or_name}/vpn-connections/{vpn_connection_id_or_name}" } }
+    class: access
+    when:
+      - if: { arg: body.routable_cidrs, present: true }
+        class: access
+      - if: { arg: body.routable_cidrs, present: true }
+        class: credential
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Change the routable networks of VPN connection {vpn_connection_id_or_name} in space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Changes which networks reach the space; the response carries the pre-shared keys.
+    tests:
+      - fixture: fixtures/vpn-connection-update.http
+        expect: access
+        resource: acme-prod
+      - fixture: fixtures/vpn-connection-update.http
+        expect: credential
+        resource: acme-prod
+
+  - id: heroku.vpn-connection.delete
+    match: { rest: { method: DELETE, path: "/spaces/{space_id_or_name}/vpn-connections/{vpn_connection_id_or_name}" } }
+    class: delete
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Destroy VPN connection {vpn_connection_id_or_name} of space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can be created again (with new keys).
+    tests:
+      - fixture: fixtures/vpn-connection-delete.http
+        expect: delete
+        resource: acme-prod

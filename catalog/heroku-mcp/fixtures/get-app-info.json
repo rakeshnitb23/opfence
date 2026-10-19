@@ -1,0 +1,8 @@
+{
+  "description": "Show app shop-api",
+  "tool": "get_app_info",
+  "arguments": {
+    "app": "shop-api",
+    "json": true
+  }
+}

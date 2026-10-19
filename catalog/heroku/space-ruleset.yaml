@@ -1,0 +1,34 @@
+# Heroku Platform API: space-ruleset
+operations:
+  - id: heroku.space.inbound-ruleset-update
+    match: { rest: { method: PUT, path: "/spaces/{space_id_or_name}/inbound-ruleset" } }
+    class: access
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Replace the inbound IP rules of space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Decides which addresses on the internet can reach the space's apps.
+    tests:
+      - fixture: fixtures/space-inbound-ruleset-update.http
+        expect: access
+        resource: acme-prod
+
+  - id: heroku.space.outbound-ruleset-update
+    match: { rest: { method: PUT, path: "/spaces/{space_id_or_name}/outbound-ruleset" } }
+    class: access
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Replace the outbound rules of space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v5/schema.json
+    notes: >-
+      Only in the v5 schema (removed from v6); kept because the endpoint may still be served.
+      Decides where the space's dynos can connect.
+    tests:
+      - fixture: fixtures/space-outbound-ruleset-update.http
+        expect: access
+        resource: acme-prod

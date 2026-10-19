@@ -1,0 +1,14 @@
+# Heroku MCP server (@heroku/mcp-server): spaces
+operations:
+  - id: heroku-mcp.spaces.list-private-spaces
+    match: { mcp: { tool: list_private_spaces } }
+    class: read
+    card: "List Private Spaces"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/spaces.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/list-private-spaces.json
+        expect: read

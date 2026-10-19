@@ -1,0 +1,41 @@
+# Heroku Platform API: team-invitation
+operations:
+  - id: heroku.team-invitation.create
+    match: { rest: { method: PUT, path: "/teams/{team_name_or_id}/invitations" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Invite {body.email} to team {team_name_or_id} as {body.role}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-invitation-create.http
+        expect: access
+        resource: acme
+
+  - id: heroku.team-invitation.revoke
+    match: { rest: { method: DELETE, path: "/teams/{team_name_or_id}/invitations/{team_invitation_id}" } }
+    class: access
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Revoke invitation {team_invitation_id} to team {team_name_or_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-invitation-revoke.http
+        expect: access
+        resource: acme
+
+  - id: heroku.team-invitation.accept
+    match: { rest: { method: POST, path: "/teams/invitations/{team_invitation_token}/accept" } }
+    class: access
+    card: "Accept a team invitation"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-invitation-accept.http
+        expect: access

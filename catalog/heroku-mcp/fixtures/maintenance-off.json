@@ -1,0 +1,7 @@
+{
+  "description": "Take app shop-api out of maintenance mode",
+  "tool": "maintenance_off",
+  "arguments": {
+    "app": "shop-api"
+  }
+}

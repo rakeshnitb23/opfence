@@ -1,0 +1,8 @@
+# description: Move pipeline coupling 4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a to stage production
+PATCH /pipeline-couplings/4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"stage":"production"}

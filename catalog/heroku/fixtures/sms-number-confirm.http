@@ -1,0 +1,5 @@
+# description: Confirm the SMS recovery number of account ~
+POST /users/~/sms-number/actions/confirm HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

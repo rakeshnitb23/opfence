@@ -1,0 +1,8 @@
+# description: Run `rake db:migrate` in a one-off dyno of app shop-api
+POST /apps/shop-api/dynos HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"command":"rake db:migrate","attach":false,"size":"standard-1x","type":"run"}

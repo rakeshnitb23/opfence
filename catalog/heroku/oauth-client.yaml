@@ -1,0 +1,91 @@
+# Heroku Platform API: oauth-client
+operations:
+  - id: heroku.oauth-client.list
+    match: { rest: { method: GET, path: "/oauth/clients" } }
+    class: credential
+    card: "List your OAuth clients with their secrets"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Each client includes its secret.
+    tests:
+      - fixture: fixtures/oauth-client-list.http
+        expect: credential
+
+  - id: heroku.oauth-client.read
+    match: { rest: { method: GET, path: "/oauth/clients/{oauth_client_id}" } }
+    class: credential
+    resource: { arg: oauth_client_id, kind: oauth-client }
+    card: "Show OAuth client {oauth_client_id} with its secret"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The response includes the client secret.
+    tests:
+      - fixture: fixtures/oauth-client-read.http
+        expect: credential
+        resource: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d
+
+  - id: heroku.oauth-client.create
+    match: { rest: { method: POST, path: "/oauth/clients" } }
+    class: credential
+    card: "Create OAuth client {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns the new client's secret.
+    tests:
+      - fixture: fixtures/oauth-client-create.http
+        expect: credential
+
+  - id: heroku.oauth-client.update
+    match: { rest: { method: PATCH, path: "/oauth/clients/{oauth_client_id}" } }
+    class: access
+    resource: { arg: oauth_client_id, kind: oauth-client }
+    card: "Change OAuth client {oauth_client_id} (name, redirect URI)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      A new redirect_uri decides where users' authorization codes are sent.
+    tests:
+      - fixture: fixtures/oauth-client-update.http
+        expect: access
+        resource: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d
+
+  - id: heroku.oauth-client.rotate
+    match: { rest: { method: POST, path: "/oauth/clients/{oauth_client_id}/actions/rotate-credentials" } }
+    class: credential
+    resource: { arg: oauth_client_id, kind: oauth-client }
+    card: "Rotate the secret of OAuth client {oauth_client_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns the new secret.
+    tests:
+      - fixture: fixtures/oauth-client-rotate.http
+        expect: credential
+        resource: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d
+
+  - id: heroku.oauth-client.delete
+    match: { rest: { method: DELETE, path: "/oauth/clients/{oauth_client_id}" } }
+    class: access
+    resource: { arg: oauth_client_id, kind: oauth-client }
+    card: "Delete OAuth client {oauth_client_id} and revoke its authorizations"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/oauth-client-delete.http
+        expect: access
+        resource: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d

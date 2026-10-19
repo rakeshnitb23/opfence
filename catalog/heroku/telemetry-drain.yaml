@@ -1,0 +1,112 @@
+# Heroku Platform API: telemetry-drain
+operations:
+  - id: heroku.telemetry-drain.read
+    match: { rest: { method: GET, path: "/telemetry-drains/{telemetry_drain_id}" } }
+    class: credential
+    resource: { arg: telemetry_drain_id, kind: telemetry-drain }
+    card: "Show telemetry drain {telemetry_drain_id} with its exporter headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      exporter.headers holds the headers sent to the OpenTelemetry backend; the schema's example is
+      an API key.
+    tests:
+      - fixture: fixtures/telemetry-drain-read.http
+        expect: credential
+        resource: e4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8
+
+  - id: heroku.telemetry-drain.list-by-app
+    match: { rest: { method: GET, path: "/apps/{app_id_or_name}/telemetry-drains" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "List the telemetry drains of app {app_id_or_name} with their exporter headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      exporter.headers holds the headers sent to the OpenTelemetry backend; the schema's example is
+      an API key.
+    tests:
+      - fixture: fixtures/telemetry-drain-list-by-app.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.telemetry-drain.list-by-space
+    match: { rest: { method: GET, path: "/spaces/{space_id_or_name}/telemetry-drains" } }
+    class: credential
+    resource: { arg: space_id_or_name, kind: space }
+    card: "List the telemetry drains of space {space_id_or_name} with their exporter headers"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      exporter.headers holds the headers sent to the OpenTelemetry backend; the schema's example is
+      an API key.
+    tests:
+      - fixture: fixtures/telemetry-drain-list-by-space.http
+        expect: credential
+        resource: acme-prod
+
+  - id: heroku.telemetry-drain.create
+    match: { rest: { method: POST, path: "/telemetry-drains" } }
+    class: access
+    when:
+      - if: { arg: body.exporter.headers, present: true }
+        class: access
+      - if: { arg: body.exporter.headers, present: true }
+        class: credential
+    card: "Send {body.signals} telemetry to {body.exporter.endpoint}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Sends traces, metrics or logs to an outside endpoint; exporter.headers usually carries the
+      backend's API key.
+    tests:
+      - fixture: fixtures/telemetry-drain-create.http
+        expect: access
+      - fixture: fixtures/telemetry-drain-create-headers.http
+        expect: credential
+
+  - id: heroku.telemetry-drain.update
+    match: { rest: { method: PATCH, path: "/telemetry-drains/{telemetry_drain_id}" } }
+    class: access
+    when:
+      - if: { arg: body.exporter.headers, present: true }
+        class: access
+      - if: { arg: body.exporter.headers, present: true }
+        class: credential
+    resource: { arg: telemetry_drain_id, kind: telemetry-drain }
+    card: "Change telemetry drain {telemetry_drain_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can redirect telemetry elsewhere; exporter.headers sets the backend's API key.
+    tests:
+      - fixture: fixtures/telemetry-drain-update.http
+        expect: access
+        resource: e4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8
+      - fixture: fixtures/telemetry-drain-update-headers.http
+        expect: credential
+        resource: e4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8
+
+  - id: heroku.telemetry-drain.delete
+    match: { rest: { method: DELETE, path: "/telemetry-drains/{telemetry_drain_id}" } }
+    class: delete
+    resource: { arg: telemetry_drain_id, kind: telemetry-drain }
+    card: "Delete telemetry drain {telemetry_drain_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/telemetry-drain-delete.http
+        expect: delete
+        resource: e4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8

@@ -1,0 +1,93 @@
+# Heroku Platform API: oauth-authorization
+operations:
+  - id: heroku.oauth-authorization.list
+    match: { rest: { method: GET, path: "/oauth/authorizations" } }
+    class: credential
+    card: "List your OAuth authorizations with their tokens"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Each authorization carries access_token and refresh_token objects with the token value.
+    tests:
+      - fixture: fixtures/oauth-authorization-list.http
+        expect: credential
+
+  - id: heroku.oauth-authorization.read
+    match: { rest: { method: GET, path: "/oauth/authorizations/{oauth_authorization_id}" } }
+    class: credential
+    resource: { arg: oauth_authorization_id, kind: oauth-authorization }
+    card: "Show OAuth authorization {oauth_authorization_id} with its tokens"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The response includes access_token.token and refresh_token.token.
+    tests:
+      - fixture: fixtures/oauth-authorization-read.http
+        expect: credential
+        resource: 0f1e2d3c-4b5a-4968-8776-655443322110
+
+  - id: heroku.oauth-authorization.create
+    match: { rest: { method: POST, path: "/oauth/authorizations" } }
+    class: credential
+    card: "Create an API token with scope {body.scope}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      What heroku authorizations:create does: returns a new token.
+    tests:
+      - fixture: fixtures/oauth-authorization-create.http
+        expect: credential
+
+  - id: heroku.oauth-authorization.update
+    match: { rest: { method: PATCH, path: "/oauth/authorizations/{oauth_authorization_id}" } }
+    class: credential
+    resource: { arg: oauth_authorization_id, kind: oauth-authorization }
+    card: "Change OAuth authorization {oauth_authorization_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The request requires the client's secret and the response carries the authorization's tokens.
+    tests:
+      - fixture: fixtures/oauth-authorization-update.http
+        expect: credential
+        resource: 0f1e2d3c-4b5a-4968-8776-655443322110
+
+  - id: heroku.oauth-authorization.regenerate
+    match: { rest: { method: POST, path: "/oauth/authorizations/{oauth_authorization_id}/actions/regenerate-tokens" } }
+    class: credential
+    resource: { arg: oauth_authorization_id, kind: oauth-authorization }
+    card: "Regenerate the tokens of OAuth authorization {oauth_authorization_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns new tokens and invalidates the old ones.
+    tests:
+      - fixture: fixtures/oauth-authorization-regenerate.http
+        expect: credential
+        resource: 0f1e2d3c-4b5a-4968-8776-655443322110
+
+  - id: heroku.oauth-authorization.delete
+    match: { rest: { method: DELETE, path: "/oauth/authorizations/{oauth_authorization_id}" } }
+    class: access
+    resource: { arg: oauth_authorization_id, kind: oauth-authorization }
+    card: "Revoke OAuth authorization {oauth_authorization_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Revokes the token; as with Vercel and Render token revocation, classed as access.
+    tests:
+      - fixture: fixtures/oauth-authorization-delete.http
+        expect: access
+        resource: 0f1e2d3c-4b5a-4968-8776-655443322110

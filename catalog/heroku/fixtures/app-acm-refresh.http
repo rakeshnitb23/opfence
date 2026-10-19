@@ -1,0 +1,5 @@
+# description: Refresh automated certificates of app shop-api
+PATCH /apps/shop-api/acm HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

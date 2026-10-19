@@ -1,0 +1,8 @@
+# description: Build and deploy https://example.com/shop-api.tgz to app shop-api
+POST /apps/shop-api/builds HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"source_blob":{"url":"https://example.com/shop-api.tgz","version":"v1.4.2"}}

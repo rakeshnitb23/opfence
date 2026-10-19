@@ -1,0 +1,7 @@
+{
+  "description": "List pipelines",
+  "tool": "pipelines_list",
+  "arguments": {
+    "json": true
+  }
+}

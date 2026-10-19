@@ -1,0 +1,9 @@
+{
+  "description": "Stop query 4821 on the database of app shop-api",
+  "tool": "pg_kill",
+  "arguments": {
+    "app": "shop-api",
+    "pid": 4821,
+    "force": true
+  }
+}

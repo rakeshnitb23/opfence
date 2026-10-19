@@ -1,0 +1,5 @@
+# description: Read every config var value of app shop-api
+GET /apps/shop-api/config-vars HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

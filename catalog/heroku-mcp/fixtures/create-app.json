@@ -1,0 +1,8 @@
+{
+  "description": "Create Heroku app shop-api",
+  "tool": "create_app",
+  "arguments": {
+    "app": "shop-api",
+    "region": "us"
+  }
+}

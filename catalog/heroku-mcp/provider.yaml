@@ -1,0 +1,18 @@
+provider: heroku-mcp
+title: Heroku MCP
+docs: https://devcenter.heroku.com/articles/heroku-mcp-server
+# Heroku's official MCP server (@heroku/mcp-server, source
+# github.com/heroku/heroku-mcp-server). It runs locally over stdio, started
+# with `heroku mcp:start` (the CLI bundles the package) or `npx -y
+# @heroku/mcp-server`. Most tools write a command into a `heroku repl`
+# process (the Heroku CLI), which then calls api.heroku.com
+# (catalog/heroku) or the Heroku Data API; the deploy tools call
+# api.heroku.com directly. Heroku hosts no remote server, so there are no
+# hosts and the agent hook sees the tool calls. The README names the server
+# "heroku" in every client config.
+# No detect or auth block: the server uses HEROKU_API_KEY or the CLI's own
+# login, and HEROKU_API_KEY belongs to catalog/heroku.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [heroku, heroku-mcp, heroku-mcp-server]
+  package: "@heroku/mcp-server"

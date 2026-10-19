@@ -1,0 +1,8 @@
+{
+  "description": "Show the slowest queries on the database of app shop-api",
+  "tool": "pg_outliers",
+  "arguments": {
+    "app": "shop-api",
+    "num": 10
+  }
+}

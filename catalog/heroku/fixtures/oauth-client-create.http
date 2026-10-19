@@ -1,0 +1,8 @@
+# description: Create OAuth client shop dashboard
+POST /oauth/clients HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"name":"shop dashboard","redirect_uri":"https://dashboard.example.com/auth/heroku/callback"}

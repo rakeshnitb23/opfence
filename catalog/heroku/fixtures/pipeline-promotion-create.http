@@ -1,0 +1,8 @@
+# description: Promote a release to the next stage of pipeline 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+POST /pipeline-promotions HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"pipeline":{"id":"9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d"},"source":{"app":{"id":"01234567-89ab-cdef-0123-456789abcdef"}},"targets":[{"app":{"id":"11234567-89ab-cdef-0123-456789abcdef"}}]}

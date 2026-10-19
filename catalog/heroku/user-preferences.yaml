@@ -1,0 +1,13 @@
+# Heroku Platform API: user-preferences
+operations:
+  - id: heroku.user-preferences.update
+    match: { rest: { method: PATCH, path: "/users/{user_preferences_self}/preferences" } }
+    class: write
+    card: "Change your dashboard preferences"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/user-preferences-update.http
+        expect: write

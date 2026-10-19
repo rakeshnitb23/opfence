@@ -1,0 +1,5 @@
+# description: Show log drain d.f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6c of app shop-api with its URL
+GET /apps/shop-api/log-drains/d.f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6c HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

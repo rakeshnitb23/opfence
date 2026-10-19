@@ -1,0 +1,5 @@
+# description: Remove the SSO identity provider of team acme
+DELETE /teams/acme/identity-providers/6d7e8f9a-0b1c-4d2e-8f3a-4b5c6d7e8f9a HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

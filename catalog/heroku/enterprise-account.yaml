@@ -1,0 +1,15 @@
+# Heroku Platform API: enterprise-account
+operations:
+  - id: heroku.enterprise-account.update
+    match: { rest: { method: PATCH, path: "/enterprise-accounts/{enterprise_account_id_or_name}" } }
+    class: write
+    resource: { arg: enterprise_account_id_or_name, kind: enterprise-account }
+    card: "Rename enterprise account {enterprise_account_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/enterprise-account-update.http
+        expect: write
+        resource: acme-enterprise

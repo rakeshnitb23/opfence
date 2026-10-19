@@ -1,0 +1,70 @@
+# Heroku Platform API: space
+operations:
+  - id: heroku.space.create
+    match: { rest: { method: POST, path: "/spaces" } }
+    class: money
+    when:
+      - if: { arg: body.log_drain_url, present: true }
+        class: money
+      - if: { arg: body.log_drain_url, present: true }
+        class: access
+    resource: { arg: body.name, kind: space }
+    card: "Create Private Space {body.name} for team {body.team}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Private Spaces are billed per month; a log_drain_url also sends the space's logs out (access).
+    tests:
+      - fixture: fixtures/space-create.http
+        expect: money
+        resource: acme-prod
+      - fixture: fixtures/space-create-log-drain.http
+        expect: access
+        resource: acme-prod
+
+  - id: heroku.space.update
+    match: { rest: { method: PATCH, path: "/spaces/{space_id_or_name}" } }
+    class: write
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Rename Private Space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/space-update.http
+        expect: write
+        resource: acme-prod
+
+  - id: heroku.space.delete
+    match: { rest: { method: DELETE, path: "/spaces/{space_id_or_name}" } }
+    class: irreversible
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Delete Private Space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Its stable outbound IPs, VPN connections and peerings go with it and a new space gets new
+      ones.
+    tests:
+      - fixture: fixtures/space-delete.http
+        expect: irreversible
+        resource: acme-prod
+
+  - id: heroku.space.transfer
+    match: { rest: { method: POST, path: "/spaces/{space_id_or_name}/transfer" } }
+    class: access
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Transfer Private Space {space_id_or_name} to team {body.new_owner}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/space-transfer.http
+        expect: access
+        resource: acme-prod

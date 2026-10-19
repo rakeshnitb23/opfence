@@ -1,0 +1,34 @@
+# Heroku Platform API: add-on-action
+operations:
+  - id: heroku.add-on-action.provision
+    match: { rest: { method: POST, path: "/addons/{add_on_id_or_name}/actions/provision" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Mark add-on {add_on_id_or_name} as provisioned"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Add-on partner API.
+    tests:
+      - fixture: fixtures/add-on-action-provision.http
+        expect: write
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on-action.deprovision
+    match: { rest: { method: POST, path: "/addons/{add_on_id_or_name}/actions/deprovision" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Mark add-on {add_on_id_or_name} as deprovisioned"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Add-on partner API; the schema does not say what happens to the resource, so it is treated
+      like a delete of a data add-on.
+    tests:
+      - fixture: fixtures/add-on-action-deprovision.http
+        expect: irreversible
+        resource: postgresql-shaped-48213

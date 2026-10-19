@@ -1,0 +1,47 @@
+# Heroku Platform API: add-on-attachment
+operations:
+  - id: heroku.add-on-attachment.create
+    match: { rest: { method: POST, path: "/addon-attachments" } }
+    class: credential
+    resource: { arg: body.app, kind: app }
+    card: "Attach add-on {body.addon} to app {body.app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Attaching copies the add-on's config vars (DATABASE_URL with its password) into the target
+      app, where anyone with access to that app can read them.
+    tests:
+      - fixture: fixtures/add-on-attachment-create.http
+        expect: credential
+        resource: shop-worker
+
+  - id: heroku.add-on-attachment.delete
+    match: { rest: { method: DELETE, path: "/addon-attachments/{add_on_attachment_id}" } }
+    class: delete
+    resource: { arg: add_on_attachment_id, kind: add-on-attachment }
+    card: "Detach add-on attachment {add_on_attachment_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Removes the add-on's config vars from one app; the add-on and its data stay and can be
+      attached again.
+    tests:
+      - fixture: fixtures/add-on-attachment-delete.http
+        expect: delete
+        resource: 8b1e2c4d-3f5a-4b6c-9d7e-1f2a3b4c5d6e
+
+  - id: heroku.add-on-attachment.resolve
+    match: { rest: { method: POST, path: "/actions/addon-attachments/resolve" } }
+    class: read
+    card: "Look up add-on attachment {body.addon_attachment}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/add-on-attachment-resolve.http
+        expect: read

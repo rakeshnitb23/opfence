@@ -1,0 +1,54 @@
+# Heroku MCP server (@heroku/mcp-server): ps
+operations:
+  - id: heroku-mcp.ps.ps-list
+    match: { mcp: { tool: ps_list } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List the dynos of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/ps-list.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.ps.ps-scale
+    match: { mcp: { tool: ps_scale } }
+    class: read
+    when:
+      - if: { arg: dyno, present: true }
+        class: money
+    resource: { arg: app, kind: app }
+    card: "Scale the dynos of app {app} ({dyno})"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Without dyno it only shows the formation; with dyno it scales or resizes, which is billed.
+    tests:
+      - fixture: fixtures/ps-scale.json
+        expect: money
+        resource: shop-api
+      - fixture: fixtures/ps-scale-show.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.ps.ps-restart
+    match: { mcp: { tool: ps_restart } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Restart dynos of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/ps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/ps-restart.json
+        expect: write
+        resource: shop-api

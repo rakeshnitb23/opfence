@@ -1,0 +1,68 @@
+# Heroku MCP server (@heroku/mcp-server): apps
+operations:
+  - id: heroku-mcp.apps.list-apps
+    match: { mcp: { tool: list_apps } }
+    class: read
+    card: "List Heroku apps"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/apps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku apps.
+    tests:
+      - fixture: fixtures/list-apps.json
+        expect: read
+
+  - id: heroku-mcp.apps.get-app-info
+    match: { mcp: { tool: get_app_info } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "Show app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/apps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku apps:info, which reads the app, add-ons, dynos, collaborators and pipeline
+      coupling but not config var values.
+    tests:
+      - fixture: fixtures/get-app-info.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.apps.create-app
+    match: { mcp: { tool: create_app } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Create Heroku app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/apps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku apps:create; an empty app is not billed.
+    tests:
+      - fixture: fixtures/create-app.json
+        expect: write
+        resource: shop-api
+
+  - id: heroku-mcp.apps.rename-app
+    match: { mcp: { tool: rename_app } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Rename app {app} to {newName}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/apps.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku apps:rename; the old herokuapp.com URL stops working.
+    tests:
+      - fixture: fixtures/rename-app.json
+        expect: write
+        resource: shop-api

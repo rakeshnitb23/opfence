@@ -1,0 +1,5 @@
+# description: Destroy VPC peering pcx-0123456789abcdef0 of space acme-prod
+DELETE /spaces/acme-prod/peerings/pcx-0123456789abcdef0 HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

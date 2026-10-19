@@ -1,0 +1,8 @@
+# description: Replace the buildpacks of app shop-api
+PUT /apps/shop-api/buildpack-installations HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"updates":[{"buildpack":"heroku/nodejs"}]}

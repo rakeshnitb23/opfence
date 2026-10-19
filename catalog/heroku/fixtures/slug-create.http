@@ -1,0 +1,8 @@
+# description: Create a slug for app shop-api
+POST /apps/shop-api/slugs HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"process_types":{"web":"node server.js"}}

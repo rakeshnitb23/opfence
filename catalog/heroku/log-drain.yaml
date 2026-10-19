@@ -1,0 +1,100 @@
+# Heroku Platform API: log-drain
+operations:
+  - id: heroku.log-drain.list
+    match: { rest: { method: GET, path: "/apps/{app_id_or_name}/log-drains" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "List the log drains of app {app_id_or_name} with their URLs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Drain URLs commonly carry the log service's ingest key (in the query string or as
+      user:password), so reading them is credential.
+    tests:
+      - fixture: fixtures/log-drain-list.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.log-drain.read
+    match: { rest: { method: GET, path: "/apps/{app_id_or_name}/log-drains/{log_drain_query_identity}" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Show log drain {log_drain_query_identity} of app {app_id_or_name} with its URL"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Drain URLs commonly carry the log service's ingest key (in the query string or as
+      user:password), so reading them is credential.
+    tests:
+      - fixture: fixtures/log-drain-read.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.log-drain.list-by-add-on
+    match: { rest: { method: GET, path: "/addons/{add_on_id_or_name}/log-drains" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "List the log drains of add-on {add_on_id_or_name} with their URLs"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Drain URLs commonly carry the log service's ingest key (in the query string or as
+      user:password), so reading them is credential.
+    tests:
+      - fixture: fixtures/log-drain-list-by-add-on.http
+        expect: credential
+        resource: postgresql-shaped-48213
+
+  - id: heroku.log-drain.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/log-drains" } }
+    class: access
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Send the logs of app {app_id_or_name} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Sends every log line of the app to an outside endpoint.
+    tests:
+      - fixture: fixtures/log-drain-create.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.log-drain.update-add-on
+    match: { rest: { method: PUT, path: "/addons/{add_on_id_or_name}/log-drains/{log_drain_query_identity}" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Point log drain {log_drain_query_identity} of add-on {add_on_id_or_name} at {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Changes where the logs are sent.
+    tests:
+      - fixture: fixtures/log-drain-update-add-on.http
+        expect: access
+        resource: postgresql-shaped-48213
+
+  - id: heroku.log-drain.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/log-drains/{log_drain_query_identity}" } }
+    class: delete
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Remove log drain {log_drain_query_identity} from app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can be added again; logs emitted in between are not delivered.
+    tests:
+      - fixture: fixtures/log-drain-delete.http
+        expect: delete
+        resource: shop-api

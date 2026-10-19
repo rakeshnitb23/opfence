@@ -1,0 +1,15 @@
+# Heroku Platform API: space-app-access
+operations:
+  - id: heroku.space-app-access.update
+    match: { rest: { method: PATCH, path: "/spaces/{space_id_or_name}/members/{account_email_or_id_or_self}" } }
+    class: access
+    resource: { arg: space_id_or_name, kind: space }
+    card: "Change the permissions of {account_email_or_id_or_self} in space {space_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/space-app-access-update.http
+        expect: access
+        resource: acme-prod

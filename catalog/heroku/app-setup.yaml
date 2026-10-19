@@ -1,0 +1,18 @@
+# Heroku Platform API: app-setup
+operations:
+  - id: heroku.app-setup.create
+    match: { rest: { method: POST, path: "/app-setups" } }
+    class: money
+    resource: { arg: body.app.name, kind: app }
+    card: "Create and deploy an app from an app.json archive"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The app.json inside the archive can provision paid add-ons and scale dynos, and Opfence cannot
+      read it.
+    tests:
+      - fixture: fixtures/app-setup-create.http
+        expect: money
+        resource: shop-api

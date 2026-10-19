@@ -1,0 +1,62 @@
+# Heroku Platform API: team
+operations:
+  - id: heroku.team.create
+    match: { rest: { method: POST, path: "/teams" } }
+    class: money
+    resource: { arg: body.name, kind: team }
+    card: "Create team {body.name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The request can carry a payment card and the team is billed for its resources.
+    tests:
+      - fixture: fixtures/team-create.http
+        expect: money
+        resource: acme
+
+  - id: heroku.team.create-in-enterprise
+    match: { rest: { method: POST, path: "/enterprise-accounts/{enterprise_account_id_or_name}/teams" } }
+    class: write
+    resource: { arg: enterprise_account_id_or_name, kind: enterprise-account }
+    card: "Create team {body.name} in enterprise account {enterprise_account_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-create-in-enterprise.http
+        expect: write
+        resource: acme-enterprise
+
+  - id: heroku.team.update
+    match: { rest: { method: PATCH, path: "/teams/{team_name_or_id}" } }
+    class: write
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Change team {team_name_or_id} (name, default)"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/team-update.http
+        expect: write
+        resource: acme
+
+  - id: heroku.team.delete
+    match: { rest: { method: DELETE, path: "/teams/{team_name_or_id}" } }
+    class: irreversible
+    resource: { arg: team_name_or_id, kind: team }
+    card: "Delete team {team_name_or_id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      The schema does not say what happens to the team's apps and pipelines, so the worse case is
+      assumed.
+    tests:
+      - fixture: fixtures/team-delete.http
+        expect: irreversible
+        resource: acme

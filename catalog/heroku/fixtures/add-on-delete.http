@@ -1,0 +1,5 @@
+# description: Delete add-on postgresql-shaped-48213 of app shop-api and its data
+DELETE /apps/shop-api/addons/postgresql-shaped-48213 HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

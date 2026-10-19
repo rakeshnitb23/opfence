@@ -1,0 +1,88 @@
+# Heroku Platform API: dyno
+operations:
+  - id: heroku.dyno.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/dynos" } }
+    class: irreversible
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Run `{body.command}` in a one-off dyno of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Runs an arbitrary command with the app's config vars (database credentials included) - what
+      heroku run does.
+    tests:
+      - fixture: fixtures/dyno-create.http
+        expect: irreversible
+        resource: shop-api
+
+  - id: heroku.dyno.restart
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/dynos/{dyno_id_or_name}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Restart dyno {dyno_id_or_name} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/dyno-restart.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.dyno.restart-all
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/dynos" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Restart every dyno of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/dyno-restart-all.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.dyno.restart-formation
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/formations/{dyno_formation_type}" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Restart the {dyno_formation_type} dynos of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/dyno-restart-formation.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.dyno.stop
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/dynos/{dyno_id_or_name}/actions/stop" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Stop dyno {dyno_id_or_name} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/dyno-stop.http
+        expect: write
+        resource: shop-api
+
+  - id: heroku.dyno.stop-formation
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/formations/{dyno_formation_type}/actions/stop" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Stop the {dyno_formation_type} dynos of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/dyno-stop-formation.http
+        expect: write
+        resource: shop-api

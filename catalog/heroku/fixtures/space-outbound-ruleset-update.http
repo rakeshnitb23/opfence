@@ -1,0 +1,8 @@
+# description: Replace the outbound rules of space acme-prod
+PUT /spaces/acme-prod/outbound-ruleset HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"rules":[{"target":"0.0.0.0/0","from_port":0,"to_port":65535,"protocol":"any"}]}

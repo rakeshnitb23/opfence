@@ -1,0 +1,8 @@
+# description: Set up SSO for team acme
+POST /teams/acme/identity-providers HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"certificate":"-----BEGIN CERTIFICATE-----\nexample\n-----END CERTIFICATE-----","entity_id":"https://idp.example.com","sso_target_url":"https://idp.example.com/sso"}

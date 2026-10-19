@@ -1,0 +1,8 @@
+# description: Send traces telemetry to https://otel.example.com
+POST /telemetry-drains HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"owner":{"id":"01234567-89ab-cdef-0123-456789abcdef","type":"app"},"signals":["traces"],"exporter":{"type":"otlphttp","endpoint":"https://otel.example.com","headers":{"API-Key":"example"}}}

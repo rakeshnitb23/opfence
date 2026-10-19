@@ -1,0 +1,47 @@
+# Heroku Platform API: app-transfer
+operations:
+  - id: heroku.app-transfer.create
+    match: { rest: { method: POST, path: "/account/app-transfers" } }
+    class: access
+    resource: { arg: body.app, kind: app }
+    card: "Offer app {body.app} to {body.recipient}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Hands ownership of the app to another account once accepted.
+    tests:
+      - fixture: fixtures/app-transfer-create.http
+        expect: access
+        resource: shop-api
+
+  - id: heroku.app-transfer.update
+    match: { rest: { method: PATCH, path: "/account/app-transfers/{app_transfer_id_or_name}" } }
+    class: access
+    resource: { arg: app_transfer_id_or_name, kind: app-transfer }
+    card: "Accept or decline app transfer {app_transfer_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/app-transfer-update.http
+        expect: access
+        resource: 3e4f5a6b-7c8d-4e9f-a0b1-c2d3e4f5a6b7
+
+  - id: heroku.app-transfer.delete
+    match: { rest: { method: DELETE, path: "/account/app-transfers/{app_transfer_id_or_name}" } }
+    class: write
+    resource: { arg: app_transfer_id_or_name, kind: app-transfer }
+    card: "Cancel app transfer {app_transfer_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Cancels a pending transfer; nobody gains or loses access.
+    tests:
+      - fixture: fixtures/app-transfer-delete.http
+        expect: write
+        resource: 3e4f5a6b-7c8d-4e9f-a0b1-c2d3e4f5a6b7

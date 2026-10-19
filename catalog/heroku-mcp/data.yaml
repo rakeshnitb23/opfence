@@ -1,0 +1,211 @@
+# Heroku MCP server (@heroku/mcp-server): data
+operations:
+  - id: heroku-mcp.data.pg-psql
+    match: { mcp: { tool: pg_psql } }
+    class: irreversible
+    when:
+      - if: { arg: command, empty: true }
+        class: irreversible
+      - if: { arg: command, matches: "^\\s*\\\\" }
+        class: irreversible
+      - if: { arg: command, matches: "--[^\\n]*\\n" }
+        class: irreversible
+    classify: { sql: command }
+    resource: { arg: app, kind: app }
+    card: "Run SQL on the Postgres database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku pg:psql, which runs psql -c <command> against Heroku Postgres, so the SQL is
+      classified as Postgres. psql treats a -c string that starts with a backslash as a
+      meta-command, and \! runs a shell command on the machine running the server (or on a one-off
+      dyno for private databases), so a leading backslash is irreversible. The server replaces
+      newlines with spaces before running it, which turns a -- comment into one that swallows the
+      rest of the line (DELETE FROM t -- note\nWHERE id = 1 deletes every row), so a -- followed by
+      a newline is irreversible. Without command the CLI runs the file argument (psql -f, whose
+      contents Opfence cannot see and which may hold meta-commands) or an interactive session, so an
+      empty command is irreversible; the rule's own class covers a missing one.
+    tests:
+      - fixture: fixtures/pg-psql.json
+        expect: read
+        resource: shop-api
+      - fixture: fixtures/pg-psql-delete.json
+        expect: irreversible
+        resource: shop-api
+      - fixture: fixtures/pg-psql-update.json
+        expect: write
+        resource: shop-api
+      - fixture: fixtures/pg-psql-shell.json
+        expect: irreversible
+        resource: shop-api
+      - fixture: fixtures/pg-psql-comment-newline.json
+        expect: irreversible
+        resource: shop-api
+      - fixture: fixtures/pg-psql-file.json
+        expect: irreversible
+        resource: shop-api
+      - fixture: fixtures/pg-psql-grant.json
+        expect: access
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-info
+    match: { mcp: { tool: pg_info } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "Show the Postgres databases of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku pg:info; plan, size and status without connection strings.
+    tests:
+      - fixture: fixtures/pg-info.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-ps
+    match: { mcp: { tool: pg_ps } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List active queries on the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/pg-ps.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-locks
+    match: { mcp: { tool: pg_locks } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List locks on the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/pg-locks.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-outliers
+    match: { mcp: { tool: pg_outliers } }
+    class: read
+    when:
+      - if: { arg: reset, equals: "true" }
+        class: delete
+    resource: { arg: app, kind: app }
+    card: "Show the slowest queries on the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      reset clears pg_stat_statements; the statistics build up again as queries run.
+    tests:
+      - fixture: fixtures/pg-outliers.json
+        expect: read
+        resource: shop-api
+      - fixture: fixtures/pg-outliers-reset.json
+        expect: delete
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-credentials
+    match: { mcp: { tool: pg_credentials } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List the credentials of the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku pg:credentials, which prints credential names, state and attachments, not
+      passwords (those come from pg:credentials:url, which the server does not expose).
+    tests:
+      - fixture: fixtures/pg-credentials.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-kill
+    match: { mcp: { tool: pg_kill } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Stop query {pid} on the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Cancels the query, or with force ends the connection (pg_terminate_backend); no data changes.
+    tests:
+      - fixture: fixtures/pg-kill.json
+        expect: write
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-maintenance
+    match: { mcp: { tool: pg_maintenance } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "Show maintenance status of the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku pg:maintenance, which only reports (pg:maintenance:run is a separate command).
+    tests:
+      - fixture: fixtures/pg-maintenance.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-backups
+    match: { mcp: { tool: pg_backups } }
+    class: read
+    resource: { arg: app, kind: app }
+    card: "List the database backups of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Runs heroku pg:backups, which lists backups.
+    tests:
+      - fixture: fixtures/pg-backups.json
+        expect: read
+        resource: shop-api
+
+  - id: heroku-mcp.data.pg-upgrade
+    match: { mcp: { tool: pg_upgrade } }
+    class: irreversible
+    resource: { arg: app, kind: app }
+    card: "Upgrade the Postgres version of the database of app {app}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/data.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+      - https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pg/upgrade/index.ts
+    notes: >-
+      Runs heroku pg:upgrade. The CLI's own warning: 'Destructive action ... You can't undo this
+      action' (an Essential database is upgraded in place; a follower stops following its leader).
+      Heroku CLI 11 only has the pg:upgrade:* subcommands, so with it the command fails.
+    tests:
+      - fixture: fixtures/pg-upgrade.json
+        expect: irreversible
+        resource: shop-api

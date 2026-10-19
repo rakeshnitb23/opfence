@@ -1,0 +1,8 @@
+# description: Give dev@example.com access to app shop-api
+POST /apps/shop-api/collaborators HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"user":"dev@example.com","silent":false}

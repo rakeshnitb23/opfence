@@ -1,0 +1,5 @@
+# description: Revoke OAuth token 7e8f9a0b-1c2d-4e3f-8a4b-5c6d7e8f9a0b
+DELETE /oauth/tokens/7e8f9a0b-1c2d-4e3f-8a4b-5c6d7e8f9a0b HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

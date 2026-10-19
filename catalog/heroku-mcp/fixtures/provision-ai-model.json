@@ -1,0 +1,8 @@
+{
+  "description": "Provision AI model claude-4-sonnet for app shop-api",
+  "tool": "provision_ai_model",
+  "arguments": {
+    "app": "shop-api",
+    "modelName": "claude-4-sonnet"
+  }
+}

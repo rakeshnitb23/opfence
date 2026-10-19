@@ -1,0 +1,61 @@
+# Heroku Platform API: config-var
+operations:
+  - id: heroku.config-var.list
+    match: { rest: { method: GET, path: "/apps/{app_id_or_name}/config-vars" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Read every config var value of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns each config var's value in plain text (DATABASE_URL and other secrets).
+    tests:
+      - fixture: fixtures/config-var-list.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.config-var.list-release
+    match: { rest: { method: GET, path: "/apps/{app_id_or_name}/releases/{release_id_or_version}/config-vars" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Read the config var values of release {release_id_or_version} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Returns the values as they were in that release, in plain text.
+    tests:
+      - fixture: fixtures/config-var-list-release.http
+        expect: credential
+        resource: shop-api
+
+  - id: heroku.config-var.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/config-vars" } }
+    class: credential
+    when:
+      - if: { arg: body, present: true }
+        class: credential
+      - if: { arg: body, present: true }
+        class: irreversible
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Set or unset config vars of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Config vars are where Heroku apps keep their secrets, so setting one is credential. A null
+      value deletes the var and the keys are arbitrary, so every request is treated as both. Heroku
+      keeps each release's config vars (readable with list-release, restorable by rollback), which
+      would make an unset recoverable; the stricter class is kept because a rollback also reverts
+      code and other vars.
+    tests:
+      - fixture: fixtures/config-var-update.http
+        expect: credential
+        resource: shop-api
+      - fixture: fixtures/config-var-update.http
+        expect: irreversible
+        resource: shop-api

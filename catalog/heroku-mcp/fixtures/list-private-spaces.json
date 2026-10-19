@@ -1,0 +1,7 @@
+{
+  "description": "List Private Spaces",
+  "tool": "list_private_spaces",
+  "arguments": {
+    "json": true
+  }
+}

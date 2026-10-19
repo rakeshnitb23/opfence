@@ -1,0 +1,66 @@
+# Heroku Platform API: add-on
+operations:
+  - id: heroku.add-on.create
+    match: { rest: { method: POST, path: "/apps/{app_id_or_name}/addons" } }
+    class: money
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Provision add-on {body.plan} for app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Most add-on plans are billed and the plan's price is not in the request, so every create is
+      money.
+    tests:
+      - fixture: fixtures/add-on-create.http
+        expect: money
+        resource: shop-api
+
+  - id: heroku.add-on.update
+    match: { rest: { method: PATCH, path: "/apps/{app_id_or_name}/addons/{add_on_id_or_name}" } }
+    class: money
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change add-on {add_on_id_or_name} of app {app_id_or_name} to plan {body.plan}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Changes the billed plan.
+    tests:
+      - fixture: fixtures/add-on-update.http
+        expect: money
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on.delete
+    match: { rest: { method: DELETE, path: "/apps/{app_id_or_name}/addons/{add_on_id_or_name}" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Delete add-on {add_on_id_or_name} of app {app_id_or_name} and its data"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Deprovisions the add-on. For data add-ons (heroku-postgresql, heroku-redis, Kafka) the data
+      goes with it, and the request does not say which service the add-on is, so every delete is
+      irreversible.
+    tests:
+      - fixture: fixtures/add-on-delete.http
+        expect: irreversible
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on.resolve
+    match: { rest: { method: POST, path: "/actions/addons/resolve" } }
+    class: read
+    card: "Look up add-on {body.addon}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      A lookup by name; returns the add-on without config values.
+    tests:
+      - fixture: fixtures/add-on-resolve.http
+        expect: read

@@ -1,0 +1,8 @@
+# description: Create Private Space acme-prod for team acme
+POST /spaces HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"name":"acme-prod","team":"acme","region":"virginia","shield":false}

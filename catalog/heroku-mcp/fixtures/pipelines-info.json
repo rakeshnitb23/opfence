@@ -1,0 +1,7 @@
+{
+  "description": "Show pipeline shop",
+  "tool": "pipelines_info",
+  "arguments": {
+    "pipeline": "shop"
+  }
+}

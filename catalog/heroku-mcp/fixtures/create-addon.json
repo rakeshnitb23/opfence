@@ -1,0 +1,8 @@
+{
+  "description": "Provision add-on heroku-postgresql:essential-0 for app shop-api",
+  "tool": "create_addon",
+  "arguments": {
+    "app": "shop-api",
+    "serviceAndPlan": "heroku-postgresql:essential-0"
+  }
+}

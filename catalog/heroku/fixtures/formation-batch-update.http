@@ -1,0 +1,8 @@
+# description: Scale or resize the dynos of app shop-api
+PATCH /apps/shop-api/formation HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"updates":[{"type":"web","quantity":4,"size":"performance-l"}]}

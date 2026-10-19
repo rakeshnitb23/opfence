@@ -1,0 +1,8 @@
+# description: Attach add-on postgresql-shaped-48213 to app shop-worker
+POST /addon-attachments HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"addon":"postgresql-shaped-48213","app":"shop-worker","name":"DATABASE"}

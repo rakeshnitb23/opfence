@@ -1,0 +1,15 @@
+# Heroku Platform API: pipeline-transfer
+operations:
+  - id: heroku.pipeline-transfer.create
+    match: { rest: { method: POST, path: "/pipeline-transfers" } }
+    class: access
+    resource: { arg: body.pipeline.id, kind: pipeline }
+    card: "Transfer pipeline {body.pipeline.id} to {body.new_owner.id}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    tests:
+      - fixture: fixtures/pipeline-transfer-create.http
+        expect: access
+        resource: 9c8b7a6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d

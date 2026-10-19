@@ -1,0 +1,62 @@
+# Heroku MCP server (@heroku/mcp-server): pipelines
+operations:
+  - id: heroku-mcp.pipelines.pipelines-create
+    match: { mcp: { tool: pipelines_create } }
+    class: write
+    resource: { arg: name, kind: pipeline }
+    card: "Create pipeline {name} with app {app} as {stage}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/pipelines.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/pipelines-create.json
+        expect: write
+        resource: shop
+
+  - id: heroku-mcp.pipelines.pipelines-promote
+    match: { mcp: { tool: pipelines_promote } }
+    class: write
+    resource: { arg: app, kind: app }
+    card: "Promote app {app} to {to}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/pipelines.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    notes: >-
+      Deploys the source app's slug to the downstream apps (often production); they keep their
+      earlier releases.
+    tests:
+      - fixture: fixtures/pipelines-promote.json
+        expect: write
+        resource: shop-api-staging
+
+  - id: heroku-mcp.pipelines.pipelines-list
+    match: { mcp: { tool: pipelines_list } }
+    class: read
+    card: "List pipelines"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/pipelines.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/pipelines-list.json
+        expect: read
+
+  - id: heroku-mcp.pipelines.pipelines-info
+    match: { mcp: { tool: pipelines_info } }
+    class: read
+    resource: { arg: pipeline, kind: pipeline }
+    card: "Show pipeline {pipeline}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/tools/pipelines.ts
+      - https://github.com/heroku/heroku-mcp-server/blob/main/src/index.ts
+    tests:
+      - fixture: fixtures/pipelines-info.json
+        expect: read
+        resource: shop

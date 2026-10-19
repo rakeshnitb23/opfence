@@ -1,0 +1,8 @@
+# description: Scale the web dynos of app shop-api
+PATCH /apps/shop-api/formation/web HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"quantity":3,"dyno_size":{"name":"standard-2x"}}

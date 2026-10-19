@@ -1,0 +1,8 @@
+# description: Change the config values of add-on postgresql-shaped-48213
+PATCH /addons/postgresql-shaped-48213/config HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"config":[{"name":"URL","value":"postgres://u:p@db.example.com/d"}]}

@@ -1,0 +1,33 @@
+# Heroku Platform API: add-on-config
+operations:
+  - id: heroku.add-on-config.list
+    match: { rest: { method: GET, path: "/addons/{add_on_id_or_name}/config" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read the config values of add-on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Add-on partner API; returns each config item's value (connection URLs with passwords).
+    tests:
+      - fixture: fixtures/add-on-config-list.http
+        expect: credential
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on-config.update
+    match: { rest: { method: PATCH, path: "/addons/{add_on_id_or_name}/config" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change the config values of add-on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Add-on partner API; sets the values attached apps see as config vars (connection strings).
+    tests:
+      - fixture: fixtures/add-on-config-update.http
+        expect: credential
+        resource: postgresql-shaped-48213

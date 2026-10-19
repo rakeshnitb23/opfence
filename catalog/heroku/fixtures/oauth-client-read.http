@@ -1,0 +1,5 @@
+# description: Show OAuth client 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d with its secret
+GET /oauth/clients/2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d HTTP/1.1
+Host: api.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3

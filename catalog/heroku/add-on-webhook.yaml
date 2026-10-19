@@ -1,0 +1,73 @@
+# Heroku Platform API: add-on-webhook
+operations:
+  - id: heroku.add-on-webhook.create
+    match: { rest: { method: POST, path: "/addons/{add_on_id_or_name}/webhooks" } }
+    class: access
+    when:
+      - if: { arg: body.url, present: true }
+        class: access
+      - if: { arg: body.url, present: true }
+        class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Send add-on events of {add_on_id_or_name} to {body.url}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Sends events about the add-on to an outside URL (access). The request may set the signing
+      secret and an Authorization header value, and Heroku's webhook docs say a secret it generates
+      is returned on create, so it is credential too (url is required, so both conditions hold for
+      every valid request).
+    tests:
+      - fixture: fixtures/add-on-webhook-create.http
+        expect: access
+        resource: postgresql-shaped-48213
+      - fixture: fixtures/add-on-webhook-create.http
+        expect: credential
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on-webhook.update
+    match: { rest: { method: PATCH, path: "/addons/{add_on_id_or_name}/webhooks/{app_webhook_id}" } }
+    class: access
+    when:
+      - if: { arg: body.secret, present: true }
+        class: credential
+      - if: { arg: body.authorization, present: true }
+        class: credential
+      - if: { arg: body.secret, present: true }
+        class: access
+      - if: { arg: body.authorization, present: true }
+        class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change webhook {app_webhook_id} of add-on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can point the events at another URL (access); setting secret or authorization sets a secret.
+    tests:
+      - fixture: fixtures/add-on-webhook-update.http
+        expect: access
+        resource: postgresql-shaped-48213
+      - fixture: fixtures/add-on-webhook-update-secret.http
+        expect: credential
+        resource: postgresql-shaped-48213
+
+  - id: heroku.add-on-webhook.delete
+    match: { rest: { method: DELETE, path: "/addons/{add_on_id_or_name}/webhooks/{app_webhook_id}" } }
+    class: delete
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Delete webhook {app_webhook_id} of add-on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-19
+    sources:
+      - https://github.com/heroku/heroku-go/blob/master/v6/schema.json
+    notes: >-
+      Can be created again; Heroku keeps no copy of its secret, but the receiver's copy can be
+      reused.
+    tests:
+      - fixture: fixtures/add-on-webhook-delete.http
+        expect: delete
+        resource: postgresql-shaped-48213

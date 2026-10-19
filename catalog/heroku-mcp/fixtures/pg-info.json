@@ -1,0 +1,7 @@
+{
+  "description": "Show the Postgres databases of app shop-api",
+  "tool": "pg_info",
+  "arguments": {
+    "app": "shop-api"
+  }
+}
