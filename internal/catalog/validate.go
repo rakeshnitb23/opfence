@@ -16,7 +16,7 @@ import (
 var (
 	providerIDRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
 	ruleIDRe     = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$`)
-	hostRe       = regexp.MustCompile(`^(\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$`)
+	hostRe       = regexp.MustCompile(`^(\*\.|[a-z0-9]([a-z0-9-]*[a-z0-9])?\.\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$`)
 	graphqlName  = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
 	headerNameRe = regexp.MustCompile("^[!#$%&'*+.^_`|~0-9A-Za-z-]+$")
 	envNameRe    = regexp.MustCompile(`^[A-Z_][A-Z0-9_]*$`)
@@ -56,11 +56,11 @@ func (l *loader) validateProviders(c *Catalog) {
 		l.validateProvider(p, hostOwner, mcpNameOwner)
 	}
 	for h, owner := range hostOwner {
-		if !strings.HasPrefix(h, "*.") {
+		if !strings.Contains(h, "*") {
 			continue
 		}
 		for other, otherOwner := range hostOwner {
-			if otherOwner != owner && strings.HasSuffix(other, h[1:]) {
+			if otherOwner != owner && (HostMatches(h, hostSample(other)) || HostMatches(other, hostSample(h))) {
 				l.addf(path.Join(owner, ProviderFile), 0, "host %q overlaps %q claimed by provider %s", h, other, otherOwner)
 			}
 		}
@@ -147,7 +147,7 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 	}
 	for _, h := range p.Hosts {
 		if !hostRe.MatchString(h) {
-			l.addf(file, 0, "host %q must be a lower-case DNS name, optionally starting with *.", h)
+			l.addf(file, 0, "host %q must be a lower-case DNS name, optionally starting with *. or with one label and .*.", h)
 			continue
 		}
 		if prev, ok := hostOwner[h]; ok {
@@ -157,9 +157,22 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 		}
 	}
 	for _, h := range p.Git {
-		if !slices.Contains(p.Hosts, h) || strings.HasPrefix(h, "*.") {
+		if !slices.Contains(p.Hosts, h) || strings.Contains(h, "*") {
 			l.addf(file, 0, "git host %q must be one of the provider's hosts, without a wildcard", h)
 		}
+	}
+	seenPorts := map[int]bool{}
+	for _, port := range p.DatabasePorts {
+		switch {
+		case port < 1 || port > 65535 || port == 443:
+			l.addf(file, 0, "database_ports: %d must be a port from 1 to 65535 other than 443, which Opfence inspects", port)
+		case seenPorts[port]:
+			l.addf(file, 0, "database_ports lists %d twice", port)
+		}
+		seenPorts[port] = true
+	}
+	if len(p.DatabasePorts) > 0 && len(p.Hosts) == 0 {
+		l.addf(file, 0, "database_ports needs hosts")
 	}
 	for _, g := range p.GraphQL {
 		if !strings.HasPrefix(g, "/") {

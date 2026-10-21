@@ -1,0 +1,11 @@
+# description: A transaction() batch asked to be read-only that empties a table
+POST /sql HTTP/1.1
+Host: api.eu-central-1.aws.neon.tech
+Neon-Connection-String: postgresql://neondb_owner:npg_EXAMPLE@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
+Neon-Raw-Text-Output: true
+Neon-Array-Mode: true
+Neon-Batch-Read-Only: true
+Neon-Batch-Isolation-Level: Serializable
+Content-Type: text/plain;charset=UTF-8
+
+{"queries":[{"query":"SELECT count(*) FROM sessions","params":[]},{"query":"DELETE FROM sessions","params":[]}]}

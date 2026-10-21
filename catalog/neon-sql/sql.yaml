@@ -1,0 +1,33 @@
+# Neon serverless driver: SQL over HTTP on api.<region>.neon.tech
+operations:
+  - id: neon-sql.query.run
+    match: { rest: { method: POST, path: "/sql" } }
+    class: unknown
+    classify: { sql: [body.query, body.queries.query] }
+    card: "Run SQL on a Neon database over HTTP"
+    status: verified
+    verified: 2026-10-21
+    sources:
+      - https://github.com/neondatabase/serverless/blob/main/src/http/index.ts
+      - https://github.com/neondatabase/serverless/blob/main/src/shims/net/index.ts
+    notes: >-
+      neon() posts {"query", "params"}, and transaction() posts {"queries": [{"query",
+      "params"}, ...]}, run as one transaction. Every statement is classified as Postgres;
+      parameters ($1) are values, never SQL. The Neon-Batch-Read-Only header asks for a read-only
+      transaction, but a statement can switch the transaction back before its first query, so the
+      SQL decides the class, not the header. The database is named only in the
+      Neon-Connection-String header, which also carries the password, so the rule names no
+      resource and the operation counts as production.
+    tests:
+      - fixture: fixtures/query-read.http
+        expect: read
+      - fixture: fixtures/query-delete.http
+        expect: delete
+      - fixture: fixtures/query-drop.http
+        expect: irreversible
+      - fixture: fixtures/transaction.http
+        expect: irreversible
+      - fixture: fixtures/transaction-read.http
+        expect: read
+      - fixture: fixtures/query-unparsed.http
+        expect: unknown

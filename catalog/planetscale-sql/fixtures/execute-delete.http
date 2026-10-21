@@ -1,0 +1,8 @@
+# description: Delete one order through PlanetScale's database-js
+POST /psdb.v1alpha1.Database/Execute HTTP/1.1
+Host: gcp.connect.psdb.cloud
+Authorization: Basic cjhtMmsxeGV4YW1wbGU6cHNjYWxlX3B3X0VYQU1QTEU=
+User-Agent: database-js/1.19.0
+Content-Type: application/json
+
+{"query":"DELETE FROM orders WHERE id = 1042","session":null}

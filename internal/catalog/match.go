@@ -11,7 +11,7 @@ import (
 )
 
 // ProviderForHost returns the provider that owns host (lower case, no
-// port): an exact host first, then the longest matching wildcard.
+// port): an exact host first, then the longest matching pattern.
 func (c *Catalog) ProviderForHost(host string) *Provider {
 	var best *Provider
 	bestLen := 0
@@ -20,12 +20,36 @@ func (c *Catalog) ProviderForHost(host string) *Provider {
 			if h == host {
 				return p
 			}
-			if strings.HasPrefix(h, "*.") && strings.HasSuffix(host, h[1:]) && len(h) > bestLen {
+			if strings.Contains(h, "*") && HostMatches(h, host) && len(h) > bestLen {
 				best, bestLen = p, len(h)
 			}
 		}
 	}
 	return best
+}
+
+// HostMatches reports whether a catalog host pattern matches host. A
+// pattern is an exact name, *.suffix (any name under suffix), or
+// label.*.suffix: a name that starts with label and ends under suffix with
+// at least one label between, so api.*.neon.tech matches
+// api.us-east-2.aws.neon.tech and not ep-1.us-east-2.aws.neon.tech.
+func HostMatches(pattern, host string) bool {
+	if pattern == host {
+		return true
+	}
+	if suffix, ok := strings.CutPrefix(pattern, "*."); ok {
+		return strings.HasSuffix(host, "."+suffix)
+	}
+	if label, suffix, ok := strings.Cut(pattern, ".*."); ok {
+		return strings.HasPrefix(host, label+".") && strings.HasSuffix(host, "."+suffix) &&
+			len(host) > len(label)+len(suffix)+2
+	}
+	return false
+}
+
+// hostSample returns a name a host pattern matches, for overlap checks.
+func hostSample(pattern string) string {
+	return strings.Replace(pattern, "*", "x", 1)
 }
 
 // ProviderForMCPName returns the MCP provider users commonly name name.

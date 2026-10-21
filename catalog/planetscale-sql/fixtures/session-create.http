@@ -1,0 +1,8 @@
+# description: Start a database-js session
+POST /psdb.v1alpha1.Database/CreateSession HTTP/1.1
+Host: aws.connect.psdb.cloud
+Authorization: Basic cjhtMmsxeGV4YW1wbGU6cHNjYWxlX3B3X0VYQU1QTEU=
+User-Agent: database-js/1.19.0
+Content-Type: application/json
+
+{}

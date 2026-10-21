@@ -65,12 +65,14 @@ flowchart LR
   S13 --> S15["15 Catalog drift check"]
   S13 --> S16["16 MySQL + SQLite"]
   S5 --> S17["17 Fast hook"]
+  S16 --> S18["18 SQL over HTTP"]
   S11 --> V1(["v1.0 ready (after external review)"])
   S12 --> V1
   S14 --> V1
   S15 --> V1
   S16 --> V1
   S17 --> V1
+  S18 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -93,6 +95,7 @@ flowchart LR
 | 15 | Catalog drift check | `opfence catalog check-sources` compares rules with providers' published schemas; nightly job | A renamed or removed operation fails the job | done |
 | 16 | MySQL and SQLite | SQL classifiers for MySQL (Vitess) and SQLite (libSQL, D1), `classify.dialect`, libSQL HTTP bodies | D1, Turso and PlanetScale reads are reads; every Postgres case keeps its class; each dialect's lexing traps tested; fuzzers clean | done |
 | 17 | Fast hook | The hook loads provider metadata and only the rules of the provider a call reaches | Hook decisions identical to a full load for every MCP fixture; the hook reads one provider's rule files; a hook call well under 100 ms | done |
+| 18 | SQL over HTTP | Neon's serverless driver and PlanetScale's database-js decided by their SQL; `label.*.suffix` host patterns; `database_ports` | A `SELECT` sent by either driver is a read and a `DROP` irreversible; Postgres, MySQL and Neon's WebSocket connections behave as before in both modes | done |
 
 v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
@@ -249,4 +252,18 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 - **Tests:** every provider's lazily loaded rules equal a full load's, compiled templates and conditions included; all 6,389 fixtures pass through a lazily loaded catalog; 2,062 MCP tool calls from the fixtures get byte-identical output from the Claude Code hook either way; a counting file system shows a lazy load opens only `provider.yaml` files and `LoadRules` only its provider's rule files; a provider that fails to load blocks both hooks; concurrent `LoadRules` and `Rule` calls pass the race detector.
 - **Changed from the plan:** none. A lazy load also skips the second YAML parse that only recovered line numbers, which halves the cost of the provider it does parse.
 - **Follow-ups:** the proxy and `explain` still parse the whole catalog once per start (about 600 ms), which only matters at startup; if it ever does, the same split allows loading providers there on first request.
+
+**Stage 18 · SQL over HTTP (plan, 21 Oct 2026).** Apps on Neon and PlanetScale often reach their database over HTTPS rather than its own protocol: Neon's serverless driver (`@neondatabase/serverless`) posts `{query, params}`, or a transaction as `{queries: [...]}`, to `https://api.<region host>/sql` (`apiauth.` when it sends a JWT), with the connection string in a `Neon-Connection-String` header; PlanetScale's `database-js` posts `{query, session}` to `https://<region>.connect.psdb.cloud/psdb.v1alpha1.Database/Execute` with Basic auth. Neither host is in the catalog, so an agent running such code is refused in strict mode and passes unread in open mode, while stage 16 can now read both dialects. The plan, read from both libraries' source (serverless at 54d963f, database-js at a1aac0b):
+- **Providers:** `neon-sql` (`POST /sql`, Postgres, from `body.query` or `body.queries[].query`) and `planetscale-sql` (`Execute`, MySQL, from `body.query`; `CreateSession` a read). Separate from `neon` and `planetscale`, whose hosts, auth and published schemas are the control-plane APIs. Anything else on these hosts is unknown.
+- **Host patterns** gain `label.*.suffix`: `api.*.neon.tech` matches `api.us-east-2.aws.neon.tech` and `api.c-2.us-east-2.aws.neon.tech` but not `ep-cool-darkness-123456.us-east-2.aws.neon.tech`, the database host that serves Postgres on 5432 and Neon's WebSocket transport on 443. Taking `*.neon.tech` would have refused both, because the proxy refuses anything but HTTPS to a catalog host and blocks protocol upgrades. Matching, overlap checks, the CA's name constraints (`neon.tech`) and the OpenShell export (which leaves such hosts out, with a note) learn the form.
+- **`database_ports`:** PlanetScale serves MySQL on 3306 from the same hosts as `database-js`. A provider may list ports where its hosts speak a database's own protocol, which Opfence cannot read; connections to them are handled as for hosts outside the catalog (open mode tunnels them, strict mode refuses them unless the user's config lists the host under passthrough), exactly as today. Every other port of a catalog host is still refused.
+- **Credentials stay as they are:** the database passwords travel in a header or in Basic auth, and the same passwords serve the database's own protocol, which does not go through Opfence; turning them into placeholders would break those connections. The rules decide the SQL; key hiding for database URLs is a later stage. Without a resource argument these operations count as production, like any unmapped operation.
+- **Tests:** fixtures built from each driver's request code (a read, a limited delete, a `DROP`, a transaction, Neon's batch with `Neon-Batch-Read-Only`, unparsable SQL, `CreateSession`); host matching and overlap tables for the new pattern; proxy tests that a `database_ports` port tunnels in open mode, is refused in strict mode unless passthrough, and that another port of the same host is still refused; a Neon `ep-` host is untouched.
+- **Plan review:** serves PLAN.md's dropped-database story for the two databases agents reach most from app code; stays within ARCHITECTURE's model (catalog hosts are inspected over HTTPS, everything else follows mode and passthrough). Risk: an unlisted Neon host form (another region naming) stays outside the catalog, which is today's behavior, not a hole. Risk: the CA's name constraints widen to `neon.tech` and `psdb.cloud`, so the next `opfence run` makes and asks to trust a new CA, as each stage that added providers did.
+
+**Stage 18 · SQL over HTTP (done 21 Oct 2026).** Providers `neon-sql` (`POST /sql` on `api.*.neon.tech` and `apiauth.*.neon.tech`, Postgres) and `planetscale-sql` (`Execute` and `CreateSession` on `*.connect.psdb.cloud`, MySQL, `database_ports: [3306]`), the `label.*.suffix` host form, and `database_ports`: 45 providers and 5,773 rules, 12 fixtures new.
+- **Run with the real drivers.** `@neondatabase/serverless` 1.2.0 and `@planetscale/database` 2.0.0, with fake credentials, through `opfence proxy` in strict mode: both drivers' `SELECT`s were allowed and reached the real Neon and PlanetScale APIs (which refused the fake passwords), and Neon's `DROP TABLE`, a `transaction()` marked read-only that held a `DELETE` without `WHERE`, and PlanetScale's `DROP TABLE` were blocked before leaving the machine. The audit log named each rule and class and held neither password.
+- **Tests:** host-pattern matching (including `api.neon.tech`, `apiauth.` against `api.*`, and look-alike suffixes), lookups for the new hosts and for `ep-` database hosts (outside the catalog), validation and schema cases for both new fields, the CA's name constraints (`neon.tech`), the OpenShell export leaving pattern hosts out with a note, and a proxy test that 3306 on a PlanetScale host is refused in strict mode, tunnelled with passthrough and in open mode, that 8443 is still refused, and that HTTPS there is still decided.
+- **Changed from the plan:** none. The proxy test's fake dialer now sends only port 443 of catalog hosts to the fake API, since other ports can now be tunnelled.
+- **Follow-ups:** environments for these operations, read from the database host in the connection string or credentials without exposing the password; holding database passwords as placeholders where every client goes through Opfence; Neon's WebSocket transport and the databases' own protocols remain unread (LIMITS).
 

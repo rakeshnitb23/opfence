@@ -487,3 +487,28 @@ func TestGlobsOverlap(t *testing.T) {
 		}
 	}
 }
+
+// OpenShell's host patterns may only start with *., so a provider whose
+// hosts are label.*.suffix patterns is left out of the policy, with a note.
+func TestOpenShellLeavesOutMidWildcardHosts(t *testing.T) {
+	m := fstest.MapFS{
+		"sqlhttp/provider.yaml": {Data: []byte("provider: sqlhttp\ntitle: SQL over HTTP\nhosts: [\"api.*.db.example\"]\n")},
+		"sqlhttp/r.yaml": {Data: []byte("operations:\n  - id: sqlhttp.query.run\n    match: { rest: { method: POST, path: /sql } }\n" +
+			"    class: unknown\n    classify: { sql: body.query }\n    card: Run SQL\n    status: community\n")},
+	}
+	c, err := catalog.Load(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := OpenShell(c, nil, policy.Production)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(out)
+	if strings.Contains(s, "opfence_sqlhttp:") || strings.Contains(s, "host: api.*.db.example") {
+		t.Fatalf("a mid-wildcard host was exported:\n%s", s)
+	}
+	if !strings.Contains(s, "Hosts not exported: api.*.db.example") {
+		t.Fatalf("no note about the host:\n%s", s)
+	}
+}

@@ -167,7 +167,7 @@ func newEnv(t *testing.T, o opts) *env {
 		host, port, _ := net.SplitHostPort(addr)
 		target := e.echoAddr
 		switch {
-		case cat.ProviderForHost(host) != nil:
+		case cat.ProviderForHost(host) != nil && port == "443":
 			target = api.Listener.Addr().String()
 		case port == "443":
 			target = e.tlsEcho
@@ -549,6 +549,51 @@ func TestStrictOpenAndPassthrough(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("audit missing %q in:\n%s", want, got)
 		}
+	}
+}
+
+// A catalog host's database ports (PlanetScale's MySQL on 3306) carry a
+// protocol Opfence cannot read, so they keep the handling of hosts outside
+// the catalog; its other ports are still refused, and HTTPS is still
+// intercepted.
+func TestDatabasePorts(t *testing.T) {
+	const host = "aws.connect.psdb.cloud"
+	strict := newEnv(t, opts{})
+	if c, code := connect(t, strict.httpAddr, host+":3306"); code != http.StatusForbidden {
+		t.Fatalf("strict: %s:3306 got %d", host, code)
+	} else {
+		c.Close()
+	}
+	listed := newEnv(t, opts{passthrough: []string{host}})
+	c, code := connect(t, listed.httpAddr, host+":3306")
+	if code != 200 || !echoes(c) {
+		t.Fatalf("strict with %s under passthrough: %d", host, code)
+	}
+	c.Close()
+	open := newEnv(t, opts{mode: "open"})
+	c, code = connect(t, open.httpAddr, host+":3306")
+	if code != 200 || !echoes(c) {
+		t.Fatalf("open: %s:3306 got %d", host, code)
+	}
+	c.Close()
+	for _, e := range []*env{strict, listed, open} {
+		if c, code := connect(t, e.httpAddr, host+":8443"); code != http.StatusForbidden {
+			t.Fatalf("%s:8443, not a database port, got %d", host, code)
+		} else {
+			c.Close()
+		}
+	}
+	// Port 443 is still Opfence's: a query is decided, not tunnelled.
+	resp, body := post(t, open.client(false), "https://"+host+"/psdb.v1alpha1.Database/Execute", `{"query":"DROP TABLE orders","session":null}`)
+	if resp.StatusCode != http.StatusForbidden || open.hits.Load() != 0 || !strings.Contains(body, "planetscale-sql.query.execute") {
+		t.Fatalf("DROP TABLE over HTTPS: status %d, upstream hits %d, body %s", resp.StatusCode, open.hits.Load(), body)
+	}
+	var tunnelled []string
+	for _, en := range listed.entries() {
+		tunnelled = append(tunnelled, en.Outcome+": "+en.Host+":"+en.Port+": "+en.Reason)
+	}
+	if got := strings.Join(tunnelled, "\n"); !strings.Contains(got, "tunneled: "+host+":3306: passthrough") {
+		t.Errorf("audit:\n%s", got)
 	}
 }
 

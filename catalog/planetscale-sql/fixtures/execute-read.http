@@ -1,0 +1,8 @@
+# description: Read rows through PlanetScale's database-js
+POST /psdb.v1alpha1.Database/Execute HTTP/1.1
+Host: aws.connect.psdb.cloud
+Authorization: Basic cjhtMmsxeGV4YW1wbGU6cHNjYWxlX3B3X0VYQU1QTEU=
+User-Agent: database-js/1.19.0
+Content-Type: application/json
+
+{"query":"SELECT `id`, `email` FROM `users` WHERE `id` = 42","session":null}

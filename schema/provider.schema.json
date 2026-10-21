@@ -11,11 +11,18 @@
     "docs": { "type": "string", "pattern": "^https://" },
     "hosts": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^(\\*\\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$" },
-      "uniqueItems": true
+      "items": { "type": "string", "pattern": "^(\\*\\.|[a-z0-9]([a-z0-9-]*[a-z0-9])?\\.\\*\\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$" },
+      "uniqueItems": true,
+      "description": "Exact names, *.suffix (any name under suffix) or label.*.suffix (a name that starts with label and ends under suffix)"
     },
     "graphql": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that carry GraphQL" },
     "sigv4": { "type": "boolean", "description": "Requests are AWS SigV4-signed" },
+    "database_ports": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 1, "maximum": 65535, "not": { "const": 443 } },
+      "uniqueItems": true,
+      "description": "Ports where the hosts speak a database's own protocol, which Opfence cannot read; the proxy handles them like hosts outside the catalog"
+    },
     "git": {
       "type": "array",
       "items": { "type": "string", "pattern": "^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$" },

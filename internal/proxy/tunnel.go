@@ -151,11 +151,14 @@ func (s *Server) refused(host, port, reason string) {
 // session for an API (on a shared CDN that would reach the API uninspected),
 // and a tunnel to an IP address is decided by its server name and dials that
 // name. Other ports are tunnelled by name without inspection, for hosts the
-// user listed under passthrough or in open mode.
+// user listed under passthrough or in open mode. A catalog host is refused
+// on any other port, except a port where its provider says it speaks a
+// database's own protocol (database_ports), which is handled like a host
+// outside the catalog.
 func (s *Server) routeTunnel(c net.Conn, host, port string, hs handshake) {
 	defer c.Close()
 	isIP := net.ParseIP(host) != nil
-	catalog := !isIP && s.isCatalogHost(host)
+	catalog := !isIP && s.isCatalogHost(host) && !s.databasePort(host, port)
 	refuse := func(reason string) {
 		s.refused(host, port, reason)
 		_ = hs.refuse(reason)
