@@ -1,0 +1,106 @@
+# Heroku Data API (api.data.heroku.com), database maintenance: /data/maintenances/v1.
+# Read from the Heroku CLI (heroku/cli at 65ca0bc, heroku-cli-util at 0ec7cba),
+# its only published client; the API has no published schema.
+operations:
+  - id: heroku.data-maintenance.list-for-app
+    match: { rest: { method: GET, path: "/data/maintenances/v1/apps/{app_id_or_name}" } }
+    class: read
+    resource: { arg: app_id_or_name, kind: app }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/index.ts
+    tests:
+      - fixture: fixtures/data-maintenance-list-for-app.http
+        expect: read
+        resource: "shop-api"
+
+  - id: heroku.data-maintenance.read
+    match: { rest: { method: GET, path: "/data/maintenances/v1/{add_on_id_or_name}" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/info.ts
+    tests:
+      - fixture: fixtures/data-maintenance-read.http
+        expect: read
+        resource: "postgresql-shaped-48213"
+
+  - id: heroku.data-maintenance.history
+    match: { rest: { method: GET, path: "/data/maintenances/v1/{add_on_id_or_name}/history" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/history.ts
+    tests:
+      - fixture: fixtures/data-maintenance-history.http
+        expect: read
+        resource: "postgresql-shaped-48213"
+
+  - id: heroku.data-maintenance.run
+    match: { rest: { method: POST, path: "/data/maintenances/v1/{add_on_id_or_name}/run" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Run maintenance on {add_on_id_or_name} now"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/run.ts
+    notes: >-
+      Restarts or fails over the database now instead of in its window.
+    tests:
+      - fixture: fixtures/data-maintenance-run.http
+        expect: write
+        resource: "postgresql-shaped-48213"
+
+  - id: heroku.data-maintenance.schedule
+    match: { rest: { method: POST, path: "/data/maintenances/v1/{add_on_id_or_name}/schedule" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Schedule maintenance on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/schedule.ts
+    tests:
+      - fixture: fixtures/data-maintenance-schedule.http
+        expect: write
+        resource: "postgresql-shaped-48213"
+
+  - id: heroku.data-maintenance.read-window
+    match: { rest: { method: GET, path: "/data/maintenances/v1/{add_on_id_or_name}/window" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/window/index.ts
+    tests:
+      - fixture: fixtures/data-maintenance-read-window.http
+        expect: read
+        resource: "postgresql-shaped-48213"
+
+  - id: heroku.data-maintenance.update-window
+    match: { rest: { method: POST, path: "/data/maintenances/v1/{add_on_id_or_name}/window" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Move the maintenance window of {add_on_id_or_name} to {body.window}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/maintenances/window/update.ts
+    tests:
+      - fixture: fixtures/data-maintenance-update-window.http
+        expect: write
+        resource: "postgresql-shaped-48213"

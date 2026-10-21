@@ -1,0 +1,623 @@
+# Heroku Data API (api.data.heroku.com), Heroku Postgres (classic tiers): /client/v11 and /postgres/v0.
+# Read from the Heroku CLI (heroku/cli at 65ca0bc, heroku-cli-util at 0ec7cba),
+# its only published client; the API has no published schema.
+operations:
+  - id: heroku.data-postgres.list-transfers
+    match: { rest: { method: GET, path: "/client/v11/apps/{app_id_or_name}/transfers" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "List Postgres backups and copies of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/index.ts
+    notes: >-
+      Transfers carry from_url and to_url: the backup's storage URL and, for pg:copy, the database
+      URLs with their passwords. Reading secrets is credential.
+    tests:
+      - fixture: fixtures/data-postgres-list-transfers.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: heroku.data-postgres.read-transfer
+    match: { rest: { method: GET, path: "/client/v11/apps/{app_id_or_name}/transfers/{transfer}" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Read Postgres backup or copy {transfer} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/info.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/pg/backups.ts
+    notes: >-
+      Transfers carry from_url and to_url: the backup's storage URL and, for pg:copy, the database
+      URLs with their passwords. Reading secrets is credential.
+    tests:
+      - fixture: fixtures/data-postgres-read-transfer.http
+        expect: credential
+        resource: "shop-api"
+      - fixture: fixtures/data-postgres-read-transfer-verbose.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: heroku.data-postgres.delete-transfer
+    match: { rest: { method: DELETE, path: "/client/v11/apps/{app_id_or_name}/transfers/{transfer}" } }
+    class: irreversible
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Delete Postgres backup {transfer} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/delete.ts
+    notes: >-
+      A deleted backup cannot be recovered.
+    tests:
+      - fixture: fixtures/data-postgres-delete-transfer.http
+        expect: irreversible
+        resource: "shop-api"
+
+  - id: heroku.data-postgres.cancel-transfer
+    match: { rest: { method: POST, path: "/client/v11/apps/{app_id_or_name}/transfers/{transfer}/actions/cancel" } }
+    class: write
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Cancel Postgres backup or copy {transfer} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/cancel.ts
+    tests:
+      - fixture: fixtures/data-postgres-cancel-transfer.http
+        expect: write
+        resource: "shop-api"
+
+  - id: heroku.data-postgres.transfer-public-url
+    match: { rest: { method: POST, path: "/client/v11/apps/{app_id_or_name}/transfers/{transfer}/actions/public-url" } }
+    class: credential
+    resource: { arg: app_id_or_name, kind: app }
+    card: "Create a download link for Postgres backup {transfer} of app {app_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/url.ts
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/download.ts
+    notes: >-
+      Returns a signed URL that lets anyone download the backup, the whole database, for a while.
+    tests:
+      - fixture: fixtures/data-postgres-transfer-public-url.http
+        expect: credential
+        resource: "shop-api"
+
+  - id: heroku.data-postgres.read
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read Postgres database {add_on_id_or_name}, with its password"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/info.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/pg/types.ts
+    notes: >-
+      The response includes database_password and resource_url, the connection URL with the
+      password, so pg:info and the commands that look a database up read its password.
+    tests:
+      - fixture: fixtures/data-postgres-read.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.capture-backup
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/backups" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Capture a backup of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/capture.ts
+    tests:
+      - fixture: fixtures/data-postgres-capture-backup.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.read-bastion
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/bastion" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read the bastion host and SSH key of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/heroku-cli-util/blob/main/src/utils/pg/bastion.ts
+    notes: >-
+      Returns the private key of the bastion that reaches a database in a Private Space.
+    tests:
+      - fixture: fixtures/data-postgres-read-bastion.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.burst-status
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/burst_status" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/diagnose.ts
+    tests:
+      - fixture: fixtures/data-postgres-burst-status.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.metrics
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/metrics" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/diagnose.ts
+    tests:
+      - fixture: fixtures/data-postgres-metrics.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.attach-connection-pooling
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/connection-pooling" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Attach a connection pooler for Postgres database {add_on_id_or_name} to app {body.app}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/connection-pooling/attach.ts
+    notes: >-
+      Like attaching an add-on, it gives the app a config var with the pooler's URL and password.
+    tests:
+      - fixture: fixtures/data-postgres-attach-connection-pooling.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.kill-connections
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/connection_reset" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "End every connection to Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/killall.ts
+    notes: >-
+      Terminates every connection for every credential; open transactions roll back.
+    tests:
+      - fixture: fixtures/data-postgres-kill-connections.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.list-links
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/links" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/links/index.ts
+    tests:
+      - fixture: fixtures/data-postgres-list-links.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.create-link
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/links" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Link Postgres database {add_on_id_or_name} to {body.target}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/links/create.ts
+    notes: >-
+      Gives the database a foreign-data link, with credentials, to another Heroku Postgres or Redis
+      database, so whoever can query this one can read the other.
+    tests:
+      - fixture: fixtures/data-postgres-create-link.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.delete-link
+    match: { rest: { method: DELETE, path: "/client/v11/databases/{add_on_id_or_name}/links/{link}" } }
+    class: delete
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Remove link {link} from Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/links/destroy.ts
+    tests:
+      - fixture: fixtures/data-postgres-delete-link.http
+        expect: delete
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.reset
+    match: { rest: { method: PUT, path: "/client/v11/databases/{add_on_id_or_name}/reset" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Reset Postgres database {add_on_id_or_name}, deleting all its data"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/reset.ts
+    notes: >-
+      pg:reset drops every table and all data in the database.
+    tests:
+      - fixture: fixtures/data-postgres-reset.http
+        expect: irreversible
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.restore
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/restores" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Restore a backup into Postgres database {add_on_id_or_name}, replacing its data"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/restore.ts
+    notes: >-
+      Replaces everything in the target database with the backup's contents.
+    tests:
+      - fixture: fixtures/data-postgres-restore.http
+        expect: irreversible
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.stats-reset
+    match: { rest: { method: PUT, path: "/client/v11/databases/{add_on_id_or_name}/stats_reset" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Reset the statistics of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/stats-reset.ts
+    notes: >-
+      Calls pg_stat_reset(): usage statistics start again from zero; no data changes.
+    tests:
+      - fixture: fixtures/data-postgres-stats-reset.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.list-backup-schedules
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/transfer-schedules" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/schedules.ts
+    tests:
+      - fixture: fixtures/data-postgres-list-backup-schedules.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.schedule-backups
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/transfer-schedules" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Schedule daily backups of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/schedule.ts
+    tests:
+      - fixture: fixtures/data-postgres-schedule-backups.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.unschedule-backups
+    match: { rest: { method: DELETE, path: "/client/v11/databases/{add_on_id_or_name}/transfer-schedules/{schedule}" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Stop scheduled backups {schedule} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/backups/unschedule.ts
+    notes: >-
+      Scheduled backups are the copy a later mistake is recovered from: turning off a safety net is
+      as dangerous as what it protects.
+    tests:
+      - fixture: fixtures/data-postgres-unschedule-backups.http
+        expect: irreversible
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.copy
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/transfers" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Copy {body.from_name} over {body.to_name}, replacing its data"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/copy.ts
+    notes: >-
+      pg:copy overwrites the target database with the source; the URLs carry passwords, so the card
+      names the databases instead.
+    tests:
+      - fixture: fixtures/data-postgres-copy.http
+        expect: irreversible
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.unfollow
+    match: { rest: { method: PUT, path: "/client/v11/databases/{add_on_id_or_name}/unfollow" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Stop follower {add_on_id_or_name} following its leader"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/unfollow.ts
+    notes: >-
+      The follower becomes a writable database; its data stays.
+    tests:
+      - fixture: fixtures/data-postgres-unfollow.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.upgrade-cancel
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/upgrade/cancel" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Postgres upgrade cancel for {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/upgrade/cancel.ts
+    tests:
+      - fixture: fixtures/data-postgres-upgrade-cancel.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.upgrade-dry-run
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/upgrade/dry_run" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Postgres upgrade dry run for {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/upgrade/dryrun.ts
+    tests:
+      - fixture: fixtures/data-postgres-upgrade-dry-run.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.upgrade-prepare
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/upgrade/prepare" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Postgres upgrade prepare for {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/upgrade/prepare.ts
+    tests:
+      - fixture: fixtures/data-postgres-upgrade-prepare.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.upgrade-run
+    match: { rest: { method: POST, path: "/client/v11/databases/{add_on_id_or_name}/upgrade/run" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Postgres upgrade run for {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/upgrade/run.ts
+    notes: >-
+      Major version upgrades keep the data, as RDS engine upgrades do.
+    tests:
+      - fixture: fixtures/data-postgres-upgrade-run.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.upgrade-status
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/upgrade/wait_status" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/upgrade/wait.ts
+    tests:
+      - fixture: fixtures/data-postgres-upgrade-status.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.wait-status
+    match: { rest: { method: GET, path: "/client/v11/databases/{add_on_id_or_name}/wait_status" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/wait.ts
+    tests:
+      - fixture: fixtures/data-postgres-wait-status.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.read-config
+    match: { rest: { method: GET, path: "/postgres/v0/databases/{add_on_id_or_name}/config" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/settings/index.ts
+    tests:
+      - fixture: fixtures/data-postgres-read-config.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.update-config
+    match: { rest: { method: PATCH, path: "/postgres/v0/databases/{add_on_id_or_name}/config" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change settings of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/pg/setter.ts
+    tests:
+      - fixture: fixtures/data-postgres-update-config.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.list-credentials
+    match: { rest: { method: GET, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "List the credentials of Postgres database {add_on_id_or_name}, with passwords"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/data/types.ts
+    notes: >-
+      Each credential comes with its users and their passwords.
+    tests:
+      - fixture: fixtures/data-postgres-list-credentials.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.create-credential
+    match: { rest: { method: POST, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Create credential {body.name} on Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/create.ts
+    notes: >-
+      A new database role that can log in.
+    tests:
+      - fixture: fixtures/data-postgres-create-credential.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.read-credential
+    match: { rest: { method: GET, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials/{credential}" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read credential {credential} of Postgres database {add_on_id_or_name}, with its password"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/url.ts
+    tests:
+      - fixture: fixtures/data-postgres-read-credential.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.delete-credential
+    match: { rest: { method: DELETE, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials/{credential}" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Destroy credential {credential} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/destroy.ts
+    notes: >-
+      Removes a database role and every login it had.
+    tests:
+      - fixture: fixtures/data-postgres-delete-credential.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.rotate-credential
+    match: { rest: { method: POST, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials/{credential}/credentials_rotation" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Rotate the password of credential {credential} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/rotate.ts
+    notes: >-
+      Sets a new password, a secret-store value; with forced, open connections end.
+    tests:
+      - fixture: fixtures/data-postgres-rotate-credential.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.rotate-credentials
+    match: { rest: { method: POST, path: "/postgres/v0/databases/{add_on_id_or_name}/credentials_rotation" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Rotate the passwords of every credential of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/rotate.ts
+    notes: >-
+      Sets new passwords, secret-store values; with forced, open connections end.
+    tests:
+      - fixture: fixtures/data-postgres-rotate-credentials.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres.repair-default-credential
+    match: { rest: { method: POST, path: "/postgres/v0/databases/{add_on_id_or_name}/repair-default" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Repair the default credential's permissions on Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/pg/credentials/repair-default.ts
+    notes: >-
+      Changes which objects the default role owns and can reach.
+    tests:
+      - fixture: fixtures/data-postgres-repair-default-credential.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"

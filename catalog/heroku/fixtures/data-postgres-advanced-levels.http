@@ -1,0 +1,6 @@
+# description: GET /data/postgres/v1/levels/advanced
+GET /data/postgres/v1/levels/advanced HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+

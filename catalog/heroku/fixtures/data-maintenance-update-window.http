@@ -1,0 +1,8 @@
+# description: Move the maintenance window of postgresql-shaped-48213 to Sundays 02:00
+POST /data/maintenances/v1/postgresql-shaped-48213/window HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"window": "Sundays 02:00"}

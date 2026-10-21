@@ -1,0 +1,469 @@
+# Heroku Data API (api.data.heroku.com), Heroku Postgres Advanced: /data/postgres/v1.
+# Read from the Heroku CLI (heroku/cli at 65ca0bc, heroku-cli-util at 0ec7cba),
+# its only published client; the API has no published schema.
+operations:
+  - id: heroku.data-postgres-advanced.levels
+    match: { rest: { method: GET, path: "/data/postgres/v1/levels/advanced" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/levels.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-levels.http
+        expect: read
+
+  - id: heroku.data-postgres-advanced.pricing
+    match: { rest: { method: GET, path: "/data/postgres/v1/pricing" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/utils.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-pricing.http
+        expect: read
+
+  - id: heroku.data-postgres-advanced.list-credentials
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/credentials" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "List the credentials of Postgres database {add_on_id_or_name}, with passwords"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/index.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/data/types.ts
+    notes: >-
+      Each credential comes with its roles and their passwords.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-list-credentials.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.create-credential
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/credentials" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Create credential {body.name} on Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/create.ts
+    notes: >-
+      A new database role that can log in.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-create-credential.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.read-credential
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/credentials/{credential}" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read credential {credential} of Postgres database {add_on_id_or_name}, with its password"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/url.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-read-credential.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.delete-credential
+    match: { rest: { method: DELETE, path: "/data/postgres/v1/{add_on_id_or_name}/credentials/{credential}" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Destroy credential {credential} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/destroy.ts
+    notes: >-
+      Removes a database role and every login it had.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-delete-credential.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.rotate-credential
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/credentials/{credential}/rotate" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Rotate the password of credential {credential} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/rotate.ts
+    notes: >-
+      Sets a new password, a secret-store value.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-rotate-credential.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.rotate-credentials
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/rotate_credentials" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Rotate the passwords of every credential of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/credentials/rotate.ts
+    notes: >-
+      Sets new passwords, secret-store values.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-rotate-credentials.http
+        expect: credential
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.info
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/info" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/info.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/data/types.ts
+    notes: >-
+      Plan, pools, hosts and status; no passwords.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-info.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.list-publications
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publications" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publications/index.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-list-publications.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.create-publication
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publications" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Create logical replication publication {body.name} on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publications/create.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-create-publication.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.read-publication
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publications/{publication}" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publications/info.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-read-publication.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.update-publication
+    match: { rest: { method: PUT, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publications/{publication}" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change logical replication publication {publication} on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publications/update.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-update-publication.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.delete-publication
+    match: { rest: { method: DELETE, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publications/{publication}" } }
+    class: delete
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Delete logical replication publication {publication} on {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publications/destroy.ts
+    notes: >-
+      Subscribers stop receiving changes; the tables are untouched.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-delete-publication.http
+        expect: delete
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.enable-publishing
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/publishing/enable" } }
+    class: access
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Let subscribers replicate data from Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/publishing/enable.ts
+    notes: >-
+      Turns on logical replication publishing, a way for subscribers outside Heroku to copy
+      published tables.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-enable-publishing.http
+        expect: access
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.enable-subscribing
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/logical-replication/subscribing/enable" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Let Postgres database {add_on_id_or_name} subscribe to logical replication"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/logical-replication/subscribing/enable.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-enable-subscribing.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.list-migrations
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/migrations" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/migrate.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-list-migrations.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.create-migration
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/migrations" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Set up a migration from {body.source_id} into Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/migrate.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-create-migration.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.run-migration
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/migrations/run" } }
+    class: irreversible
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Start the migration into Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/migrate.ts
+    notes: >-
+      data:pg:migrate copies a classic database into an existing Advanced one, replacing what the
+      target holds.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-run-migration.http
+        expect: irreversible
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.cancel-migration
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/migrations/cancel" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Cancel the migration into Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/migrate.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-cancel-migration.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.create-pool
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/pools" } }
+    class: money
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Add pool {body.name} ({body.count} x {body.level}) to Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/create-pool.ts
+    notes: >-
+      Adds billed compute instances.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-create-pool.http
+        expect: money
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.update-pool
+    match: { rest: { method: PATCH, path: "/data/postgres/v1/{add_on_id_or_name}/pools/{pool}" } }
+    class: money
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change pool {pool} of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/update.ts
+    notes: >-
+      Can add instances or move them to a larger, billed level.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-update-pool.http
+        expect: money
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.delete-pool
+    match: { rest: { method: DELETE, path: "/data/postgres/v1/{add_on_id_or_name}/pools/{pool}" } }
+    class: delete
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Remove pool {pool} from Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/update.ts
+    notes: >-
+      Removes compute instances; the data stays with the database.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-delete-pool.http
+        expect: delete
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.list-quotas
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/quotas" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/quotas/index.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-list-quotas.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.read-quota
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/quotas/{quota_type}" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/quotas/index.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-read-quota.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.update-quota
+    match: { rest: { method: PATCH, path: "/data/postgres/v1/{add_on_id_or_name}/quotas/{quota_type}" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change the {quota_type} quota of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/quotas/update.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-update-quota.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.read-settings
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/settings" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/settings.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-read-settings.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.update-settings
+    match: { rest: { method: PUT, path: "/data/postgres/v1/{add_on_id_or_name}/settings" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change settings of Postgres database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/settings.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-update-settings.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.upgrade
+    match: { rest: { method: POST, path: "/data/postgres/v1/{add_on_id_or_name}/upgrade/run" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Upgrade Postgres database {add_on_id_or_name} to version {body.version}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/upgrade/run.ts
+    notes: >-
+      Major version upgrades keep the data, as RDS engine upgrades do.
+    tests:
+      - fixture: fixtures/data-postgres-advanced-upgrade.http
+        expect: write
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"
+
+  - id: heroku.data-postgres-advanced.wait-status
+    match: { rest: { method: GET, path: "/data/postgres/v1/{add_on_id_or_name}/wait_status" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/data/pg/wait.ts
+    tests:
+      - fixture: fixtures/data-postgres-advanced-wait-status.http
+        expect: read
+        resource: "6f1c2a7e-3b9d-4e5f-8a1b-2c3d4e5f6a7b"

@@ -1,0 +1,8 @@
+# description: Change the configuration of Redis database redis-curved-77120 (keep)
+PATCH /redis/v0/databases/redis-curved-77120/config HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+Content-Type: application/json
+
+{"maxmemory_policy": "noeviction"}

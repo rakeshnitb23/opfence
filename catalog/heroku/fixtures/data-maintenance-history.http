@@ -1,0 +1,6 @@
+# description: GET /data/maintenances/v1/postgresql-shaped-48213/history
+GET /data/maintenances/v1/postgresql-shaped-48213/history/?limit=10 HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+

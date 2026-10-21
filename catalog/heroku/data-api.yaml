@@ -1,0 +1,67 @@
+# Heroku Data API (api.data.heroku.com), reads the Heroku CLI does not make.
+# Read from the Heroku CLI (heroku/cli at 65ca0bc, heroku-cli-util at 0ec7cba),
+# its only published client; the API has no published schema.
+operations:
+  - id: heroku.data-api.other-client
+    match: { rest: { method: GET, path: "/client/{path*}" } }
+    class: unknown
+    card: "Read /client/{path} from the Heroku Data API"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/base-command.ts
+    notes: >-
+      A Data API read the Heroku CLI does not make. Many of the API's reads return passwords, so one
+      Opfence has not checked is unknown rather than a read.
+    tests:
+      - fixture: fixtures/data-api-other-client.http
+        expect: unknown
+
+  - id: heroku.data-api.other-postgres
+    match: { rest: { method: GET, path: "/postgres/{path*}" } }
+    class: unknown
+    card: "Read /postgres/{path} from the Heroku Data API"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/base-command.ts
+    notes: >-
+      A Data API read the Heroku CLI does not make. Many of the API's reads return passwords, so one
+      Opfence has not checked is unknown rather than a read.
+    tests:
+      - fixture: fixtures/data-api-other-postgres.http
+        expect: unknown
+
+  - id: heroku.data-api.other-redis
+    match: { rest: { method: GET, path: "/redis/{path*}" } }
+    class: unknown
+    card: "Read /redis/{path} from the Heroku Data API"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/base-command.ts
+    notes: >-
+      A Data API read the Heroku CLI does not make. Many of the API's reads return passwords, so one
+      Opfence has not checked is unknown rather than a read.
+    tests:
+      - fixture: fixtures/data-api-other-redis.http
+        expect: unknown
+
+  - id: heroku.data-api.other-data
+    match: { rest: { method: GET, path: "/data/{path*}" } }
+    class: unknown
+    card: "Read /data/{path} from the Heroku Data API"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/lib/data/base-command.ts
+    notes: >-
+      A Data API read the Heroku CLI does not make. Many of the API's reads return passwords, so one
+      Opfence has not checked is unknown rather than a read.
+    tests:
+      - fixture: fixtures/data-api-other-data.http
+        expect: unknown
