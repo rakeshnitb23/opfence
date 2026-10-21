@@ -1,0 +1,8 @@
+{
+  "description": "create variable set",
+  "tool": "create_variable_set",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "name": "aws-dev"
+  }
+}

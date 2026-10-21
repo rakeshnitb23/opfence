@@ -1,0 +1,192 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): runs, plans and applies.
+operations:
+  - id: terraform-mcp.run.action
+    match: { mcp: { tool: action_run } }
+    class: write
+    when:
+      - if: { arg: run_action, equals: apply }
+        class: irreversible
+    resource: { arg: run_id, kind: run }
+    card: "{run_action} run {run_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/action_run.go
+    notes: >-
+      apply carries out the run's plan, destroys included; discard and cancel stop it.
+    tests:
+      - fixture: fixtures/run-action.json
+        expect: write
+        resource: "run-abc123"
+      - fixture: fixtures/run-action-cancel.json
+        expect: write
+        resource: "run-abc123"
+      - fixture: fixtures/run-action-apply.json
+        expect: irreversible
+        resource: "run-abc123"
+
+  - id: terraform-mcp.run.create
+    match: { mcp: { tool: create_run } }
+    class: irreversible
+    when:
+      - if: { arg: run_type, absent: true }
+        class: write
+      - if: { arg: run_type, matches: '^(?:plan_and_apply|refresh_state|plan_only)$' }
+        class: write
+    resource: { arg: workspace_name, kind: workspace }
+    card: "Start a run (type {run_type}) in workspace {workspace_name} of {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/create_run.go
+    notes: >-
+      Two tools share the name: without ENABLE_TF_OPERATIONS=true the server offers run types
+      plan_and_apply, refresh_state, plan_only and allow_empty_apply, and with it also auto_approve
+      and is_destroy. The server compares run_type exactly. plan_and_apply (the default) sets
+      auto-apply off, so its plan waits for confirmation (action_run apply); plan_only and
+      refresh_state change no infrastructure. Every other value leaves auto-apply to the workspace's
+      setting, which the call does not show: auto_approve applies without confirmation, is_destroy
+      destroys every resource, allow_empty_apply and any value the server does not list
+      (PLAN_AND_APPLY, an empty string) plan and apply as the workspace does, so they are
+      irreversible.
+    tests:
+      - fixture: fixtures/run-create.json
+        expect: write
+        resource: "prod-network"
+      - fixture: fixtures/run-create-refresh.json
+        expect: write
+        resource: "prod-network"
+      - fixture: fixtures/run-create-plan-and-apply.json
+        expect: write
+        resource: "prod-network"
+      - fixture: fixtures/run-create-default.json
+        expect: write
+        resource: "prod-network"
+      - fixture: fixtures/run-create-auto-approve.json
+        expect: irreversible
+        resource: "prod-network"
+      - fixture: fixtures/run-create-destroy.json
+        expect: irreversible
+        resource: "prod-network"
+      - fixture: fixtures/run-create-empty-apply.json
+        expect: irreversible
+        resource: "prod-network"
+      - fixture: fixtures/run-create-uppercase.json
+        expect: irreversible
+        resource: "prod-network"
+      - fixture: fixtures/run-create-empty.json
+        expect: irreversible
+        resource: "prod-network"
+
+  - id: terraform-mcp.run.get-apply-details
+    match: { mcp: { tool: get_apply_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_apply_details.go
+    tests:
+      - fixture: fixtures/run-get-apply-details.json
+        expect: read
+
+  - id: terraform-mcp.run.get-apply-logs
+    match: { mcp: { tool: get_apply_logs } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_apply_logs.go
+    notes: >-
+      Apply logs print attribute values the way the terraform CLI does: values marked sensitive show
+      as (sensitive value).
+    tests:
+      - fixture: fixtures/run-get-apply-logs.json
+        expect: read
+
+  - id: terraform-mcp.run.get-plan-details
+    match: { mcp: { tool: get_plan_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_plan_details.go
+    tests:
+      - fixture: fixtures/run-get-plan-details.json
+        expect: read
+
+  - id: terraform-mcp.run.get-plan-json-output
+    match: { mcp: { tool: get_plan_json_output } }
+    class: credential
+    card: "Read the JSON plan of {plan_id}, with attribute values"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_plan_json_output.go
+    notes: >-
+      The JSON plan holds every attribute's before and after values in plain text, those Terraform
+      marks sensitive included (it only flags them), so it can return database passwords and keys.
+    tests:
+      - fixture: fixtures/run-get-plan-json-output.json
+        expect: credential
+
+  - id: terraform-mcp.run.get-plan-logs
+    match: { mcp: { tool: get_plan_logs } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_plan_logs.go
+    notes: >-
+      Plan logs print attribute values the way the terraform CLI does: values marked sensitive show
+      as (sensitive value).
+    tests:
+      - fixture: fixtures/run-get-plan-logs.json
+        expect: read
+
+  - id: terraform-mcp.run.get-run-comments
+    match: { mcp: { tool: get_run_comments } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_run_comments.go
+    tests:
+      - fixture: fixtures/run-get-run-comments.json
+        expect: read
+
+  - id: terraform-mcp.run.get-run-details
+    match: { mcp: { tool: get_run_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_run_details.go
+    tests:
+      - fixture: fixtures/run-get-run-details.json
+        expect: read
+
+  - id: terraform-mcp.run.get-sentinel-mock
+    match: { mcp: { tool: get_sentinel_mock } }
+    class: credential
+    card: "Export Sentinel mock data of {plan_id}, with attribute values"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_sentinel_mock.go
+    notes: >-
+      Sentinel mocks carry the plan's configuration, state and attribute values, as the JSON plan
+      does.
+    tests:
+      - fixture: fixtures/run-get-sentinel-mock.json
+        expect: credential
+
+  - id: terraform-mcp.run.list-runs
+    match: { mcp: { tool: list_runs } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_runs.go
+    tests:
+      - fixture: fixtures/run-list-runs.json
+        expect: read

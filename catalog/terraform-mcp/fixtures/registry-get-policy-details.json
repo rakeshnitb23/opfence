@@ -1,0 +1,7 @@
+{
+  "description": "get policy details",
+  "tool": "get_policy_details",
+  "arguments": {
+    "terraform_policy_id": "policies/hashicorp/CIS-Policy-Set-for-AWS-Terraform/1.0.1"
+  }
+}

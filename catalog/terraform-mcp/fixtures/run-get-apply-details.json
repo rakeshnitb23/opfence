@@ -1,0 +1,7 @@
+{
+  "description": "get apply details",
+  "tool": "get_apply_details",
+  "arguments": {
+    "apply_id": "apply-abc123"
+  }
+}

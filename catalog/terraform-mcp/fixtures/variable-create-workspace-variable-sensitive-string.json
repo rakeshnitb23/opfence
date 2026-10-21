@@ -1,0 +1,12 @@
+{
+  "description": "create workspace variable (sensitive string)",
+  "tool": "create_workspace_variable",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "key": "db_password",
+    "value": "hunter2",
+    "category": "terraform",
+    "sensitive": "true"
+  }
+}

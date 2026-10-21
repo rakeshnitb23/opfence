@@ -1,0 +1,78 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): organizations, teams and tokens.
+operations:
+  - id: terraform-mcp.org.get-project
+    match: { mcp: { tool: get_project } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_project.go
+    tests:
+      - fixture: fixtures/org-get-project.json
+        expect: read
+
+  - id: terraform-mcp.org.get-team
+    match: { mcp: { tool: get_team } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_team.go
+    tests:
+      - fixture: fixtures/org-get-team.json
+        expect: read
+
+  - id: terraform-mcp.org.get-token-permissions
+    match: { mcp: { tool: get_token_permissions } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_token_permissions.go
+    tests:
+      - fixture: fixtures/org-get-token-permissions.json
+        expect: read
+
+  - id: terraform-mcp.org.list-teams
+    match: { mcp: { tool: list_teams } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_teams.go
+    tests:
+      - fixture: fixtures/org-list-teams.json
+        expect: read
+
+  - id: terraform-mcp.org.list-terraform-orgs
+    match: { mcp: { tool: list_terraform_orgs } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_terraform_orgs.go
+    tests:
+      - fixture: fixtures/org-list-terraform-orgs.json
+        expect: read
+
+  - id: terraform-mcp.org.list-terraform-projects
+    match: { mcp: { tool: list_terraform_projects } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_terraform_projects.go
+    tests:
+      - fixture: fixtures/org-list-terraform-projects.json
+        expect: read
+
+  - id: terraform-mcp.org.whoami
+    match: { mcp: { tool: whoami } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/whoami.go
+    tests:
+      - fixture: fixtures/org-whoami.json
+        expect: read

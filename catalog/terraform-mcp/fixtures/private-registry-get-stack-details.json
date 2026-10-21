@@ -1,0 +1,7 @@
+{
+  "description": "get stack details",
+  "tool": "get_stack_details",
+  "arguments": {
+    "stack_id": "st-abc123"
+  }
+}

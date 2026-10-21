@@ -1,0 +1,7 @@
+{
+  "description": "get apply logs",
+  "tool": "get_apply_logs",
+  "arguments": {
+    "apply_id": "apply-abc123"
+  }
+}

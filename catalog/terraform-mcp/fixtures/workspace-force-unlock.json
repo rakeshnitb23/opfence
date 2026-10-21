@@ -1,0 +1,7 @@
+{
+  "description": "force unlock workspace",
+  "tool": "force_unlock_workspace",
+  "arguments": {
+    "workspace_id": "ws-abc123"
+  }
+}

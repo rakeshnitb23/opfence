@@ -1,0 +1,7 @@
+{
+  "description": "get sentinel mock",
+  "tool": "get_sentinel_mock",
+  "arguments": {
+    "plan_id": "plan-abc123"
+  }
+}

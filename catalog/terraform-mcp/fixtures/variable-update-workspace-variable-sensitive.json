@@ -1,0 +1,11 @@
+{
+  "description": "update workspace variable (sensitive)",
+  "tool": "update_workspace_variable",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "variable_id": "var-abc123",
+    "value": "hunter2",
+    "sensitive": true
+  }
+}

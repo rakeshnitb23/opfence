@@ -1,0 +1,10 @@
+{
+  "description": "create variable in variable set (sensitive)",
+  "tool": "create_variable_in_variable_set",
+  "arguments": {
+    "variable_set_id": "varset-abc123",
+    "key": "db_password",
+    "value": "hunter2",
+    "sensitive": true
+  }
+}

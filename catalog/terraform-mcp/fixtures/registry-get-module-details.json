@@ -1,0 +1,7 @@
+{
+  "description": "get module details",
+  "tool": "get_module_details",
+  "arguments": {
+    "module_id": "terraform-aws-modules/vpc/aws/5.8.1"
+  }
+}

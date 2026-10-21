@@ -1,0 +1,8 @@
+{
+  "description": "search private providers",
+  "tool": "search_private_providers",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "search_query": "internal"
+  }
+}

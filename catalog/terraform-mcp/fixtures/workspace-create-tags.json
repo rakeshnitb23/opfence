@@ -1,0 +1,9 @@
+{
+  "description": "create workspace tags",
+  "tool": "create_workspace_tags",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "tags": "env:prod"
+  }
+}

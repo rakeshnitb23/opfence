@@ -1,0 +1,8 @@
+{
+  "description": "create team",
+  "tool": "create_team",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "team_name": "platform"
+  }
+}

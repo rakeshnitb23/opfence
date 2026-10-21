@@ -1,0 +1,144 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): variables and variable sets.
+operations:
+  - id: terraform-mcp.variable.attach-set
+    match: { mcp: { tool: attach_variable_set_to_workspaces } }
+    class: write
+    card: "Attach variable set {variable_set_id} to workspaces {workspace_ids}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    notes: >-
+      The workspaces' runs get the set's variables, credentials included, from the next run on.
+    tests:
+      - fixture: fixtures/variable-attach-set.json
+        expect: write
+
+  - id: terraform-mcp.variable.create-variable-in-variable-set
+    match: { mcp: { tool: create_variable_in_variable_set } }
+    class: write
+    when:
+      - if: { arg: sensitive, matches: '^(?is:[^0f].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+)$' }
+        class: credential
+    card: "Set variable {key} in variable set {variable_set_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    notes: >-
+      A variable marked sensitive is a secret HCP Terraform never shows again: setting it is setting
+      a secret-store value, credential. A plain variable is a write.
+    tests:
+      - fixture: fixtures/variable-create-variable-in-variable-set.json
+        expect: write
+      - fixture: fixtures/variable-create-variable-in-variable-set-sensitive.json
+        expect: credential
+      - fixture: fixtures/variable-create-variable-in-variable-set-sensitive-string.json
+        expect: credential
+
+  - id: terraform-mcp.variable.create-set
+    match: { mcp: { tool: create_variable_set } }
+    class: write
+    card: "Create variable set {name} in {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    tests:
+      - fixture: fixtures/variable-create-set.json
+        expect: write
+
+  - id: terraform-mcp.variable.create-workspace-variable
+    match: { mcp: { tool: create_workspace_variable } }
+    class: write
+    when:
+      - if: { arg: sensitive, matches: '^(?is:[^0f].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+)$' }
+        class: credential
+    card: "Set variable {key} on workspace {workspace_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/workspace_variables.go
+    notes: >-
+      A variable marked sensitive is a secret HCP Terraform never shows again: setting it is setting
+      a secret-store value, credential. A plain variable is a write.
+    tests:
+      - fixture: fixtures/variable-create-workspace-variable.json
+        expect: write
+      - fixture: fixtures/variable-create-workspace-variable-sensitive.json
+        expect: credential
+      - fixture: fixtures/variable-create-workspace-variable-sensitive-string.json
+        expect: credential
+
+  - id: terraform-mcp.variable.delete-in-set
+    match: { mcp: { tool: delete_variable_in_variable_set } }
+    class: irreversible
+    card: "Delete variable {variable_id} from variable set {variable_set_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    notes: >-
+      Deleting any variable is irreversible: a sensitive value cannot be read back to restore it.
+    tests:
+      - fixture: fixtures/variable-delete-in-set.json
+        expect: irreversible
+
+  - id: terraform-mcp.variable.detach-set
+    match: { mcp: { tool: detach_variable_set_from_workspaces } }
+    class: write
+    card: "Detach variable set {variable_set_id} from workspaces {workspace_ids}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    tests:
+      - fixture: fixtures/variable-detach-set.json
+        expect: write
+
+  - id: terraform-mcp.variable.list-variable-sets
+    match: { mcp: { tool: list_variable_sets } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/variable_sets.go
+    tests:
+      - fixture: fixtures/variable-list-variable-sets.json
+        expect: read
+
+  - id: terraform-mcp.variable.list-workspace-variables
+    match: { mcp: { tool: list_workspace_variables } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/workspace_variables.go
+    notes: >-
+      Returns variable keys, and values only for variables not marked sensitive: HCP Terraform never
+      returns a sensitive value.
+    tests:
+      - fixture: fixtures/variable-list-workspace-variables.json
+        expect: read
+
+  - id: terraform-mcp.variable.update-workspace-variable
+    match: { mcp: { tool: update_workspace_variable } }
+    class: write
+    when:
+      - if: { arg: sensitive, matches: '^(?is:[^0f].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+)$' }
+        class: credential
+    card: "Change variable {variable_id} on workspace {workspace_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/workspace_variables.go
+    notes: >-
+      A variable marked sensitive is a secret HCP Terraform never shows again: setting it is setting
+      a secret-store value, credential. A plain variable is a write.
+    tests:
+      - fixture: fixtures/variable-update-workspace-variable.json
+        expect: write
+      - fixture: fixtures/variable-update-workspace-variable-sensitive.json
+        expect: credential
+      - fixture: fixtures/variable-update-workspace-variable-sensitive-string.json
+        expect: credential

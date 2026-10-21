@@ -1,0 +1,8 @@
+{
+  "description": "read workspace tags",
+  "tool": "read_workspace_tags",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network"
+  }
+}

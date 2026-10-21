@@ -1,0 +1,7 @@
+{
+  "description": "list terraform projects",
+  "tool": "list_terraform_projects",
+  "arguments": {
+    "terraform_org_name": "acme"
+  }
+}

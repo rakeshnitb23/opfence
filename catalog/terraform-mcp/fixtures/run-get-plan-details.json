@@ -1,0 +1,7 @@
+{
+  "description": "get plan details",
+  "tool": "get_plan_details",
+  "arguments": {
+    "plan_id": "plan-abc123"
+  }
+}

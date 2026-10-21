@@ -1,0 +1,8 @@
+{
+  "description": "get latest provider version",
+  "tool": "get_latest_provider_version",
+  "arguments": {
+    "namespace": "hashicorp",
+    "name": "aws"
+  }
+}

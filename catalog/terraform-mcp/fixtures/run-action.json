@@ -1,0 +1,8 @@
+{
+  "description": "action run",
+  "tool": "action_run",
+  "arguments": {
+    "run_id": "run-abc123",
+    "run_action": "discard"
+  }
+}

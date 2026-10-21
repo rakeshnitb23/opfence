@@ -1,0 +1,5 @@
+{
+  "description": "get token permissions",
+  "tool": "get_token_permissions",
+  "arguments": {}
+}

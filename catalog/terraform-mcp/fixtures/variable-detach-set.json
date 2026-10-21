@@ -1,0 +1,8 @@
+{
+  "description": "detach variable set from workspaces",
+  "tool": "detach_variable_set_from_workspaces",
+  "arguments": {
+    "variable_set_id": "varset-abc123",
+    "workspace_ids": "ws-abc123"
+  }
+}

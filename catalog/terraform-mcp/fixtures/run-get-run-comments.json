@@ -1,0 +1,7 @@
+{
+  "description": "get run comments",
+  "tool": "get_run_comments",
+  "arguments": {
+    "run_id": "run-abc123"
+  }
+}

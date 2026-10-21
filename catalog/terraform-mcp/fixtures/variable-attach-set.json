@@ -1,0 +1,8 @@
+{
+  "description": "attach variable set to workspaces",
+  "tool": "attach_variable_set_to_workspaces",
+  "arguments": {
+    "variable_set_id": "varset-abc123",
+    "workspace_ids": "ws-abc123,ws-def456"
+  }
+}

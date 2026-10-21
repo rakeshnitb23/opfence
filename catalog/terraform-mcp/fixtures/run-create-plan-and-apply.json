@@ -1,0 +1,9 @@
+{
+  "description": "create run (plan and apply)",
+  "tool": "create_run",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "run_type": "plan_and_apply"
+  }
+}

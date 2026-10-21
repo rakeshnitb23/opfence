@@ -1,0 +1,30 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): projects.
+operations:
+  - id: terraform-mcp.project.create
+    match: { mcp: { tool: create_project } }
+    class: write
+    card: "Create project {project_name} in {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/create_project.go
+    tests:
+      - fixture: fixtures/project-create.json
+        expect: write
+
+  - id: terraform-mcp.project.delete
+    match: { mcp: { tool: delete_project } }
+    class: delete
+    resource: { arg: project_id, kind: project }
+    card: "Delete project {project_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/delete_project.go
+    notes: >-
+      HCP Terraform deletes only a project that holds no workspaces or stacks, so nothing it managed
+      goes with it.
+    tests:
+      - fixture: fixtures/project-delete.json
+        expect: delete
+        resource: "prj-abc123"

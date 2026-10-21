@@ -1,0 +1,7 @@
+{
+  "description": "list variable sets",
+  "tool": "list_variable_sets",
+  "arguments": {
+    "terraform_org_name": "acme"
+  }
+}

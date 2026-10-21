@@ -1,0 +1,7 @@
+{
+  "description": "search policies",
+  "tool": "search_policies",
+  "arguments": {
+    "policy_query": "cis"
+  }
+}

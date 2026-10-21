@@ -1,0 +1,7 @@
+{
+  "description": "get plan logs",
+  "tool": "get_plan_logs",
+  "arguments": {
+    "plan_id": "plan-abc123"
+  }
+}

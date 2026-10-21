@@ -1,0 +1,7 @@
+{
+  "description": "get plan json output",
+  "tool": "get_plan_json_output",
+  "arguments": {
+    "plan_id": "plan-abc123"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "create run (default)",
+  "tool": "create_run",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "message": "nightly"
+  }
+}

@@ -1,0 +1,161 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): workspaces.
+operations:
+  - id: terraform-mcp.workspace.create-no-code
+    match: { mcp: { tool: create_no_code_workspace } }
+    class: write
+    when:
+      - if: { arg: auto_apply, matches: '^(?is:[^0f].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+)$' }
+        class: irreversible
+    card: "Create no-code workspace {workspace_name} from module {no_code_module_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/create_no_code_workspace.go
+    notes: >-
+      Creating the workspace queues a run of the module; with auto_apply it is applied at once and
+      every later run too. Turning auto-apply on applies every later run's plan without anyone
+      confirming it, destroys included: turning off a safety net is as dangerous as what it
+      protects.
+    tests:
+      - fixture: fixtures/workspace-create-no-code.json
+        expect: write
+      - fixture: fixtures/workspace-create-no-code-auto-apply.json
+        expect: irreversible
+      - fixture: fixtures/workspace-create-no-code-auto-apply-string.json
+        expect: irreversible
+      - fixture: fixtures/workspace-create-no-code-no-auto-apply.json
+        expect: write
+
+  - id: terraform-mcp.workspace.create
+    match: { mcp: { tool: create_workspace } }
+    class: write
+    when:
+      - if: { arg: auto_apply, equals: "true" }
+        class: irreversible
+    card: "Create workspace {workspace_name} in {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/create_workspace.go
+    notes: >-
+      Turning auto-apply on applies every later run's plan without anyone confirming it, destroys
+      included: turning off a safety net is as dangerous as what it protects.
+    tests:
+      - fixture: fixtures/workspace-create.json
+        expect: write
+      - fixture: fixtures/workspace-create-auto-apply.json
+        expect: irreversible
+      - fixture: fixtures/workspace-create-auto-apply-bool.json
+        expect: irreversible
+
+  - id: terraform-mcp.workspace.create-tags
+    match: { mcp: { tool: create_workspace_tags } }
+    class: write
+    card: "Tag workspace {workspace_name} with {tags}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/workspace_tags.go
+    tests:
+      - fixture: fixtures/workspace-create-tags.json
+        expect: write
+
+  - id: terraform-mcp.workspace.delete
+    match: { mcp: { tool: delete_workspace_safely } }
+    class: irreversible
+    resource: { arg: workspace_id, kind: workspace }
+    card: "Delete workspace {workspace_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/delete_workspace_safely.go
+    notes: >-
+      Safe delete refuses a workspace that still manages resources, but deletes its state history,
+      runs and variables, sensitive ones included, which cannot be put back.
+    tests:
+      - fixture: fixtures/workspace-delete.json
+        expect: irreversible
+        resource: "ws-abc123"
+
+  - id: terraform-mcp.workspace.force-unlock
+    match: { mcp: { tool: force_unlock_workspace } }
+    class: write
+    resource: { arg: workspace_id, kind: workspace }
+    card: "Force-unlock workspace {workspace_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/force_unlock_workspace.go
+    notes: >-
+      Releases a lock another user or run holds; the state is unchanged.
+    tests:
+      - fixture: fixtures/workspace-force-unlock.json
+        expect: write
+        resource: "ws-abc123"
+
+  - id: terraform-mcp.workspace.get-workspace-details
+    match: { mcp: { tool: get_workspace_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_workspace_details.go
+    tests:
+      - fixture: fixtures/workspace-get-workspace-details.json
+        expect: read
+
+  - id: terraform-mcp.workspace.list-workspace-policy-sets
+    match: { mcp: { tool: list_workspace_policy_sets } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/policy_sets.go
+    tests:
+      - fixture: fixtures/workspace-list-workspace-policy-sets.json
+        expect: read
+
+  - id: terraform-mcp.workspace.list-workspaces
+    match: { mcp: { tool: list_workspaces } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_workspaces.go
+    tests:
+      - fixture: fixtures/workspace-list-workspaces.json
+        expect: read
+
+  - id: terraform-mcp.workspace.read-workspace-tags
+    match: { mcp: { tool: read_workspace_tags } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/workspace_tags.go
+    tests:
+      - fixture: fixtures/workspace-read-workspace-tags.json
+        expect: read
+
+  - id: terraform-mcp.workspace.update
+    match: { mcp: { tool: update_workspace } }
+    class: write
+    when:
+      - if: { arg: auto_apply, equals: "true" }
+        class: irreversible
+    resource: { arg: workspace_name, kind: workspace }
+    card: "Update workspace {workspace_name} in {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/update_workspace.go
+    notes: >-
+      Turning auto-apply on applies every later run's plan without anyone confirming it, destroys
+      included: turning off a safety net is as dangerous as what it protects.
+    tests:
+      - fixture: fixtures/workspace-update.json
+        expect: write
+        resource: "prod-network"
+      - fixture: fixtures/workspace-update-auto-apply.json
+        expect: irreversible
+        resource: "prod-network"

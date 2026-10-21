@@ -1,0 +1,7 @@
+{
+  "description": "search modules",
+  "tool": "search_modules",
+  "arguments": {
+    "module_query": "vpc"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "attach policy set to workspaces",
+  "tool": "attach_policy_set_to_workspaces",
+  "arguments": {
+    "policy_set_id": "polset-abc123",
+    "workspace_ids": "ws-abc123"
+  }
+}

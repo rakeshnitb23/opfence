@@ -1,0 +1,67 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): private registry and stacks.
+operations:
+  - id: terraform-mcp.private-registry.get-private-module-details
+    match: { mcp: { tool: get_private_module_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_private_module_details.go
+    tests:
+      - fixture: fixtures/private-registry-get-private-module-details.json
+        expect: read
+
+  - id: terraform-mcp.private-registry.get-private-provider-details
+    match: { mcp: { tool: get_private_provider_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_private_provider_details.go
+    tests:
+      - fixture: fixtures/private-registry-get-private-provider-details.json
+        expect: read
+
+  - id: terraform-mcp.private-registry.get-stack-details
+    match: { mcp: { tool: get_stack_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_stack_details.go
+    tests:
+      - fixture: fixtures/private-registry-get-stack-details.json
+        expect: read
+
+  - id: terraform-mcp.private-registry.list-stacks
+    match: { mcp: { tool: list_stacks } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_stacks.go
+    tests:
+      - fixture: fixtures/private-registry-list-stacks.json
+        expect: read
+
+  - id: terraform-mcp.private-registry.search-private-modules
+    match: { mcp: { tool: search_private_modules } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/search_private_modules.go
+    tests:
+      - fixture: fixtures/private-registry-search-private-modules.json
+        expect: read
+
+  - id: terraform-mcp.private-registry.search-private-providers
+    match: { mcp: { tool: search_private_providers } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/search_private_providers.go
+    tests:
+      - fixture: fixtures/private-registry-search-private-providers.json
+        expect: read

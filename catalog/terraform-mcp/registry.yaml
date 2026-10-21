@@ -1,0 +1,100 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): public Terraform Registry.
+operations:
+  - id: terraform-mcp.registry.get-latest-module-version
+    match: { mcp: { tool: get_latest_module_version } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_latest_module_version.go
+    tests:
+      - fixture: fixtures/registry-get-latest-module-version.json
+        expect: read
+
+  - id: terraform-mcp.registry.get-latest-provider-version
+    match: { mcp: { tool: get_latest_provider_version } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_latest_provider_version.go
+    tests:
+      - fixture: fixtures/registry-get-latest-provider-version.json
+        expect: read
+
+  - id: terraform-mcp.registry.get-module-details
+    match: { mcp: { tool: get_module_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_module_details.go
+    tests:
+      - fixture: fixtures/registry-get-module-details.json
+        expect: read
+
+  - id: terraform-mcp.registry.get-policy-details
+    match: { mcp: { tool: get_policy_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_policy_details.go
+    tests:
+      - fixture: fixtures/registry-get-policy-details.json
+        expect: read
+
+  - id: terraform-mcp.registry.get-provider-capabilities
+    match: { mcp: { tool: get_provider_capabilities } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_provider_capabilities.go
+    tests:
+      - fixture: fixtures/registry-get-provider-capabilities.json
+        expect: read
+
+  - id: terraform-mcp.registry.get-provider-details
+    match: { mcp: { tool: get_provider_details } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/get_provider_details.go
+    tests:
+      - fixture: fixtures/registry-get-provider-details.json
+        expect: read
+
+  - id: terraform-mcp.registry.search-modules
+    match: { mcp: { tool: search_modules } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/search_modules.go
+    tests:
+      - fixture: fixtures/registry-search-modules.json
+        expect: read
+
+  - id: terraform-mcp.registry.search-policies
+    match: { mcp: { tool: search_policies } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/search_policies.go
+    tests:
+      - fixture: fixtures/registry-search-policies.json
+        expect: read
+
+  - id: terraform-mcp.registry.search-provider-docs
+    match: { mcp: { tool: search_provider_docs } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/registry/search_provider_docs.go
+    tests:
+      - fixture: fixtures/registry-search-provider-docs.json
+        expect: read

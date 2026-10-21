@@ -1,0 +1,7 @@
+{
+  "description": "delete workspace safely",
+  "tool": "delete_workspace_safely",
+  "arguments": {
+    "workspace_id": "ws-abc123"
+  }
+}

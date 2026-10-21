@@ -1,0 +1,7 @@
+{
+  "description": "delete team",
+  "tool": "delete_team",
+  "arguments": {
+    "team_id": "team-abc123"
+  }
+}
