@@ -1,0 +1,42 @@
+# Atlas App Services Admin API v3: session.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.session.login
+    match: { rest: { method: POST, path: "/api/admin/v3.0/auth/providers/mongodb-cloud/login" } }
+    class: credential
+    card: "Authenticate as an App Services administrator"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Exchanges an Atlas API key pair for Admin API access and refresh tokens.
+    tests:
+      - fixture: fixtures/session-login.http
+        expect: credential
+
+  - id: atlas-app-services.session.create-session
+    match: { rest: { method: POST, path: "/api/admin/v3.0/auth/session" } }
+    class: credential
+    card: "Obtain a session access token"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Exchanges a refresh token for a new access token.
+    tests:
+      - fixture: fixtures/session-create-session.http
+        expect: credential
+
+  - id: atlas-app-services.session.delete-session
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/auth/session" } }
+    class: write
+    card: "Delete a session access token"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/session-delete-session.http
+        expect: write

@@ -1,0 +1,5 @@
+# description: Delete a session access token
+DELETE /api/admin/v3.0/auth/session HTTP/1.1
+Host: services.cloud.mongodb.com
+Authorization: Bearer opf_atlas-app-services_EXAMPLE
+

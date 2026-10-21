@@ -56,9 +56,70 @@ func decodeDoc(data []byte) (map[string]any, error) {
 		return doc, nil
 	}
 	if err := yaml.Unmarshal(data, &doc); err != nil {
-		return nil, err
+		// Published schemas sometimes repeat a key (MongoDB's App Services
+		// spec gives some operations "deprecated: true" three times), which
+		// the strict decoder refuses. Read them as most YAML parsers do, the
+		// last value winning.
+		var n yaml.Node
+		if yaml.Unmarshal(data, &n) != nil {
+			return nil, err
+		}
+		v, lerr := nodeValue(&n, 0)
+		m, ok := v.(map[string]any)
+		if lerr != nil || !ok {
+			return nil, err
+		}
+		return m, nil
 	}
 	return doc, nil
+}
+
+// nodeValue converts a YAML node to the values yaml.Unmarshal gives, with
+// a repeated mapping key keeping its last value.
+func nodeValue(n *yaml.Node, depth int) (any, error) {
+	if depth > 200 {
+		return nil, errors.New("YAML nested too deeply")
+	}
+	switch n.Kind {
+	case yaml.DocumentNode:
+		if len(n.Content) == 0 {
+			return nil, nil
+		}
+		return nodeValue(n.Content[0], depth+1)
+	case yaml.AliasNode:
+		return nodeValue(n.Alias, depth+1)
+	case yaml.SequenceNode:
+		out := make([]any, 0, len(n.Content))
+		for _, c := range n.Content {
+			v, err := nodeValue(c, depth+1)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, v)
+		}
+		return out, nil
+	case yaml.MappingNode:
+		out := map[string]any{}
+		for i := 0; i+1 < len(n.Content); i += 2 {
+			k, v := n.Content[i], n.Content[i+1]
+			if k.Kind == yaml.ScalarNode && k.Tag == "!!merge" {
+				continue // merge keys do not appear in the schemas read here
+			}
+			val, err := nodeValue(v, depth+1)
+			if err != nil {
+				return nil, err
+			}
+			out[k.Value] = val
+		}
+		return out, nil
+	case yaml.ScalarNode:
+		var v any
+		if err := n.Decode(&v); err != nil {
+			return nil, err
+		}
+		return v, nil
+	}
+	return nil, fmt.Errorf("unexpected YAML node kind %d", n.Kind)
 }
 
 var httpMethods = []string{"get", "put", "post", "delete", "patch", "head", "options"}

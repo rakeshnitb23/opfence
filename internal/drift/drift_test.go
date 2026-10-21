@@ -385,3 +385,22 @@ func TestAWS(t *testing.T) {
 		t.Errorf("compared = %d, want 3", r.Compared)
 	}
 }
+
+// A schema that repeats a key is read with the last value winning, as most
+// YAML parsers do, instead of failing the check.
+func TestDecodeDocDuplicateKeys(t *testing.T) {
+	doc, err := decodeDoc([]byte("openapi: 3.0.0\npaths:\n  /a:\n    get:\n      deprecated: true\n      deprecated: false\n      summary: x\n  /b:\n    post: {}\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	get := doc["paths"].(map[string]any)["/a"].(map[string]any)["get"].(map[string]any)
+	if get["deprecated"] != false || get["summary"] != "x" {
+		t.Fatalf("get = %v", get)
+	}
+	if _, ok := doc["paths"].(map[string]any)["/b"]; !ok {
+		t.Fatal("/b missing")
+	}
+	if _, err := decodeDoc([]byte("paths: [unclosed")); err == nil {
+		t.Fatal("broken YAML read")
+	}
+}

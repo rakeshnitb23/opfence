@@ -1,0 +1,6 @@
+# description: Authenticate as an App Services administrator
+POST /api/admin/v3.0/auth/providers/mongodb-cloud/login HTTP/1.1
+Host: services.cloud.mongodb.com
+Content-Type: application/json
+
+{"username": "abcdefgh", "apiKey": "00000000-0000-0000-0000-000000000000"}
