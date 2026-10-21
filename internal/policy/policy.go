@@ -122,7 +122,9 @@ func (d *Duration) UnmarshalYAML(n *yaml.Node) error {
 var (
 	providerRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
 	argPathRe  = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
-	ruleGlobRe = regexp.MustCompile(`^[a-z0-9*][a-z0-9*.-]*$`)
+	// Rule ids are lower case, but the rules defaults.mcp_tools makes end
+	// in the tool's own name (aws-lambda-tool-mcp.tool.Orders_Get).
+	ruleGlobRe = regexp.MustCompile(`^[a-z0-9*][A-Za-z0-9*._-]*$`)
 	serverRe   = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
 	hostPatRe  = regexp.MustCompile(`^(\*\.)?[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$`)
 )

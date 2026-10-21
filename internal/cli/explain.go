@@ -292,6 +292,9 @@ func newPolicyCmd(g *globalOptions) *cobra.Command {
 			}
 			for _, p := range c.Providers {
 				providerIDs = append(providerIDs, p.ID)
+				if p.Defaults.MCPTools != "" {
+					ruleIDs = append(ruleIDs, p.ID+".tool.*") // the rules defaults.mcp_tools makes
+				}
 			}
 			out := cmd.OutOrStdout()
 			for _, w := range append(eff.Warnings, eff.CatalogWarnings(ruleIDs, providerIDs)...) {
