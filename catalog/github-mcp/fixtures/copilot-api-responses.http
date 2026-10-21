@@ -1,0 +1,8 @@
+# description: POST /responses
+POST /responses HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"model": "gpt-5", "input": "Explain this diff"}

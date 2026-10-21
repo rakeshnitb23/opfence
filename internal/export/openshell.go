@@ -103,6 +103,13 @@ func openShellEndpoints(p *policy.Effective, prov *catalog.Provider, host, env s
 		for _, path := range mcpPaths(prov) {
 			out = append(out, mcpEndpoint(p, rules, host, path, env))
 		}
+		// An API sharing the host (mcp.paths names where MCP is) gets its
+		// REST rules; the catalog checks none of them is under an MCP path.
+		if len(prov.MCP.Paths) > 0 {
+			if shared := sharedHostRules(rules); hasREST(prov, shared) {
+				out = append(out, restEndpoint(p, prov, shared, host, env, nil))
+			}
+		}
 	case slices.Contains(prov.Git, host):
 		out = append(out, gitEndpoint(p, prov, rules, host, env))
 	default:
@@ -121,9 +128,40 @@ func openShellEndpoints(p *policy.Effective, prov *catalog.Provider, host, env s
 	return out
 }
 
-// mcpPaths is where an MCP provider's streamable HTTP endpoint lives. The
-// catalog does not record it yet; every hosted server in it uses /mcp.
-func mcpPaths(*catalog.Provider) []string { return []string{"/mcp"} }
+// mcpPaths is where an MCP provider's streamable HTTP endpoint lives:
+// mcp.paths, or /mcp, which every hosted server in the catalog uses.
+func mcpPaths(prov *catalog.Provider) []string {
+	if len(prov.MCP.Paths) > 0 {
+		return prov.MCP.Paths
+	}
+	return []string{"/mcp"}
+}
+
+// sharedHostRules keeps the rules OpenShell may see for a REST API that
+// shares its host with an MCP server: reads by any path, and other methods
+// only on exact paths. A wildcard (POST /search/*) would also let through a
+// path such as /search/%2e%2e%2fmcp, which a server that decodes before
+// routing reads as the MCP endpoint, past the MCP endpoint's tool rules. What
+// is left out is denied, as everything without an allow rule is.
+func sharedHostRules(rules []*catalog.Rule) []*catalog.Rule {
+	var out []*catalog.Rule
+	for _, r := range rules {
+		m := r.Match.REST
+		if m == nil {
+			out = append(out, r)
+			continue
+		}
+		switch m.Method {
+		case "GET", "HEAD", "OPTIONS":
+			out = append(out, r)
+		default:
+			if !strings.Contains(m.Path, "{") {
+				out = append(out, r)
+			}
+		}
+	}
+	return out
+}
 
 func hasREST(prov *catalog.Provider, rules []*catalog.Rule) bool {
 	if prov.Defaults.RESTSafeMethods != "" {

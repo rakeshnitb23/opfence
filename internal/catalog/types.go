@@ -128,6 +128,11 @@ var SchemaKinds = []string{"openapi", "graphql", "heroku", "botocore"}
 type MCPInfo struct {
 	Names   []string `yaml:"names"`   // names users commonly give the server in MCP configs
 	Package string   `yaml:"package"` // npm or PyPI package, for documentation
+	// Paths are where a hosted server speaks MCP on the provider's hosts,
+	// each with every path under it (/mcp covers /mcp/readonly). Requests
+	// to other paths are read as REST, for an API that shares the host.
+	// Empty means every path.
+	Paths []string `yaml:"paths"`
 }
 
 // Status is how far a rule has been checked.

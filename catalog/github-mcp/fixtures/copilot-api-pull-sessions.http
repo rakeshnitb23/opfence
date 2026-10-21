@@ -1,0 +1,6 @@
+# description: GET /agents/sessions/resource/pull/PR_kwDOAbc123
+GET /agents/sessions/resource/pull/PR_kwDOAbc123 HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+

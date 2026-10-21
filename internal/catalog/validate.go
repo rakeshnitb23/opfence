@@ -11,6 +11,7 @@ import (
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
 	"github.com/rakeshnitb23/opfence/internal/decode"
+	"github.com/rakeshnitb23/opfence/internal/request"
 )
 
 var (
@@ -282,7 +283,44 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 				mcpNameOwner[n] = p.ID
 			}
 		}
+		if len(p.MCP.Paths) > 0 && len(p.Hosts) == 0 {
+			l.addf(file, 0, "mcp.paths needs provider hosts")
+		}
+		seen := map[string]bool{}
+		for _, mp := range p.MCP.Paths {
+			segs, ok := request.NormalizePath(mp)
+			if !ok || len(segs) == 0 || mp != "/"+strings.Join(segs, "/") {
+				l.addf(file, 0, "mcp path %q must be an absolute path without empty or dot segments or a trailing /", mp)
+			}
+			if seen[mp] {
+				l.addf(file, 0, "mcp path %q is listed twice", mp)
+			}
+			seen[mp] = true
+		}
 	}
+}
+
+// underMCPPath returns the MCP path a REST template can only match requests
+// under, which the decoder reads as MCP, or "" when it can match others.
+func underMCPPath(t *Template, paths []string) string {
+	for _, mp := range paths {
+		ps, ok := request.NormalizePath(mp)
+		if !ok || len(ps) > len(t.Segments) {
+			continue
+		}
+		under := true
+		for i, s := range ps {
+			ts := t.Segments[i]
+			if ts.Rest || ts.Param != "" || ts.Literal != s {
+				under = false
+				break
+			}
+		}
+		if under {
+			return mp
+		}
+	}
+	return ""
 }
 
 func (l *loader) validateRule(r *Rule) {
@@ -487,6 +525,16 @@ func (l *loader) validateMatch(r *Rule) {
 		}
 		if len(p.Hosts) == 0 {
 			l.addf(f, ln, "%s: rest rules need provider hosts", r.ID)
+		}
+		if p.MCP != nil {
+			// Without mcp.paths every request to the hosts is read as MCP.
+			if len(p.MCP.Paths) == 0 {
+				l.addf(f, ln, "%s: rest rules on an MCP server's hosts need mcp.paths", r.ID)
+			} else if t != nil {
+				if mp := underMCPPath(t, p.MCP.Paths); mp != "" {
+					l.addf(f, ln, "%s: rest path %s is under mcp path %s, which is read as MCP", r.ID, m.REST.Path, mp)
+				}
+			}
 		}
 	case m.GraphQL != nil:
 		switch m.GraphQL.Type {

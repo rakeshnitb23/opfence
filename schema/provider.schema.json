@@ -89,7 +89,14 @@
       "required": ["names"],
       "properties": {
         "names": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" } },
-        "package": { "type": "string" }
+        "package": { "type": "string" },
+        "paths": {
+          "type": "array",
+          "description": "Where a hosted server speaks MCP on the provider's hosts, each with every path under it; other paths are read as REST",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^(/[^/]+)+$" }
+        }
       }
     },
     "schemas": {

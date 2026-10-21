@@ -1,0 +1,306 @@
+# Copilot API on api.githubcopilot.com, which also serves GitHub's MCP server
+# (mcp.paths keeps MCP to /mcp). Paths from @vscode/copilot-api 0.5.2, the
+# published client VS Code's Copilot Chat calls it with; Copilot tokens whose
+# endpoints name another API host (api.individual.githubcopilot.com and kin)
+# send the same requests there, which no provider claims.
+operations:
+  - id: github-mcp.copilot-api.chat-completions
+    match: { rest: { method: POST, path: "/chat/completions" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Model inference on the user's Copilot plan: it changes nothing the user owns. Some models
+      count against the plan's premium requests.
+    tests:
+      - fixture: fixtures/copilot-api-chat-completions.http
+        expect: read
+
+  - id: github-mcp.copilot-api.responses
+    match: { rest: { method: POST, path: "/responses" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Model inference on the user's Copilot plan: it changes nothing the user owns. Some models
+      count against the plan's premium requests.
+    tests:
+      - fixture: fixtures/copilot-api-responses.http
+        expect: read
+
+  - id: github-mcp.copilot-api.messages
+    match: { rest: { method: POST, path: "/v1/messages" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Model inference on the user's Copilot plan: it changes nothing the user owns. Some models
+      count against the plan's premium requests.
+    tests:
+      - fixture: fixtures/copilot-api-messages.http
+        expect: read
+
+  - id: github-mcp.copilot-api.embeddings
+    match: { rest: { method: POST, path: "/embeddings" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Model inference on the user's Copilot plan: it changes nothing the user owns. Some models
+      count against the plan's premium requests.
+    tests:
+      - fixture: fixtures/copilot-api-embeddings.http
+        expect: read
+
+  - id: github-mcp.copilot-api.list-models
+    match: { rest: { method: GET, path: "/models" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-list-models.http
+        expect: read
+
+  - id: github-mcp.copilot-api.read-model
+    match: { rest: { method: GET, path: "/models/{model}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-read-model.http
+        expect: read
+
+  - id: github-mcp.copilot-api.enable-model
+    match: { rest: { method: POST, path: "/models/{model}/policy" } }
+    class: write
+    card: "Enable model {model} for the Copilot account"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Accepts a model's terms for the account, as the model picker does.
+    tests:
+      - fixture: fixtures/copilot-api-enable-model.http
+        expect: write
+
+  - id: github-mcp.copilot-api.auto-model-session
+    match: { rest: { method: POST, path: "/models/session" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Picks a model for the session (auto mode).
+    tests:
+      - fixture: fixtures/copilot-api-auto-model-session.http
+        expect: read
+
+  - id: github-mcp.copilot-api.auto-model-intent
+    match: { rest: { method: POST, path: "/models/session/intent" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Picks a model for a prompt (auto mode).
+    tests:
+      - fixture: fixtures/copilot-api-auto-model-intent.http
+        expect: read
+
+  - id: github-mcp.copilot-api.list-agents
+    match: { rest: { method: GET, path: "/agents" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      The Copilot Extensions the user has installed.
+    tests:
+      - fixture: fixtures/copilot-api-list-agents.http
+        expect: read
+
+  - id: github-mcp.copilot-api.agent-chat
+    match: { rest: { method: POST, path: "/agents/{agent}" } }
+    class: irreversible
+    card: "Send a chat request to Copilot agent {agent}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      A Copilot Extension is another agent, run by a third party with access the user granted it; a
+      free-form request to it is irreversible, as other tools that hand instructions to an agent
+      are.
+    tests:
+      - fixture: fixtures/copilot-api-agent-chat.http
+        expect: irreversible
+
+  - id: github-mcp.copilot-api.list-skills
+    match: { rest: { method: GET, path: "/skills" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-list-skills.http
+        expect: read
+
+  - id: github-mcp.copilot-api.search-skill
+    match: { rest: { method: POST, path: "/search/{skill}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      A search skill (web or docs search) answers a query.
+    tests:
+      - fixture: fixtures/copilot-api-search-skill.http
+        expect: read
+
+  - id: github-mcp.copilot-api.list-sessions
+    match: { rest: { method: GET, path: "/agents/sessions" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Copilot coding agent sessions.
+    tests:
+      - fixture: fixtures/copilot-api-list-sessions.http
+        expect: read
+
+  - id: github-mcp.copilot-api.read-session
+    match: { rest: { method: GET, path: "/agents/sessions/{session}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-read-session.http
+        expect: read
+
+  - id: github-mcp.copilot-api.session-logs
+    match: { rest: { method: GET, path: "/agents/sessions/{session}/logs" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-session-logs.http
+        expect: read
+
+  - id: github-mcp.copilot-api.pull-sessions
+    match: { rest: { method: GET, path: "/agents/sessions/resource/pull/{pull}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-pull-sessions.http
+        expect: read
+
+  - id: github-mcp.copilot-api.start-coding-agent
+    match: { rest: { method: POST, path: "/agents/swe/{version}/jobs/{owner}/{repo}" } }
+    class: irreversible
+    resource: { arg: repo, kind: repo }
+    card: "Start the Copilot coding agent on {owner}/{repo}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    notes: >-
+      Hands a free-form task to the Copilot coding agent, which pushes branches and opens a pull
+      request in the repository: irreversible, as other tools that hand instructions to an agent
+      are.
+    tests:
+      - fixture: fixtures/copilot-api-start-coding-agent.http
+        expect: irreversible
+        resource: "shop"
+
+  - id: github-mcp.copilot-api.read-coding-agent-job
+    match: { rest: { method: GET, path: "/agents/swe/{version}/jobs/{owner}/{repo}/{job}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-read-coding-agent-job.http
+        expect: read
+
+  - id: github-mcp.copilot-api.coding-agent-job-for-session
+    match: { rest: { method: GET, path: "/agents/swe/{version}/jobs/{owner}/{repo}/session/{session}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-coding-agent-job-for-session.http
+        expect: read
+
+  - id: github-mcp.copilot-api.coding-agent-enabled
+    match: { rest: { method: GET, path: "/agents/swe/{version}/jobs/{owner}/{repo}/enabled" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-coding-agent-enabled.http
+        expect: read
+
+  - id: github-mcp.copilot-api.coding-agent-models
+    match: { rest: { method: GET, path: "/agents/swe/models" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-coding-agent-models.http
+        expect: read
+
+  - id: github-mcp.copilot-api.list-custom-agents
+    match: { rest: { method: GET, path: "/agents/swe/custom-agents/{owner}/{repo}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-list-custom-agents.http
+        expect: read
+
+  - id: github-mcp.copilot-api.read-custom-agent
+    match: { rest: { method: GET, path: "/agents/swe/custom-agents/{owner}/{repo}/{agent}" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://www.npmjs.com/package/@vscode/copilot-api/v/0.5.2
+    tests:
+      - fixture: fixtures/copilot-api-read-custom-agent.http
+        expect: read

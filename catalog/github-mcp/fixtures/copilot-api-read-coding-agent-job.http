@@ -1,0 +1,6 @@
+# description: GET /agents/swe/v1/jobs/acme/shop/job_8d1e
+GET /agents/swe/v1/jobs/acme/shop/job_8d1e HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+

@@ -1,0 +1,8 @@
+# description: POST /models/session/intent
+POST /models/session/intent HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"prompt": "fix the test"}

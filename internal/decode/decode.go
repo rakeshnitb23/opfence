@@ -12,6 +12,7 @@ import (
 	"encoding/base64"
 	"github.com/rakeshnitb23/opfence/internal/request"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -64,6 +65,7 @@ type Hints struct {
 	GraphQLPaths []string    // request paths that carry GraphQL
 	SigV4        bool        // AWS SigV4-signed API
 	MCP          bool        // remote MCP server
+	MCPPaths     []string    // paths that carry MCP, with everything under them; empty means every path
 	Git          bool        // host serves git's smart HTTP protocol
 	HeaderArgs   []HeaderArg // headers whose non-secret parts become arguments
 }
@@ -85,7 +87,7 @@ func Decode(r *request.Request, h Hints) []Operation {
 	switch {
 	case h.SigV4:
 		ops = decodeAWS(r)
-	case h.MCP:
+	case h.MCP && isMCPPath(r.Path, h.MCPPaths):
 		ops = decodeMCP(r)
 	case h.Git && isGitPath(r.Path):
 		ops = decodeGit(r)
@@ -159,6 +161,45 @@ func headerArg(v, parse string) map[string]any {
 
 func failed(r *request.Request, protocol, msg string) Operation {
 	return Operation{Protocol: protocol, Method: r.Method, Path: r.Path, Error: msg}
+}
+
+// isMCPPath reports whether a request to a remote MCP server's host is an
+// MCP request: its path is one of paths or under one, compared segment by
+// segment after dot segments are resolved. With no paths, every path is.
+// The path counts as MCP if it is under one either as sent or with its
+// percent-encoding decoded first, so /models/%2e%2e%2fmcp, which a server
+// that decodes before routing reads as /mcp, is not read as REST. A path
+// that cannot be resolved counts as MCP, whose decoder then fails it.
+func isMCPPath(rawPath string, paths []string) bool {
+	if len(paths) == 0 {
+		return true
+	}
+	segs, ok := request.NormalizePath(rawPath)
+	if !ok {
+		return true
+	}
+	forms := [][]string{segs}
+	if dec, err := url.PathUnescape(rawPath); err != nil {
+		return true
+	} else if dec != rawPath {
+		ds, ok := request.NormalizePath(dec)
+		if !ok {
+			return true
+		}
+		forms = append(forms, ds)
+	}
+	for _, p := range paths {
+		ps, ok := request.NormalizePath(p)
+		if !ok {
+			continue
+		}
+		for _, f := range forms {
+			if len(ps) <= len(f) && slices.Equal(f[:len(ps)], ps) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func isGraphQLPath(rawPath string, paths []string) bool {

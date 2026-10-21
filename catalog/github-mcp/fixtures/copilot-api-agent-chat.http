@@ -1,0 +1,8 @@
+# description: Send a chat request to Copilot agent github-code-review
+POST /agents/github-code-review?chat HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"messages": [{"role": "user", "content": "deploy the fix"}]}

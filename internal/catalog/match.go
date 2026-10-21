@@ -71,6 +71,9 @@ func (c *Catalog) ProviderForMCPName(name string) *Provider {
 // Hints tells the decoder what the provider speaks on host.
 func (p *Provider) Hints(host string) decode.Hints {
 	h := decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
+	if p.MCP != nil {
+		h.MCPPaths = p.MCP.Paths
+	}
 	for _, a := range p.HeaderArgs {
 		h.HeaderArgs = append(h.HeaderArgs, decode.HeaderArg{Header: a.Header, Arg: a.Arg, Parse: a.Parse})
 	}
