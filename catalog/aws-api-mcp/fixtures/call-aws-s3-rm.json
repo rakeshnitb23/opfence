@@ -1,0 +1,7 @@
+{
+  "description": "Delete every object under a prefix",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws s3 rm s3://shop-assets/uploads/ --recursive"
+  }
+}

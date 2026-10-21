@@ -46,6 +46,16 @@ func (l *loader) validate(c *Catalog) {
 			l.addf(f, 0, "fixture is not referenced by any rule test")
 		}
 	}
+	for _, p := range c.Providers {
+		for _, r := range p.Rules {
+			if r.Classify == nil || r.Classify.AWSCLI == "" || r.Classify.Provider == "" {
+				continue
+			}
+			if t := c.Provider(r.Classify.Provider); t == nil || !t.SigV4 {
+				l.addf(r.File, r.Line, "%s: classify.provider %q is not a sigv4 provider in the catalog", r.ID, r.Classify.Provider)
+			}
+		}
+	}
 }
 
 // validateProviders checks every provider's own file, and the hosts and MCP
@@ -325,11 +335,25 @@ func (l *loader) validateRule(r *Rule) {
 		}
 	}
 	if c := r.Classify; c != nil {
+		kinds := 0
+		for _, set := range []bool{len(c.SQL) > 0, len(c.Redis) > 0, c.AWSCLI != ""} {
+			if set {
+				kinds++
+			}
+		}
 		switch {
-		case len(c.SQL) == 0 && len(c.Redis) == 0:
-			l.addf(f, ln, "%s: classify needs sql: <argument> or redis: <argument>", r.ID)
-		case len(c.SQL) > 0 && len(c.Redis) > 0:
-			l.addf(f, ln, "%s: classify takes sql or redis, not both", r.ID)
+		case kinds == 0:
+			l.addf(f, ln, "%s: classify needs sql: <argument>, redis: <argument> or aws_cli: <argument>", r.ID)
+		case kinds > 1:
+			l.addf(f, ln, "%s: classify takes one of sql, redis and aws_cli", r.ID)
+		case c.AWSCLI != "" && !argPathRe.MatchString(c.AWSCLI):
+			l.addf(f, ln, "%s: classify.aws_cli %q is not an argument path", r.ID, c.AWSCLI)
+		case c.AWSCLI != "" && c.Provider == "":
+			l.addf(f, ln, "%s: classify.aws_cli needs provider: the SigV4 provider whose rules decide", r.ID)
+		case c.AWSCLI == "" && c.Provider != "":
+			l.addf(f, ln, "%s: classify.provider is for aws_cli", r.ID)
+		case c.AWSCLI != "" && (len(c.Dialect) > 0 || c.Format != ""):
+			l.addf(f, ln, "%s: classify.dialect and classify.format are for sql", r.ID)
 		case len(c.Redis) > 0 && (len(c.Dialect) > 0 || c.Format != ""):
 			l.addf(f, ln, "%s: classify.dialect and classify.format are for sql", r.ID)
 		}

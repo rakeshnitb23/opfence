@@ -159,6 +159,7 @@ func TestSchemaRejects(t *testing.T) {
 		{rs, "classify bad format", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, format: hrana }\n", 1)},
 		{rs, "classify empty sql list", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: [] }\n", 1)},
 		{rs, "classify sql and redis", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, redis: c }\n", 1)},
+		{rs, "classify aws_cli without provider", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { aws_cli: c }\n", 1)},
 		{rs, "classify redis with a dialect", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { redis: c, dialect: mysql }\n", 1)},
 	}
 	good := []string{
@@ -167,6 +168,7 @@ func TestSchemaRejects(t *testing.T) {
 		"classify: { sql: q, dialect: [mysql, postgres] }",
 		"classify: { sql: body, format: libsql }",
 		"classify: { redis: commands }",
+		"classify: { aws_cli: cli_command, provider: aws }",
 	}
 	for _, g := range good {
 		doc := strings.Replace(goodRules, "class: delete\n", "class: delete\n    "+g+"\n", 1)

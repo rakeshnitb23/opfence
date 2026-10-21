@@ -1,0 +1,7 @@
+{
+  "description": "Delete a database but keep a final snapshot",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws rds delete-db-instance --db-instance-identifier shop-db --no-skip-final-snapshot --final-db-snapshot-identifier shop-db-final"
+  }
+}

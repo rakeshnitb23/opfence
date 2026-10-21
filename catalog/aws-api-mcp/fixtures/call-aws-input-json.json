@@ -1,0 +1,7 @@
+{
+  "description": "Parameters from a file Opfence cannot see",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws ec2 run-instances --cli-input-json file://launch.json"
+  }
+}
