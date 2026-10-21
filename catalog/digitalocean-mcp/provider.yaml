@@ -8,9 +8,9 @@ hosts: ["*.mcp.digitalocean.com"]
 auth:
   - header: Authorization
     scheme: Bearer                 # a DigitalOcean API token (dop_v1_...)
+secrets_from: [digitalocean]         # the same API tokens; their prefixes are detected by catalog/digitalocean
 detect:
   env: [DIGITALOCEAN_API_TOKEN]    # what the local server reads (README)
-  prefixes: [dop_v1_, doo_v1_, dor_v1_]
 mcp:
   # The README registers the servers as digitalocean-<service> (claude mcp add
   # --transport http digitalocean-apps ...); the other names follow the pattern.

@@ -5,9 +5,7 @@ hosts: [mcp.render.com]
 auth:
   - header: Authorization
     scheme: Bearer
-detect:
-  env: [RENDER_API_KEY]
-  prefixes: [rnd_]
+secrets_from: [render]               # RENDER_API_KEY, detected by catalog/render
 mcp:
   names: [render]
   package: "github.com/render-oss/render-mcp-server"   # Go module; Render ships no npm or PyPI package

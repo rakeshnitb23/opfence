@@ -141,6 +141,14 @@ func TestLoadInvalid(t *testing.T) {
 		{"mcp tools default read", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: read"), "mcp_tools may not be read"},
 		{"mcp tools default without mcp", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: irreversible"), "mcp_tools needs an mcp block"},
 		{"mcp tools default bad class", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: risky"), "defaults.mcp_tools: unknown class"},
+		{"secrets from itself", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nsecrets_from: [acme]"), "names the provider itself"},
+		{"secrets from nobody", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nsecrets_from: [nope]"), "no provider nope"},
+		{"duplicate detect env", func(m fstest.MapFS) {
+			m["other/provider.yaml"] = &fstest.MapFile{Data: []byte("provider: other\ntitle: Other\ndocs: https://other.dev\nhosts: [api.other.dev]\nauth:\n  - header: Authorization\ndetect:\n  env: [ACME_TOKEN]\n")}
+		}, "detect.env ACME_TOKEN is already detected by provider acme"},
+		{"overlapping detect prefix", func(m fstest.MapFS) {
+			m["other/provider.yaml"] = &fstest.MapFile{Data: []byte("provider: other\ntitle: Other\ndocs: https://other.dev\nhosts: [api.other.dev]\nauth:\n  - header: Authorization\ndetect:\n  prefixes: [acme_live_]\n")}
+		}, "overlaps acme_ detected by provider acme"},
 		{"rest on mcp host without paths", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]"), "need mcp.paths"},
 		{"rest under mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/v1/dbs]"), "is under mcp path /v1/dbs"},
 		{"bad mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/mcp/]"), "must be an absolute path"},

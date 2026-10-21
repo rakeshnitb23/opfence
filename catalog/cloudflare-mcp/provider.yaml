@@ -8,6 +8,7 @@ hosts: [mcp.cloudflare.com, "*.mcp.cloudflare.com"]
 auth:
   - header: Authorization
     scheme: Bearer                 # OAuth access token, or a Cloudflare API token
+secrets_from: [cloudflare]           # the same API tokens the REST API takes
 mcp:
   # The READMEs name cloudflare-api, cloudflare-blog, cloudflare-casb and
   # cloudflare-stack; the other names follow the same pattern.

@@ -54,6 +54,10 @@ type Provider struct {
 	// handles them as it handles hosts outside the catalog, instead of
 	// refusing every port but 443.
 	DatabasePorts []int `yaml:"database_ports"`
+	// SecretsFrom names providers whose secrets this provider's auth
+	// locations also take: a hosted MCP server that accepts the same API
+	// token as its vendor's REST API (stripe-mcp takes stripe's keys).
+	SecretsFrom []string `yaml:"secrets_from"`
 	// Schemas are the published schemas the rules were built from, which
 	// `opfence catalog check-sources` compares them with.
 	Schemas []SchemaSource `yaml:"schemas"`

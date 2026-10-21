@@ -19,6 +19,7 @@ hosts: [api.githubcopilot.com]
 auth:
   - header: Authorization          # a GitHub PAT or OAuth token, "Bearer <token>"
     scheme: Bearer
+secrets_from: [github]               # a GitHub PAT or OAuth token, whichever provider found it
 # GITHUB_PERSONAL_ACCESS_TOKEN is the local server's variable. GITHUB_TOKEN,
 # GH_TOKEN and the ghp_/github_pat_ prefixes belong to catalog/github.
 detect:

@@ -67,6 +67,37 @@ func (l *loader) validateProviders(c *Catalog) {
 	for _, p := range c.Providers {
 		l.validateProvider(p, hostOwner, mcpNameOwner)
 	}
+	// A credential found by its variable or prefix goes to one provider;
+	// another that takes it says so with secrets_from.
+	envOwner, prefixOwner := map[string]string{}, map[string]string{}
+	for _, p := range c.Providers {
+		file := path.Join(p.Dir, ProviderFile)
+		for _, e := range p.Detect.Env {
+			if prev, ok := envOwner[e]; ok {
+				l.addf(file, 0, "detect.env %s is already detected by provider %s; list it in secrets_from instead", e, prev)
+			} else {
+				envOwner[e] = p.ID
+			}
+		}
+		for _, pre := range p.Detect.Prefixes {
+			for other, owner := range prefixOwner {
+				if owner != p.ID && (strings.HasPrefix(pre, other) || strings.HasPrefix(other, pre)) {
+					l.addf(file, 0, "detect.prefixes %s overlaps %s detected by provider %s; list it in secrets_from instead", pre, other, owner)
+				}
+			}
+			prefixOwner[pre] = p.ID
+		}
+		for _, from := range p.SecretsFrom {
+			switch {
+			case from == p.ID:
+				l.addf(file, 0, "secrets_from names the provider itself")
+			case c.Provider(from) == nil:
+				l.addf(file, 0, "secrets_from: no provider %s", from)
+			case len(p.Auth) == 0:
+				l.addf(file, 0, "secrets_from needs auth locations to put the secrets in")
+			}
+		}
+	}
 	for h, owner := range hostOwner {
 		if !strings.Contains(h, "*") {
 			continue

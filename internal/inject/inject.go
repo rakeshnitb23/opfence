@@ -1,13 +1,15 @@
 // Package inject swaps placeholders for real credentials on the way out,
 // only in the auth locations a provider declares and only for that
-// provider's own secrets, and swaps real values back to placeholders in
-// responses (docs/ARCHITECTURE.md §8.4).
+// provider's own secrets and those of the providers it lists in
+// secrets_from, and swaps real values back to placeholders in responses
+// (docs/ARCHITECTURE.md §8.4).
 package inject
 
 import (
 	"encoding/base64"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/rakeshnitb23/opfence/internal/catalog"
@@ -35,7 +37,7 @@ func Request(prov *catalog.Provider, h http.Header, rawQuery string, set *secret
 		if s == nil {
 			return token, false
 		}
-		if s.Provider != prov.ID {
+		if s.Provider != prov.ID && !slices.Contains(prov.SecretsFrom, s.Provider) {
 			res.Foreign = append(res.Foreign, s.Provider+"/"+s.Name)
 			return token, false
 		}
