@@ -1,0 +1,7 @@
+# description: Disconnect acct_1ShopConnect01 from the platform
+POST /oauth/deauthorize HTTP/1.1
+Host: connect.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+client_id=ca_PlatformApp01&stripe_user_id=acct_1ShopConnect01

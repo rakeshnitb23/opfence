@@ -1,0 +1,7 @@
+# description: Refresh a connected account's Connect access token
+POST /oauth/token HTTP/1.1
+Host: connect.stripe.com
+Authorization: Bearer opf_stripe_EXAMPLE
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&refresh_token=rt_ShopConnectRefresh01

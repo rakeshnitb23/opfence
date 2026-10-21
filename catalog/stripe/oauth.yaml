@@ -1,0 +1,73 @@
+# Stripe Connect OAuth on connect.stripe.com (stripe-node's OAuthResource):
+# the platform exchanges an authorization code for a connected account's
+# secret key, and disconnects accounts. Not in Stripe's OpenAPI file.
+operations:
+  - id: stripe.oauth.authorize
+    match: { rest: { method: GET, path: "/oauth/authorize" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Connect OAuth endpoints on connect.stripe.com, which Stripe's OpenAPI file leaves out"
+    sources:
+      - https://github.com/stripe/stripe-node/blob/master/src/resources/OAuth.ts
+      - https://docs.stripe.com/connect/oauth-reference
+    notes: >-
+      The consent page an account owner signs in to; nothing is granted until
+      they approve it in their own browser session.
+    tests:
+      - fixture: fixtures/oauth-authorize.http
+        expect: read
+
+  - id: stripe.oauth.express-authorize
+    match: { rest: { method: GET, path: "/express/oauth/authorize" } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Connect OAuth endpoints on connect.stripe.com, which Stripe's OpenAPI file leaves out"
+    sources:
+      - https://github.com/stripe/stripe-node/blob/master/src/resources/OAuth.ts
+    notes: >-
+      The Express accounts' consent and onboarding page; nothing is granted
+      until the account owner approves it.
+    tests:
+      - fixture: fixtures/oauth-express-authorize.http
+        expect: read
+
+  - id: stripe.oauth.token
+    match: { rest: { method: POST, path: "/oauth/token" } }
+    class: credential
+    card: "Exchange a Connect OAuth {body.grant_type} for a connected account's secret key"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Connect OAuth endpoints on connect.stripe.com, which Stripe's OpenAPI file leaves out"
+    sources:
+      - https://github.com/stripe/stripe-node/blob/master/src/resources/OAuth.ts
+      - https://docs.stripe.com/connect/oauth-reference
+    notes: >-
+      Both grant types (authorization_code and refresh_token) return an
+      access_token that works as the connected account's secret API key and
+      does not expire, with a refresh token and the publishable key.
+    tests:
+      - fixture: fixtures/oauth-token-code.http
+        expect: credential
+      - fixture: fixtures/oauth-token-refresh.http
+        expect: credential
+
+  - id: stripe.oauth.deauthorize
+    match: { rest: { method: POST, path: "/oauth/deauthorize" } }
+    class: access
+    resource: { arg: body.stripe_user_id, kind: account }
+    card: "Disconnect connected account {body.stripe_user_id} from platform {body.client_id}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Connect OAuth endpoints on connect.stripe.com, which Stripe's OpenAPI file leaves out"
+    sources:
+      - https://github.com/stripe/stripe-node/blob/master/src/resources/OAuth.ts
+      - https://docs.stripe.com/connect/oauth-reference
+    notes: >-
+      Revokes the platform's access to the account and every token issued for
+      it; only the account owner can connect it again.
+    tests:
+      - fixture: fixtures/oauth-deauthorize.http
+        expect: access
+        resource: acct_1ShopConnect01

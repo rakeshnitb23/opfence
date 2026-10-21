@@ -1,0 +1,4 @@
+# description: Open the Connect OAuth consent page
+GET /oauth/authorize?response_type=code&client_id=ca_PlatformApp01&scope=read_write HTTP/1.1
+Host: connect.stripe.com
+
