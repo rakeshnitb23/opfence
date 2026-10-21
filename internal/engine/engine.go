@@ -154,6 +154,9 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 					ev.ClassSource = "rule class with the response transformed"
 				}
 			}
+		} else if dr := p.ToolDefault(op); dr != nil {
+			ev.Rule = dr
+			ev.Classes, ev.ClassSource = []classes.Class{dr.Class}, "provider default for tools no rule names"
 		} else {
 			c, src := p.DefaultClass(op)
 			ev.Classes, ev.ClassSource = []classes.Class{c}, src
@@ -168,13 +171,20 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 	if p != nil {
 		provID = p.ID
 	}
-	ev.Environment, ev.EnvSource = e.Policy.Environment(provID, func(arg string) (string, bool) {
+	// lookup reads an argument for environment mapping and the resource. A
+	// rule made from defaults.mcp_tools names its tool with ToolArg, which
+	// comes from the tool name, never from an argument of that name.
+	lookup := func(arg string) (string, bool) {
+		if ev.Rule != nil && ev.Rule.Status == catalog.ToolDefault && arg == catalog.ToolArg {
+			return op.Tool, true
+		}
 		v, ok := catalog.Lookup(ev.Args, arg)
 		if !ok {
 			return "", false
 		}
 		return catalog.Scalar(v)
-	})
+	}
+	ev.Environment, ev.EnvSource = e.Policy.Environment(provID, lookup)
 
 	ruleID := ""
 	if ev.Rule != nil {
@@ -196,12 +206,10 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 	}
 
 	if ev.Rule != nil && ev.Rule.Resource != nil {
-		if v, ok := catalog.Lookup(ev.Args, ev.Rule.Resource.Arg); ok {
-			if s, ok := catalog.Scalar(v); ok {
-				// The resource is shown in approval prompts and the hook's
-				// reason, and comes from the request.
-				ev.Resource = Sanitize(s, 200)
-			}
+		if s, ok := lookup(ev.Rule.Resource.Arg); ok {
+			// The resource is shown in approval prompts and the hook's
+			// reason, and comes from the request.
+			ev.Resource = Sanitize(s, 200)
 		}
 	}
 	ev.Card = card(ev, host)

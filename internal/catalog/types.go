@@ -98,6 +98,9 @@ type Defaults struct {
 	GraphQLQuery    classes.Class `yaml:"graphql_query"`     // class for any GraphQL query
 	RESTSafeMethods classes.Class `yaml:"rest_safe_methods"` // class for GET, HEAD and OPTIONS
 	AWSReadActions  classes.Class `yaml:"aws_read_actions"`  // class for Describe*, Get*, List*, Head*, BatchGet*, Scan, Query
+	// MCPTools is the class of an MCP tool call no rule names, for servers
+	// whose tools the user names (one tool per Lambda function). Never read.
+	MCPTools classes.Class `yaml:"mcp_tools"`
 	// GraphQLSecretFields names fields that hold secrets wherever they
 	// appear; an operation that selects one at any depth is also credential.
 	GraphQLSecretFields []string `yaml:"graphql_secret_fields"`
@@ -135,6 +138,9 @@ const (
 	Verified  Status = "verified"  // has a primary source, a fixture and a verified date
 	Community Status = "community" // reviewed, not yet proven by a fixture
 	Draft     Status = "draft"     // proposed; not used for decisions by default
+	// ToolDefault marks the rule the engine makes from defaults.mcp_tools for
+	// a tool no rule names (Provider.ToolDefault). Never written in YAML.
+	ToolDefault Status = "provider default"
 )
 
 // Rule classifies one operation.

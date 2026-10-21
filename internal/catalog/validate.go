@@ -239,10 +239,19 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			l.addf(file, 0, "detect.prefixes %q is too short to identify a token", pre)
 		}
 	}
-	for name, c := range map[string]classes.Class{"graphql_query": p.Defaults.GraphQLQuery, "rest_safe_methods": p.Defaults.RESTSafeMethods, "aws_read_actions": p.Defaults.AWSReadActions} {
+	for name, c := range map[string]classes.Class{"graphql_query": p.Defaults.GraphQLQuery, "rest_safe_methods": p.Defaults.RESTSafeMethods,
+		"aws_read_actions": p.Defaults.AWSReadActions, "mcp_tools": p.Defaults.MCPTools} {
 		if c != "" && !c.Valid() {
 			l.addf(file, 0, "defaults.%s: unknown class %q", name, c)
 		}
+	}
+	// A tool no rule names is one nobody has read, so its default may not
+	// let it through as a read.
+	if p.Defaults.MCPTools == classes.Read {
+		l.addf(file, 0, "defaults.mcp_tools may not be read")
+	}
+	if p.Defaults.MCPTools != "" && p.MCP == nil {
+		l.addf(file, 0, "defaults.mcp_tools needs an mcp block")
 	}
 	if p.Defaults.GraphQLQuery != "" && len(p.GraphQL) == 0 {
 		l.addf(file, 0, "defaults.graphql_query needs graphql paths")

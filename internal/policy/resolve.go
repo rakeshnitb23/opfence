@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
@@ -213,6 +214,8 @@ func ruleOverride(f *File, ruleID, env string) (classes.Decision, bool) {
 // CatalogWarnings checks the policy against the catalog: rule overrides that
 // match no rule (usually a typo, which would otherwise do nothing silently),
 // environment mappings and server aliases naming providers it does not have.
+// A rule id ending in * stands for every id with that prefix: the rules a
+// provider's defaults.mcp_tools makes, <provider>.tool.<tool>.
 func (e *Effective) CatalogWarnings(ruleIDs, providerIDs []string) []string {
 	providers := map[string]bool{}
 	for _, id := range providerIDs {
@@ -227,6 +230,13 @@ func (e *Effective) CatalogWarnings(ruleIDs, providerIDs []string) []string {
 		for _, o := range f.Rules {
 			matched := false
 			for _, id := range ruleIDs {
+				if prefix, open := strings.CutSuffix(id, "*"); open {
+					if ok, _ := path.Match(o.Rule, prefix+"any_tool"); ok || strings.HasPrefix(o.Rule, prefix) {
+						matched = true
+						break
+					}
+					continue
+				}
 				if ok, _ := path.Match(o.Rule, id); ok {
 					matched = true
 					break

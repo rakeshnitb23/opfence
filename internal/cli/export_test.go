@@ -115,6 +115,23 @@ func TestPolicyCheckCatalogWarnings(t *testing.T) {
 	}
 }
 
+// Overrides of the rules defaults.mcp_tools makes (<provider>.tool.<tool>)
+// match no catalog rule but are not typos.
+func TestPolicyCheckToolDefaultOverrides(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "opfence.yaml")
+	mustWrite(t, path, "version: 1\nrules:\n  - rule: aws-lambda-tool-mcp.tool.orders_lookup\n    decision: deny\n  - rule: aws-lambda-tool-mcp.tool.orders_*\n    decision: deny\n  - rule: aws-lambda-tool-mcp.*\n    decision: deny\n  - rule: terraform-mcp.tool.anything\n    decision: deny\n")
+	code, out, errOut := run(t, noUser(t), "--policy", path, "policy", "check")
+	if code != exitOK {
+		t.Fatalf("exit %d %s", code, errOut)
+	}
+	if strings.Contains(out, "aws-lambda-tool-mcp") {
+		t.Errorf("tool default override flagged:\n%s", out)
+	}
+	if !strings.Contains(out, "rule terraform-mcp.tool.anything matches no catalog rule") {
+		t.Errorf("override of a provider without the default not flagged:\n%s", out)
+	}
+}
+
 // Hooks load the embedded catalog lazily, and a --catalog folder whole,
 // because nothing else has validated it.
 func TestHookCatalogLoading(t *testing.T) {

@@ -3,6 +3,7 @@ package catalog
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"slices"
 	"strings"
 
@@ -190,6 +191,34 @@ func (p *Provider) DefaultClass(op decode.Operation) (classes.Class, string) {
 		}
 	}
 	return classes.Unknown, "no rule matches"
+}
+
+// ToolArg is the argument path that names the tool in a rule made by
+// ToolDefault: its resource, and what `environments:` can map.
+const ToolArg = "tool"
+
+// toolDefaultNameRe is what a tool name must look like to get a rule from
+// defaults.mcp_tools: it becomes part of a rule id, which policy overrides
+// match as a glob, so no glob characters and no slash.
+var toolDefaultNameRe = regexp.MustCompile(`^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$`)
+
+// ToolDefault returns the rule a provider's defaults.mcp_tools gives an MCP
+// tool call that no rule matches, or nil when the provider has no such
+// default or the tool name could not be part of a rule id. The rule's id is
+// <provider>.tool.<tool>, so a policy can override one tool, and its
+// resource is the tool name.
+func (p *Provider) ToolDefault(op decode.Operation) *Rule {
+	if p.Defaults.MCPTools == "" || op.Protocol != decode.MCP || op.MCPMethod != "tools/call" || !toolDefaultNameRe.MatchString(op.Tool) {
+		return nil
+	}
+	return &Rule{
+		ID:       p.ID + ".tool." + op.Tool,
+		Match:    Match{MCP: &MCPMatch{Tool: op.Tool}},
+		Class:    p.Defaults.MCPTools,
+		Resource: &Resource{Arg: ToolArg, Kind: "tool"},
+		Status:   ToolDefault,
+		Provider: p,
+	}
 }
 
 // ClassesFor returns the classes a matched rule assigns to an operation whose

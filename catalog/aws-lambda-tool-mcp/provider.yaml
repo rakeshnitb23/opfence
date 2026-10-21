@@ -11,15 +11,19 @@ docs: https://github.com/awslabs/mcp/tree/main/src/lambda-tool-mcp-server
 # Each call invokes that function synchronously (lambda:InvokeFunction), and a
 # function can do anything its role allows.
 # No rules: the tool names are the user's function names, which the catalog
-# cannot list, and the catalog has no class for "every tool of this server".
-# Every call from this server is therefore unknown, which the default policy
-# asks about in every environment. Its strictest plausible class would be
-# irreversible (an engine default for unlisted MCP tools would let this
-# provider say so).
+# cannot list. defaults.mcp_tools makes each call irreversible instead (a
+# function can do anything its role allows), as the rule
+# aws-lambda-tool-mcp.tool.<function>, with the function as its resource: in
+# production the user types the function's name to approve. The user's
+# config can override one function by that rule id
+# (aws-lambda-tool-mcp.tool.orders_lookup: allow), and environments can map
+# function names with the argument path "tool".
 # No hosts; the agent hook sees the tool calls. The README keys it
 # "awslabs.lambda-tool-mcp-server", which Claude Code writes as
 # "awslabs_lambda-tool-mcp-server" (no dots in tool names).
 # No detect or auth block: AWS credentials belong to catalog/aws.
+defaults:
+  mcp_tools: irreversible
 mcp:
   names: [awslabs_lambda-tool-mcp-server, lambda-tool-mcp-server, aws-lambda-tool, lambda-tool]
   package: "awslabs.lambda-tool-mcp-server"

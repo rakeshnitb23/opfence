@@ -76,6 +76,10 @@
         "graphql_query": { "$ref": "rules.schema.json#/$defs/class" },
         "rest_safe_methods": { "$ref": "rules.schema.json#/$defs/class" },
         "aws_read_actions": { "$ref": "rules.schema.json#/$defs/class" },
+        "mcp_tools": {
+          "description": "Class of an MCP tool call no rule names, for servers whose tools the user names; never read",
+          "allOf": [{ "$ref": "rules.schema.json#/$defs/class" }, { "not": { "const": "read" } }]
+        },
         "graphql_secret_fields": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[_A-Za-z][_0-9A-Za-z]*$" } }
       }
     },
