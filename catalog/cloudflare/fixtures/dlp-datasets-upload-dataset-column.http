@@ -1,0 +1,7 @@
+# description: Upload a new version of a multi-column dataset f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/dlp/datasets/f174e90a-fafe-4643-bbbc-4a0ed4fc8415/versions/1/entries/f174e90a-fafe-4643-bbbc-4a0ed4fc8415 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

@@ -1,0 +1,7 @@
+# description: Creates bulk DOS event with relationships and indicators
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/cloudforce-one/events/create/bulk/relationships HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

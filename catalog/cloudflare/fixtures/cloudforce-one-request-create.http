@@ -1,0 +1,7 @@
+# description: Creates a new RFI rfi
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/cloudforce-one/v2/requests/rfi HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

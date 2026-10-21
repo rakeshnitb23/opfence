@@ -1,0 +1,7 @@
+# description: Create a new dataset
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/dlp/datasets HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{"name":"words","secret":false}
