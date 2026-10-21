@@ -90,7 +90,7 @@ func sqliteStatement(n sqlite.Statement) []classes.Class {
 		if st.Table != nil && sqliteSystemTable(st.Table.Name) {
 			return one(classes.Irreversible)
 		}
-		if !sqliteLimits(st.WhereExpr) {
+		if !sqliteLimits(st.WhereExpr, sqliteTableNames(st.Table)) {
 			return one(classes.Irreversible)
 		}
 		if st.UpdateOrReplace.IsValid() {
@@ -101,7 +101,7 @@ func sqliteStatement(n sqlite.Statement) []classes.Class {
 		if st.Table != nil && sqliteSystemTable(st.Table.Name) {
 			return one(classes.Irreversible)
 		}
-		if sqliteLimits(st.WhereExpr) {
+		if sqliteLimits(st.WhereExpr, sqliteTableNames(st.Table)) {
 			return one(classes.Delete)
 		}
 		return one(classes.Irreversible)
@@ -261,27 +261,58 @@ var sqliteDangerousFuncs = map[string]bool{
 }
 
 // sqliteLimits reports whether a WHERE clause limits the rows an UPDATE or
-// DELETE touches, by the rules effectiveWhere applies to Postgres. A bare
-// double-quoted name does not count as a column: SQLite reads it as a string
-// when no column has that name, so WHERE "1" is WHERE '1', which is true.
-func sqliteLimits(e sqlite.Expr) bool {
+// DELETE of the outer table touches, by the rules effectiveWhere applies to
+// Postgres. A bare double-quoted name does not count as a column: SQLite
+// reads it as a string when no column has that name, so WHERE "1" is
+// WHERE '1', which is true.
+func sqliteLimits(e sqlite.Expr, outer map[string]bool) bool {
 	switch n := e.(type) {
 	case nil:
 		return false
 	case *sqlite.ParenExpr:
-		return sqliteLimits(n.X)
+		return sqliteLimits(n.X, outer)
+	case *sqlite.UnaryExpr:
+		if n.Op == sqlite.NOT {
+			x := n.X
+			for p, ok := x.(*sqlite.ParenExpr); ok; p, ok = x.(*sqlite.ParenExpr) {
+				x = p.X
+			}
+			if nl, ok := x.(*sqlite.Null); ok && nl.Op == sqlite.ISNULL {
+				return false // NOT id IS NULL
+			}
+		}
 	case *sqlite.BinaryExpr:
 		switch n.Op {
 		case sqlite.OR:
-			return sqliteLimits(n.X) && sqliteLimits(n.Y)
+			return sqliteLimits(n.X, outer) && sqliteLimits(n.Y, outer)
 		case sqlite.AND:
-			return sqliteLimits(n.X) || sqliteLimits(n.Y)
+			return sqliteLimits(n.X, outer) || sqliteLimits(n.Y, outer)
 		case sqlite.ISNOT:
 			if _, ok := n.Y.(*sqlite.NullLit); ok {
 				return false // id IS NOT NULL
 			}
+		case sqlite.LIKE:
+			if l, ok := n.Y.(*sqlite.StringLit); ok && likeMatchesAll(l.Value) {
+				return false // x LIKE '%'
+			}
+		case sqlite.GLOB:
+			if l, ok := n.Y.(*sqlite.StringLit); ok && l.Value != "" && strings.Trim(l.Value, "*") == "" {
+				return false // x GLOB '*'
+			}
+		case sqlite.REGEXP:
+			if l, ok := n.Y.(*sqlite.StringLit); ok && regexMatchesAll(l.Value) {
+				return false // x REGEXP ''
+			}
+		case sqlite.IN:
+			if list, ok := n.Y.(*sqlite.ExprList); ok && n.X != nil {
+				for _, x := range list.Exprs {
+					if x != nil && x.String() == n.X.String() {
+						return false // id IN (id, 7)
+					}
+				}
+			}
 		}
-		if n.X != nil && n.Y != nil && n.X.String() == n.Y.String() {
+		if _, list := n.Y.(*sqlite.ExprList); !list && n.X != nil && n.Y != nil && n.X.String() == n.Y.String() {
 			return false // id = id, id >= id, id IS id
 		}
 	case *sqlite.Null:
@@ -289,77 +320,139 @@ func sqliteLimits(e sqlite.Expr) bool {
 			return false // id NOT NULL, id NOTNULL
 		}
 	}
-	return sqliteReadsColumn(e)
+	return sqliteReadsColumn(e, nil, outer)
 }
 
-// sqliteReadsColumn reports whether an expression reads a column, looking
-// into subqueries as effectiveWhere does.
-func sqliteReadsColumn(e sqlite.Expr) bool {
+// sqliteTableNames returns the name and alias of the table a statement
+// changes.
+func sqliteTableNames(t *sqlite.QualifiedTableName) map[string]bool {
+	names := map[string]bool{}
+	if t == nil {
+		return names
+	}
+	if t.Name != nil {
+		names[strings.ToLower(t.Name.Name)] = true
+	}
+	if t.Alias != nil {
+		names[strings.ToLower(t.Alias.Name)] = true
+	}
+	return names
+}
+
+// sqliteReadsColumn reports whether an expression reads a column of the
+// statement's own rows. inner is nil at the statement's level, where every
+// column counts; inside a subquery it holds the subquery's tables, and only
+// a column that is unqualified, or qualified with an outer table or a name
+// the subquery does not define, counts (as pgReadsOuter decides).
+func sqliteReadsColumn(e sqlite.Expr, inner, outer map[string]bool) bool {
+	reads := func(x sqlite.Expr) bool { return sqliteReadsColumn(x, inner, outer) }
 	switch n := e.(type) {
 	case nil:
 		return false
 	case *sqlite.Ident:
 		return !n.Quoted
 	case *sqlite.QualifiedRef:
-		return true
+		if inner == nil || n.Table == nil {
+			return true
+		}
+		q := strings.ToLower(n.Table.Name)
+		return outer[q] || !inner[q]
 	case *sqlite.ParenExpr:
-		return sqliteReadsColumn(n.X)
+		return reads(n.X)
 	case *sqlite.UnaryExpr:
-		return sqliteReadsColumn(n.X)
+		return reads(n.X)
 	case *sqlite.BinaryExpr:
-		return sqliteReadsColumn(n.X) || sqliteReadsColumn(n.Y)
+		return reads(n.X) || reads(n.Y)
 	case *sqlite.CastExpr:
-		return sqliteReadsColumn(n.X)
+		return reads(n.X)
 	case *sqlite.CollateExpr:
-		return sqliteReadsColumn(n.X)
+		return reads(n.X)
 	case *sqlite.Null:
-		return sqliteReadsColumn(n.X)
+		return reads(n.X)
 	case *sqlite.Range:
-		return sqliteReadsColumn(n.X) || sqliteReadsColumn(n.Y)
+		return reads(n.X) || reads(n.Y)
 	case *sqlite.ExprList:
 		for _, x := range n.Exprs {
-			if sqliteReadsColumn(x) {
+			if reads(x) {
 				return true
 			}
 		}
 	case *sqlite.Call:
 		for _, x := range n.Args {
-			if sqliteReadsColumn(x) {
+			if reads(x) {
 				return true
 			}
 		}
 	case *sqlite.CaseExpr:
-		if sqliteReadsColumn(n.Operand) || sqliteReadsColumn(n.ElseExpr) {
+		if reads(n.Operand) || reads(n.ElseExpr) {
 			return true
 		}
 		for _, b := range n.Blocks {
-			if sqliteReadsColumn(b.Condition) || sqliteReadsColumn(b.Body) {
+			if reads(b.Condition) || reads(b.Body) {
 				return true
 			}
 		}
 	case *sqlite.Exists:
-		return sqliteSelectReadsColumn(n.Select)
+		return sqliteSelectReadsColumn(n.Select, inner, outer)
 	case sqlite.SelectExpr:
-		return sqliteSelectReadsColumn(n.SelectStatement)
+		return sqliteSelectReadsColumn(n.SelectStatement, inner, outer)
 	}
 	return false
 }
 
-func sqliteSelectReadsColumn(s *sqlite.SelectStatement) bool {
+// sqliteSelectReadsColumn reports whether a subquery reads a column of the
+// outer statement's rows. Its own tables, and those of any query it is
+// inside, are inner names.
+func sqliteSelectReadsColumn(s *sqlite.SelectStatement, inner, outer map[string]bool) bool {
+	scope := map[string]bool{}
+	for k := range inner {
+		scope[k] = true
+	}
+	for x := s; x != nil; x = x.Compound {
+		if x.WithClause != nil {
+			for _, c := range x.WithClause.CTEs {
+				if c != nil && c.TableName != nil {
+					scope[strings.ToLower(c.TableName.Name)] = true
+				}
+			}
+		}
+		sqliteSourceNames(x.Source, scope)
+	}
 	for ; s != nil; s = s.Compound {
 		for _, c := range s.Columns {
-			if sqliteReadsColumn(c.Expr) {
+			if sqliteReadsColumn(c.Expr, scope, outer) {
 				return true
 			}
 		}
 		for _, l := range s.ValueLists {
-			if sqliteReadsColumn(l) {
+			if sqliteReadsColumn(l, scope, outer) {
 				return true
 			}
 		}
-		if sqliteReadsColumn(s.WhereExpr) || sqliteReadsColumn(s.HavingExpr) {
+		if sqliteReadsColumn(s.WhereExpr, scope, outer) || sqliteReadsColumn(s.HavingExpr, scope, outer) {
 			return true
 		}
 	}
 	return false
+}
+
+// sqliteSourceNames adds the tables and aliases a FROM clause defines.
+func sqliteSourceNames(src sqlite.Source, names map[string]bool) {
+	switch t := src.(type) {
+	case *sqlite.QualifiedTableName:
+		if t.Name != nil {
+			names[strings.ToLower(t.Name.Name)] = true
+		}
+		if t.Alias != nil {
+			names[strings.ToLower(t.Alias.Name)] = true
+		}
+	case *sqlite.JoinClause:
+		sqliteSourceNames(t.X, names)
+		sqliteSourceNames(t.Y, names)
+	case *sqlite.ParenSource:
+		sqliteSourceNames(t.X, names)
+		if t.Alias != nil {
+			names[strings.ToLower(t.Alias.Name)] = true
+		}
+	}
 }

@@ -94,12 +94,12 @@ func classifyStatement(n ast.Node) []classes.Class {
 	case *ast.InsertStmt:
 		return one(classes.Write)
 	case *ast.UpdateStmt:
-		if effectiveWhere(st.WhereClause) {
+		if effectiveWhere(st.WhereClause, st.Relation) {
 			return one(classes.Write)
 		}
 		return one(classes.Irreversible)
 	case *ast.DeleteStmt:
-		if effectiveWhere(st.WhereClause) {
+		if effectiveWhere(st.WhereClause, st.Relation) {
 			return one(classes.Delete)
 		}
 		return one(classes.Irreversible)
@@ -436,16 +436,22 @@ func nameParts(l *ast.NodeList) []string {
 }
 
 // effectiveWhere reports whether a WHERE clause limits the rows an UPDATE
-// or DELETE touches. A missing clause does not, and neither does one that
-// reads no column (WHERE true, WHERE 1 = 1, WHERE $1, WHERE EXISTS (SELECT
-// 1)), an OR with such a branch (WHERE id = 5 OR true), an AND with no
-// limiting branch, or a common tautology (WHERE id IS NOT NULL, WHERE id =
-// id). Other tautologies can't be told apart from real filters; see
+// or DELETE of target touches. A missing clause does not, and neither does
+// one that reads no column of the statement (WHERE true, WHERE 1 = 1,
+// WHERE $1, WHERE EXISTS (SELECT 1 FROM admins a WHERE a.id = 7)), an OR
+// with such a branch (WHERE id = 5 OR true), an AND with no limiting
+// branch, or a common tautology: id IS NOT NULL and its other spellings
+// (NOT id IS NULL, id IS DISTINCT FROM NULL), id = id, id IN (id, ...),
+// and patterns that match every value (LIKE '%', SIMILAR TO '%', a regex
+// match with an empty pattern).
+// Other tautologies can't be told apart from real filters; see
 // docs/LIMITS.md.
-func effectiveWhere(w ast.Node) bool {
+func effectiveWhere(w ast.Node, target *ast.RangeVar) bool {
 	switch n := w.(type) {
 	case nil:
 		return false
+	case *ast.ParenExpr:
+		return effectiveWhere(n.Expr, target)
 	case *ast.BoolExpr:
 		if n.Args == nil {
 			return false
@@ -453,38 +459,203 @@ func effectiveWhere(w ast.Node) bool {
 		switch n.Boolop {
 		case ast.OR_EXPR:
 			for _, a := range n.Args.Items {
-				if !effectiveWhere(a) {
+				if !effectiveWhere(a, target) {
 					return false
 				}
 			}
 			return true
 		case ast.AND_EXPR:
 			for _, a := range n.Args.Items {
-				if effectiveWhere(a) {
+				if effectiveWhere(a, target) {
 					return true
 				}
 			}
 			return false
+		case ast.NOT_EXPR:
+			if len(n.Args.Items) == 1 {
+				arg := n.Args.Items[0]
+				for p, ok := arg.(*ast.ParenExpr); ok; p, ok = arg.(*ast.ParenExpr) {
+					arg = p.Expr
+				}
+				if nt, ok := arg.(*ast.NullTest); ok && nt.Nulltesttype == ast.IS_NULL {
+					return false // NOT id IS NULL
+				}
+			}
 		}
 	case *ast.NullTest:
 		if n.Nulltesttype == ast.IS_NOT_NULL {
 			return false
 		}
 	case *ast.A_Expr:
-		if n.Lexpr != nil && n.Rexpr != nil && n.Lexpr.SqlString() == n.Rexpr.SqlString() {
+		if _, list := n.Rexpr.(*ast.NodeList); !list && n.Lexpr != nil && n.Rexpr != nil && n.Lexpr.SqlString() == n.Rexpr.SqlString() {
 			return false // id = id, id >= id
 		}
+		if pgTautology(n) {
+			return false
+		}
 	}
-	limits := false
-	ast.Rewrite(w, func(c *ast.Cursor) bool {
-		switch c.Node().(type) {
+	outer := map[string]bool{}
+	if target != nil {
+		outer[strings.ToLower(target.RelName)] = true
+		if target.Alias != nil {
+			outer[strings.ToLower(target.Alias.AliasName)] = true
+		}
+	}
+	return pgReadsOuter(w, outer)
+}
+
+// pgTautology reports whether an operator expression holds for every row
+// whose operand is not null.
+func pgTautology(n *ast.A_Expr) bool {
+	op := ""
+	if n.Name != nil && len(n.Name.Items) > 0 {
+		if s, ok := n.Name.Items[len(n.Name.Items)-1].(*ast.String); ok {
+			op = s.SVal
+		}
+	}
+	switch n.Kind {
+	case ast.AEXPR_DISTINCT:
+		return pgNullConst(n.Lexpr) || pgNullConst(n.Rexpr) // id IS DISTINCT FROM NULL
+	case ast.AEXPR_LIKE, ast.AEXPR_ILIKE:
+		if op == "~~" || op == "~~*" {
+			s, ok := pgStringConst(n.Rexpr)
+			return ok && likeMatchesAll(s)
+		}
+	case ast.AEXPR_SIMILAR:
+		if f, ok := n.Rexpr.(*ast.FuncCall); ok && op == "~" && f.Args != nil && len(f.Args.Items) == 1 {
+			s, ok := pgStringConst(f.Args.Items[0])
+			return ok && likeMatchesAll(s)
+		}
+	case ast.AEXPR_OP:
+		if op == "~" || op == "~*" {
+			s, ok := pgStringConst(n.Rexpr)
+			return ok && regexMatchesAll(s)
+		}
+	case ast.AEXPR_IN:
+		if l, ok := n.Rexpr.(*ast.NodeList); ok && op == "=" && n.Lexpr != nil {
+			for _, item := range l.Items {
+				if item != nil && item.SqlString() == n.Lexpr.SqlString() {
+					return true // id IN (id, 7)
+				}
+			}
+		}
+	}
+	return false
+}
+
+func pgNullConst(n ast.Node) bool {
+	c, ok := n.(*ast.A_Const)
+	return ok && c.Isnull
+}
+
+func pgStringConst(n ast.Node) (string, bool) {
+	c, ok := n.(*ast.A_Const)
+	if !ok || c.Isnull {
+		return "", false
+	}
+	s, ok := c.Val.(*ast.String)
+	if !ok {
+		return "", false
+	}
+	return s.SVal, true
+}
+
+// pgReadsOuter reports whether n reads a column of the statement's own
+// rows: any column outside a subquery, and inside one any column that is
+// not qualified with a table of that subquery. An unqualified name in a
+// subquery may be the outer table's (when the inner tables have no such
+// column), so it counts.
+func pgReadsOuter(n ast.Node, outer map[string]bool) bool {
+	reads := false
+	ast.Rewrite(n, func(c *ast.Cursor) bool {
+		if reads {
+			return false
+		}
+		switch x := c.Node().(type) {
 		case *ast.ColumnRef, *ast.CurrentOfExpr:
-			limits = true
+			reads = true
+			return false
+		case *ast.SubLink:
+			if x.Testexpr != nil && pgReadsOuter(x.Testexpr, outer) {
+				reads = true
+			} else if x.Subselect != nil && pgSubqueryReadsOuter(x.Subselect, outer) {
+				reads = true
+			}
 			return false
 		}
 		return true
 	}, nil)
-	return limits
+	return reads
+}
+
+// pgSubqueryReadsOuter reports whether a subquery refers to the outer
+// statement's rows: a column reference that is unqualified, or qualified
+// with the outer table, or with a name the subquery does not define.
+func pgSubqueryReadsOuter(sub ast.Node, outer map[string]bool) bool {
+	inner := map[string]bool{}
+	ast.Rewrite(sub, func(c *ast.Cursor) bool {
+		switch x := c.Node().(type) {
+		case *ast.RangeVar:
+			inner[strings.ToLower(x.RelName)] = true
+			if x.Alias != nil {
+				inner[strings.ToLower(x.Alias.AliasName)] = true
+			}
+		case *ast.RangeSubselect:
+			if x.Alias != nil {
+				inner[strings.ToLower(x.Alias.AliasName)] = true
+			}
+		case *ast.CommonTableExpr:
+			inner[strings.ToLower(x.Ctename)] = true
+		}
+		return true
+	}, nil)
+	reads := false
+	ast.Rewrite(sub, func(c *ast.Cursor) bool {
+		if reads {
+			return false
+		}
+		switch x := c.Node().(type) {
+		case *ast.CurrentOfExpr:
+			reads = true
+		case *ast.ColumnRef:
+			var parts []string
+			if x.Fields != nil {
+				for _, f := range x.Fields.Items {
+					if s, ok := f.(*ast.String); ok {
+						parts = append(parts, strings.ToLower(s.SVal))
+					} else {
+						parts = append(parts, "*")
+					}
+				}
+			}
+			if len(parts) < 2 {
+				reads = true // unqualified: may be the outer table's column
+				break
+			}
+			q := parts[len(parts)-2] // the table: a.id, s.a.id, a.*
+			if outer[q] || !inner[q] {
+				reads = true
+			}
+		}
+		return !reads
+	}, nil)
+	return reads
+}
+
+// likeMatchesAll reports whether a LIKE or SIMILAR TO pattern matches
+// every string: it is made of % only.
+func likeMatchesAll(p string) bool {
+	return p != "" && strings.Trim(p, "%") == ""
+}
+
+// regexMatchesAll reports whether a regular expression matches every
+// string, in the spellings that say so outright.
+func regexMatchesAll(p string) bool {
+	switch p {
+	case "", "^", "$", ".*", "^.*", ".*$", "^.*$", "(?:)", "()":
+		return true
+	}
+	return false
 }
 
 // explainAnalyze reports whether EXPLAIN's options run the statement:
