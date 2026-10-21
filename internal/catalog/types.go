@@ -389,7 +389,9 @@ func (c *Catalog) Provider(id string) *Provider {
 	return nil
 }
 
-// Rules returns every rule in provider order.
+// Rules returns every rule in provider order. In a lazily loaded catalog it
+// returns the rules of providers loaded so far, and must not be called while
+// another goroutine may be loading one.
 func (c *Catalog) Rules() []*Rule {
 	var out []*Rule
 	for _, p := range c.Providers {

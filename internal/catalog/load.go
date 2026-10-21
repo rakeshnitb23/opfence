@@ -140,9 +140,18 @@ func (c *Catalog) LoadRules(p *Provider) error {
 		l := &loader{fsys: c.FS, lazy: true}
 		l.loadProviderFiles(p)
 		c.mu.Lock()
+		defer c.mu.Unlock()
 		l.validateRules(c, p, nil)
-		c.mu.Unlock()
-		p.lazy.err = l.err()
+		if p.lazy.err = l.err(); p.lazy.err != nil {
+			// Rules that failed their checks must not decide anything, even
+			// for a caller that matches without asking LoadRules first.
+			for id, r := range c.rules {
+				if r.Provider == p {
+					delete(c.rules, id)
+				}
+			}
+			p.Rules = nil
+		}
 	})
 	return p.lazy.err
 }

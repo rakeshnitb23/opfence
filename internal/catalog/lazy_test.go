@@ -142,6 +142,10 @@ func TestLazyLoadError(t *testing.T) {
 	if again := c.LoadRules(p); again != err {
 		t.Fatalf("second LoadRules returned %v, want the same error", again)
 	}
+	// Rules that failed their checks decide nothing.
+	if len(p.Rules) != 0 || c.Rule("acme.db.delete") != nil || c.Rule("acme.db.wipe") != nil {
+		t.Fatalf("a provider that failed to load kept %d rules", len(p.Rules))
+	}
 }
 
 // What only authors need is skipped: a missing fixture fails a full load
