@@ -131,9 +131,12 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 		ev.Args[k] = v
 	}
 
+	loadErr := e.Catalog.LoadRules(p) // a no-op unless the catalog is lazy
 	switch {
 	case p == nil:
 		ev.Classes, ev.ClassSource = []classes.Class{classes.Unknown}, "host is not in the catalog"
+	case loadErr != nil:
+		ev.Classes, ev.ClassSource = []classes.Class{classes.Unknown}, "the catalog's rules for "+p.ID+" could not be loaded"
 	default:
 		rule, params := p.Match(op, e.IncludeDraft)
 		for k, v := range params {

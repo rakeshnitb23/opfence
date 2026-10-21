@@ -64,11 +64,13 @@ flowchart LR
   L2 --> S14["14 Cursor + Codex launchers"]
   S13 --> S15["15 Catalog drift check"]
   S13 --> S16["16 MySQL + SQLite"]
+  S5 --> S17["17 Fast hook"]
   S11 --> V1(["v1.0 ready (after external review)"])
   S12 --> V1
   S14 --> V1
   S15 --> V1
   S16 --> V1
+  S17 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -90,6 +92,7 @@ flowchart LR
 | 14 | Cursor and Codex | `opfence run --srt` presets for Cursor's CLI agent and Codex CLI, their MCP configs in `init` | Each starts behind the proxy in srt with keys as placeholders; doctor probe passes inside | done (Codex checked end to end; Cursor and Gemini from docs) |
 | 15 | Catalog drift check | `opfence catalog check-sources` compares rules with providers' published schemas; nightly job | A renamed or removed operation fails the job | done |
 | 16 | MySQL and SQLite | SQL classifiers for MySQL (Vitess) and SQLite (libSQL, D1), `classify.dialect`, libSQL HTTP bodies | D1, Turso and PlanetScale reads are reads; every Postgres case keeps its class; each dialect's lexing traps tested; fuzzers clean | done |
+| 17 | Fast hook | The hook loads provider metadata and only the rules of the provider a call reaches | Hook decisions identical to a full load for every MCP fixture; the hook reads one provider's rule files; a hook call well under 100 ms | done |
 
 v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
@@ -234,4 +237,16 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 - **Changed from the plan:** the worst-case floor applies to every SQL rule, so `aws-postgres-mcp`'s unparsed SQL is now irreversible as well as unknown; credential counts among an SQL rule's possible classes only for Postgres and MySQL, because SQLite has no secrets table; DynamoDB's block-comment guard was checked against PartiQL's lexer (`/*` … the first `*/`, non-greedy); Turso's MCP tools keep fixed classes because Turso still publishes no argument names, and their notes now say so.
 - **Cost:** the stripped binary grew from 22.8 MB to 33.9 MB (Vitess brings protobuf, part of gRPC and MySQL's collation tables), and the minimum Go is now 1.26.9, which Vitess requires. The hook's time per call did not change measurably, but measuring it showed it is about 640 ms on `main` already: each call loads and validates all 5,770 rules.
 - **Follow-ups:** make the hook start fast (a catalog index built at compile time, or a long-lived process the hook talks to), since every MCP tool call waits for it; read SQL that apps send over HTTP through the proxy (Neon's serverless driver on `*.neon.tech/sql`, PlanetScale's `database-js` on `*.psdb.cloud`), which the classifiers now cover; classify Turso's MCP tools once their arguments are published; the Redis command classifier for Upstash.
+
+**Stage 17 · Fast hook (plan, 21 Oct 2026).** Claude Code and Codex start `opfence hook` once per MCP tool call and wait for it. Measuring stage 16 showed each call takes about 640 ms on `main`: the hook loads the whole embedded catalog, and a CPU profile puts 80% of that in YAML parsing (163 MB allocated, every rule file parsed twice, once strictly and once more for line numbers). A call needs far less: the server-to-provider lookup reads only provider metadata, and the decision only that provider's rules. The plan:
+- **Lazy rules.** `catalog.LoadLazy` reads every `provider.yaml` and validates the providers, but no rule files; `(*Catalog).LoadRules(p)` parses one provider's rule files on first use (once, safe for concurrent callers) and runs the per-rule checks, which also compile path templates and conditions. `catalog.EmbeddedLazy` does this for the embedded catalog. `Load` and `Embedded` stay as they are for everything else (the proxy, `explain`, `test`, exports).
+- **What a lazy load skips:** checks that span the whole catalog (fixtures referenced and present, rule ids unique across providers, hosts overlapping) and line numbers for rules. They protect the catalog's authors, not decisions, and `opfence catalog validate`, `opfence test` and CI run them on the full catalog; a test loads the embedded catalog in full on every run, so a broken catalog cannot ship.
+- **Hooks** use the lazy embedded catalog, call `LoadRules` for the provider they resolved, and exit 2 (block) if it fails. A catalog from `--catalog DIR` is loaded and validated in full, since nobody has checked it. The engine calls `LoadRules` too before matching, and classifies an operation as unknown if it fails.
+- **Tests:** for every provider, the lazily loaded rules equal a full load's (ids, classes, matchers, conditions, templates); every MCP tool-call fixture gets the same evaluation through the lazy hook path as through a full load; a counting file system proves a hook call reads the provider files and one provider's rule files only; a provider whose rules fail to load blocks the call; the hook's time per call is measured before and after.
+- **Plan review:** serves PLAN.md's hook path (stage 5), which every MCP tool call goes through; does not change ARCHITECTURE's model, only when rules are parsed (§4 and §7 gain a paragraph). Rejected: a prebuilt snapshot of the parsed catalog in JSON or gob (a generated file to keep in step, and decoding 3.7 MB on every call still costs tens of milliseconds); a long-lived hook daemon (a socket, its lifetime and its trust are new attack surface for a latency problem). Risk: a lazy and a full load drifting apart; the equality tests over the whole embedded catalog guard it.
+
+**Stage 17 · Fast hook (done 21 Oct 2026).** `catalog.LoadLazy`, `catalog.EmbeddedLazy` and `(*Catalog).LoadRules` as planned; `Load` was split into the same steps (provider files, then each provider's rules), so a full load runs the code a lazy one does plus the authors' checks. Both hooks use the lazy embedded catalog and exit 2 if a provider's rules fail to load; the engine calls `LoadRules` before matching and falls back to unknown. A hook call now takes about 10 ms for PlanetScale or Supabase and 36 ms for DigitalOcean's 399-tool server, the largest, against about 600 ms before (20 calls: 12.1 s on `main`, 0.2 s now, for both the Claude Code and the Codex hook).
+- **Tests:** every provider's lazily loaded rules equal a full load's, compiled templates and conditions included; all 6,389 fixtures pass through a lazily loaded catalog; 2,062 MCP tool calls from the fixtures get byte-identical output from the Claude Code hook either way; a counting file system shows a lazy load opens only `provider.yaml` files and `LoadRules` only its provider's rule files; a provider that fails to load blocks both hooks; concurrent `LoadRules` and `Rule` calls pass the race detector.
+- **Changed from the plan:** none. A lazy load also skips the second YAML parse that only recovered line numbers, which halves the cost of the provider it does parse.
+- **Follow-ups:** the proxy and `explain` still parse the whole catalog once per start (about 600 ms), which only matters at startup; if it ever does, the same split allows loading providers there on first request.
 

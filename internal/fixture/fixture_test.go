@@ -5,6 +5,7 @@ import (
 	"testing"
 	"testing/fstest"
 
+	catalogdata "github.com/rakeshnitb23/opfence/catalog"
 	"github.com/rakeshnitb23/opfence/internal/catalog"
 )
 
@@ -81,6 +82,33 @@ func TestEmbeddedCatalogPasses(t *testing.T) {
 		t.Fatal(err)
 	}
 	rep := Run(c)
+	for _, o := range rep.Outcomes {
+		if !o.Pass {
+			t.Errorf("%s %s: %s", o.Rule.ID, o.Fixture, o.Problem)
+		}
+	}
+}
+
+// The embedded catalog loaded lazily, as the hooks load it, passes every
+// fixture the full load does.
+func TestEmbeddedCatalogPassesLazy(t *testing.T) {
+	full, err := catalog.Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	c, err := catalog.LoadLazy(catalogdata.FS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range c.Providers {
+		if err := c.LoadRules(p); err != nil {
+			t.Fatalf("%s: %v", p.ID, err)
+		}
+	}
+	rep := Run(c)
+	if want := len(Run(full).Outcomes); len(rep.Outcomes) != want {
+		t.Fatalf("%d fixtures ran lazily, %d in full", len(rep.Outcomes), want)
+	}
 	for _, o := range rep.Outcomes {
 		if !o.Pass {
 			t.Errorf("%s %s: %s", o.Rule.ID, o.Fixture, o.Problem)

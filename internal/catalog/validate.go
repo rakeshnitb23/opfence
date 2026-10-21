@@ -35,50 +35,25 @@ var restMethods = map[string]bool{
 var graphQLNameRe = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
 
 func (l *loader) validate(c *Catalog) {
+	l.validateProviders(c)
+	referenced := map[string]bool{}
+	for _, p := range c.Providers {
+		l.validateRules(c, p, referenced)
+	}
+	for f := range l.fixtures {
+		if !referenced[f] {
+			l.addf(f, 0, "fixture is not referenced by any rule test")
+		}
+	}
+}
+
+// validateProviders checks every provider's own file, and the hosts and MCP
+// names they claim against each other.
+func (l *loader) validateProviders(c *Catalog) {
 	hostOwner := map[string]string{}
 	mcpNameOwner := map[string]string{}
-	referenced := map[string]bool{}
-
 	for _, p := range c.Providers {
 		l.validateProvider(p, hostOwner, mcpNameOwner)
-		keys := map[string]*Rule{}
-		var gitRules []*Rule
-		for _, r := range p.Rules {
-			l.validateRule(r)
-			if g := r.Match.Git; g != nil && len(g.Refs) > 0 {
-				for _, prev := range gitRules {
-					if ref, ok := gitRefsOverlap(prev.Match.Git, g); ok {
-						l.addf(r.File, r.Line, "rule %s and %s (%s:%d) can both match %s; ref patterns of one command must not overlap", r.ID, prev.ID, prev.File, prev.Line, ref)
-					}
-				}
-				gitRules = append(gitRules, r)
-			}
-			for _, id := range append([]string{r.ID}, r.Aliases...) {
-				if id == "" {
-					continue
-				}
-				if prev, ok := c.rules[id]; ok {
-					l.addf(r.File, r.Line, "rule id %q already used by %s:%d", id, prev.File, prev.Line)
-					continue
-				}
-				c.rules[id] = r
-			}
-			if k := matchKey(r); k != "" {
-				if prev, ok := keys[k]; ok {
-					l.addf(r.File, r.Line, "rule %s matches the same operations as %s (%s:%d); merge them or use `when`", r.ID, prev.ID, prev.File, prev.Line)
-				} else {
-					keys[k] = r
-				}
-			}
-			for _, t := range r.Tests {
-				if t.Fixture != "" {
-					referenced[path.Join(p.Dir, t.Fixture)] = true
-				}
-				if t.Response != "" {
-					referenced[path.Join(p.Dir, t.Response)] = true
-				}
-			}
-		}
 	}
 	for h, owner := range hostOwner {
 		if !strings.HasPrefix(h, "*.") {
@@ -90,9 +65,51 @@ func (l *loader) validate(c *Catalog) {
 			}
 		}
 	}
-	for f := range l.fixtures {
-		if !referenced[f] {
-			l.addf(f, 0, "fixture is not referenced by any rule test")
+}
+
+// validateRules checks p's rules, compiling their templates and conditions,
+// and indexes them in c by id and alias. It records the fixtures their tests
+// use in referenced, when it is not nil.
+func (l *loader) validateRules(c *Catalog, p *Provider, referenced map[string]bool) {
+	keys := map[string]*Rule{}
+	var gitRules []*Rule
+	for _, r := range p.Rules {
+		l.validateRule(r)
+		if g := r.Match.Git; g != nil && len(g.Refs) > 0 {
+			for _, prev := range gitRules {
+				if ref, ok := gitRefsOverlap(prev.Match.Git, g); ok {
+					l.addf(r.File, r.Line, "rule %s and %s (%s:%d) can both match %s; ref patterns of one command must not overlap", r.ID, prev.ID, prev.File, prev.Line, ref)
+				}
+			}
+			gitRules = append(gitRules, r)
+		}
+		for _, id := range append([]string{r.ID}, r.Aliases...) {
+			if id == "" {
+				continue
+			}
+			if prev, ok := c.rules[id]; ok {
+				l.addf(r.File, r.Line, "rule id %q already used by %s:%d", id, prev.File, prev.Line)
+				continue
+			}
+			c.rules[id] = r
+		}
+		if k := matchKey(r); k != "" {
+			if prev, ok := keys[k]; ok {
+				l.addf(r.File, r.Line, "rule %s matches the same operations as %s (%s:%d); merge them or use `when`", r.ID, prev.ID, prev.File, prev.Line)
+			} else {
+				keys[k] = r
+			}
+		}
+		if referenced == nil {
+			continue
+		}
+		for _, t := range r.Tests {
+			if t.Fixture != "" {
+				referenced[path.Join(p.Dir, t.Fixture)] = true
+			}
+			if t.Response != "" {
+				referenced[path.Join(p.Dir, t.Response)] = true
+			}
 		}
 	}
 }
@@ -352,6 +369,9 @@ func (l *loader) validateRule(r *Rule) {
 	}
 	if r.Match.CLI != nil && len(r.Tests) > 0 {
 		l.addf(f, ln, "%s: cli rules cannot have request fixtures", r.ID)
+	}
+	if l.lazy {
+		return // tests and their fixtures are checked when the catalog is loaded whole
 	}
 	for i, t := range r.Tests {
 		l.validateTest(r, i, t)
