@@ -1,0 +1,113 @@
+# Heroku Data API (api.data.heroku.com), Heroku Key-Value Store (Redis): /redis/v0.
+# Read from the Heroku CLI (heroku/cli at 65ca0bc, heroku-cli-util at 0ec7cba),
+# its only published client; the API has no published schema.
+operations:
+  - id: heroku.data-redis.read
+    match: { rest: { method: GET, path: "/redis/v0/databases/{add_on_id_or_name}" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Read Redis database {add_on_id_or_name}, with its password"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/cli.ts
+      - https://github.com/heroku/cli/blob/main/src/lib/redis/api.ts
+    notes: >-
+      The response includes resource_url, the connection URL with the password; redis:cli connects
+      with it.
+    tests:
+      - fixture: fixtures/data-redis-read.http
+        expect: credential
+        resource: "redis-curved-77120"
+
+  - id: heroku.data-redis.update-config
+    match: { rest: { method: PATCH, path: "/redis/v0/databases/{add_on_id_or_name}/config" } }
+    class: write
+    when:
+      - if: { arg: body.maxmemory_policy, matches: '^(?s:[^n].*|n[^o].*|no[^e].*|noe[^v].*|noev[^i].*|noevi[^c].*|noevic[^t].*|noevict[^i].*|noevicti[^o].*|noevictio[^n].*|noeviction.+|n|no|noe|noev|noevi|noevic|noevict|noevicti|noevictio|)$' }
+        class: delete
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Change the configuration of Redis database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/maxmemory.ts
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/timeout.ts
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/keyspace-notifications.ts
+    notes: >-
+      Any maxmemory_policy but noeviction lets Redis evict keys when memory is full, deleting data.
+    tests:
+      - fixture: fixtures/data-redis-update-config.http
+        expect: write
+        resource: "redis-curved-77120"
+      - fixture: fixtures/data-redis-update-config-keep.http
+        expect: write
+        resource: "redis-curved-77120"
+      - fixture: fixtures/data-redis-update-config-evict.http
+        expect: delete
+        resource: "redis-curved-77120"
+
+  - id: heroku.data-redis.rotate-credentials
+    match: { rest: { method: POST, path: "/redis/v0/databases/{add_on_id_or_name}/credentials_rotation" } }
+    class: credential
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Rotate the password of Redis database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/credentials.ts
+    notes: >-
+      Sets a new password, a secret-store value.
+    tests:
+      - fixture: fixtures/data-redis-rotate-credentials.http
+        expect: credential
+        resource: "redis-curved-77120"
+
+  - id: heroku.data-redis.stats-reset
+    match: { rest: { method: POST, path: "/redis/v0/databases/{add_on_id_or_name}/stats/reset" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Reset the statistics of Redis database {add_on_id_or_name}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/stats-reset.ts
+    tests:
+      - fixture: fixtures/data-redis-stats-reset.http
+        expect: write
+        resource: "redis-curved-77120"
+
+  - id: heroku.data-redis.upgrade
+    match: { rest: { method: POST, path: "/redis/v0/databases/{add_on_id_or_name}/upgrade" } }
+    class: write
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    card: "Upgrade Redis database {add_on_id_or_name} to version {body.version}"
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/upgrade.ts
+    notes: >-
+      Version upgrades keep the data.
+    tests:
+      - fixture: fixtures/data-redis-upgrade.http
+        expect: write
+        resource: "redis-curved-77120"
+
+  - id: heroku.data-redis.wait
+    match: { rest: { method: GET, path: "/redis/v0/databases/{add_on_id_or_name}/wait" } }
+    class: read
+    resource: { arg: add_on_id_or_name, kind: add-on }
+    status: verified
+    verified: 2026-10-22
+    unlisted: "Heroku Data API on api.data.heroku.com, which no published schema describes; read from the Heroku CLI"
+    sources:
+      - https://github.com/heroku/cli/blob/main/src/commands/redis/wait.ts
+    tests:
+      - fixture: fixtures/data-redis-wait.http
+        expect: read
+        resource: "redis-curved-77120"

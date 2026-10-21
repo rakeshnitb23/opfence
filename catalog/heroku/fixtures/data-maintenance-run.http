@@ -1,0 +1,6 @@
+# description: Run maintenance on postgresql-shaped-48213 now
+POST /data/maintenances/v1/postgresql-shaped-48213/run HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+

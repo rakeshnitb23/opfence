@@ -1,0 +1,6 @@
+# description: Delete Postgres backup b005 of app shop-api
+DELETE /client/v11/apps/shop-api/transfers/b005 HTTP/1.1
+Host: api.data.heroku.com
+Authorization: Bearer opf_heroku_EXAMPLE
+Accept: application/vnd.heroku+json; version=3
+

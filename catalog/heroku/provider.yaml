@@ -1,7 +1,10 @@
 provider: heroku
 title: Heroku
 docs: https://devcenter.heroku.com/articles/platform-api-reference
-hosts: [api.heroku.com]
+# api.data.heroku.com is the Data API (Heroku Postgres, Key-Value Store and
+# their maintenance), which the Heroku CLI calls with the same token; its
+# rules are the data-*.yaml files.
+hosts: [api.heroku.com, api.data.heroku.com]
 auth:
   - header: Authorization
     scheme: Bearer                 # what the Heroku CLI (@heroku-cli/command) and the MCP server send
@@ -17,10 +20,10 @@ defaults:
 # version with the Accept header (application/vnd.heroku+json; version=3).
 # Path parameter names follow the Platform API reference (app_id_or_name, ...).
 #
-# Not covered: the Heroku Postgres/Data API at api.data.heroku.com
-# (/client/v11/databases/..., /postgres/v0/databases/...), which the Heroku
-# CLI uses for pg:reset, pg:backups, pg:credentials:rotate and similar. It is
-# not in any published schema, so this provider does not claim that host.
+# The Data API (api.data.heroku.com) is in no published schema. Its rules
+# (data-*.yaml) are read from the Heroku CLI, its only published client, and
+# are unlisted. GETs there are not left to rest_safe_methods: many of its reads
+# return passwords, so a read the CLI does not make is unknown (data-api.yaml).
 # Published schemas the rules were built from; `opfence catalog check-sources`
 # compares them nightly.
 schemas:
