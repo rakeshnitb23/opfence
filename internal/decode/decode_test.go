@@ -2,6 +2,8 @@ package decode
 
 import (
 	"encoding/json"
+	"net/url"
+	"path"
 	"reflect"
 	"strings"
 	"testing"
@@ -394,4 +396,68 @@ func checkOps(t *testing.T, ops []Operation) {
 	if len(ops) == 0 || len(ops) > MaxOperations {
 		t.Fatalf("got %d operations", len(ops))
 	}
+}
+
+// mcp.paths keeps MCP decoding to the server's own paths on a shared host;
+// every other path is REST.
+func TestMCPPaths(t *testing.T) {
+	paths := []string{"/mcp"}
+	cases := map[string]bool{
+		"/mcp": true, "/mcp/": true, "/mcp/readonly": true, "/mcp/x/repos/readonly": true, "//mcp": true,
+		"/chat/../mcp/": true, "/./mcp": true,
+		// Read as /mcp by a server that decodes before routing.
+		"/models/%2e%2e%2fmcp": true, "/%6dcp/": true, "/models/..%2Fmcp": true,
+		// Unreadable paths are left to the MCP decoder, which fails them.
+		"/models/%zz": true, "relative": true, "/../mcp": true,
+		"/chat/completions": false, "/mcpx": false, "/v1/messages": false, "/mcp/../chat/completions": false,
+		"/": false, "/models/gpt-4.1": false, "/agents/mcp": false,
+	}
+	for p, want := range cases {
+		if got := isMCPPath(p, paths); got != want {
+			t.Errorf("isMCPPath(%q) = %v, want %v", p, got, want)
+		}
+	}
+	if !isMCPPath("/chat/completions", nil) {
+		t.Error("no paths: every path is MCP")
+	}
+
+	h := Hints{MCP: true, MCPPaths: paths}
+	chat := Decode(fixture(t, "POST /chat/completions HTTP/1.1\nHost: api.githubcopilot.com\nContent-Type: application/json\n\n{\"model\":\"gpt-4.1\",\"messages\":[]}"), h)
+	if chat[0].Protocol != REST || chat[0].Method != "POST" || chat[0].Path != "/chat/completions" {
+		t.Fatalf("chat = %+v", chat)
+	}
+	call := Decode(fixture(t, "POST /mcp/x/repos HTTP/1.1\nHost: api.githubcopilot.com\nContent-Type: application/json\n\n"+
+		`{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"delete_file","arguments":{}}}`), h)
+	if call[0].Protocol != MCP || call[0].Tool != "delete_file" {
+		t.Fatalf("call = %+v", call)
+	}
+	// A tool call sent to a REST-looking path that resolves to /mcp is still a tool call.
+	sneaky := Decode(fixture(t, "POST /models/%2e%2e%2fmcp HTTP/1.1\nHost: api.githubcopilot.com\nContent-Type: application/json\n\n"+
+		`{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"delete_file","arguments":{}}}`), h)
+	if sneaky[0].Protocol != MCP || sneaky[0].Tool != "delete_file" {
+		t.Fatalf("sneaky = %+v", sneaky)
+	}
+}
+
+// A path read as REST must not be under /mcp by another reading of it:
+// cleaned as sent, or decoded and then cleaned.
+func FuzzMCPPath(f *testing.F) {
+	for _, s := range []string{"/mcp", "/chat/completions", "/models/%2e%2e%2fmcp", "/a/../mcp", "/%6dcp/x", "//mcp", "/mcpx"} {
+		f.Add(s)
+	}
+	f.Fuzz(func(t *testing.T, p string) {
+		if isMCPPath(p, []string{"/mcp"}) {
+			return
+		}
+		under := func(s string) bool {
+			c := path.Clean("/" + s)
+			return c == "/mcp" || strings.HasPrefix(c, "/mcp/")
+		}
+		if under(p) {
+			t.Fatalf("%q is REST but cleans to %s", p, path.Clean("/"+p))
+		}
+		if dec, err := url.PathUnescape(p); err == nil && under(dec) {
+			t.Fatalf("%q is REST but decodes to %q", p, dec)
+		}
+	})
 }

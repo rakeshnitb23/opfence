@@ -1,0 +1,8 @@
+# description: POST /chat/completions
+POST /chat/completions HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"model": "gpt-4.1", "messages": [{"role": "user", "content": "Explain this diff"}], "stream": true}

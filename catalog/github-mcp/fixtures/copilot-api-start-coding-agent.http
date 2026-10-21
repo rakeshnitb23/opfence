@@ -1,0 +1,8 @@
+# description: Start the Copilot coding agent on acme/shop
+POST /agents/swe/v1/jobs/acme/shop HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"problem_statement": "Fix the flaky checkout test", "event_type": "vscode"}

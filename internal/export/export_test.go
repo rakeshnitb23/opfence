@@ -512,3 +512,52 @@ func TestOpenShellLeavesOutMidWildcardHosts(t *testing.T) {
 		t.Fatalf("no note about the host:\n%s", s)
 	}
 }
+
+// A REST API sharing its host with an MCP server (mcp.paths) gets its own
+// endpoint beside the MCP one, with wildcard writes left out: POST
+// /search/* would also match /search/%2e%2e%2fmcp.
+func TestOpenShellSharedMCPHost(t *testing.T) {
+	c, err := catalog.Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := OpenShell(c, nil, policy.Production)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pol := checkOpenShell(t, out)
+	var mcp, rest *osEndpoint
+	for _, np := range pol.NetworkPolicies {
+		for i, ep := range np.Endpoints {
+			if ep.Host != "api.githubcopilot.com" {
+				continue
+			}
+			switch ep.Protocol {
+			case "mcp":
+				mcp = &np.Endpoints[i]
+			case "rest":
+				rest = &np.Endpoints[i]
+			}
+		}
+	}
+	if mcp == nil || mcp.Path != "/mcp" || rest == nil || rest.Path != "" {
+		t.Fatalf("endpoints: mcp %+v rest %+v", mcp, rest)
+	}
+	allowed := map[string]bool{}
+	for _, r := range rest.Rules {
+		allowed[r.Allow.Method+" "+r.Allow.Path] = true
+		if r.Allow.Method != "GET" && strings.Contains(r.Allow.Path, "*") {
+			t.Errorf("wildcard write allowed on a shared host: %s %s", r.Allow.Method, r.Allow.Path)
+		}
+	}
+	for _, want := range []string{"POST /chat/completions", "POST /v1/messages", "GET /models"} {
+		if !allowed[want] {
+			t.Errorf("%s not allowed; got %v", want, allowed)
+		}
+	}
+	for _, not := range []string{"POST /search/*", "POST /agents/*", "POST /agents/swe/*/jobs/*/*"} {
+		if allowed[not] {
+			t.Errorf("%s allowed", not)
+		}
+	}
+}

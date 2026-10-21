@@ -1,0 +1,8 @@
+# description: POST /v1/messages
+POST /v1/messages HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+Content-Type: application/json
+
+{"model": "claude-sonnet-4", "max_tokens": 1024, "messages": [{"role": "user", "content": "Explain this diff"}]}

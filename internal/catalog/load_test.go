@@ -55,6 +55,20 @@ func goodFS() fstest.MapFS {
 	}
 }
 
+// An MCP server sharing its host with a REST API: rules for both.
+func TestLoadMCPPaths(t *testing.T) {
+	fs := goodFS()
+	replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/mcp]")(fs)
+	c, err := Load(fs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h := c.Provider("acme").Hints("api.acme.dev")
+	if !h.MCP || len(h.MCPPaths) != 1 || h.MCPPaths[0] != "/mcp" {
+		t.Fatalf("hints = %+v", h)
+	}
+}
+
 func TestLoadGood(t *testing.T) {
 	c, err := Load(goodFS())
 	if err != nil {
@@ -127,6 +141,12 @@ func TestLoadInvalid(t *testing.T) {
 		{"mcp tools default read", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: read"), "mcp_tools may not be read"},
 		{"mcp tools default without mcp", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: irreversible"), "mcp_tools needs an mcp block"},
 		{"mcp tools default bad class", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\n  mcp_tools: risky"), "defaults.mcp_tools: unknown class"},
+		{"rest on mcp host without paths", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]"), "need mcp.paths"},
+		{"rest under mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/v1/dbs]"), "is under mcp path /v1/dbs"},
+		{"bad mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/mcp/]"), "must be an absolute path"},
+		{"dot mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/a/../mcp]"), "must be an absolute path"},
+		{"duplicate mcp path", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: read\nmcp:\n  names: [acme]\n  paths: [/mcp, /mcp]"), "listed twice"},
+		{"mcp paths without hosts", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "mcp:\n  names: [acme]\n  paths: [/mcp]"), "mcp.paths needs provider hosts"},
 		{"tool default status in yaml", replace("acme/db.yaml", "status: community", "status: provider default"), "unknown status"},
 		{"bad class", replace("acme/db.yaml", "class: irreversible\n    resource", "class: dangerous\n    resource"), "unknown class \"dangerous\""},
 		{"bad when class", replace("acme/db.yaml", "        class: irreversible", "        class: fatal"), "when[0]: unknown class"},

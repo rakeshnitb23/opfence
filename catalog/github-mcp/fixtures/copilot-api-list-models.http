@@ -1,0 +1,6 @@
+# description: GET /models
+GET /models HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+

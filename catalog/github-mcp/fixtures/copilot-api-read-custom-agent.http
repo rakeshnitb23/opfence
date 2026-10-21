@@ -1,0 +1,6 @@
+# description: GET /agents/swe/custom-agents/acme/shop/release-notes
+GET /agents/swe/custom-agents/acme/shop/release-notes HTTP/1.1
+Host: api.githubcopilot.com
+Authorization: Bearer opf_github-mcp_EXAMPLE
+Copilot-Integration-Id: vscode-chat
+

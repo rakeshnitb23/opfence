@@ -20,6 +20,7 @@ defaults:
   graphql_query: read
 mcp:
   names: [acme]
+  paths: [/mcp]
 schemas:
   - kind: openapi
     url: https://schemas.acme.dev/openapi.yaml
