@@ -5,6 +5,7 @@ hosts: [api.digitalocean.com]
 auth:
   - header: Authorization
     scheme: Bearer
+secrets_from: [digitalocean-mcp]     # the local MCP server's DIGITALOCEAN_API_TOKEN calls this API
 detect:
   # DIGITALOCEAN_ACCESS_TOKEN is doctl's variable; DIGITALOCEAN_TOKEN and
   # DO_TOKEN are the ones the OpenAPI curl examples use.

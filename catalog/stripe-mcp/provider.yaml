@@ -5,6 +5,7 @@ hosts: [mcp.stripe.com]              # remote server, Streamable HTTP at /
 auth:
   - header: Authorization            # OAuth access token, or a secret/restricted key
     scheme: Bearer
+secrets_from: [stripe]               # the remote server takes STRIPE_SECRET_KEY
 # No detect block: the server takes the same STRIPE_SECRET_KEY as the REST
 # API, which catalog/stripe detects.
 mcp:

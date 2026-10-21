@@ -5,6 +5,7 @@ hosts: [mcp.neon.tech]               # remote server: /mcp (Streamable HTTP) and
 auth:
   - header: Authorization            # OAuth access token or a Neon API key
     scheme: Bearer
+secrets_from: [neon]                 # NEON_API_KEY works for the remote server too
 # No detect block: the remote server takes the same NEON_API_KEY as the REST
 # API, which catalog/neon detects.
 mcp:

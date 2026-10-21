@@ -5,6 +5,7 @@ hosts: [mcp.pscale.dev]             # /mcp/planetscale and /mcp/planetscale-insi
 auth:
   - header: Authorization
     scheme: Bearer
+secrets_from: [planetscale]          # pscale_tkn_ service tokens
 detect:
   env: [PLANETSCALE_API_TOKEN]      # the MCP service token docs' variable for a pscale_tkn_ value
 mcp:

@@ -4,6 +4,7 @@ docs: https://planetscale.com/docs/api/reference/getting-started-with-planetscal
 hosts: [api.planetscale.com]
 auth:
   - header: Authorization          # "Bearer <OAuth token>" or a service token as "<id>:<token>"
+secrets_from: [planetscale-mcp]      # the MCP service token is a pscale_tkn_ service token
 detect:
   env: [PLANETSCALE_SERVICE_TOKEN]
   prefixes: [pscale_tkn_]

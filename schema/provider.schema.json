@@ -69,6 +69,13 @@
         "prefixes": { "type": "array", "items": { "type": "string", "minLength": 3 } }
       }
     },
+    "secrets_from": {
+      "type": "array",
+      "description": "Providers whose secrets this provider's auth locations also take (a hosted MCP server that accepts its vendor's API token)",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
     "defaults": {
       "type": "object",
       "additionalProperties": false,

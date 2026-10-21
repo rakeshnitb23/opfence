@@ -240,3 +240,26 @@ func TestScrubberAddSecret(t *testing.T) {
 		t.Fatalf("header %q", h.Get("X"))
 	}
 }
+
+// A provider that lists another in secrets_from takes its secrets too, and
+// still no one else's.
+func TestInjectSecretsFrom(t *testing.T) {
+	mcp := provider("railway-mcp", catalog.Auth{Header: "Authorization", Scheme: "Bearer"})
+	mcp.SecretsFrom = []string{"railway"}
+	h := http.Header{"Authorization": {"Bearer " + railway.Placeholder}}
+	_, res := Request(mcp, h, "", set)
+	if h.Get("Authorization") != "Bearer "+railway.Value || len(res.Injected) != 1 || res.Injected[0] != "railway/RAILWAY_TOKEN" {
+		t.Fatalf("shared secret not injected: %v %+v", h, res)
+	}
+	h = http.Header{"Authorization": {"Bearer " + vercel.Placeholder}}
+	if _, res := Request(mcp, h, "", set); h.Get("Authorization") != "Bearer "+vercel.Placeholder || len(res.Foreign) != 1 {
+		t.Fatalf("another provider's secret injected: %v %+v", h, res)
+	}
+	// The listing is one way: railway does not take railway-mcp's secrets.
+	own := &secrets.Secret{Provider: "railway-mcp", Name: "X", Value: "5e2d3b8f-0c4a-4d9e-b2f3-1e0f9c8d7b6a", Placeholder: "1b0c9d8e-7f6a-4b5c-c3d2-e1f0a9b8c7d6"}
+	rw := provider("railway", catalog.Auth{Header: "Authorization", Scheme: "Bearer"})
+	h = http.Header{"Authorization": {"Bearer " + own.Placeholder}}
+	if _, res := Request(rw, h, "", secrets.NewSet([]*secrets.Secret{railway, own})); len(res.Foreign) != 1 {
+		t.Fatalf("one-way listing used both ways: %+v", res)
+	}
+}
