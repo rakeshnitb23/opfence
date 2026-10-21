@@ -158,12 +158,15 @@ func TestSchemaRejects(t *testing.T) {
 		{rs, "classify bad dialect", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, dialect: oracle }\n", 1)},
 		{rs, "classify bad format", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, format: hrana }\n", 1)},
 		{rs, "classify empty sql list", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: [] }\n", 1)},
+		{rs, "classify sql and redis", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, redis: c }\n", 1)},
+		{rs, "classify redis with a dialect", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { redis: c, dialect: mysql }\n", 1)},
 	}
 	good := []string{
 		"classify: { sql: q }",
 		"classify: { sql: [body.sql, body.batch.sql], dialect: sqlite }",
 		"classify: { sql: q, dialect: [mysql, postgres] }",
 		"classify: { sql: body, format: libsql }",
+		"classify: { redis: commands }",
 	}
 	for _, g := range good {
 		doc := strings.Replace(goodRules, "class: delete\n", "class: delete\n    "+g+"\n", 1)

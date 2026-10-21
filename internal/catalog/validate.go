@@ -325,8 +325,20 @@ func (l *loader) validateRule(r *Rule) {
 		}
 	}
 	if c := r.Classify; c != nil {
-		if len(c.SQL) == 0 {
-			l.addf(f, ln, "%s: classify needs sql: <argument>", r.ID)
+		switch {
+		case len(c.SQL) == 0 && len(c.Redis) == 0:
+			l.addf(f, ln, "%s: classify needs sql: <argument> or redis: <argument>", r.ID)
+		case len(c.SQL) > 0 && len(c.Redis) > 0:
+			l.addf(f, ln, "%s: classify takes sql or redis, not both", r.ID)
+		case len(c.Redis) > 0 && (len(c.Dialect) > 0 || c.Format != ""):
+			l.addf(f, ln, "%s: classify.dialect and classify.format are for sql", r.ID)
+		}
+		for i, p := range c.Redis {
+			if !argPathRe.MatchString(p) {
+				l.addf(f, ln, "%s: classify.redis %q is not an argument path", r.ID, p)
+			} else if slices.Contains(c.Redis[:i], p) {
+				l.addf(f, ln, "%s: classify.redis lists %q twice", r.ID, p)
+			}
 		}
 		for i, p := range c.SQL {
 			if !argPathRe.MatchString(p) {

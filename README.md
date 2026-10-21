@@ -36,7 +36,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 opfence export --target claude-code -o opfence-settings.json
 ```
 
-Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` or Cloudflare's `d1_database_query` is allowed, a `DROP TABLE` needs confirmation; SQL is read as Postgres, MySQL or SQLite, whichever the server speaks), and adds ask rules for tools that are risky whatever their arguments. Map your production and development project ids in `opfence.yaml` so the hook knows which is which; until then everything counts as production.
+Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` or Cloudflare's `d1_database_query` is allowed, a `DROP TABLE` needs confirmation; SQL is read as Postgres, MySQL or SQLite, whichever the server speaks, and Redis commands through Upstash's MCP server one by one), and adds ask rules for tools that are risky whatever their arguments. Map your production and development project ids in `opfence.yaml` so the hook knows which is which; until then everything counts as production.
 
 ## Use with Codex, Cursor or Gemini CLI
 

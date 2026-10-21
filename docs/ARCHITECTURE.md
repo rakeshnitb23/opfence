@@ -197,6 +197,19 @@ Multiple statements take the strictest decision. SQL longer than 1 MB is unknown
 - `CREATE TRIGGER` adds the class of its body, which runs on every later statement it fires on. `INSERT OR REPLACE`, `REPLACE` and `UPDATE OR REPLACE` are a write and a delete.
 - libSQL's HTTP bodies are read whole (`classify.format: libsql`): every statement of `execute`, `batch` and `sequence` requests and of a cursor's batch, the legacy API's `statements`, and `store_sql` texts, as if they ran, since a later request on the stream can run one by its `sql_id`. A `sql_id` the body did not store, a request type Opfence does not know, and Protobuf bodies are unknown.
 
+**Redis** (stage 20). `decode.ClassifyRedis` reads one command at a time from a table generated from Valkey's own command definitions (`tools/redisgen`, from `src/commands/*.json`; the commit is recorded in the file): read-only commands are read; writes whose key specs remove keys or their contents (`DEL`, `UNLINK`, `HDEL`, `LTRIM`, pops, `ZREMRANGEBY*`, `XTRIM`, `RENAME`) are delete; other writes are write; transactions, pub/sub subscriptions and connection commands are read. Reviewed overrides cover what flags do not say:
+
+| Commands | Class |
+| --- | --- |
+| `FLUSHALL`, `FLUSHDB`, `FUNCTION FLUSH` | irreversible |
+| `EXPIRE`/`PEXPIRE` (and `HEXPIRE`/`HPEXPIRE`) with a TTL of zero or less, every `EXPIREAT`/`PEXPIREAT`, `FUNCTION DELETE` | delete |
+| `PUBLISH`, `SPUBLISH`, `SCRIPT LOAD`, `SCRIPT FLUSH`, `SORT … STORE` | write |
+| `AUTH`, `HELLO … AUTH`, `ACL SETUSER/DELUSER/LOAD/SAVE` and role changes | access |
+| `ACL LIST/GETUSER`, `CONFIG GET`, `MONITOR` | credential |
+| `EVAL*`, `FCALL*`, `SCRIPT KILL`, `MIGRATE`, `CONFIG SET/REWRITE/RESETSTAT`, `CLIENT KILL/PAUSE`, and every other administration command not listed as a read (`DEBUG`, `SHUTDOWN`, replication, cluster changes, modules, `SAVE`) | unknown |
+
+Upstash's RedisJSON commands are listed by hand from its docs (`JSON.GET` read, `JSON.SET` write, `JSON.DEL`/`CLEAR`/`ARRPOP`/`ARRTRIM` delete). A command name Opfence does not know is unknown. A pipeline gets every command's classes.
+
 ## 4. Catalog
 
 ### 4.1 Layout
@@ -305,7 +318,7 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
     classify: { sql: query }        # derive the class from args.query
 ```
 
-Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `empty` (absent, null, `""`, `{}` or `[]`, for filters where an empty one selects everything), `matches` (RE2). `classify.sql` hands an argument to the SQL classifier (§3.4): a string, or a list of strings classified one by one (a transaction). It may name several arguments when the SQL can be in any of them (D1 takes `sql` or `batch[].sql`). `classify.dialect` names the SQL the server speaks: `postgres` (the default), `mysql` or `sqlite`, or a list when the server could speak any of them and the request does not say which (PlanetScale's MCP server looks the database kind up itself), in which case every dialect's classes count. `classify.format: libsql` reads a libSQL HTTP request body instead of SQL text. A value of any other shape, or no SQL at all, leaves the rule's own class. When the SQL is unknown the rule's own class is added too: a rule's class is its worst case, so a rule that classifies SQL never decides more loosely than it would with a fixed class.
+Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `empty` (absent, null, `""`, `{}` or `[]`, for filters where an empty one selects everything), `matches` (RE2). `classify.sql` hands an argument to the SQL classifier (§3.4): a string, or a list of strings classified one by one (a transaction). It may name several arguments when the SQL can be in any of them (D1 takes `sql` or `batch[].sql`). `classify.dialect` names the SQL the server speaks: `postgres` (the default), `mysql` or `sqlite`, or a list when the server could speak any of them and the request does not say which (PlanetScale's MCP server looks the database kind up itself), in which case every dialect's classes count. `classify.format: libsql` reads a libSQL HTTP request body instead of SQL text. `classify.redis` (instead of `sql`) hands an argument to the Redis classifier: a list of commands, each a list of words, or a single command. A value of any other shape, or no SQL at all, leaves the rule's own class. When the SQL is unknown the rule's own class is added too: a rule's class is its worst case, so a rule that classifies SQL never decides more loosely than it would with a fixed class.
 
 ```yaml
   - id: cloudflare.d1.query

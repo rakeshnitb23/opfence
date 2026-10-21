@@ -262,7 +262,16 @@ type Classify struct {
 	// libsql for a libSQL (Turso) HTTP request body, whose statements are
 	// SQLite.
 	Format string `yaml:"format"`
+	// Redis lists the arguments holding Redis commands: a list of commands
+	// (each a list of words) or a single command. Exclusive with SQL.
+	Redis Strings `yaml:"redis"`
 }
+
+// Active reports whether the block classifies anything.
+func (c *Classify) Active() bool { return c != nil && (len(c.SQL) > 0 || len(c.Redis) > 0) }
+
+// Paths are the arguments the block reads.
+func (c *Classify) Paths() []string { return slices.Concat(c.SQL, c.Redis) }
 
 // SQL dialects and formats classify understands.
 const (
@@ -286,6 +295,9 @@ func (c *Classify) Dialects() []string {
 // String describes where the SQL comes from and how it is read, for cards
 // and listings: "query", "body.sql, body.batch.sql (sqlite)".
 func (c *Classify) String() string {
+	if len(c.Redis) > 0 {
+		return strings.Join(c.Redis, ", ") + " (redis)"
+	}
 	s := strings.Join(c.SQL, ", ")
 	switch {
 	case c.Format != "":
@@ -433,14 +445,18 @@ func (r *Rule) PossibleClasses() []classes.Class {
 	for _, w := range r.When {
 		add(w.Class)
 	}
-	if r.Classify != nil && len(r.Classify.SQL) > 0 {
+	if r.Classify.Active() {
 		for _, c := range []classes.Class{classes.Read, classes.Write, classes.Delete, classes.Irreversible, classes.Access, classes.Unknown} {
 			add(c)
 		}
-		// Postgres SQL can read Supabase Vault's secrets and MySQL the
-		// password hashes in mysql.user; SQLite has no such table.
+		// Postgres SQL can read Supabase Vault's secrets, MySQL the password
+		// hashes in mysql.user and Redis its ACLs and config; SQLite has no
+		// such table.
+		if len(r.Classify.Redis) > 0 {
+			add(classes.Credential)
+		}
 		for _, d := range r.Classify.Dialects() {
-			if d != DialectSQLite {
+			if len(r.Classify.SQL) > 0 && d != DialectSQLite {
 				add(classes.Credential)
 			}
 		}

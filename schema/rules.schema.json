@@ -34,7 +34,7 @@
         "classify": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["sql"],
+          "oneOf": [{ "required": ["sql"], "not": { "required": ["redis"] } }, { "required": ["redis"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["dialect"] }, { "required": ["format"] }] } }],
           "properties": {
             "sql": {
               "description": "Arguments holding SQL: one path, or several when the SQL may be in any of them",
@@ -50,7 +50,14 @@
                 { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sqlDialect" } }
               ]
             },
-            "format": { "enum": ["libsql"], "description": "libsql: the argument is a libSQL HTTP request body, read as SQLite" }
+            "format": { "enum": ["libsql"], "description": "libsql: the argument is a libSQL HTTP request body, read as SQLite" },
+            "redis": {
+              "description": "Arguments holding Redis commands: a list of commands (each a list of words) or one command",
+              "oneOf": [
+                { "$ref": "#/$defs/argPath" },
+                { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/argPath" } }
+              ]
+            }
           }
         },
         "response": {

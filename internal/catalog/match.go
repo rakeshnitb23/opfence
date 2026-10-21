@@ -218,18 +218,22 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		}
 		return hit, label + strings.Join(why, ", ")
 	}
-	if r.Classify != nil && len(r.Classify.SQL) > 0 {
+	if r.Classify.Active() {
+		what := "SQL"
+		if len(r.Classify.Redis) > 0 {
+			what = "Redis commands"
+		}
 		out := r.Classify.classes(args)
 		if out == nil {
-			return []classes.Class{r.Class}, "rule class (no SQL in " + r.Classify.String() + ")"
+			return []classes.Class{r.Class}, "rule class (no " + what + " in " + r.Classify.String() + ")"
 		}
-		// A rule's class is its worst case, and SQL Opfence cannot read
-		// gets it: classifying SQL never decides more loosely than the
-		// rule would without it.
+		// A rule's class is its worst case, and what Opfence cannot read
+		// gets it: classifying never decides more loosely than the rule
+		// would without it.
 		if slices.Contains(out, classes.Unknown) && !slices.Contains(out, r.Class) {
 			out = append(out, r.Class)
 		}
-		return out, "SQL in " + r.Classify.String()
+		return out, what + " in " + r.Classify.String()
 	}
 	return []classes.Class{r.Class}, "rule class"
 }
@@ -244,6 +248,26 @@ func (c *Classify) classes(args map[string]any) []classes.Class {
 				out = append(out, x)
 			}
 		}
+	}
+	if len(c.Redis) > 0 {
+		var cmds [][]string
+		found := false
+		for _, p := range c.Redis {
+			v, ok := Lookup(args, p)
+			if !ok {
+				continue
+			}
+			found = true
+			cs, ok := decode.RedisCommands(v)
+			if !ok {
+				return nil
+			}
+			cmds = append(cmds, cs...)
+		}
+		if !found {
+			return nil
+		}
+		return decode.ClassifyRedisCommands(cmds) // nil for no commands: the rule's class
 	}
 	if c.Format == FormatLibSQL {
 		v, _ := Lookup(args, c.SQL[0])
@@ -310,7 +334,7 @@ func sqlTexts(v any) ([]string, bool) {
 
 func (r *Rule) readsBody() bool {
 	if r.Classify != nil {
-		for _, p := range r.Classify.SQL {
+		for _, p := range r.Classify.Paths() {
 			if p == "body" || strings.HasPrefix(p, "body.") {
 				return true
 			}
