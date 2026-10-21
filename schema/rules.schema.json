@@ -10,6 +10,7 @@
   },
   "$defs": {
     "class": { "enum": ["read", "write", "delete", "irreversible", "money", "credential", "access", "unknown"] },
+    "sqlDialect": { "enum": ["postgres", "mysql", "sqlite"] },
     "argPath": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$-]*(\\.[A-Za-z_$][A-Za-z0-9_$-]*)*$" },
     "ruleId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$" },
     "rule": {
@@ -34,7 +35,23 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["sql"],
-          "properties": { "sql": { "$ref": "#/$defs/argPath" } }
+          "properties": {
+            "sql": {
+              "description": "Arguments holding SQL: one path, or several when the SQL may be in any of them",
+              "oneOf": [
+                { "$ref": "#/$defs/argPath" },
+                { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/argPath" } }
+              ]
+            },
+            "dialect": {
+              "description": "The SQL the server speaks (postgres by default); several when it could be any of them",
+              "oneOf": [
+                { "$ref": "#/$defs/sqlDialect" },
+                { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sqlDialect" } }
+              ]
+            },
+            "format": { "enum": ["libsql"], "description": "libsql: the argument is a libSQL HTTP request body, read as SQLite" }
+          }
         },
         "response": {
           "type": "object",

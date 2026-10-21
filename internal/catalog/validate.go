@@ -269,11 +269,36 @@ func (l *loader) validateRule(r *Rule) {
 			l.addf(f, ln, "%s: a verified rule with a response transform needs a test with a recorded response", r.ID)
 		}
 	}
-	if r.Classify != nil {
-		if r.Classify.SQL == "" {
+	if c := r.Classify; c != nil {
+		if len(c.SQL) == 0 {
 			l.addf(f, ln, "%s: classify needs sql: <argument>", r.ID)
-		} else if !argPathRe.MatchString(r.Classify.SQL) {
-			l.addf(f, ln, "%s: classify.sql %q is not an argument path", r.ID, r.Classify.SQL)
+		}
+		for i, p := range c.SQL {
+			if !argPathRe.MatchString(p) {
+				l.addf(f, ln, "%s: classify.sql %q is not an argument path", r.ID, p)
+			} else if slices.Contains(c.SQL[:i], p) {
+				l.addf(f, ln, "%s: classify.sql lists %q twice", r.ID, p)
+			}
+		}
+		for i, d := range c.Dialect {
+			switch {
+			case d != DialectPostgres && d != DialectMySQL && d != DialectSQLite:
+				l.addf(f, ln, "%s: classify.dialect %q is not postgres, mysql or sqlite", r.ID, d)
+			case slices.Contains(c.Dialect[:i], d):
+				l.addf(f, ln, "%s: classify.dialect lists %q twice", r.ID, d)
+			}
+		}
+		switch c.Format {
+		case "":
+		case FormatLibSQL:
+			if len(c.SQL) > 1 {
+				l.addf(f, ln, "%s: classify.format libsql reads one argument, the request body", r.ID)
+			}
+			if len(c.Dialect) > 0 {
+				l.addf(f, ln, "%s: classify.format libsql is always sqlite; leave dialect out", r.ID)
+			}
+		default:
+			l.addf(f, ln, "%s: classify.format %q is not libsql", r.ID, c.Format)
 		}
 	}
 	if r.Resource != nil {

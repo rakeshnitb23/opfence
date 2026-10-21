@@ -44,7 +44,7 @@ Design rules that follow from the threat model in PLAN.md:
 cmd/opfence/            main; wires cobra commands to internal packages
 internal/classes/       risk classes and decisions, their ordering
 internal/request/       Request model, .http fixture parser, body limits, decompression
-internal/decode/        Operation model; rest, graphql, mcp, aws, sql decoders
+internal/decode/        Operation model; rest, graphql, mcp, aws, git decoders; SQL classifiers (Postgres, MySQL, SQLite) and libSQL bodies
 internal/catalog/       rule model, YAML loader, validator, matcher, embedded snapshot
 internal/policy/        opfence.yaml model, environment resolver, decision table, merge
 internal/engine/        glue: Request → []Evaluation (decode + match + decide)
@@ -77,6 +77,8 @@ docs/
 | `github.com/santhosh-tekuri/jsonschema/v6` | tests only | Proves the published JSON Schema accepts every catalog file, so editor validation never drifts from the loader |
 | `github.com/zalando/go-keyring` | secrets | macOS Keychain and Linux Secret Service without cgo; brings `godbus/dbus` and `golang.org/x/sys`. Checked on 16 Oct 2026 that v0.2.8 passes values to `security` on stdin, not in process arguments |
 | `github.com/aws/aws-sdk-go-v2` (signer only) | inject (stage 10) | Official SigV4 signer; re-implementing signing is a footgun |
+| `github.com/rqlite/sql` | decode/sql_sqlite (stage 16) | A SQLite parser held to accept exactly what the `sqlite3` binary accepts; pure Go with no runtime dependencies. Its two differences from SQLite's tokenizer (NUL ends the text; non-ASCII spaces are identifier characters) are emulated before parsing. Checked against real SQLite: in 160,000 generated statements, nothing it reads as a read changed a database |
+| `vitess.io/vitess` (`go/vt/sqlparser` only) | decode/sql_mysql (stage 16) | The parser PlanetScale's vtgate parses every query with, so a MySQL statement is read as the server reads it, versioned comments included. Pure Go, 5 ms process start. It brings protobuf, a little of gRPC and MySQL collation tables: the stripped binary grew from 22.8 MB to 33.9 MB. TiDB's parser was the alternative (as large, with zap) and is not what PlanetScale runs |
 | `github.com/multigres/multigres` (`go/common/parser` only) | decode/sql (stage 11) | Supabase's Go port of Postgres' grammar: pure Go, so the binary stays static and cross-compiled, and a process starts in milliseconds, which the per-call hook needs. `pg_query_go` needs cgo; `go-pgquery` (the same parser in WebAssembly) took 1.5 s to start. The package links `testify` through a helper file, about 6 MB of binary in all |
 
 Dropped from the original plan, with reasons:
@@ -159,7 +161,7 @@ Path normalisation (`request.NormalizePath`) collapses `//`, drops `.` and trail
 
 ### 3.4 SQL inside tools
 
-`decode/sql` classifies a SQL string for tools like Supabase `execute_sql`. Since stage 11 it parses with multigres' Go port of Postgres' own grammar, so comments, quoting, dollar-quoted bodies and statement boundaries are read exactly as Postgres reads them. SQL that does not parse is unknown, and so is every statement type not listed.
+`decode` classifies a SQL string for tools like Supabase `execute_sql`, in the dialect the server speaks. Postgres SQL is parsed with multigres' Go port of Postgres' own grammar (stage 11), MySQL with Vitess' parser and SQLite with rqlite/sql (stage 16), so comments, quoting, dollar-quoted bodies and statement boundaries are read as each server reads them. SQL that does not parse is unknown, and so is every statement type not listed. The table is the same in every dialect; the dialects' own additions follow it.
 
 | Statement | Class |
 | --- | --- |
@@ -178,6 +180,22 @@ What the parse tree adds:
 - A function created in the same batch is classified by its body when it is SQL, and as unknown in any other language, so `CREATE FUNCTION f … AS $$ DELETE … $$; SELECT f()` is not a read. `CREATE TRIGGER` and `CREATE EVENT TRIGGER` add the class of their function when the batch defines it, and unknown otherwise. `CREATE RULE` adds the class of its actions; `PREPARE` the class of what it prepares; `EXPLAIN ANALYZE` and `COPY (query) TO` the class of the statement they run.
 
 Multiple statements take the strictest decision. SQL longer than 1 MB is unknown without parsing, because nesting that deep can overflow the parser's stack.
+
+**MySQL** (PlanetScale's Vitess databases):
+- Versioned comments (`/*!80000 … */`) run only on servers of at least that version, and Opfence cannot know the version, so the SQL is parsed once for each range of versions its comments mark out (below the lowest, then at each one) and every reading counts. Parsing only the oldest and newest readings would miss `WHERE id = 5 /*!80000 OR TRUE */ /*!90000 AND id = 6 */`, which matches every row on MySQL 8 alone. More than 15 distinct versions is unknown.
+- DDL that Vitess parses only in part (vtgate passes it to MySQL as text) is unknown, as is anything that changes how the server reads later SQL: `sql_mode` (which can turn backslash escapes off), `SET NAMES`, character sets and collations.
+- Unknown: `SELECT … INTO OUTFILE` or `DUMPFILE`, `LOAD DATA`, `LOAD_FILE()`, `GET_LOCK()` and `RELEASE_LOCK()`, `sys_exec()`/`sys_eval()`, `CALL`, `EXECUTE`, `PREPARE … FROM @variable` (`PREPARE … FROM 'text'` is classified by its text), `DO`, `KILL`, `FLUSH`, `REPAIR`, `OPTIMIZE`, `SET GLOBAL`/`PERSIST`, Vitess' `ALTER VSCHEMA` and migration commands, and statements Vitess does not parse (`GRANT`, `CREATE USER`, `SET ROLE`).
+- Irreversible beyond the table: `ALTER TABLE … ENGINE=BLACKHOLE` (which keeps no rows), `DROP`/`TRUNCATE`/`DISCARD PARTITION`, `DISCARD TABLESPACE`, `DROP PROCEDURE`, `PURGE BINARY LOGS`. `DROP INDEX` and `DROP PRIMARY KEY` are writes: no data goes.
+- Reading `mysql.user` or `mysql.global_priv` (password hashes) is credential; writing a privilege table in `mysql` is access, as are `sql_log_bin` and `foreign_key_checks`.
+- `REPLACE` is a write and a delete, because it deletes every row the new one conflicts with on any unique key.
+
+**SQLite** (Cloudflare D1, libSQL and Turso):
+- SQLite stops reading at the first NUL even when given the length, so text after one is dropped before parsing: `DELETE FROM t\0 WHERE id = 1` deletes every row. Non-ASCII spaces (U+00A0 and kin) are identifier characters to SQLite, and become a letter before parsing.
+- A bare double-quoted name does not count as a column in a `WHERE`, because SQLite reads it as a string when no column has that name (`WHERE "1"` is true for every row).
+- `EXPLAIN` is a read, since SQLite never runs the statement. Read-only pragmas (`table_info`, `index_list`, `integrity_check` and the like) are reads, a setting read without a value is a read, setting one is a write; `foreign_keys`, `ignore_check_constraints`, `trusted_schema` and `query_only` are access, `writable_schema` and setting `schema_version` irreversible, and a pragma Opfence does not know is unknown.
+- Writing `sqlite_schema` (or `sqlite_master`) or `sqlite_dbpage` is irreversible. `ATTACH` (which opens or creates a file), `VACUUM INTO`, virtual tables with modules other than FTS, R-Tree and Geopoly, `load_extension()`, `fts3_tokenizer()` and the shell's file functions are unknown.
+- `CREATE TRIGGER` adds the class of its body, which runs on every later statement it fires on. `INSERT OR REPLACE`, `REPLACE` and `UPDATE OR REPLACE` are a write and a delete.
+- libSQL's HTTP bodies are read whole (`classify.format: libsql`): every statement of `execute`, `batch` and `sequence` requests and of a cursor's batch, the legacy API's `statements`, and `store_sql` texts, as if they ran, since a later request on the stream can run one by its `sql_id`. A `sql_id` the body did not store, a request type Opfence does not know, and Protobuf bodies are unknown.
 
 ## 4. Catalog
 
@@ -283,7 +301,19 @@ Some operations are only dangerous with certain arguments: RDS `DeleteDBInstance
     classify: { sql: query }        # derive the class from args.query
 ```
 
-Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `empty` (absent, null, `""`, `{}` or `[]`, for filters where an empty one selects everything), `matches` (RE2). `classify.sql` hands an argument to the Postgres SQL classifier: a string, or a list of strings classified one by one (a transaction). Any other value leaves the rule's own class. Only Postgres dialects use it: SQLite and MySQL quote and comment differently, so their SQL tools get a fixed class. Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
+Every `when` entry whose condition holds adds its class (so entry order can never hide a stricter class); the rule's own `class` applies only when none holds. An operation with several classes gets the strictest decision among them, as SQL does. Conditions: `equals`, `in`, `present`, `absent`, `empty` (absent, null, `""`, `{}` or `[]`, for filters where an empty one selects everything), `matches` (RE2). `classify.sql` hands an argument to the SQL classifier (§3.4): a string, or a list of strings classified one by one (a transaction). It may name several arguments when the SQL can be in any of them (D1 takes `sql` or `batch[].sql`). `classify.dialect` names the SQL the server speaks: `postgres` (the default), `mysql` or `sqlite`, or a list when the server could speak any of them and the request does not say which (PlanetScale's MCP server looks the database kind up itself), in which case every dialect's classes count. `classify.format: libsql` reads a libSQL HTTP request body instead of SQL text. A value of any other shape, or no SQL at all, leaves the rule's own class. When the SQL is unknown the rule's own class is added too: a rule's class is its worst case, so a rule that classifies SQL never decides more loosely than it would with a fixed class.
+
+```yaml
+  - id: cloudflare.d1.query
+    class: irreversible                       # the worst case, kept for SQL Opfence cannot read
+    classify: { sql: [body.sql, body.batch.sql], dialect: sqlite }
+  - id: planetscale-mcp.database.execute-write-query
+    class: irreversible
+    classify: { sql: query, dialect: [mysql, postgres] }
+  - id: turso.sql.pipeline
+    class: unknown
+    classify: { sql: body, format: libsql }
+``` Exporters that cannot evaluate conditions use the **strictest** class the rule can produce.
 
 Some reads return secrets next to ordinary data. A rule can say what the proxy does to such a response, and what the operation is once it has:
 
@@ -675,5 +705,7 @@ An error exits 2 with the message on stderr, which Codex treats as a deny. Codex
 | The sandbox may not write the project's Claude Code settings files (stage 10d) | Rely on Claude Code's own protection | Hooks in those files run unsandboxed at the next start; a write from inside the sandbox would be an escape |
 | AWS re-signing refuses customer-run hosts under amazonaws.com (stage 10d) | Re-sign for every AWS host | API Gateway, load balancers, EC2 names and VPC endpoints are run by whoever made them; IAM-authenticated API Gateway calls with a placeholder key are the cost |
 | Built-in passthrough hosts on port 443 only (stage 10d) | Any port | Off 443 nothing checks the server name, so a registry's shared CDN address could carry anything |
+| MySQL and SQLite are classified with their own parsers, not the Postgres one (stage 16) | Keep a fixed class for their tools | A fixed irreversible class made every read through D1 or PlanetScale's write tool need the database id typed in production; reading their SQL as Postgres would misread quoting and comments (`'a\'` ends a string in MySQL and not in Postgres). Each parser is the server's own grammar or held to it, and unknown SQL keeps the rule's worst case |
+| SQL a rule cannot read keeps the rule's class as well as unknown (stage 16) | Unknown alone, as before | Unknown asks; irreversible needs the name typed. Without the floor, moving a rule from a fixed class to the classifier could lower its decision for SQL crafted to fail the parse |
 | SQL is classified from a real Postgres parse tree (stage 11) | Keep the keyword tokenizer | Keywords cannot see structure: `WHERE id = 5 OR true` has a `WHERE`, and side-effect functions hide outside `SELECT`. Failing closed on anything unparsed or unlisted keeps a young parser library from loosening decisions |
 | Doctor checks the sandbox from inside it | Trust the settings | Settings keys change between Claude Code versions; only a probe from inside shows what an agent can actually reach |

@@ -123,19 +123,29 @@ operations:
   - id: aws.dynamodb.execute-statement
     match: { aws: { service: dynamodb, action: ExecuteStatement } }
     class: unknown
+    when:
+      - if: { arg: Statement, matches: "/\\*" }
+        class: unknown
     classify: { sql: Statement }
     card: "Run a PartiQL statement"
     status: verified
-    verified: 2026-10-16
+    verified: 2026-10-21
     sources:
       - https://github.com/boto/botocore/blob/develop/botocore/data/dynamodb/2012-08-10/service-2.json
+      - https://github.com/partiql/partiql-lang-kotlin/blob/main/partiql-parser/src/main/antlr/PartiQLTokens.g4
     notes: >-
-      The class comes from the statement, using the SQL classifier.
+      The class comes from the statement, read by the Postgres classifier: DynamoDB's PartiQL
+      takes only SELECT, INSERT, UPDATE and DELETE, which both read alike. Except for block
+      comments: Postgres nests them and PartiQL ends one at the first */, so
+      "/* /* */ DELETE ... -- */ SELECT ..." is a read to one and a delete to the other. A
+      statement with a block comment is unknown.
     tests:
       - fixture: fixtures/dynamodb-execute-statement.http
         expect: read
       - fixture: fixtures/dynamodb-execute-statement-delete.http
         expect: delete
+      - fixture: fixtures/dynamodb-execute-statement-comment.http
+        expect: unknown
 
   - id: aws.dynamodb.put-resource-policy
     match: { aws: { service: dynamodb, action: PutResourcePolicy } }

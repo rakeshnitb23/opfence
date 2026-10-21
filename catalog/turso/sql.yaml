@@ -6,21 +6,32 @@ operations:
     class: unknown
     card: "Run SQL on a Turso database over HTTP"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-21
     sources:
       - https://github.com/tursodatabase/libsql/blob/main/docs/HTTP_V2_SPEC.md
       - https://github.com/tursodatabase/libsql/blob/main/docs/HRANA_3_SPEC.md
+    classify: { sql: body, format: libsql }
     notes: >-
       Hrana over HTTP (/v2/pipeline, /v3/pipeline, /v3-protobuf/pipeline) on a database
-      host. The body carries libSQL (SQLite) SQL, which Opfence's Postgres classifier cannot
-      read safely: SQLite ends a /* comment at the first */ and has no E'' or $tag$ strings,
-      so '/* /* */ DROP TABLE users; -- */ SELECT 1' is a read to Postgres and a DROP to
-      libSQL. The SQL also hides in arrays (requests, batch steps), in stored sql_id texts
-      and, for the -protobuf routes, in a binary body. So every request is unknown and asks.
+      host. Every statement the body runs is classified as SQLite: execute and sequence
+      requests, batch steps, and store_sql texts (a later request on the stream can run one by
+      its sql_id). A sql_id the same body did not store, a request type Opfence does not know,
+      and the binary -protobuf bodies are unknown. A body that only closes the stream or reads
+      the autocommit state is a read.
     tests:
       - fixture: fixtures/sql-pipeline.http
-        expect: unknown
+        expect: irreversible
       - fixture: fixtures/sql-pipeline-v3.http
+        expect: read
+      - fixture: fixtures/sql-pipeline-batch.http
+        expect: delete
+      - fixture: fixtures/sql-pipeline-stored.http
+        expect: irreversible
+      - fixture: fixtures/sql-pipeline-sql-id.http
+        expect: unknown
+      - fixture: fixtures/sql-pipeline-close.http
+        expect: read
+      - fixture: fixtures/sql-pipeline-protobuf.http
         expect: unknown
 
   - id: turso.sql.cursor
@@ -29,19 +40,19 @@ operations:
     class: unknown
     card: "Run a batch of SQL on a Turso database over HTTP"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-21
     sources:
       - https://github.com/tursodatabase/libsql/blob/main/docs/HRANA_3_SPEC.md
+    classify: { sql: body, format: libsql }
     notes: >-
-      Hrana 3 cursor endpoint (/v3/cursor, /v3-protobuf/cursor). The body carries libSQL
-      (SQLite) SQL, which Opfence's Postgres classifier cannot read safely: SQLite ends a /*
-      comment at the first */ and has no E'' or $tag$ strings, so '/* /* */ DROP TABLE
-      users; -- */ SELECT 1' is a read to Postgres and a DROP to libSQL. The SQL also hides
-      in arrays (requests, batch steps), in stored sql_id texts and, for the -protobuf
-      routes, in a binary body. So every request is unknown and asks.
+      Hrana 3 cursor endpoint (/v3/cursor, /v3-protobuf/cursor). Every step of the body's batch
+      is classified as SQLite; a step that runs a sql_id stored by an earlier request on the
+      stream, and the binary -protobuf bodies, are unknown.
     tests:
       - fixture: fixtures/sql-cursor.http
-        expect: unknown
+        expect: irreversible
+      - fixture: fixtures/sql-cursor-read.http
+        expect: read
 
   - id: turso.sql.batch
     match: { rest: { method: POST, path: "/" } }
@@ -49,16 +60,18 @@ operations:
     class: unknown
     card: "Run a batch of SQL on a Turso database over the legacy HTTP API"
     status: verified
-    verified: 2026-10-17
+    verified: 2026-10-21
     sources:
       - https://github.com/tursodatabase/libsql/blob/main/docs/http_api.md
+    classify: { sql: body, format: libsql }
     notes: >-
-      The original sqld HTTP API: POST / with a statements array. The body carries libSQL
-      (SQLite) SQL, which Opfence's Postgres classifier cannot read safely: SQLite ends a /*
-      comment at the first */ and has no E'' or $tag$ strings, so '/* /* */ DROP TABLE
-      users; -- */ SELECT 1' is a read to Postgres and a DROP to libSQL. The SQL also hides
-      in arrays (requests, batch steps), in stored sql_id texts and, for the -protobuf
-      routes, in a binary body. So every request is unknown and asks.
+      The original sqld HTTP API: POST / with a statements array of SQL texts or {q, params}
+      objects, each classified as SQLite. SQLite ends a block comment at the first */, so
+      '/* /* */ DROP TABLE users; -- */ SELECT 1' drops the table, and is classified so.
     tests:
       - fixture: fixtures/sql-batch.http
-        expect: unknown
+        expect: irreversible
+      - fixture: fixtures/sql-batch-read.http
+        expect: read
+      - fixture: fixtures/sql-batch-comment.http
+        expect: irreversible

@@ -58,16 +58,21 @@ operations:
   - id: cloudflare-mcp.d1.d1-database-query
     match: { mcp: { tool: d1_database_query } }
     class: irreversible
+    classify: { sql: sql, dialect: sqlite }
     resource: { arg: database_id, kind: database }
     card: "Run SQL on D1 database {database_id}"
     status: verified
-    verified: 2026-10-18
+    verified: 2026-10-21
     sources:
       - https://github.com/cloudflare/mcp-server-cloudflare/blob/main/apps/workers-bindings/src/tools/d1.tools.ts
     notes: >-
-      D1 runs SQLite, which classify.sql does not parse, and the SQL may drop or
-      delete data: fixed irreversible.
+      The tool passes sql to D1's query endpoint (cloudflare.d1.query), which runs SQLite, so the
+      SQL is classified as SQLite. SQL the classifier cannot read keeps the rule's class,
+      irreversible.
     tests:
       - fixture: fixtures/d1-d1-database-query.http
+        expect: read
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-d1-database-query-delete.http
         expect: irreversible
         resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"

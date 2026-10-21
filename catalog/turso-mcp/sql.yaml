@@ -29,11 +29,11 @@ operations:
       - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
     notes: >-
       Turso limits the tool to INSERT and UPDATE. An UPDATE without a limiting WHERE
-      overwrites every row, which the SQL convention makes irreversible, and libSQL SQL
-      cannot be handed to the Postgres classifier (see turso.sql.pipeline), so the worst
-      case applies. Turso's hosted server (mcp.turso.ai) is closed source; Turso publishes
-      the tool names and what each does but not their arguments, so the rule matches the
-      tool alone and names no resource. Fixture arguments are illustrative.
+      overwrites every row, which the SQL convention makes irreversible. Turso's hosted server
+      (mcp.turso.ai) is closed source; Turso publishes the tool names and what each does but not
+      their arguments, so the rule cannot find the SQL to classify it (as turso.sql.pipeline
+      does), matches the tool alone, takes the worst case and names no resource. Fixture
+      arguments are illustrative.
     tests:
       - fixture: fixtures/sql-write.http
         expect: irreversible
@@ -47,11 +47,10 @@ operations:
     sources:
       - https://github.com/tursodatabase/turso-mcp/blob/main/claude-code/skills/turso/SKILL.md
     notes: >-
-      A DELETE without a limiting WHERE empties the table; libSQL SQL cannot be classified
-      safely, so the worst case applies. Turso's hosted server (mcp.turso.ai) is closed
-      source; Turso publishes the tool names and what each does but not their arguments, so
-      the rule matches the tool alone and names no resource. Fixture arguments are
-      illustrative.
+      A DELETE without a limiting WHERE empties the table. Turso's hosted server
+      (mcp.turso.ai) is closed source; Turso publishes the tool names and what each does but not
+      their arguments, so the rule cannot find the SQL to classify it, matches the tool alone,
+      takes the worst case and names no resource. Fixture arguments are illustrative.
     tests:
       - fixture: fixtures/sql-delete.http
         expect: irreversible

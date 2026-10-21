@@ -55,6 +55,20 @@ func ClassifySQL(sql string) (out []classes.Class) {
 	return out
 }
 
+// ClassifySQLDialect classifies SQL text in a dialect: postgres (or empty),
+// mysql or sqlite. Any other dialect is unknown.
+func ClassifySQLDialect(dialect, sql string) []classes.Class {
+	switch dialect {
+	case "", "postgres":
+		return ClassifySQL(sql)
+	case "mysql":
+		return ClassifyMySQL(sql)
+	case "sqlite":
+		return ClassifySQLite(sql)
+	}
+	return []classes.Class{classes.Unknown}
+}
+
 // maxSQL is the longest SQL ClassifySQL parses. Request bodies are capped
 // well below it.
 const maxSQL = 1 << 20

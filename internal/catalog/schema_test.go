@@ -152,6 +152,21 @@ func TestSchemaRejects(t *testing.T) {
 		{rs, "two matchers", strings.Replace(goodRules, "match: { graphql: { type: mutation, field: dbWipe } }", "match: { graphql: { type: mutation, field: dbWipe }, mcp: { tool: x } }", 1)},
 		{rs, "verified without tests", strings.Replace(goodRules, "    tests:\n      - fixture: fixtures/db-delete.http\n        expect: irreversible\n", "", 1)},
 		{rs, "condition with two tests", strings.Replace(goodRules, `equals: "true"`, `equals: "true", absent: true`, 1)},
+		{rs, "classify bad dialect", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, dialect: oracle }\n", 1)},
+		{rs, "classify bad format", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: q, format: hrana }\n", 1)},
+		{rs, "classify empty sql list", strings.Replace(goodRules, "class: delete\n", "class: delete\n    classify: { sql: [] }\n", 1)},
+	}
+	good := []string{
+		"classify: { sql: q }",
+		"classify: { sql: [body.sql, body.batch.sql], dialect: sqlite }",
+		"classify: { sql: q, dialect: [mysql, postgres] }",
+		"classify: { sql: body, format: libsql }",
+	}
+	for _, g := range good {
+		doc := strings.Replace(goodRules, "class: delete\n", "class: delete\n    "+g+"\n", 1)
+		if err := validateYAML(t, rs, g, []byte(doc)); err != nil {
+			t.Errorf("%s: schema rejected it: %v", g, err)
+		}
 	}
 	for _, b := range bad {
 		if err := validateYAML(t, b.s, b.name, []byte(b.doc)); err == nil {

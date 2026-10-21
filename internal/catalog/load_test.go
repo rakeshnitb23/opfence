@@ -157,6 +157,15 @@ func TestLoadInvalid(t *testing.T) {
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},
 		{"response bad path", responseRule(`{ redact: ["a b"], class: read }`), "not a dotted path"},
 		{"response untested", responseRule(`{ redact: [secret], class: read }`), "needs a test with a recorded response"},
+		{"classify without sql", classifyRule(`{ dialect: sqlite }`), "classify needs sql"},
+		{"classify bad path", classifyRule(`{ sql: "a b" }`), "not an argument path"},
+		{"classify path twice", classifyRule(`{ sql: [q, q] }`), "lists \"q\" twice"},
+		{"classify bad dialect", classifyRule(`{ sql: q, dialect: oracle }`), "is not postgres, mysql or sqlite"},
+		{"classify dialect twice", classifyRule(`{ sql: q, dialect: [mysql, mysql] }`), "lists \"mysql\" twice"},
+		{"classify bad format", classifyRule(`{ sql: body, format: hrana }`), "is not libsql"},
+		{"classify libsql two paths", classifyRule(`{ sql: [body, query], format: libsql }`), "reads one argument"},
+		{"classify libsql dialect", classifyRule(`{ sql: body, format: libsql, dialect: sqlite }`), "always sqlite"},
+		{"classify sql not a list", classifyRule(`{ sql: { a: b } }`), "want a string or a list"},
 		{"test response without transform", func(m fstest.MapFS) {
 			replace("acme/db.yaml", "        expect: irreversible\n", "        expect: irreversible\n        response: fixtures/db-delete.json\n")(m)
 			m["acme/fixtures/db-delete.json"] = &fstest.MapFile{Data: []byte("{}")}
@@ -184,6 +193,11 @@ func TestLoadInvalid(t *testing.T) {
 			}
 		})
 	}
+}
+
+// classifyRule gives acme.db.wipe a classify block.
+func classifyRule(x string) func(fstest.MapFS) {
+	return replace("acme/db.yaml", `    card: "Wipe database {input.id}"`, "    classify: "+x+"\n    card: \"Wipe database {input.id}\"")
 }
 
 // responseRule gives acme.db.delete a response transform.

@@ -98,9 +98,11 @@ network_policies:
               tool:
                 any: [list_items]
         deny_rules:
+          # mc.sql.run: denied for every request because some arguments make it credential,
+          # and OpenShell cannot check arguments.
           - method: tools/call
             tool:
-              any: [reveal_key]
+              any: [reveal_key, run_sql]
 
 # Not exported: aw. AWS Query and JSON actions travel in the request body
 # or the X-Amz-Target header, which OpenShell's REST matchers cannot see; use `opfence run` for them.

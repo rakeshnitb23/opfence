@@ -7,10 +7,13 @@
 package catalog
 
 import (
+	"fmt"
 	"io/fs"
 	"regexp"
 	"slices"
 	"strings"
+
+	"go.yaml.in/yaml/v3"
 
 	"github.com/rakeshnitb23/opfence/internal/classes"
 )
@@ -218,7 +221,73 @@ type Condition struct {
 
 // Classify derives the class from an argument's content.
 type Classify struct {
-	SQL string `yaml:"sql"` // argument holding SQL text
+	// SQL lists the arguments holding SQL text: each a string, or a list of
+	// strings classified one by one (a transaction's statements).
+	SQL Strings `yaml:"sql"`
+	// Dialect is the SQL the server speaks: postgres (the default), mysql
+	// or sqlite. Several mean the server may speak any of them and Opfence
+	// cannot tell which, so every dialect's classes count.
+	Dialect Strings `yaml:"dialect"`
+	// Format says how the argument holds the SQL: empty for SQL text, or
+	// libsql for a libSQL (Turso) HTTP request body, whose statements are
+	// SQLite.
+	Format string `yaml:"format"`
+}
+
+// SQL dialects and formats classify understands.
+const (
+	DialectPostgres = "postgres"
+	DialectMySQL    = "mysql"
+	DialectSQLite   = "sqlite"
+	FormatLibSQL    = "libsql"
+)
+
+// Dialects returns the dialects to read the SQL in.
+func (c *Classify) Dialects() []string {
+	switch {
+	case c.Format == FormatLibSQL:
+		return []string{DialectSQLite}
+	case len(c.Dialect) == 0:
+		return []string{DialectPostgres}
+	}
+	return c.Dialect
+}
+
+// String describes where the SQL comes from and how it is read, for cards
+// and listings: "query", "body.sql, body.batch.sql (sqlite)".
+func (c *Classify) String() string {
+	s := strings.Join(c.SQL, ", ")
+	switch {
+	case c.Format != "":
+		s += " (" + c.Format + ")"
+	case len(c.Dialect) > 0:
+		s += " (" + strings.Join(c.Dialect, " or ") + ")"
+	}
+	return s
+}
+
+// Strings is a list in YAML that may also be written as a single string.
+type Strings []string
+
+// UnmarshalYAML implements yaml.Unmarshaler.
+func (s *Strings) UnmarshalYAML(n *yaml.Node) error {
+	switch n.Kind {
+	case yaml.ScalarNode:
+		var v string
+		if err := n.Decode(&v); err != nil {
+			return err
+		}
+		*s = Strings{v}
+		return nil
+	case yaml.SequenceNode:
+		var v []string
+		if err := n.Decode(&v); err != nil {
+			return err
+		}
+		*s = v
+		return nil
+	}
+	return fmt.Errorf("line %d: want a string or a list of strings", n.Line)
 }
 
 // Paths are every path the response transform acts on.
@@ -309,7 +378,7 @@ func (c *Catalog) Rules() []*Rule {
 }
 
 // PossibleClasses returns every class the rule can produce: its base class,
-// each When class, and Unknown plus the SQL classes when it classifies SQL.
+// each When class, and every class SQL can have when it classifies SQL.
 // Exporters that cannot evaluate conditions use the strictest of these.
 func (r *Rule) PossibleClasses() []classes.Class {
 	seen := map[classes.Class]bool{}
@@ -324,9 +393,16 @@ func (r *Rule) PossibleClasses() []classes.Class {
 	for _, w := range r.When {
 		add(w.Class)
 	}
-	if r.Classify != nil && r.Classify.SQL != "" {
+	if r.Classify != nil && len(r.Classify.SQL) > 0 {
 		for _, c := range []classes.Class{classes.Read, classes.Write, classes.Delete, classes.Irreversible, classes.Access, classes.Unknown} {
 			add(c)
+		}
+		// Postgres SQL can read Supabase Vault's secrets and MySQL the
+		// password hashes in mysql.user; SQLite has no such table.
+		for _, d := range r.Classify.Dialects() {
+			if d != DialectSQLite {
+				add(classes.Credential)
+			}
 		}
 	}
 	if r.Match.GraphQL != nil && r.Provider != nil && len(r.Provider.Defaults.GraphQLSecretFields) > 0 {

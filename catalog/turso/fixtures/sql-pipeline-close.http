@@ -1,0 +1,7 @@
+# description: Close a Turso stream
+POST /v3/pipeline HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"baton":"b1.eyJzdHJlYW0iOjF9","requests":[{"type":"close"}]}

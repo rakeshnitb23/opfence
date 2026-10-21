@@ -1,0 +1,7 @@
+# description: Read from a Turso database with a cursor
+POST /v3/cursor HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"baton":null,"batch":{"steps":[{"stmt":{"sql":"SELECT * FROM users LIMIT 10"}}]}}
