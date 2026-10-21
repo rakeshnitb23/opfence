@@ -76,6 +76,9 @@ func ClaudeCode(in io.Reader, out io.Writer, engineFor EngineFor) error {
 	if prov == nil {
 		return nil
 	}
+	if err := eng.Catalog.LoadRules(prov); err != nil {
+		return err
+	}
 	res := eng.EvaluateTool(prov, tool, input.ToolInput)
 	ev := res.Evaluations[0]
 

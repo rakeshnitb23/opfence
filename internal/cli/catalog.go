@@ -35,6 +35,17 @@ func (g *globalOptions) loadCatalog() (*catalog.Catalog, error) {
 	return catalog.Load(os.DirFS(g.catalogDir))
 }
 
+// loadCatalogLazy is loadCatalog for callers that decide a single
+// operation: the embedded snapshot loads each provider's rules on first use.
+// A catalog from --catalog is loaded and validated whole, since nothing else
+// has checked it.
+func (g *globalOptions) loadCatalogLazy() (*catalog.Catalog, error) {
+	if g.catalogDir == "" {
+		return catalog.EmbeddedLazy()
+	}
+	return g.loadCatalog()
+}
+
 func newCatalogCmd(g *globalOptions) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "catalog",

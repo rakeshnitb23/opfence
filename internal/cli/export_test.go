@@ -114,3 +114,24 @@ func TestPolicyCheckCatalogWarnings(t *testing.T) {
 		t.Errorf("glob that matches rules was flagged:\n%s", out)
 	}
 }
+
+// Hooks load the embedded catalog lazily, and a --catalog folder whole,
+// because nothing else has validated it.
+func TestHookCatalogLoading(t *testing.T) {
+	g := &globalOptions{}
+	c, err := g.loadCatalogLazy()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !c.Lazy() {
+		t.Error("the embedded catalog is not loaded lazily for hooks")
+	}
+	g.catalogDir = filepath.Join("..", "..", "catalog")
+	c, err = g.loadCatalogLazy()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.Lazy() {
+		t.Error("a --catalog folder was loaded lazily")
+	}
+}

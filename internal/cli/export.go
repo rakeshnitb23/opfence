@@ -127,8 +127,10 @@ status 2, which Codex takes as a deny. "opfence run --srt -- codex" installs it.
 }
 
 // hookEngine builds the engine for a hook call made in project folder cwd.
+// The embedded catalog is loaded lazily: the hook parses the rules of the
+// one provider the call reaches, not all of them (docs/ARCHITECTURE.md §7).
 func (g *globalOptions) hookEngine(cwd string) (*engine.Engine, error) {
-	c, err := g.loadCatalog()
+	c, err := g.loadCatalogLazy()
 	if err != nil {
 		return nil, err
 	}

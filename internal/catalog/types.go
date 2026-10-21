@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"sync"
 
 	"go.yaml.in/yaml/v3"
 
@@ -24,6 +25,10 @@ type Catalog struct {
 	FS        fs.FS       // the files it was loaded from, for reading fixtures
 
 	rules map[string]*Rule // by id and alias
+	// lazy says providers' rules are loaded on first use (LoadLazy); mu
+	// guards rules while they are.
+	lazy bool
+	mu   sync.Mutex
 }
 
 // Provider describes one API or MCP server: where it lives, how it
@@ -46,6 +51,14 @@ type Provider struct {
 
 	Rules []*Rule `yaml:"-"` // in file order, files sorted by name
 	Dir   string  `yaml:"-"` // folder within the catalog FS
+
+	lazy *lazyRules // set in a lazily loaded catalog
+}
+
+// lazyRules loads a provider's rules once, on first use.
+type lazyRules struct {
+	once sync.Once
+	err  error
 }
 
 // Auth says where a provider's credential travels in a request. Exactly one
@@ -353,10 +366,18 @@ func (m Match) Matcher() string {
 	return ""
 }
 
-// Rule returns the rule with the given id or alias, or nil.
+// Rule returns the rule with the given id or alias, or nil. In a lazily
+// loaded catalog it finds only the rules of providers loaded so far.
 func (c *Catalog) Rule(id string) *Rule {
+	if c.lazy {
+		c.mu.Lock()
+		defer c.mu.Unlock()
+	}
 	return c.rules[id]
 }
+
+// Lazy reports whether the catalog loads providers' rules on first use.
+func (c *Catalog) Lazy() bool { return c.lazy }
 
 // Provider returns the provider with the given id, or nil.
 func (c *Catalog) Provider(id string) *Provider {
@@ -368,7 +389,9 @@ func (c *Catalog) Provider(id string) *Provider {
 	return nil
 }
 
-// Rules returns every rule in provider order.
+// Rules returns every rule in provider order. In a lazily loaded catalog it
+// returns the rules of providers loaded so far, and must not be called while
+// another goroutine may be loading one.
 func (c *Catalog) Rules() []*Rule {
 	var out []*Rule
 	for _, p := range c.Providers {

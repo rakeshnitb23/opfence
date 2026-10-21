@@ -82,6 +82,9 @@ func Codex(in io.Reader, out io.Writer, engineFor EngineFor) error {
 	if prov == nil {
 		return nil
 	}
+	if err := eng.Catalog.LoadRules(prov); err != nil {
+		return err
+	}
 	ev := eng.EvaluateTool(prov, tool, input.ToolInput).Evaluations[0]
 	_, reason := claudeDecision(ev)
 
