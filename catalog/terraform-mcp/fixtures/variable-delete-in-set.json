@@ -1,0 +1,8 @@
+{
+  "description": "delete variable in variable set",
+  "tool": "delete_variable_in_variable_set",
+  "arguments": {
+    "variable_set_id": "varset-abc123",
+    "variable_id": "var-abc123"
+  }
+}

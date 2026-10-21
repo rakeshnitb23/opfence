@@ -1,0 +1,9 @@
+{
+  "description": "create variable in variable set",
+  "tool": "create_variable_in_variable_set",
+  "arguments": {
+    "variable_set_id": "varset-abc123",
+    "key": "region",
+    "value": "eu-west-1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "delete project",
+  "tool": "delete_project",
+  "arguments": {
+    "project_id": "prj-abc123"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "create workspace (auto apply bool)",
+  "tool": "create_workspace",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "auto_apply": true
+  }
+}

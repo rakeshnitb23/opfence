@@ -1,0 +1,8 @@
+{
+  "description": "get workspace details",
+  "tool": "get_workspace_details",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network"
+  }
+}

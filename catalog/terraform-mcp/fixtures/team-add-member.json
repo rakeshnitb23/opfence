@@ -1,0 +1,8 @@
+{
+  "description": "add team member",
+  "tool": "add_team_member",
+  "arguments": {
+    "team_id": "team-abc123",
+    "username": "mallory"
+  }
+}

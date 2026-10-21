@@ -1,0 +1,7 @@
+{
+  "description": "get run details",
+  "tool": "get_run_details",
+  "arguments": {
+    "run_id": "run-abc123"
+  }
+}

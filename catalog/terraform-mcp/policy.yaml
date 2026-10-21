@@ -1,0 +1,13 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): policy sets.
+operations:
+  - id: terraform-mcp.policy.attach-set
+    match: { mcp: { tool: attach_policy_set_to_workspaces } }
+    class: write
+    card: "Attach policy set {policy_set_id} to workspaces {workspace_ids}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/policy_sets.go
+    tests:
+      - fixture: fixtures/policy-attach-set.json
+        expect: write

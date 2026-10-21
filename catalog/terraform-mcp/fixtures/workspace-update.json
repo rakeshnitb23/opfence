@@ -1,0 +1,9 @@
+{
+  "description": "update workspace",
+  "tool": "update_workspace",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "terraform_version": "1.9.8"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "list workspaces",
+  "tool": "list_workspaces",
+  "arguments": {
+    "terraform_org_name": "acme"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "get private provider details",
+  "tool": "get_private_provider_details",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "private_provider_name": "internal"
+  }
+}

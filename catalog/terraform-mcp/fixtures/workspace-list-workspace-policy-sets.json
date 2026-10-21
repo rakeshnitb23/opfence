@@ -1,0 +1,8 @@
+{
+  "description": "list workspace policy sets",
+  "tool": "list_workspace_policy_sets",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_id": "ws-abc123"
+  }
+}

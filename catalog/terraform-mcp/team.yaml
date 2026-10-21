@@ -1,0 +1,55 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): teams.
+operations:
+  - id: terraform-mcp.team.add-member
+    match: { mcp: { tool: add_team_member } }
+    class: access
+    card: "Add {username} to team {team_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/add_team_member.go
+    tests:
+      - fixture: fixtures/team-add-member.json
+        expect: access
+
+  - id: terraform-mcp.team.create
+    match: { mcp: { tool: create_team } }
+    class: access
+    card: "Create team {team_name} in {terraform_org_name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/create_team.go
+    notes: >-
+      A team can be given organization permissions when it is created.
+    tests:
+      - fixture: fixtures/team-create.json
+        expect: access
+
+  - id: terraform-mcp.team.delete
+    match: { mcp: { tool: delete_team } }
+    class: access
+    resource: { arg: team_id, kind: team }
+    card: "Delete team {team_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/delete_team.go
+    notes: >-
+      Removes every access the team's members had through it.
+    tests:
+      - fixture: fixtures/team-delete.json
+        expect: access
+        resource: "team-abc123"
+
+  - id: terraform-mcp.team.grant-access
+    match: { mcp: { tool: grant_team_access } }
+    class: access
+    card: "Grant team {team_id} {access_level} access"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/grant_team_access.go
+    tests:
+      - fixture: fixtures/team-grant-access.json
+        expect: access

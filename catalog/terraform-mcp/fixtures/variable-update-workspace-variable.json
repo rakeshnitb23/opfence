@@ -1,0 +1,10 @@
+{
+  "description": "update workspace variable",
+  "tool": "update_workspace_variable",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "variable_id": "var-abc123",
+    "value": "eu-west-2"
+  }
+}

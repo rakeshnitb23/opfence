@@ -1,0 +1,10 @@
+{
+  "description": "search provider docs",
+  "tool": "search_provider_docs",
+  "arguments": {
+    "provider_name": "aws",
+    "provider_namespace": "hashicorp",
+    "service_slug": "s3_bucket",
+    "provider_document_type": "resources"
+  }
+}

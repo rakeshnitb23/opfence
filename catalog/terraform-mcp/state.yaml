@@ -1,0 +1,32 @@
+# Terraform MCP server (hashicorp/terraform-mcp-server): state versions.
+operations:
+  - id: terraform-mcp.state.get-state-version
+    match: { mcp: { tool: get_state_version } }
+    class: credential
+    card: "Read state version {state_version_id} (workspace {workspace_id}), with a link to download the whole state"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/get_state_version.go
+    notes: >-
+      Returns hosted_state_download_url, a pre-signed link to the whole state file, which holds
+      every resource attribute in plain text, database passwords and private keys included. Reading
+      secrets is credential.
+    tests:
+      - fixture: fixtures/state-get-state-version.json
+        expect: credential
+      - fixture: fixtures/state-get-state-version-by-id.json
+        expect: credential
+
+  - id: terraform-mcp.state.list-state-versions
+    match: { mcp: { tool: list_state_versions } }
+    class: read
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/hashicorp/terraform-mcp-server/blob/main/pkg/tools/tfe/list_state_versions.go
+    notes: >-
+      Returns each state version's ID, serial, status and commit, not the state or a link to it.
+    tests:
+      - fixture: fixtures/state-list-state-versions.json
+        expect: read

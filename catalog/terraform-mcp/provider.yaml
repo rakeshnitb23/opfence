@@ -1,0 +1,23 @@
+provider: terraform-mcp
+title: Terraform MCP
+docs: https://github.com/hashicorp/terraform-mcp-server
+# HashiCorp's Terraform MCP server (github.com/hashicorp/terraform-mcp-server,
+# MPL-2.0), read at commit 6f1f79e (2026-10-19): 61 tools. It runs locally
+# (stdio, or streamable HTTP on a local port, often from the
+# hashicorp/terraform-mcp-server Docker image) and calls the public Terraform
+# Registry and, with TFE_TOKEN, HCP Terraform or Terraform Enterprise
+# (TFE_ADDRESS, app.terraform.io by default). HashiCorp hosts no remote copy,
+# so there are no hosts: the agent hook sees the tool calls.
+# Two tool sets ship: the default one (pkg/tools, on mark3labs/mcp-go) and an
+# experimental one on the official go-sdk (pkg/mcp-official, with
+# TF_X_OFFICIAL_SDK_ENABLED=true). They use the same tool and argument names;
+# the experimental set has no run tools yet and takes booleans as booleans,
+# where the default set takes "true" and "false" strings for some. Rules accept
+# both. With ENABLE_TF_OPERATIONS=true, create_run also takes the auto_approve
+# and is_destroy run types.
+# No detect or auth block: TFE_TOKEN belongs to HCP Terraform's API, which the
+# catalog does not describe yet.
+# Fixtures are .json tool calls (tool + arguments).
+mcp:
+  names: [terraform, terraform-mcp, terraform-mcp-server]
+  package: "hashicorp/terraform-mcp-server"   # Docker image; Go module github.com/hashicorp/terraform-mcp-server; no npm package

@@ -1,0 +1,7 @@
+{
+  "description": "list teams",
+  "tool": "list_teams",
+  "arguments": {
+    "terraform_org_name": "acme"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "description": "grant team access",
+  "tool": "grant_team_access",
+  "arguments": {
+    "team_id": "team-abc123",
+    "access_level": "admin",
+    "workspace_id": "ws-abc123"
+  }
+}

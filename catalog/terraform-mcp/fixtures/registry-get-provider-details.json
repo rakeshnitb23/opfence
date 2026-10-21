@@ -1,0 +1,7 @@
+{
+  "description": "get provider details",
+  "tool": "get_provider_details",
+  "arguments": {
+    "provider_doc_id": "8894603"
+  }
+}

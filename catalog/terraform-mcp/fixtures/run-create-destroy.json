@@ -1,0 +1,10 @@
+{
+  "description": "create run (destroy)",
+  "tool": "create_run",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "run_type": "is_destroy",
+    "message": "cleanup"
+  }
+}

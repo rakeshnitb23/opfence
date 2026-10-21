@@ -1,0 +1,8 @@
+{
+  "description": "get private module details",
+  "tool": "get_private_module_details",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "private_module_id": "acme/vpc/aws"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "list workspace variables",
+  "tool": "list_workspace_variables",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network"
+  }
+}

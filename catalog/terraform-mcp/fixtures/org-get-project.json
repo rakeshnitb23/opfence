@@ -1,0 +1,7 @@
+{
+  "description": "get project",
+  "tool": "get_project",
+  "arguments": {
+    "project_id": "prj-abc123"
+  }
+}

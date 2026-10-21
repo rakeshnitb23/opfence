@@ -1,0 +1,8 @@
+{
+  "description": "get provider capabilities",
+  "tool": "get_provider_capabilities",
+  "arguments": {
+    "namespace": "hashicorp",
+    "name": "aws"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "get state version",
+  "tool": "get_state_version",
+  "arguments": {
+    "workspace_id": "ws-abc123"
+  }
+}

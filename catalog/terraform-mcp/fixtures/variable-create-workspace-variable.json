@@ -1,0 +1,11 @@
+{
+  "description": "create workspace variable",
+  "tool": "create_workspace_variable",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "workspace_name": "prod-network",
+    "key": "region",
+    "value": "eu-west-1",
+    "category": "terraform"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "description": "search private modules",
+  "tool": "search_private_modules",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "search_query": "vpc"
+  }
+}

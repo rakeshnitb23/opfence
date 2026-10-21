@@ -1,0 +1,8 @@
+{
+  "description": "create project",
+  "tool": "create_project",
+  "arguments": {
+    "terraform_org_name": "acme",
+    "project_name": "payments"
+  }
+}

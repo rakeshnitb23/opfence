@@ -1,0 +1,7 @@
+{
+  "description": "get team",
+  "tool": "get_team",
+  "arguments": {
+    "team_id": "team-abc123"
+  }
+}

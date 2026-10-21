@@ -1,0 +1,7 @@
+{
+  "description": "list stacks",
+  "tool": "list_stacks",
+  "arguments": {
+    "terraform_org_name": "acme"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "description": "create no code workspace (auto apply string)",
+  "tool": "create_no_code_workspace",
+  "arguments": {
+    "no_code_module_id": "nocode-abc123",
+    "workspace_name": "dev-bucket",
+    "project_id": "prj-abc123",
+    "auto_apply": "1"
+  }
+}

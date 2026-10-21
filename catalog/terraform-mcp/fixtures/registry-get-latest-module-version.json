@@ -1,0 +1,9 @@
+{
+  "description": "get latest module version",
+  "tool": "get_latest_module_version",
+  "arguments": {
+    "module_publisher": "terraform-aws-modules",
+    "module_name": "vpc",
+    "module_provider": "aws"
+  }
+}

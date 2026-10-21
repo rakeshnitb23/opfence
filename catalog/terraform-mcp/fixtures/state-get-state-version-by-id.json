@@ -1,0 +1,7 @@
+{
+  "description": "get state version (by id)",
+  "tool": "get_state_version",
+  "arguments": {
+    "state_version_id": "sv-abc123"
+  }
+}
