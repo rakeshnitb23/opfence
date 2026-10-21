@@ -1,0 +1,5 @@
+# description: Delete an Environment Value 64b0c1d2e3f4a5b6c7d8e911 in app 64b0c1d2e3f4a5b6c7d8e9f0
+DELETE /api/admin/v3.0/groups/5f4d3c2b1a09f8e7d6c5b4a3/apps/64b0c1d2e3f4a5b6c7d8e9f0/environment_values/64b0c1d2e3f4a5b6c7d8e911 HTTP/1.1
+Host: services.cloud.mongodb.com
+Authorization: Bearer opf_atlas-app-services_EXAMPLE
+

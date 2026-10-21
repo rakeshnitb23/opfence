@@ -1,0 +1,90 @@
+# Atlas App Services Admin API v3: deployments.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.deployments.configure-deployment
+    match: { rest: { method: PATCH, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/deploy/config" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Configure Deployment in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Can point automatic deployment at another repository and branch.
+    tests:
+      - fixture: fixtures/deployments-configure-deployment.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.deployments.redeploy-deployment
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/deployments/{deploymentId}/redeploy" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Redeploy a Deployment {deploymentId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/deployments-redeploy-deployment.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.deployments.create-deployment-draft
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/drafts" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Create a Deployment Draft in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/deployments-create-deployment-draft.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.deployments.discard-draft
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/drafts/{draftId}" } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Discard the specified deployment draft {draftId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/deployments-discard-draft.http
+        expect: delete
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.deployments.deploy-draft
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/drafts/{draftId}/deployment" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Deploy a deployment draft {draftId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Each change in the draft was decided when it was made.
+    tests:
+      - fixture: fixtures/deployments-deploy-draft.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.deployments.create-deployment-migration
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/deployment_migration" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Create a Deployment Migration in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/deployments-create-deployment-migration.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

@@ -1,0 +1,80 @@
+# Atlas App Services Admin API v3: functions.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.functions.execute-function
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/debug/execute_function" } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Execute a function in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Runs a function now, as a user or the system user, which can read and change any linked data.
+    tests:
+      - fixture: fixtures/functions-execute-function.http
+        expect: irreversible
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.functions.execute-function-source
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/debug/execute_function_source" } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Execute a function's source code for testing in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Runs arbitrary source code in the app, which can read and change any linked data.
+    tests:
+      - fixture: fixtures/functions-execute-function-source.http
+        expect: irreversible
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.functions.create-function
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/functions" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Create a new Function in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Deploying code is a write.
+    tests:
+      - fixture: fixtures/functions-create-function.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.functions.delete-function
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/functions/{functionId}" } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Delete a Function {functionId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/functions-delete-function.http
+        expect: delete
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.functions.update-function
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/functions/{functionId}" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Update a Function {functionId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Deploying code is a write.
+    tests:
+      - fixture: fixtures/functions-update-function.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

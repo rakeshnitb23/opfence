@@ -1,0 +1,194 @@
+# Atlas App Services Admin API v3: users.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.users.create-user
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Create a user in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      A new email/password user who can sign in to the app. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-create-user.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.verify-user-access-token
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/verify_token" } }
+    class: read
+    resource: { arg: appId, kind: app }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Decodes a user's access token. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-verify-user-access-token.http
+        expect: read
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.delete-user
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/{userId}" } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Delete a user {userId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      A deleted app user, and their identities, cannot be restored; signing up again makes a new
+      user. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-delete-user.http
+        expect: irreversible
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.reset-user-email
+    match: { rest: { method: PATCH, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/{userId}/reset_email" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Change a user's email {userId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Changes the email a user signs in with. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-reset-user-email.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.user-logout
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/{userId}/logout" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Revoke user sessions {userId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Revokes the user's sessions. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-user-logout.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.enable-user
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/{userId}/enable" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Enable a user {userId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-enable-user.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.disable-user
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/users/{userId}/disable" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Disable a user {userId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-disable-user.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.delete-pending-email-password-user
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/user_registrations/by_email/{email}" } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Delete a pending email/password authentication user {email} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-delete-pending-email-password-user.http
+        expect: delete
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.send-confirmation-email
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/user_registrations/by_email/{email}/send_confirm" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Send a confirmation email {email} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-send-confirmation-email.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.confirm-pending-user
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/user_registrations/by_email/{email}/confirm" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Confirm a pending user {email} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Confirms a pending user, who can then sign in. MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-confirm-pending-user.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.rerun-pending-user-confirmation
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/user_registrations/by_email/{email}/run_confirm" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Rerun a user confirmation workflow {email} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-rerun-pending-user-confirmation.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.users.set-custom-user-data-config
+    match: { rest: { method: PATCH, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/custom_user_data" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Configure Custom User Data in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      MongoDB has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/users-set-custom-user-data-config.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

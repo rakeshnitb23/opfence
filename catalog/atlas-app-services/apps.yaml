@@ -1,0 +1,32 @@
+# Atlas App Services Admin API v3: apps.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.apps.create-application
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps" } }
+    class: write
+    resource: { arg: groupId, kind: project }
+    card: "Create a new app in project {groupId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/apps-create-application.http
+        expect: write
+        resource: "5f4d3c2b1a09f8e7d6c5b4a3"
+
+  - id: atlas-app-services.apps.delete-application
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}" } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Delete an app in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Deletes the app with its functions, triggers, values, secrets, users and rules.
+    tests:
+      - fixture: fixtures/apps-delete-application.http
+        expect: irreversible
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

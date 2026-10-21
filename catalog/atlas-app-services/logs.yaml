@@ -1,0 +1,78 @@
+# Atlas App Services Admin API v3: logs.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.logs.create-log-forwarder
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/log_forwarders" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Create a log forwarder in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Sends the app's logs to another service.
+    tests:
+      - fixture: fixtures/logs-create-log-forwarder.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.logs.update-log-forwarder
+    match: { rest: { method: PATCH, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/log_forwarders/{forwarderId}" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Update a log forwarder {forwarderId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Can change where the app's logs go.
+    tests:
+      - fixture: fixtures/logs-update-log-forwarder.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.logs.delete-gwarder
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/log_forwarders/{forwarderId}" } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Delete a log forwarder {forwarderId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/logs-delete-gwarder.http
+        expect: delete
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.logs.enable-log-forwarder
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/log_forwarders/{forwarderId}/enable" } }
+    class: access
+    resource: { arg: appId, kind: app }
+    card: "Enable a log forwarder {forwarderId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Sends the app's logs to another service.
+    tests:
+      - fixture: fixtures/logs-enable-log-forwarder.http
+        expect: access
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.logs.disable-log-forwarder
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/log_forwarders/{forwarderId}/disable" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Disable a log forwarder {forwarderId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/logs-disable-log-forwarder.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

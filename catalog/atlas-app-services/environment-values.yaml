@@ -1,0 +1,62 @@
+# Atlas App Services Admin API v3: environment values.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.environment-values.set-environment
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/environment" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Set the App Environment in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Switches which environment's values the app uses.
+    tests:
+      - fixture: fixtures/environment-values-set-environment.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.environment-values.create-environment-value
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/environment_values" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Create an Environment Value in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/environment-values-create-environment-value.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.environment-values.modify-environment-value
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/environment_values/{environmentValueId}" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Modify an Environment Value {environmentValueId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/environment-values-modify-environment-value.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.environment-values.delete-environment-value
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/environment_values/{environmentValueId}" } }
+    class: irreversible
+    resource: { arg: appId, kind: app }
+    card: "Delete an Environment Value {environmentValueId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      Deleting any variable is irreversible: its value cannot be read back to restore it.
+    tests:
+      - fixture: fixtures/environment-values-delete-environment-value.http
+        expect: irreversible
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"

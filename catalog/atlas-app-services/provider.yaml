@@ -1,0 +1,24 @@
+provider: atlas-app-services
+title: Atlas App Services
+docs: https://www.mongodb.com/docs/api/doc/atlas-app-services-admin-api-v3
+# MongoDB Atlas App Services Admin API v3 (/api/admin/v3.0): triggers,
+# functions, values and secrets, data sources and their access rules, app
+# users and authentication. MongoDB ended Device Sync, the Data API, HTTPS
+# endpoints, GraphQL and static hosting in 2025; triggers, functions and this
+# API remain, and the rules cover the deprecated endpoints too.
+# services.cloud.mongodb.com is the current host and realm.mongodb.com the
+# one older tools (realm-cli) use. The hosts also serve the client API
+# (/api/client/v2.0), which has no rules: its non-GET calls are unknown.
+hosts: [services.cloud.mongodb.com, realm.mongodb.com]
+auth:
+  - header: Authorization          # "Bearer <access token>"
+    scheme: Bearer
+# No detect block: the access token lasts 30 minutes and comes from logging
+# in with an Atlas API key pair sent in the request body
+# (POST /auth/providers/mongodb-cloud/login), which Opfence does not swap.
+# Logging in and refreshing the session are credential.
+defaults:
+  rest_safe_methods: read          # no Admin API read returns a secret's value
+schemas:
+  - kind: openapi
+    url: https://raw.githubusercontent.com/mongodb/docs/main/content/app-services/source/openapi-admin-v3.yaml

@@ -1,0 +1,63 @@
+# Atlas App Services Admin API v3: triggers.
+# Generated from the published OpenAPI file (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: atlas-app-services.triggers.create-trigger
+    match: { rest: { method: POST, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/triggers" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Create a trigger in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      A trigger runs a function on database events or a schedule; deploying code is a write.
+    tests:
+      - fixture: fixtures/triggers-create-trigger.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.triggers.update-trigger
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/triggers/{triggerId}" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Update a trigger {triggerId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/triggers-update-trigger.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.triggers.delete-trigger
+    match: { rest: { method: DELETE, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/triggers/{triggerId}" } }
+    class: delete
+    resource: { arg: appId, kind: app }
+    card: "Delete a trigger {triggerId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    notes: >-
+      The trigger's configuration can be created again; events it would have handled are not
+      replayed.
+    tests:
+      - fixture: fixtures/triggers-delete-trigger.http
+        expect: delete
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
+
+  - id: atlas-app-services.triggers.resume-trigger
+    match: { rest: { method: PUT, path: "/api/admin/v3.0/groups/{groupId}/apps/{appId}/triggers/{triggerId}/resume" } }
+    class: write
+    resource: { arg: appId, kind: app }
+    card: "Resume a suspended trigger {triggerId} in app {appId}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/mongodb/docs/blob/main/content/app-services/source/openapi-admin-v3.yaml
+    tests:
+      - fixture: fixtures/triggers-resume-trigger.http
+        expect: write
+        resource: "64b0c1d2e3f4a5b6c7d8e9f0"
