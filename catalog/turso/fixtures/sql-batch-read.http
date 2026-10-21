@@ -1,0 +1,7 @@
+# description: Read from a Turso database over the legacy HTTP API
+POST / HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"statements":["SELECT count(*) FROM users",{"q":"SELECT * FROM users WHERE id = ?","params":[42]}]}

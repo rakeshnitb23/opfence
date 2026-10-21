@@ -1,0 +1,7 @@
+# description: Store a DROP on a Turso stream and run it by its id
+POST /v3/pipeline HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"baton":null,"requests":[{"type":"store_sql","sql_id":1,"sql":"DROP TABLE users"},{"type":"execute","stmt":{"sql_id":1}}]}

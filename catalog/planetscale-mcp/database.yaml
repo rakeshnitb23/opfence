@@ -60,9 +60,8 @@ operations:
       - https://planetscale.com/docs/connect/mcp
     notes: >-
       Read whatever the SQL says: the server runs it with short-lived credentials for a reader
-      role (Vitess) or pg_read_all_data (Postgres), so the database rejects writes. The SQL is
-      not handed to the classifier: on Vitess databases it is MySQL, which quotes and comments
-      differently from the Postgres the classifier parses.
+      role (Vitess) or pg_read_all_data (Postgres), so the database rejects writes, which no
+      reading of the text could promise.
     tests:
       - fixture: fixtures/database-execute-read-query.http
         expect: read
@@ -74,24 +73,35 @@ operations:
   - id: planetscale-mcp.database.execute-write-query
     match: { mcp: { tool: planetscale_execute_write_query } }
     class: irreversible
+    classify: { sql: query, dialect: [mysql, postgres] }
     resource: { arg: database, kind: database }
     card: "Run SQL that changes data on branch {branch} of database {database}"
     status: verified
-    verified: 2026-10-18
+    verified: 2026-10-21
     sources:
       - https://github.com/planetscale/mcp-server/blob/main/src/tools/execute-write-query.ts
       - https://github.com/planetscale/mcp-server/blob/main/src/lib/query-validator.ts
       - https://planetscale.com/docs/connect/mcp
     notes: >-
-      Irreversible whatever the SQL says. The server runs it as an admin (Vitess) or postgres
-      (Postgres) role, so DROP and ALTER work. Its own checks (TRUNCATE and UPDATE or DELETE
-      without WHERE blocked, confirm_destructive for DELETE and DDL) are regexes on the start of
-      the text that a leading comment gets past, and the model, not the user, sets
-      confirm_destructive. The SQL is not handed to the classifier: on Vitess databases it is
-      MySQL, which quotes and comments differently from the Postgres the classifier parses, so a
-      statement could look harmless to it and still run.
+      The server looks up whether the database is Vitess (MySQL) or Postgres and runs the SQL as
+      an admin or postgres role, so DROP and ALTER work. Opfence cannot see which, so the SQL is
+      read as both and every reading counts: an INSERT both parse is a write, and SQL either
+      classifier cannot read (MySQL's backquoted names are not Postgres) keeps the rule's class,
+      irreversible. The server's own checks (TRUNCATE and UPDATE or DELETE without WHERE
+      blocked, confirm_destructive for DELETE and DDL) are regexes on the start of the text that
+      a leading comment gets past, and the model, not the user, sets confirm_destructive, so
+      they do not lower the class.
     tests:
       - fixture: fixtures/database-execute-write-query.http
+        expect: write
+        resource: shop-db
+      - fixture: fixtures/database-execute-write-query-all.http
+        expect: irreversible
+        resource: shop-db
+      - fixture: fixtures/database-execute-write-query-backquote.http
+        expect: irreversible
+        resource: shop-db
+      - fixture: fixtures/database-execute-write-query-comment.http
         expect: irreversible
         resource: shop-db
       - fixture: fixtures/database-execute-write-query-drop.http

@@ -190,44 +190,103 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		}
 		return hit, label + strings.Join(why, ", ")
 	}
-	if r.Classify != nil && r.Classify.SQL != "" {
-		v, _ := Lookup(args, r.Classify.SQL)
-		if out := classifySQLArg(v); out != nil {
-			return out, "SQL in " + r.Classify.SQL
+	if r.Classify != nil && len(r.Classify.SQL) > 0 {
+		out := r.Classify.classes(args)
+		if out == nil {
+			return []classes.Class{r.Class}, "rule class (no SQL in " + r.Classify.String() + ")"
 		}
-		return []classes.Class{r.Class}, "rule class (no SQL in " + r.Classify.SQL + ")"
+		// A rule's class is its worst case, and SQL Opfence cannot read
+		// gets it: classifying SQL never decides more loosely than the
+		// rule would without it.
+		if slices.Contains(out, classes.Unknown) && !slices.Contains(out, r.Class) {
+			out = append(out, r.Class)
+		}
+		return out, "SQL in " + r.Classify.String()
 	}
 	return []classes.Class{r.Class}, "rule class"
 }
 
-// classifySQLArg classifies an argument holding SQL: one string, or a list
-// of strings (a transaction's statements), each classified on its own so an
-// unterminated quote in one cannot hide the next. Anything else returns nil.
-func classifySQLArg(v any) []classes.Class {
-	switch t := v.(type) {
-	case string:
-		return decode.ClassifySQL(t)
-	case []any:
-		var out []classes.Class
-		for _, el := range t {
-			s, ok := el.(string)
-			if !ok {
-				return nil
+// classes classifies the SQL in args, or returns nil when there is none or
+// an argument holds something other than SQL.
+func (c *Classify) classes(args map[string]any) []classes.Class {
+	var out []classes.Class
+	add := func(cs []classes.Class) {
+		for _, x := range cs {
+			if !slices.Contains(out, x) {
+				out = append(out, x)
 			}
-			for _, c := range decode.ClassifySQL(s) {
-				if !slices.Contains(out, c) {
-					out = append(out, c)
-				}
-			}
+		}
+	}
+	if c.Format == FormatLibSQL {
+		v, _ := Lookup(args, c.SQL[0])
+		texts, unread, ok := decode.LibSQLStatements(v)
+		if !ok {
+			return nil
+		}
+		for _, t := range texts {
+			add(decode.ClassifySQLite(t))
+		}
+		if unread {
+			add([]classes.Class{classes.Unknown})
+		}
+		if out == nil {
+			out = []classes.Class{classes.Read} // only closes, autocommit checks and describes
 		}
 		return out
 	}
-	return nil
+	var texts []string
+	found := false
+	for _, p := range c.SQL {
+		v, ok := Lookup(args, p)
+		if !ok {
+			continue
+		}
+		found = true
+		t, ok := sqlTexts(v)
+		if !ok {
+			return nil
+		}
+		texts = append(texts, t...)
+	}
+	if !found {
+		return nil
+	}
+	for _, t := range texts {
+		for _, d := range c.Dialects() {
+			add(decode.ClassifySQLDialect(d, t))
+		}
+	}
+	return out // nil for an empty list of statements: the rule's class
+}
+
+// sqlTexts reads an argument holding SQL: one string, or a list of strings
+// (a transaction's statements), each classified on its own so an
+// unterminated quote in one cannot hide the next.
+func sqlTexts(v any) ([]string, bool) {
+	switch t := v.(type) {
+	case string:
+		return []string{t}, true
+	case []any:
+		out := make([]string, 0, len(t))
+		for _, el := range t {
+			s, ok := el.(string)
+			if !ok {
+				return nil, false
+			}
+			out = append(out, s)
+		}
+		return out, true
+	}
+	return nil, false
 }
 
 func (r *Rule) readsBody() bool {
-	if r.Classify != nil && strings.HasPrefix(r.Classify.SQL, "body.") {
-		return true
+	if r.Classify != nil {
+		for _, p := range r.Classify.SQL {
+			if p == "body" || strings.HasPrefix(p, "body.") {
+				return true
+			}
+		}
 	}
 	for _, w := range r.When {
 		if w.If.Arg == "body" || strings.HasPrefix(w.If.Arg, "body.") {

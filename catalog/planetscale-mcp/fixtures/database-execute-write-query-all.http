@@ -1,0 +1,8 @@
+# description: Update every row: a WHERE that reads no column does not limit
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":14,"method":"tools/call","params":{"name":"planetscale_execute_write_query","arguments":{"organization":"acme","database":"shop-db","branch":"main","query":"UPDATE orders SET status = 'void' WHERE 1 = 1"}}}

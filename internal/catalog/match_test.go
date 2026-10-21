@@ -151,23 +151,84 @@ func TestGitRefSpecificity(t *testing.T) {
 	}
 }
 
-func TestClassifySQLArg(t *testing.T) {
+func TestClassifyClasses(t *testing.T) {
+	R, W, D, I, U := classes.Read, classes.Write, classes.Delete, classes.Irreversible, classes.Unknown
+	pg := &Classify{SQL: Strings{"q"}}
 	for _, tc := range []struct {
-		v    any
+		c    *Classify
+		args map[string]any
 		want []classes.Class
 	}{
-		{"select 1", []classes.Class{classes.Read}},
-		{[]any{"select 1", "drop table t"}, []classes.Class{classes.Read, classes.Irreversible}},
+		{pg, map[string]any{"q": "select 1"}, []classes.Class{R}},
+		{pg, map[string]any{"q": []any{"select 1", "drop table t"}}, []classes.Class{R, I}},
 		// An unterminated quote in one statement cannot swallow the next.
-		{[]any{"select 'x", "drop table t"}, []classes.Class{classes.Unknown, classes.Irreversible}},
-		{[]any{"select 1", 7}, nil},
-		{[]any{}, nil},
-		{map[string]any{"q": "select 1"}, nil},
-		{nil, nil},
+		{pg, map[string]any{"q": []any{"select 'x", "drop table t"}}, []classes.Class{U, I}},
+		{pg, map[string]any{"q": []any{"select 1", 7.0}}, nil},
+		{pg, map[string]any{"q": []any{}}, nil},
+		{pg, map[string]any{"q": map[string]any{"q": "select 1"}}, nil},
+		{pg, map[string]any{"q": nil}, nil},
+		{pg, map[string]any{}, nil},
+		// Several arguments: whichever are present.
+		{&Classify{SQL: Strings{"body.sql", "body.batch.sql"}, Dialect: Strings{"sqlite"}},
+			map[string]any{"body": map[string]any{"sql": "select 1"}}, []classes.Class{R}},
+		{&Classify{SQL: Strings{"body.sql", "body.batch.sql"}, Dialect: Strings{"sqlite"}},
+			map[string]any{"body": map[string]any{"batch": []any{map[string]any{"sql": "select 1"}, map[string]any{"sql": "delete from t where id = 1"}}}},
+			[]classes.Class{R, D}},
+		{&Classify{SQL: Strings{"body.sql", "body.batch.sql"}, Dialect: Strings{"sqlite"}},
+			map[string]any{"body": map[string]any{"sql": 7.0, "batch": []any{map[string]any{"sql": "select 1"}}}}, nil},
+		// Dialects: each reads its own quoting.
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"sqlite"}}, map[string]any{"q": `select 'a\'; drop table t; -- '`}, []classes.Class{R, I}},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"mysql"}}, map[string]any{"q": `select 'a\'; drop table t; -- '`}, []classes.Class{R}},
+		// Several dialects: every reading counts.
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"mysql", "postgres"}}, map[string]any{"q": "insert into t values (1)"}, []classes.Class{W}},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"mysql", "postgres"}}, map[string]any{"q": "insert into `t` values (1)"}, []classes.Class{W, U}},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"mysql", "postgres"}}, map[string]any{"q": `select 'a\'; drop table t; -- '`}, []classes.Class{R, I}},
+		// libSQL bodies.
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL},
+			map[string]any{"body": map[string]any{"requests": []any{map[string]any{"type": "execute", "stmt": map[string]any{"sql": "select 1"}}, map[string]any{"type": "close"}}}},
+			[]classes.Class{R}},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL},
+			map[string]any{"body": map[string]any{"requests": []any{map[string]any{"type": "close"}}}}, []classes.Class{R}},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL},
+			map[string]any{"body": map[string]any{"statements": []any{"delete from t"}}}, []classes.Class{I}},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL},
+			map[string]any{"body": map[string]any{"requests": []any{map[string]any{"type": "execute", "stmt": map[string]any{"sql_id": 1.0}}}}}, []classes.Class{U}},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL}, map[string]any{"body": "binary"}, nil},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL}, map[string]any{}, nil},
 	} {
-		if got := classifySQLArg(tc.v); !slices.Equal(got, tc.want) {
-			t.Errorf("classifySQLArg(%v) = %v, want %v", tc.v, got, tc.want)
+		if got := tc.c.classes(tc.args); !slices.Equal(got, tc.want) {
+			t.Errorf("%s: classes(%v) = %v, want %v", tc.c, tc.args, got, tc.want)
 		}
+	}
+}
+
+// SQL Opfence cannot read gets the rule's own class too, so classifying never
+// decides more loosely than the rule's fixed class would.
+func TestClassifyUnknownKeepsRuleClass(t *testing.T) {
+	R, I, U := classes.Read, classes.Irreversible, classes.Unknown
+	r := &Rule{Class: I, Classify: &Classify{SQL: Strings{"sql"}, Dialect: Strings{"sqlite"}}}
+	for _, tc := range []struct {
+		sql  string
+		want []classes.Class
+	}{
+		{"select 1", []classes.Class{R}},
+		{"frobnicate", []classes.Class{U, I}},
+		{"select 1; attach 'x.db' as x", []classes.Class{R, U, I}},
+		{"drop table t; frobnicate", []classes.Class{U, I}},
+	} {
+		got, _ := r.ClassesFor(decode.Operation{}, map[string]any{"sql": tc.sql})
+		if !slices.Equal(got, tc.want) {
+			t.Errorf("ClassesFor(%q) = %v, want %v", tc.sql, got, tc.want)
+		}
+	}
+	got, why := r.ClassesFor(decode.Operation{}, map[string]any{})
+	if !slices.Equal(got, []classes.Class{I}) || !strings.Contains(why, "no SQL") {
+		t.Errorf("no SQL: got %v (%s)", got, why)
+	}
+	// A rule whose own class is unknown adds nothing.
+	r.Class = U
+	if got, _ := r.ClassesFor(decode.Operation{}, map[string]any{"sql": "frobnicate"}); !slices.Equal(got, []classes.Class{U}) {
+		t.Errorf("unknown rule: got %v", got)
 	}
 }
 
@@ -188,6 +249,29 @@ func TestConditionEmpty(t *testing.T) {
 	} {
 		if got := c.Eval(tc.args); got != tc.want {
 			t.Errorf("Eval(%v) = %v, want %v", tc.args, got, tc.want)
+		}
+	}
+}
+
+func TestPossibleClassesSQL(t *testing.T) {
+	for _, tc := range []struct {
+		c          *Classify
+		credential bool
+	}{
+		{&Classify{SQL: Strings{"q"}}, true},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"mysql"}}, true},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"sqlite"}}, false},
+		{&Classify{SQL: Strings{"body"}, Format: FormatLibSQL}, false},
+		{&Classify{SQL: Strings{"q"}, Dialect: Strings{"sqlite", "mysql"}}, true},
+	} {
+		cs := (&Rule{Class: classes.Irreversible, Classify: tc.c}).PossibleClasses()
+		for _, want := range []classes.Class{classes.Read, classes.Write, classes.Delete, classes.Irreversible, classes.Access, classes.Unknown} {
+			if !slices.Contains(cs, want) {
+				t.Errorf("%s: %v lacks %s", tc.c, cs, want)
+			}
+		}
+		if got := slices.Contains(cs, classes.Credential); got != tc.credential {
+			t.Errorf("%s: credential possible = %v, want %v", tc.c, got, tc.credential)
 		}
 	}
 }

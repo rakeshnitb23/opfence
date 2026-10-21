@@ -1,0 +1,7 @@
+# description: Run a batch on a Turso stream: a read, then a limited delete if it succeeded
+POST /v3/pipeline HTTP/1.1
+Host: app-db-acme.aws-us-east-1.turso.io
+Authorization: Bearer opf_turso_EXAMPLE
+Content-Type: application/json
+
+{"baton":null,"requests":[{"type":"batch","batch":{"steps":[{"stmt":{"sql":"SELECT id FROM sessions WHERE expires_at < ?","args":[{"type":"integer","value":"1760000000"}]}},{"condition":{"type":"ok","step":0},"stmt":{"sql":"DELETE FROM sessions WHERE expires_at < ?","args":[{"type":"integer","value":"1760000000"}]}}]}},{"type":"close"}]}

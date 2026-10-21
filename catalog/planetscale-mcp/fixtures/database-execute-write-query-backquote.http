@@ -1,0 +1,8 @@
+# description: MySQL backquoted names are not Postgres, so the SQL keeps the rule class
+POST /mcp/planetscale HTTP/1.1
+Host: mcp.pscale.dev
+Authorization: Bearer opf_planetscale-mcp_EXAMPLE
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":14,"method":"tools/call","params":{"name":"planetscale_execute_write_query","arguments":{"organization":"acme","database":"shop-db","branch":"main","query":"INSERT INTO `orders` (`id`) VALUES (1)"}}}

@@ -144,7 +144,7 @@ func classSummary(r *catalog.Rule) string {
 		return string(cs[0])
 	}
 	if r.Classify != nil {
-		return string(r.Class) + " (by " + r.Classify.SQL + ")"
+		return string(r.Class) + " (by " + r.Classify.String() + ")"
 	}
 	names := make([]string, len(cs))
 	for i, c := range cs {

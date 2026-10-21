@@ -33,6 +33,7 @@
       "idempotentHint": false,
       "opfenceClasses": [
         "access",
+        "credential",
         "delete",
         "irreversible",
         "read",

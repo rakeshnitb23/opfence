@@ -78,40 +78,59 @@ operations:
   - id: cloudflare.d1.query
     match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/query" } }
     class: irreversible
+    classify: { sql: [body.sql, body.batch.sql], dialect: sqlite }
     resource: { arg: database_id, kind: database }
     card: "Run SQL on D1 database {database_id}"
     status: verified
-    verified: 2026-10-18
+    verified: 2026-10-21
     sources:
       - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+      - https://developers.cloudflare.com/d1/sql-api/sql-statements/
     notes: >-
-      D1 runs SQLite, not Postgres, so the SQL is not classified (the Postgres
-      classifier could misread SQLite quoting and comments). Any statement may
-      be a DROP or a DELETE, so the rule has the fixed class irreversible. D1
-      Time Travel can restore the database for 30 days, but Opfence cannot know
-      a bookmark was kept.
+      The body holds one SQL text in sql, or a batch of them, each with its own sql. D1 runs
+      SQLite, so the SQL is classified as SQLite: a SELECT is a read, a DELETE with a limiting
+      WHERE a delete, a DROP irreversible. SQL the classifier cannot read keeps the rule's
+      class, irreversible, as does a body with no SQL. D1 Time Travel can restore the database
+      for 30 days, but Opfence cannot know a bookmark was kept.
     tests:
       - fixture: fixtures/d1-query.http
+        expect: read
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-query-drop.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-query-batch.http
+        expect: delete
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-query-comment.http
+        expect: irreversible
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-query-unparsed.http
         expect: irreversible
         resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
 
   - id: cloudflare.d1.raw
     match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/d1/database/{database_id}/raw" } }
     class: irreversible
+    classify: { sql: [body.sql, body.batch.sql], dialect: sqlite }
     resource: { arg: database_id, kind: database }
     card: "Run raw SQL on D1 database {database_id}"
     status: verified
-    verified: 2026-10-18
+    verified: 2026-10-21
     sources:
       - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+      - https://developers.cloudflare.com/d1/sql-api/sql-statements/
     notes: >-
-      D1 runs SQLite, not Postgres, so the SQL is not classified (the Postgres
-      classifier could misread SQLite quoting and comments). Any statement may
-      be a DROP or a DELETE, so the rule has the fixed class irreversible. D1
-      Time Travel can restore the database for 30 days, but Opfence cannot know
-      a bookmark was kept.
+      The body holds one SQL text in sql, or a batch of them, each with its own sql. D1 runs
+      SQLite, so the SQL is classified as SQLite: a SELECT is a read, a DELETE with a limiting
+      WHERE a delete, a DROP irreversible. SQL the classifier cannot read keeps the rule's
+      class, irreversible, as does a body with no SQL. D1 Time Travel can restore the database
+      for 30 days, but Opfence cannot know a bookmark was kept.
     tests:
       - fixture: fixtures/d1-raw.http
+        expect: read
+        resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
+      - fixture: fixtures/d1-raw-drop.http
         expect: irreversible
         resource: "f037a3e2-6c25-4a1b-9a7e-5c3e0b6b2d11"
 
