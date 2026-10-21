@@ -34,7 +34,11 @@
         "classify": {
           "type": "object",
           "additionalProperties": false,
-          "oneOf": [{ "required": ["sql"], "not": { "required": ["redis"] } }, { "required": ["redis"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["dialect"] }, { "required": ["format"] }] } }],
+          "oneOf": [
+            { "required": ["sql"], "not": { "anyOf": [{ "required": ["redis"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }] } },
+            { "required": ["redis"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }, { "required": ["dialect"] }, { "required": ["format"] }] } },
+            { "required": ["aws_cli", "provider"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["redis"] }, { "required": ["dialect"] }, { "required": ["format"] }] } }
+          ],
           "properties": {
             "sql": {
               "description": "Arguments holding SQL: one path, or several when the SQL may be in any of them",
@@ -51,6 +55,8 @@
               ]
             },
             "format": { "enum": ["libsql"], "description": "libsql: the argument is a libSQL HTTP request body, read as SQLite" },
+            "aws_cli": { "$ref": "#/$defs/argPath", "description": "Argument holding AWS CLI command lines (one or a list); provider names the SigV4 provider whose rules decide them" },
+            "provider": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
             "redis": {
               "description": "Arguments holding Redis commands: a list of commands (each a list of words) or one command",
               "oneOf": [

@@ -68,6 +68,7 @@ flowchart LR
   S16 --> S18["18 SQL over HTTP"]
   S18 --> S19["19 Database environments"]
   S16 --> S20["20 Redis commands"]
+  S17 --> S21["21 AWS CLI commands"]
   S11 --> V1(["v1.0 ready (after external review)"])
   S12 --> V1
   S14 --> V1
@@ -77,6 +78,7 @@ flowchart LR
   S18 --> V1
   S19 --> V1
   S20 --> V1
+  S21 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -102,6 +104,7 @@ flowchart LR
 | 18 | SQL over HTTP | Neon's serverless driver and PlanetScale's database-js decided by their SQL; `label.*.suffix` host patterns; `database_ports` | A `SELECT` sent by either driver is a read and a `DROP` irreversible; Postgres, MySQL and Neon's WebSocket connections behave as before in both modes | done |
 | 19 | Database environments | `header_args`: the database a Neon or PlanetScale HTTP query reaches, without its password, as the resource | A mapped Neon endpoint or PlanetScale username decides as development; no password in cards, block messages, `explain` or the audit log | done |
 | 20 | Redis commands | `decode.ClassifyRedis` from Valkey's command table plus reviewed overrides; `classify: {redis: …}`; Upstash's command tool decided per command | `GET` is a read, `DEL` a delete, `FLUSHALL` irreversible, `EVAL` unknown; every Valkey command classified; the table regenerates from source | done |
+| 21 | AWS CLI commands | `classify.aws_cli`: AWS API MCP's `call_aws` decided by `catalog/aws`'s rules, from awscli 1.46.0's own command table | `aws s3api list-buckets` a read, `aws rds delete-db-instance --skip-final-snapshot` irreversible with its resource, environments and overrides of `aws.*` applied; every `catalog/aws` rule reachable from the CLI | done |
 
 v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
@@ -289,4 +292,12 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 - **Tests:** a table of 140 cases over every flag group and override, argument-dependent cases (`EXPIRE` with zero, negative and unreadable TTLs, `SORT … STORE`, `HELLO … AUTH`, lower case), every entry of the generated table getting one valid class, command shapes (nested lists, single commands, numbers, malformed values), the rule-class floor for unknown commands, and a fuzz target (45 s clean).
 - **Changed from the plan:** the review found four commands whose Valkey flags understate them: `PUBLISH`/`SPUBLISH` and `SCRIPT LOAD`/`SCRIPT FLUSH` carry no `WRITE` flag, and `FUNCTION DELETE` no removal flag, so they are overrides (write, write, delete). Credential is among the rule's possible classes, since `CONFIG GET` and `ACL LIST` return secrets.
 - **Follow-ups:** Upstash's REST API reached directly, if Upstash ever separates Redis hosts from QStash and Vector by name; the official Redis MCP server (`redis/mcp-redis`), whose tools wrap single commands.
+
+**Stage 21 · AWS CLI commands (done 22 Oct 2026).** The AWS API MCP server's `call_aws` runs any AWS CLI command with the user's credentials, so it was a fixed irreversible: `aws s3api list-buckets` needed confirming in production. Read from the server's source (`core/parser/parser.py`, `lexer.py`): it splits the command with Python's `shlex`, refuses shell operators, and parses with awscli 1.46.0's own argument tables, allowing a fixed list of awscli customizations.
+- **Table:** `tools/awscligen/gen.py` (Python, run with `awscli==1.46.0`) writes `internal/decode/awscli.json.gz` (267 KB, embedded): 428 CLI services and 19,001 operations with their API names (customizations marked), and for the twelve services `catalog/aws` covers, each operation's HTTP binding and every argument's API member, type and wire location, including the `--no-` boolean forms and the unread `--cli-input-json` and `--generate-cli-skeleton`.
+- **Decoding:** `decode.AWSCLI` splits the command as `shlex` does, drops awscli's global options wherever they appear, maps the operation, reads arguments (booleans, lists by spaces, commas or JSON, structures by JSON or flat shorthand), builds the request the SDK would send, and decodes it with the proxy's AWS decoder, so arguments have the shape `catalog/aws`'s conditions read (`SkipFinalSnapshot` from the Query form, `headers.x-amz-acl` for S3, `body.AuthType` for Lambda, EC2's `InstanceId` list). The high-level `aws s3` commands and the allowed customizations are mapped by hand.
+- **Engine:** `classify: { aws_cli: cli_command, provider: aws }` evaluates each operation against the `aws` provider exactly as the proxy would, with its environments and rule overrides, and takes the strictest result, with its environment and resource. Anything unread is unknown and keeps the rule's class. A hook call stays at about 70 ms, including loading the AWS rules and the table.
+- **Tests:** shell splitting (quotes, escapes, unterminated input), 55 commands mapped to their operations (global options anywhere, help, waits, customizations, refused operators, every `aws s3` command), arguments in the proxy's shape for each protocol, table integrity (every URI parameter has an argument), a catalog test that every one of `catalog/aws`'s rules is reachable from some CLI command and that each argument its conditions and resource read can come from it, engine tests for decisions, lists, environment mapping and rule overrides through `call_aws`, 8 new fixtures (11 in the rule), and a fuzz target (60 s clean).
+- **Found while building:** Route 53's URI templates name parameters by wire name (`{Id}` is `HostedZoneId`); and RDS, Neptune and DocumentDB share the `rds` signing name and actions, so the reachability test accepts an argument any of them supplies.
+- **Follow-ups:** regenerate the table when the server moves to a newer awscli (`pyproject.toml` pins it); nested shorthand (`Objects=[{Key=a}]`) is not read, and keeps the rule's class.
 

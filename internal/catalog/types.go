@@ -265,13 +265,24 @@ type Classify struct {
 	// Redis lists the arguments holding Redis commands: a list of commands
 	// (each a list of words) or a single command. Exclusive with SQL.
 	Redis Strings `yaml:"redis"`
+	// AWSCLI names the argument holding AWS CLI command lines (one, or a
+	// list), and Provider the SigV4 provider whose rules decide the API
+	// operations they run. The engine evaluates them (engine.awsCLI).
+	AWSCLI   string `yaml:"aws_cli"`
+	Provider string `yaml:"provider"`
 }
 
-// Active reports whether the block classifies anything.
+// Active reports whether the block classifies SQL or Redis commands.
 func (c *Classify) Active() bool { return c != nil && (len(c.SQL) > 0 || len(c.Redis) > 0) }
 
 // Paths are the arguments the block reads.
-func (c *Classify) Paths() []string { return slices.Concat(c.SQL, c.Redis) }
+func (c *Classify) Paths() []string {
+	out := slices.Concat(c.SQL, c.Redis)
+	if c.AWSCLI != "" {
+		out = append(out, c.AWSCLI)
+	}
+	return out
+}
 
 // SQL dialects and formats classify understands.
 const (
@@ -295,6 +306,9 @@ func (c *Classify) Dialects() []string {
 // String describes where the SQL comes from and how it is read, for cards
 // and listings: "query", "body.sql, body.batch.sql (sqlite)".
 func (c *Classify) String() string {
+	if c.AWSCLI != "" {
+		return c.AWSCLI + " (AWS CLI, " + c.Provider + " rules)"
+	}
 	if len(c.Redis) > 0 {
 		return strings.Join(c.Redis, ", ") + " (redis)"
 	}
@@ -459,6 +473,12 @@ func (r *Rule) PossibleClasses() []classes.Class {
 			if len(r.Classify.SQL) > 0 && d != DialectSQLite {
 				add(classes.Credential)
 			}
+		}
+	}
+	if r.Classify != nil && r.Classify.AWSCLI != "" {
+		// Any AWS operation: every class there is.
+		for _, c := range classes.All {
+			add(c)
 		}
 	}
 	if r.Match.GraphQL != nil && r.Provider != nil && len(r.Provider.Defaults.GraphQLSecretFields) > 0 {

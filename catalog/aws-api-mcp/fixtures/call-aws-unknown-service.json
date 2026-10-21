@@ -1,0 +1,7 @@
+{
+  "description": "An operation on a service catalog/aws has no rules for",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws sqs delete-queue --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/orders"
+  }
+}

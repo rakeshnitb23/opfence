@@ -191,6 +191,10 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 		}
 	}
 
+	if ev.Rule != nil && ev.Rule.Classify != nil && ev.Rule.Classify.AWSCLI != "" && op.Protocol != decode.AWS {
+		e.awsCLI(&ev)
+	}
+
 	if ev.Rule != nil && ev.Rule.Resource != nil {
 		if v, ok := catalog.Lookup(ev.Args, ev.Rule.Resource.Arg); ok {
 			if s, ok := catalog.Scalar(v); ok {
@@ -315,4 +319,106 @@ func hashEvaluations(host string, evs []Evaluation) [32]byte {
 		b = []byte(fmt.Sprintf("unhashable %p", &evs))
 	}
 	return sha256.Sum256(b)
+}
+
+// awsCLI decides a tool call that runs AWS CLI commands (classify.aws_cli):
+// each command's API operations are evaluated against the named SigV4
+// provider's rules exactly as the proxy would evaluate their requests, with
+// that provider's environments and rule overrides, and the call gets the
+// strictest result. What cannot be read (an unparsable command, an
+// argument from a file, an awscli customization Opfence does not know) is
+// unknown, and the rule's own class counts too, so the call is never
+// decided more loosely than the rule's fixed class.
+func (e *Engine) awsCLI(ev *Evaluation) {
+	r := ev.Rule
+	v, ok := catalog.Lookup(ev.Args, r.Classify.AWSCLI)
+	if !ok {
+		return // the rule's own class, already decided
+	}
+	var cmds []string
+	switch x := v.(type) {
+	case string:
+		cmds = []string{x}
+	case []any:
+		for _, el := range x {
+			s, ok := el.(string)
+			if !ok {
+				return
+			}
+			cmds = append(cmds, s)
+		}
+	default:
+		return
+	}
+	if len(cmds) == 0 {
+		return
+	}
+	prov := e.Catalog.Provider(r.Classify.Provider)
+	type part struct {
+		class                    classes.Class
+		decision                 classes.Decision
+		decisionSrc, env, envSrc string
+		resource, label          string
+	}
+	var parts []part
+	direct := func(c classes.Class, label string) {
+		d, src := e.Policy.Decide(r.ID, c, ev.Environment)
+		parts = append(parts, part{class: c, decision: d, decisionSrc: src, env: ev.Environment, envSrc: ev.EnvSource, label: label})
+	}
+	unknown := false
+	all := map[classes.Class]bool{}
+	for _, cmd := range cmds {
+		steps, err := decode.AWSCLI(cmd)
+		if err != nil {
+			direct(classes.Unknown, "unreadable command ("+Sanitize(err.Error(), 80)+")")
+			unknown = true
+			continue
+		}
+		for _, st := range steps {
+			if st.Op == nil || prov == nil {
+				c := st.Class
+				if c == "" {
+					c = classes.Unknown
+				}
+				direct(c, Sanitize(st.Reason, 120))
+				unknown = unknown || c == classes.Unknown
+				continue
+			}
+			sub := e.evaluate(prov, "", *st.Op)
+			label := "AWS " + st.Op.Service + " " + st.Op.Action + " (" + sub.ClassSource + ")"
+			if sub.Rule != nil {
+				label = sub.Rule.ID
+			}
+			for _, c := range sub.Classes {
+				all[c] = true
+				unknown = unknown || c == classes.Unknown
+			}
+			parts = append(parts, part{class: sub.Class, decision: sub.Decision, decisionSrc: sub.DecisionSource,
+				env: sub.Environment, envSrc: sub.EnvSource, resource: sub.Resource, label: label + " " + string(sub.Class)})
+		}
+	}
+	if unknown && !slices.ContainsFunc(parts, func(p part) bool { return p.class == r.Class }) {
+		direct(r.Class, "rule class, for what Opfence cannot read")
+	}
+	best := parts[0]
+	var labels []string
+	for _, p := range parts {
+		all[p.class] = true
+		labels = append(labels, p.label)
+		if p.decision > best.decision {
+			best = p
+		}
+	}
+	ev.Classes = ev.Classes[:0]
+	for _, c := range classes.All {
+		if all[c] {
+			ev.Classes = append(ev.Classes, c)
+		}
+	}
+	ev.ClassSource = "AWS CLI: " + strings.Join(labels, "; ")
+	ev.Class, ev.Decision, ev.DecisionSource = best.class, best.decision, best.decisionSrc
+	ev.Environment, ev.EnvSource = best.env, best.envSrc
+	if best.resource != "" {
+		ev.Resource = best.resource
+	}
 }

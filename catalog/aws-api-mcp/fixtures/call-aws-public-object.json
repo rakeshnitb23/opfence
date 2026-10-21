@@ -1,0 +1,7 @@
+{
+  "description": "Upload an object anyone can read",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws s3 cp ./report.pdf s3://shop-assets/report.pdf --acl public-read"
+  }
+}

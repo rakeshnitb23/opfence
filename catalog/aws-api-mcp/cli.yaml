@@ -3,31 +3,52 @@ operations:
   - id: aws-api-mcp.cli.call
     match: { mcp: { tool: call_aws } }
     class: irreversible
+    classify: { aws_cli: cli_command, provider: aws }
     card: "Run AWS CLI command(s) {cli_command}"
     status: verified
-    verified: 2026-10-19
+    verified: 2026-10-22
     sources:
       - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/server.py
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/parser/parser.py
+      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/parser/lexer.py
       - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/security/policy.py
-      - https://github.com/awslabs/mcp/blob/main/src/aws-api-mcp-server/awslabs/aws_api_mcp_server/core/common/config.py
+      - https://github.com/aws/aws-cli/tree/1.46.0
     notes: >-
-      cli_command is one AWS CLI command or a list of them, run with the user's AWS credentials
-      (any service, any operation, including aws s3 rm --recursive, aws iam create-access-key,
-      aws secretsmanager get-secret-value and aws ssm send-command), and "--region *" repeats a
-      command in every enabled region. Opfence cannot yet map a CLI command onto the catalog/aws
-      rules, so every call gets the strictest class a command can reach. The server's own guards
-      are invisible to Opfence and do not lower the class: READ_OPERATIONS_ONLY=true denies
-      operations that the AWS service reference does not mark read-only (but reads that return
-      secrets, such as get-secret-value, still pass), REQUIRE_MUTATION_CONSENT=true asks the
-      user through MCP elicitation before a non-read operation, and
-      ~/.aws/aws-api-mcp/mcp-security-policy.json can deny or ask for listed commands.
-      max_results only limits pagination.
+      cli_command is one AWS CLI command or a list of them, run with the user's AWS credentials.
+      Each command is read with awscli 1.46.0's command table (the version the server parses
+      with) and turned into the API request it makes, which is decided by catalog/aws's rules,
+      environments and overrides as if the proxy had seen it: aws rds delete-db-instance
+      --skip-final-snapshot is irreversible, aws s3api list-buckets a read, aws secretsmanager
+      get-secret-value credential. The high-level aws s3 commands map to the S3 operations they
+      make (rm --recursive, sync --delete and rb --force to DeleteObjects), awscli
+      customizations to their effect (ecr get-login-password returns a credential), and the call
+      gets the strictest result. What Opfence cannot read (--cli-input-json, file:// values,
+      nested shorthand, a command the server would refuse) is unknown and keeps this rule's
+      class, irreversible. "--region *" repeats a command in every region and does not change
+      its class. The server's own guards (READ_OPERATIONS_ONLY, REQUIRE_MUTATION_CONSENT,
+      mcp-security-policy.json) are invisible to Opfence and do not lower the class.
     tests:
       - fixture: fixtures/call-aws.json
-        expect: irreversible
+        expect: read
       - fixture: fixtures/call-aws-batch.json
-        expect: irreversible
+        expect: read
+      - fixture: fixtures/call-aws-describe.json
+        expect: read
       - fixture: fixtures/call-aws-delete.json
+        expect: irreversible
+      - fixture: fixtures/call-aws-delete-snapshot.json
+        expect: delete
+      - fixture: fixtures/call-aws-s3-rm.json
+        expect: irreversible
+      - fixture: fixtures/call-aws-secret.json
+        expect: credential
+      - fixture: fixtures/call-aws-ecr-login.json
+        expect: credential
+      - fixture: fixtures/call-aws-public-object.json
+        expect: access
+      - fixture: fixtures/call-aws-input-json.json
+        expect: irreversible
+      - fixture: fixtures/call-aws-unknown-service.json
         expect: irreversible
 
   - id: aws-api-mcp.cli.suggest

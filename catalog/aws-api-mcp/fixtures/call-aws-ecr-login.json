@@ -1,0 +1,7 @@
+{
+  "description": "Get a registry login token",
+  "tool": "call_aws",
+  "arguments": {
+    "cli_command": "aws ecr get-login-password --region eu-west-1"
+  }
+}
