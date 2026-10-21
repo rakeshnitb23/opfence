@@ -1,0 +1,2359 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): cloudforce-one
+operations:
+  - id: cloudflare.cloudforce-one.bin-dbpost
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/binary" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Posts a file to Binary Storage"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-bin-dbpost.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.event-list
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.category-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/categories/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new category"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-category-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.legacy-category-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/categories/{category_id}" } }
+    class: delete
+    resource: { arg: category_id, kind: category }
+    card: "Deletes a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-category-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.legacy-category-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/categories/{category_id}" } }
+    class: write
+    resource: { arg: category_id, kind: category }
+    card: "Updates a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-category-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.legacy-category-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/categories/{category_id}" } }
+    class: write
+    resource: { arg: category_id, kind: category }
+    card: "Updates a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-category-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new event"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.event-create-bulk
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/create/bulk" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates bulk events"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-create-bulk.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.dosevent-create-bulk-with-relationships
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/create/bulk/relationships" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates bulk DOS event with relationships and indicators"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-dosevent-create-bulk-with-relationships.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.group-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/-/groups" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a group"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-group-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.group-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/-/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: group }
+    card: "Delete a group for an account {group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-group-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.group-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/-/groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: group }
+    card: "Update a group {group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-group-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.group-member-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/-/groups/{group_id}/members" } }
+    class: access
+    resource: { arg: group_id, kind: group }
+    card: "Create a group member {group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-group-member-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.group-member-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/-/groups/{group_id}/members/{member_id}" } }
+    class: access
+    resource: { arg: member_id, kind: member }
+    card: "Delete a group member {member_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-group-member-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.dataset-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates a dataset"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dataset-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.dataset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}" } }
+    class: irreversible
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Delete a dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-dataset-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.dataset-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Updates an existing dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dataset-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.dataset-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Updates an existing dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dataset-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-copy-to-new-ds
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/copy" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Copies specified events from one dataset to another dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-copy-to-new-ds.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-type-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicatorTypes/create" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Create a new indicator type {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-type-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-create-bulk
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/bulk" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Creates multiple indicators in bulk {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-create-bulk.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/create" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Creates a new indicator {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/{indicator_id}" } }
+    class: irreversible
+    resource: { arg: indicator_id, kind: indicator }
+    card: "Deletes an indicator {indicator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/{indicator_id}" } }
+    class: write
+    resource: { arg: indicator_id, kind: indicator }
+    card: "Updates an indicator {indicator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-relationship-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/{indicator_id}/relationships" } }
+    class: write
+    resource: { arg: indicator_id, kind: indicator }
+    card: "Create a relationship for an indicator {indicator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-relationship-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-relationship-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/{indicator_id}/relationships/{rel_uuid}" } }
+    class: delete
+    resource: { arg: rel_uuid, kind: rel }
+    card: "Delete a relationship {rel_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-relationship-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.indicator-relationship-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/indicators/{indicator_id}/relationships/{rel_uuid}" } }
+    class: write
+    resource: { arg: rel_uuid, kind: rel }
+    card: "Update a relationship {rel_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-indicator-relationship-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-move-to-new-ds
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/move" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Moves specified events from one dataset to another dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-move-to-new-ds.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.permission-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/permissions" } }
+    class: access
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Create a permission for dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-permission-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.permission-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/permissions/{grant_id}" } }
+    class: access
+    resource: { arg: grant_id, kind: grant }
+    card: "Delete a permission for dataset {grant_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-permission-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.permission-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/dataset/{dataset_id}/permissions/{grant_id}" } }
+    class: access
+    resource: { arg: grant_id, kind: grant }
+    card: "Update a permission for dataset {grant_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Dataset permissions and groups decide which accounts can read the intelligence.
+    tests:
+      - fixture: fixtures/cloudforce-one-permission-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.dataset-populate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/datasets/populate" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Populate dataset-specific lookup tables from existing Events data with batch processing"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dataset-populate.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.event-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/datasets/{dataset_id}/events" } }
+    class: irreversible
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Deletes one or more events {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-event-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.category-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/event-categories/by-id/{category_id}" } }
+    class: delete
+    resource: { arg: category_id, kind: category }
+    card: "Deletes a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-category-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.category-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/event-categories/by-id/{category_id}" } }
+    class: write
+    resource: { arg: category_id, kind: category }
+    card: "Updates a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-category-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.category-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/event-categories/by-id/{category_id}" } }
+    class: write
+    resource: { arg: category_id, kind: category }
+    card: "Updates a category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-category-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-tag-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/event_tag/{event_id}" } }
+    class: delete
+    resource: { arg: event_id, kind: event }
+    card: "Removes a tag from an event {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-tag-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-tag-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/event_tag/{event_id}/create" } }
+    class: write
+    resource: { arg: event_id, kind: event }
+    card: "Adds a tag to an event {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-tag-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-graph-ql
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/graphql" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Aggregates events; the endpoint only reads.
+    tests:
+      - fixture: fixtures/cloudforce-one-event-graph-ql.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.event-query-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/queries/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a saved event query"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-query-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.event-query-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/queries/{query_id}" } }
+    class: delete
+    resource: { arg: query_id, kind: query }
+    card: "Delete a saved event query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-query-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-query-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/queries/{query_id}" } }
+    class: write
+    resource: { arg: query_id, kind: query }
+    card: "Update a saved event query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-query-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-query-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/queries/{query_id}" } }
+    class: write
+    resource: { arg: query_id, kind: query }
+    card: "Update a saved event query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-query-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-reference-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/relate/{event_id}" } }
+    class: delete
+    resource: { arg: event_id, kind: event }
+    card: "Removes an event reference {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-reference-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-reference-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/relate/{event_id}/create" } }
+    class: write
+    resource: { arg: event_id, kind: event }
+    card: "Creates event references for a event {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-reference-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.create-event-relationship
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/relationships/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a relationship between two events"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-create-event-relationship.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.tag-category-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tag-categories/{category_uuid}" } }
+    class: delete
+    resource: { arg: category_uuid, kind: category }
+    card: "Deletes a tag category (SoT) {category_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-category-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-category-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tag-categories/{category_uuid}" } }
+    class: write
+    resource: { arg: category_uuid, kind: category }
+    card: "Updates a tag category (SoT) {category_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-category-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-category-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/categories/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new tag category (SoT)"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-category-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.legacy-tag-category-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/categories/{category_uuid}" } }
+    class: delete
+    resource: { arg: category_uuid, kind: category }
+    card: "Deletes a tag category (SoT) {category_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-tag-category-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.legacy-tag-category-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/categories/{category_uuid}" } }
+    class: write
+    resource: { arg: category_uuid, kind: category }
+    card: "Updates a tag category (SoT) {category_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-tag-category-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/create" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new tag"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.tag-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/{tag_uuid}" } }
+    class: delete
+    resource: { arg: tag_uuid, kind: tag }
+    card: "Deletes a tag (SoT) {tag_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/{tag_uuid}" } }
+    class: write
+    resource: { arg: tag_uuid, kind: tag }
+    card: "Updates a tag (SoT) {tag_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-relationship-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/{tag_uuid}/relationships" } }
+    class: write
+    resource: { arg: tag_uuid, kind: tag }
+    card: "Create a relationship for a tag {tag_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-relationship-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-relationship-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/{tag_uuid}/relationships/{rel_uuid}" } }
+    class: delete
+    resource: { arg: rel_uuid, kind: rel }
+    card: "Delete a tag relationship {rel_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-relationship-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.tag-relationship-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/tags/{tag_uuid}/relationships/{rel_uuid}" } }
+    class: write
+    resource: { arg: rel_uuid, kind: rel }
+    card: "Update a tag relationship {rel_uuid}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-tag-relationship-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-update-bulk
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/update/bulk" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Bulk update events"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-update-bulk.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.legacy-event-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/{dataset_id}/delete" } }
+    class: irreversible
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Deletes one or more events {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored. Cloudflare has deprecated this
+      endpoint.
+    tests:
+      - fixture: fixtures/cloudforce-one-legacy-event-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/{event_id}" } }
+    class: write
+    resource: { arg: event_id, kind: event }
+    card: "Updates an event {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/{event_id}" } }
+    class: write
+    resource: { arg: event_id, kind: event }
+    card: "Updates an event {event_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-raw-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/{event_id}/raw/{raw_id}" } }
+    class: write
+    resource: { arg: raw_id, kind: raw }
+    card: "Updates a raw event {raw_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-raw-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-raw-update-post
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/events/{event_id}/raw/{raw_id}" } }
+    class: write
+    resource: { arg: raw_id, kind: raw }
+    card: "Updates a raw event {raw_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-event-raw-update-post.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-list
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.request-new
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/new" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a New Request"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-new.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.priority-list
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/priority" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-priority-list.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.priority-new
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/priority/new" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a New Priority Intelligence Requirement"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-priority-new.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.priority-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/priority/{priority_id}" } }
+    class: delete
+    resource: { arg: priority_id, kind: priority }
+    card: "Delete a Priority Intelligence Requirement {priority_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-priority-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.priority-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/priority/{priority_id}" } }
+    class: write
+    resource: { arg: priority_id, kind: priority }
+    card: "Update a Priority Intelligence Requirement {priority_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-priority-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}" } }
+    class: irreversible
+    resource: { arg: request_id, kind: request }
+    card: "Delete a Request {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-request-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Update a Request {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-asset-list
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/asset" } }
+    class: read
+    resource: { arg: request_id, kind: request }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-asset-list.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-asset-new
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/asset/new" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Create a New Request Asset {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-asset-new.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-asset-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/asset/{asset_id}" } }
+    class: irreversible
+    resource: { arg: asset_id, kind: asset }
+    card: "Delete a Request Asset {asset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-request-asset-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-asset-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/asset/{asset_id}" } }
+    class: write
+    resource: { arg: asset_id, kind: asset }
+    card: "Update a Request Asset {asset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-asset-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-message-list
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/message" } }
+    class: read
+    resource: { arg: request_id, kind: request }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-message-list.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-message-new
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/message/new" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Create a New Request Message {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-message-new.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-message-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/message/{message_id}" } }
+    class: irreversible
+    resource: { arg: message_id, kind: message }
+    card: "Delete a Request Message {message_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-request-message-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-message-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/requests/{request_id}/message/{message_id}" } }
+    class: write
+    resource: { arg: message_id, kind: message }
+    card: "Update a Request Message {message_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-message-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.delete-all-rules
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-all-rules.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.create-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-create-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.cancel-rule-approval
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/approvals/{id}/cancel" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Cancel a pending approval {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-cancel-rule-approval.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.resubmit-rule-approval
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/approvals/{id}/resubmit" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Revise and resubmit a rejected approval {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-resubmit-rule-approval.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.remove-account-exemptions
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/exemptions" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Remove patterns from exemption rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-remove-account-exemptions.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.add-account-exemptions
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/exemptions" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Add patterns to exemption rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-add-account-exemptions.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.update-account-exemptions
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/exemptions" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update exemption rule patterns"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-update-account-exemptions.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.create-email-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create an email rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-create-email-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.update-pending-email-rule-approval
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/approvals/{id}" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Update a pending structured email rule approval {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-update-pending-email-rule-approval.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.resubmit-email-rule-approval
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/approvals/{id}/resubmit" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Revise and resubmit a rejected structured email rule approval {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-resubmit-email-rule-approval.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.validate-email-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/validate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-validate-email-rule.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.delete-email-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/{id}" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Delete an email rule {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-email-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.update-email-rule
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/{id}" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Update an email rule {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-update-email-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.test-email-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/structured/{id}/test" } }
+    class: read
+    resource: { arg: id, kind: id }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-test-email-rule.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.validate-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/validate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-validate-rule.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.delete-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/{id}" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Delete a rule {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.update-rule
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/rules/{id}" } }
+    class: access
+    resource: { arg: id, kind: id }
+    card: "Update a rule {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Cloudforce One rules and exemptions decide what is detected and blocked; as with firewall
+      rules, every change is access.
+    tests:
+      - fixture: fixtures/cloudforce-one-update-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.config-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/scans/config" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a new Scan Config"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-config-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.delete-scans
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/scans/config/{config_id}" } }
+    class: delete
+    resource: { arg: config_id, kind: config }
+    card: "Delete a Scan Config {config_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-scans.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.config-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/scans/config/{config_id}" } }
+    class: write
+    resource: { arg: config_id, kind: config }
+    card: "Update an existing Scan Config {config_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-config-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.bulk-dismiss-matches
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/domain/matches/bulk-dismiss" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Bulk dismiss or undismiss matches"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-bulk-dismiss-matches.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.insert-domain-query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/domain/queries" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Insert query"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-insert-domain-query.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.delete-domain-query
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/domain/queries/{query_id}" } }
+    class: delete
+    resource: { arg: query_id, kind: query }
+    card: "Delete domain query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-domain-query.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.update-domain-query
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/domain/queries/{query_id}" } }
+    class: write
+    resource: { arg: query_id, kind: query }
+    card: "Update domain query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-update-domain-query.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.domain-trial
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/domain/trial" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-domain-trial.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.letter-generate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/letter/generate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Drafts a takedown letter's text; nothing is sent.
+    tests:
+      - fixture: fixtures/cloudforce-one-letter-generate.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.letter-template-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/letter/templates" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create letter template"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-letter-template-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.letter-template-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/letter/templates/{template_id}" } }
+    class: delete
+    resource: { arg: template_id, kind: template }
+    card: "Delete letter template {template_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-letter-template-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.letter-template-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/letter/templates/{template_id}" } }
+    class: write
+    resource: { arg: template_id, kind: template }
+    card: "Update letter template {template_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-letter-template-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.insert-logo-query
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/logo/queries" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Insert logo query"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-insert-logo-query.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.delete-logo-query
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/logo/queries/{query_id}" } }
+    class: delete
+    resource: { arg: query_id, kind: query }
+    card: "Delete logo query {query_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-delete-logo-query.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.search-logo-similarity
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/logo/search" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-search-logo-similarity.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.dismiss-match
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/queries/{query_id}/matches/{domain_id}/dismiss" } }
+    class: write
+    resource: { arg: domain_id, kind: domain }
+    card: "Dismiss a match {domain_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dismiss-match.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.undismiss-match
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/queries/{query_id}/matches/{domain_id}/undismiss" } }
+    class: write
+    resource: { arg: domain_id, kind: domain }
+    card: "Undismiss a match {domain_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-undismiss-match.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.takedown-notice-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create takedown notice"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-notice-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.takedown-notice-lookup
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices/lookup" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-notice-lookup.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.takedown-notice-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices/{notice_id}" } }
+    class: delete
+    resource: { arg: notice_id, kind: notice }
+    card: "Delete takedown notice {notice_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-notice-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.takedown-notice-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices/{notice_id}" } }
+    class: write
+    resource: { arg: notice_id, kind: notice }
+    card: "Update takedown notice {notice_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-notice-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.takedown-letter-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices/{notice_id}/letters" } }
+    class: write
+    resource: { arg: notice_id, kind: notice }
+    card: "Create takedown letter {notice_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-letter-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.takedown-letter-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/brand-protection/takedown-notices/{notice_id}/letters/{letter_id}" } }
+    class: delete
+    resource: { arg: letter_id, kind: letter }
+    card: "Delete takedown letter {letter_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-takedown-letter-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.collection-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a new collection"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-collection-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.collection-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}" } }
+    class: irreversible
+    resource: { arg: collection_id, kind: collection }
+    card: "Delete collection {collection_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-collection-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.collection-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}" } }
+    class: write
+    resource: { arg: collection_id, kind: collection }
+    card: "Update collection {collection_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-collection-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.column-add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/columns" } }
+    class: write
+    resource: { arg: collection_id, kind: collection }
+    card: "Add column to collection {collection_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-column-add.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.column-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/columns/{column_id}" } }
+    class: delete
+    resource: { arg: column_id, kind: column }
+    card: "Delete column {column_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-column-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.column-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/columns/{column_id}" } }
+    class: write
+    resource: { arg: column_id, kind: column }
+    card: "Update column {column_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-column-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.item-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/items" } }
+    class: write
+    resource: { arg: collection_id, kind: collection }
+    card: "Create item(s) {collection_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-item-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.item-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/items/{item_id}" } }
+    class: irreversible
+    resource: { arg: item_id, kind: item }
+    card: "Delete collection item {item_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes stored intelligence, which cannot be restored.
+    tests:
+      - fixture: fixtures/cloudforce-one-item-delete.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.item-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/items/{item_id}" } }
+    class: write
+    resource: { arg: item_id, kind: item }
+    card: "Update collection item {item_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-item-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.item-search
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/collections/{collection_id}/search" } }
+    class: read
+    resource: { arg: collection_id, kind: collection }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-item-search.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.domain-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/credential-monitor/domains" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create monitored domain"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-domain-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.domain-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/credential-monitor/domains/{id}" } }
+    class: delete
+    resource: { arg: id, kind: id }
+    card: "Delete monitored domain {id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-domain-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.event-graph-qlv2
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/events/graphql" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Aggregates events; the endpoint only reads.
+    tests:
+      - fixture: fixtures/cloudforce-one-event-graph-qlv2.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a priority intelligence requirement"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-filter-generate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/filters/generate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-filter-generate.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-interest-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/interests" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create an account interest for PIR Option 2"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-interest-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-interest-backtest-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/interests/backtests" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-interest-backtest-create.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-interest-evaluation-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/interests/evaluations" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-interest-evaluation-create.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-interest-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/interests/{interest_id}" } }
+    class: delete
+    resource: { arg: interest_id, kind: interest }
+    card: "Delete an account interest for PIR Option 2 {interest_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-interest-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.pir-interest-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/interests/{interest_id}" } }
+    class: write
+    resource: { arg: interest_id, kind: interest }
+    card: "Update an account interest for PIR Option 2 {interest_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-interest-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.pir-quota
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/quota" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-quota.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.pir-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/{priority_id}" } }
+    class: delete
+    resource: { arg: priority_id, kind: priority }
+    card: "Delete a priority intelligence requirement {priority_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.pir-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/{priority_id}" } }
+    class: write
+    resource: { arg: priority_id, kind: priority }
+    card: "Update a priority intelligence requirement {priority_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.pir-matches-triage
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/priority-intelligence/{priority_id}/matches" } }
+    class: write
+    resource: { arg: priority_id, kind: priority }
+    card: "Triage a priority intelligence requirement's matched events {priority_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-pir-matches-triage.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.request-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/requests/{project_type}" } }
+    class: write
+    resource: { arg: project_type, kind: project-type }
+    card: "Creates a new RFI {project_type}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-create.http
+        expect: write
+        resource: "rfi"
+
+  - id: cloudflare.cloudforce-one.request-update-put
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/requests/{project_type}/{request_id}" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Update an RFI {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-request-update-put.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.dashboard-asset-upload
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/requests/{project_type}/{request_id}/assets/upload" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Upload asset to request (Customer) {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-dashboard-asset-upload.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.message-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/requests/{project_type}/{request_id}/messages/new" } }
+    class: write
+    resource: { arg: request_id, kind: request }
+    card: "Create a customer follow-on message on an RFI request {request_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-message-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.message-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/requests/{project_type}/{request_id}/messages/{message_id}" } }
+    class: write
+    resource: { arg: message_id, kind: message }
+    card: "Update/publish a message for an RFI request {message_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-message-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-article-bulk-mark-read
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Bulk update Threat Signals article read status"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-bulk-mark-read.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.rss-article-mark-read
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/{article_id}" } }
+    class: write
+    resource: { arg: article_id, kind: article }
+    card: "Update Threat Signals article read status {article_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-mark-read.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-article-skill-run
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/{article_id}/skills/{skill_id}/run" } }
+    class: write
+    resource: { arg: skill_id, kind: skill }
+    card: "Run and persist skill output for a Threat Signals article {skill_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-skill-run.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-article-tag-generate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/{article_id}/tag" } }
+    class: write
+    resource: { arg: article_id, kind: article }
+    card: "Generate Threat Signals article AI tags {article_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-tag-generate.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-article-tag-add
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/{article_id}/tags" } }
+    class: write
+    resource: { arg: article_id, kind: article }
+    card: "Add tag to Threat Signals article {article_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-tag-add.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-article-tag-remove
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/articles/{article_id}/tags/{tag_id}" } }
+    class: delete
+    resource: { arg: tag_id, kind: tag }
+    card: "Remove tag from Threat Signals article {tag_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-article-tag-remove.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-feed-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/feeds" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Threat Signals feed"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-feed-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.rss-feed-poll
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/feeds/poll" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Trigger Threat Signals feed poll"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-feed-poll.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.rss-feed-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/feeds/{feed_id}" } }
+    class: delete
+    resource: { arg: feed_id, kind: feed }
+    card: "Delete Threat Signals feed {feed_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-feed-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-feed-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/feeds/{feed_id}" } }
+    class: write
+    resource: { arg: feed_id, kind: feed }
+    card: "Update Threat Signals feed {feed_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-feed-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-feed-skills-set
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/feeds/{feed_id}/skills" } }
+    class: write
+    resource: { arg: feed_id, kind: feed }
+    card: "Set Threat Signals feed skills {feed_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-feed-skills-set.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-skill-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/skills" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Threat Signals skill"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-skill-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.cloudforce-one.rss-skill-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/skills/{skill_id}" } }
+    class: delete
+    resource: { arg: skill_id, kind: skill }
+    card: "Delete Threat Signals skill {skill_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-skill-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-skill-update
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/skills/{skill_id}" } }
+    class: write
+    resource: { arg: skill_id, kind: skill }
+    card: "Update Threat Signals skill {skill_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-skill-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.cloudforce-one.rss-skill-tag-categories-replace
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/cloudforce-one/v2/threat-signals/skills/{skill_id}/tag-categories" } }
+    class: write
+    resource: { arg: skill_id, kind: skill }
+    card: "Replace Threat Signals skill tag categories {skill_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/cloudforce-one-rss-skill-tag-categories-replace.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"

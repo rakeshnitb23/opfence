@@ -1,0 +1,431 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): api-shield
+operations:
+  - id: cloudflare.api-shield.settings-set-configuration-properties
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/configuration" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Update session identifier settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+    tests:
+      - fixture: fixtures/api-shield-settings-set-configuration-properties.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.api-patch-discovered-operations
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/discovery/operations" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Edit discovered web and API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-api-patch-discovered-operations.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.api-patch-discovered-operation
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/discovery/operations/{discovery_id}" } }
+    class: write
+    resource: { arg: discovery_id, kind: discovery }
+    card: "Edit a discovered web or API operation {discovery_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-api-patch-discovered-operation.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.expression-templates-fallthrough
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/expression-template/fallthrough" } }
+    class: read
+    resource: { arg: zone_id, kind: zone }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Builds a WAF expression; nothing is saved. Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-expression-templates-fallthrough.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.labels-replace-operations-attached-to-managed-label
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/labels/managed/{name}/resources/operation" } }
+    class: write
+    resource: { arg: name, kind: name }
+    card: "Replace operations attached to a managed label {name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-labels-replace-operations-attached-to-managed-label.http
+        expect: write
+        resource: "checkout"
+
+  - id: cloudflare.api-shield.labels-delete-user-labels
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user" } }
+    class: delete
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete user-defined operation labels"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-labels-delete-user-labels.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.labels-create-user-labels
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create user-defined operation labels"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-labels-create-user-labels.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.delete-user-label
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user/{name}" } }
+    class: delete
+    resource: { arg: name, kind: name }
+    card: "Delete a user-defined operation label {name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-delete-user-label.http
+        expect: delete
+        resource: "checkout"
+
+  - id: cloudflare.api-shield.patch-user-label
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user/{name}" } }
+    class: write
+    resource: { arg: name, kind: name }
+    card: "Edit a user-defined operation label {name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-patch-user-label.http
+        expect: write
+        resource: "checkout"
+
+  - id: cloudflare.api-shield.put-user-label
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user/{name}" } }
+    class: write
+    resource: { arg: name, kind: name }
+    card: "Update a user-defined operation label {name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-put-user-label.http
+        expect: write
+        resource: "checkout"
+
+  - id: cloudflare.api-shield.labels-replace-operations-attached-to-user-label
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/labels/user/{name}/resources/operation" } }
+    class: write
+    resource: { arg: name, kind: name }
+    card: "Replace operations attached to a user-defined label {name}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-labels-replace-operations-attached-to-user-label.http
+        expect: write
+        resource: "checkout"
+
+  - id: cloudflare.api-shield.endpoint-management-delete-multiple-operations
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/operations" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Delete web or API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing operations from endpoint management drops the per-operation protections that apply to
+      them.
+    tests:
+      - fixture: fixtures/api-shield-endpoint-management-delete-multiple-operations.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.endpoint-management-add-operations-to-a-zone
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/operations" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create web or API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-endpoint-management-add-operations-to-a-zone.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.endpoint-management-add-operation-to-a-zone
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/operations/item" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Create a web or API operation"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-endpoint-management-add-operation-to-a-zone.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.operations-bulk-delete-labels-to-operations
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/operations/labels" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Remove labels from web or API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-bulk-delete-labels-to-operations.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.operations-bulk-post-labels-to-operations
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/operations/labels" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Attach labels to web or API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-bulk-post-labels-to-operations.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.operations-bulk-put-labels-to-operations
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/operations/labels" } }
+    class: write
+    resource: { arg: zone_id, kind: zone }
+    card: "Replace labels on web or API operations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-bulk-put-labels-to-operations.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.schema-validation-update-multiple-operation-level-settings
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/operations/schema_validation" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Update multiple operation-level schema validation settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-update-multiple-operation-level-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.endpoint-management-delete-an-operation
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/operations/{operation_id}" } }
+    class: access
+    resource: { arg: operation_id, kind: operation }
+    card: "Delete a web or API operation {operation_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Removing operations from endpoint management drops the per-operation protections that apply to
+      them.
+    tests:
+      - fixture: fixtures/api-shield-endpoint-management-delete-an-operation.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.operations-delete-labels-from-operation
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/operations/{operation_id}/labels" } }
+    class: write
+    resource: { arg: operation_id, kind: operation }
+    card: "Remove labels from a web or API operation {operation_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-delete-labels-from-operation.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.operations-post-labels-to-operation
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/operations/{operation_id}/labels" } }
+    class: write
+    resource: { arg: operation_id, kind: operation }
+    card: "Attach labels to a web or API operation {operation_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-post-labels-to-operation.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.operations-put-labels-to-operation
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/operations/{operation_id}/labels" } }
+    class: write
+    resource: { arg: operation_id, kind: operation }
+    card: "Replace labels on a web or API operation {operation_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/api-shield-operations-put-labels-to-operation.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.schema-validation-update-operation-level-settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/operations/{operation_id}/schema_validation" } }
+    class: access
+    resource: { arg: operation_id, kind: operation }
+    card: "Update operation-level schema validation settings {operation_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-update-operation-level-settings.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.schema-validation-patch-zone-level-settings
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/settings/schema_validation" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Update zone level schema validation settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-patch-zone-level-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.schema-validation-update-zone-level-settings
+    match: { rest: { method: PUT, path: "/client/v4/zones/{zone_id}/api_gateway/settings/schema_validation" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Update zone level schema validation settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-update-zone-level-settings.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.schema-validation-post-schema
+    match: { rest: { method: POST, path: "/client/v4/zones/{zone_id}/api_gateway/user_schemas" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Upload a legacy schema"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-post-schema.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.api-shield.schema-delete-a-schema
+    match: { rest: { method: DELETE, path: "/client/v4/zones/{zone_id}/api_gateway/user_schemas/{schema_id}" } }
+    class: access
+    resource: { arg: schema_id, kind: schema }
+    card: "Delete a schema {schema_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-delete-a-schema.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.api-shield.schema-validation-enable-validation-for-a-schema
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/api_gateway/user_schemas/{schema_id}" } }
+    class: access
+    resource: { arg: schema_id, kind: schema }
+    card: "Enable validation for a schema {schema_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      API Shield's schema validation, session identifiers and endpoint inventory decide which API
+      requests are checked and blocked; as with firewall rules, every change to them is access.
+      Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/api-shield-schema-validation-enable-validation-for-a-schema.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"

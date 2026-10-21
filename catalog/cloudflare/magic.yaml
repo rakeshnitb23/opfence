@@ -1,0 +1,1758 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): magic
+operations:
+  - id: cloudflare.magic.delete-dns-protection-rules-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all DNS Protection rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-dns-protection-rules-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-dns-protection-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create DNS Protection rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-dns-protection-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-dns-protection-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Delete DNS Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-dns-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-dns-protection-rule
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Update DNS Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-dns-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-allowlist-prefixes-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/allowlist" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all allowlist prefixes"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-allowlist-prefixes-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-allowlisted-prefix
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/allowlist" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create allowlist prefix"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-allowlisted-prefix.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-allowlist-prefix
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/allowlist/{prefix_id}" } }
+    class: access
+    resource: { arg: prefix_id, kind: prefix }
+    card: "Delete allowlist prefix {prefix_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-allowlist-prefix.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-allowlist-prefix
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/allowlist/{prefix_id}" } }
+    class: access
+    resource: { arg: prefix_id, kind: prefix }
+    card: "Update allowlist prefix {prefix_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-allowlist-prefix.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-prefixes-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/prefixes" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all prefixes"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-prefixes-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-prefix
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/prefixes" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create prefix"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-prefix.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.bulk-create-prefixes
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/prefixes/bulk" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create multiple prefixes"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-bulk-create-prefixes.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-prefix
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/prefixes/{prefix_id}" } }
+    class: access
+    resource: { arg: prefix_id, kind: prefix }
+    card: "Delete prefix {prefix_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-prefix.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-prefix
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/prefixes/{prefix_id}" } }
+    class: access
+    resource: { arg: prefix_id, kind: prefix }
+    card: "Update prefix {prefix_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-prefix.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-syn-protection-filters-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/filters" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all SYN Protection filters"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-syn-protection-filters-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-syn-protection-filter
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/filters" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a SYN Protection filter"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-syn-protection-filter.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-syn-protection-filter
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/filters/{filter_id}" } }
+    class: access
+    resource: { arg: filter_id, kind: filter }
+    card: "Delete SYN Protection filter {filter_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-syn-protection-filter.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-syn-protection-filter
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/filters/{filter_id}" } }
+    class: access
+    resource: { arg: filter_id, kind: filter }
+    card: "Update SYN Protection filter {filter_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-syn-protection-filter.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-syn-protection-rules-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all SYN Protection rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-syn-protection-rules-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-syn-protection-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create SYN Protection rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-syn-protection-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-syn-protection-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Delete SYN Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-syn-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-syn-protection-rule
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/syn_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Update SYN Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-syn-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-tcp-flow-protection-filters-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/filters" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all TCP Flow Protection filters"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-tcp-flow-protection-filters-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-tcp-flow-protection-filter
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/filters" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a TCP Flow Protection filter"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-tcp-flow-protection-filter.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-tcp-flow-protection-filter
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/filters/{filter_id}" } }
+    class: access
+    resource: { arg: filter_id, kind: filter }
+    card: "Delete TCP Flow Protection filter {filter_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-tcp-flow-protection-filter.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-tcp-flow-protection-filter
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/filters/{filter_id}" } }
+    class: access
+    resource: { arg: filter_id, kind: filter }
+    card: "Update TCP Flow Protection filter {filter_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-tcp-flow-protection-filter.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.delete-tcp-flow-protection-rules-for-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete all TCP Flow Protection rules"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-tcp-flow-protection-rules-for-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.create-tcp-flow-protection-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create TCP Flow Protection rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-create-tcp-flow-protection-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.delete-tcp-flow-protection-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Delete TCP Flow Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-delete-tcp-flow-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-tcp-flow-protection-rule
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_flow_protection/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Update TCP Flow Protection rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-tcp-flow-protection-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.update-protection-status
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/tcp_protection_status" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update protection status"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Advanced DNS and TCP protection rules, allowlists and prefixes decide what traffic reaches the
+      network; as with firewall rules, every change is access.
+    tests:
+      - fixture: fixtures/magic-update-protection-status.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.account-apps-add-app
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/apps" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a new App"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-account-apps-add-app.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.account-apps-delete-app
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/apps/{account_app_id}" } }
+    class: delete
+    resource: { arg: account_app_id, kind: account-app }
+    card: "Delete Account App {account_app_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-account-apps-delete-app.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.account-apps-patch-app
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/apps/{account_app_id}" } }
+    class: write
+    resource: { arg: account_app_id, kind: account-app }
+    card: "Update an App {account_app_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-account-apps-patch-app.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.account-apps-update-app
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/apps/{account_app_id}" } }
+    class: write
+    resource: { arg: account_app_id, kind: account-app }
+    card: "Update an App {account_app_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-account-apps-update-app.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.bgp-create-filter-profile
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/bgp/filter_profiles" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create BGP Filter Profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-bgp-create-filter-profile.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.bgp-delete-filter-profile
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/bgp/filter_profiles/{profile_id}" } }
+    class: delete
+    resource: { arg: profile_id, kind: profile }
+    card: "Delete BGP Filter Profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-bgp-delete-filter-profile.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.bgp-update-filter-profile
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/bgp/filter_profiles/{profile_id}" } }
+    class: write
+    resource: { arg: profile_id, kind: profile }
+    card: "Update BGP Filter Profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-bgp-update-filter-profile.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.bgp-update-settings
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/bgp/settings" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Update BGP Settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-bgp-update-settings.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.cf1-sites-create-cf1-sites
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cf1_sites" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create CF1 Sites"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-cf1-sites-create-cf1-sites.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.cf1-sites-delete-cf1-site
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/cf1_sites/{cf1_site_id}" } }
+    class: delete
+    resource: { arg: cf1_site_id, kind: cf1-site }
+    card: "Delete CF1 Site {cf1_site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-cf1-sites-delete-cf1-site.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.cf1-sites-update-cf1-site
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/cf1_sites/{cf1_site_id}" } }
+    class: write
+    resource: { arg: cf1_site_id, kind: cf1-site }
+    card: "Update CF1 Site {cf1_site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-cf1-sites-update-cf1-site.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.cf1-sites-create-cf1-site-ramps
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cf1_sites/{cf1_site_id}/ramps" } }
+    class: write
+    resource: { arg: cf1_site_id, kind: cf1-site }
+    card: "Create CF1 Site Ramps {cf1_site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-cf1-sites-create-cf1-site-ramps.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.cf1-sites-delete-cf1-site-ramp
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/cf1_sites/{cf1_site_id}/ramps/{ramp_id}" } }
+    class: delete
+    resource: { arg: ramp_id, kind: ramp }
+    card: "Delete CF1 Site Ramp {ramp_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-cf1-sites-delete-cf1-site-ramp.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.interconnects-update-multiple-interconnects
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cf_interconnects" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Update multiple interconnects"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-interconnects-update-multiple-interconnects.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.interconnects-update-interconnect
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cf_interconnects/{cf_interconnect_id}" } }
+    class: write
+    resource: { arg: cf_interconnect_id, kind: cf-interconnect }
+    card: "Update interconnect {cf_interconnect_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-interconnects-update-interconnect.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.catalog-syncs-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/catalog-syncs" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Catalog Sync"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-catalog-syncs-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.catalog-syncs-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/cloud/catalog-syncs/{sync_id}" } }
+    class: delete
+    resource: { arg: sync_id, kind: sync }
+    card: "Delete Catalog Sync {sync_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-catalog-syncs-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.catalog-syncs-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/cloud/catalog-syncs/{sync_id}" } }
+    class: write
+    resource: { arg: sync_id, kind: sync }
+    card: "Patch Catalog Sync {sync_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-catalog-syncs-patch.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.catalog-syncs-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cloud/catalog-syncs/{sync_id}" } }
+    class: write
+    resource: { arg: sync_id, kind: sync }
+    card: "Update Catalog Sync {sync_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-catalog-syncs-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.catalog-syncs-refresh
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/catalog-syncs/{sync_id}/refresh" } }
+    class: write
+    resource: { arg: sync_id, kind: sync }
+    card: "Run Catalog Sync {sync_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-catalog-syncs-refresh.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create On-ramp"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-onramps-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.onramps-mwan-addr-space-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/magic_wan_address_space" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Patch Magic WAN Address Space"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-onramps-mwan-addr-space-patch.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.onramps-mwan-addr-space-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/magic_wan_address_space" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Update Magic WAN Address Space"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-onramps-mwan-addr-space-update.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.onramps-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}" } }
+    class: delete
+    when:
+      - if: { arg: query.destroy, matches: '^(?is:[^0f].*|0.+|f[^a].*|fa|fa[^l].*|fal|fal[^s].*|fals|fals[^e].*|false.+)$' }
+        class: irreversible
+    resource: { arg: onramp_id, kind: onramp }
+    card: "Delete On-ramp {onramp_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Deletes the on-ramp; with destroy it also destroys the resources it created in the cloud
+      account.
+    tests:
+      - fixture: fixtures/magic-onramps-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+      - fixture: fixtures/magic-onramps-delete-destroy.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}" } }
+    class: write
+    resource: { arg: onramp_id, kind: onramp }
+    card: "Patch On-ramp {onramp_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-onramps-patch.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}" } }
+    class: write
+    resource: { arg: onramp_id, kind: onramp }
+    card: "Update On-ramp {onramp_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-onramps-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-apply
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}/apply" } }
+    class: irreversible
+    resource: { arg: onramp_id, kind: onramp }
+    card: "Apply On-ramp {onramp_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Applies the on-ramp's plan to the connected cloud account, which can create, change and
+      destroy resources there.
+    tests:
+      - fixture: fixtures/magic-onramps-apply.http
+        expect: irreversible
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-export
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}/export" } }
+    class: read
+    resource: { arg: onramp_id, kind: onramp }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Exports the on-ramp as Terraform; nothing is changed.
+    tests:
+      - fixture: fixtures/magic-onramps-export.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.onramps-plan
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/onramps/{onramp_id}/plan" } }
+    class: read
+    resource: { arg: onramp_id, kind: onramp }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Plans the on-ramp's changes; nothing is applied.
+    tests:
+      - fixture: fixtures/magic-onramps-plan.http
+        expect: read
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.providers-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/providers" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create Cloud Integration"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A cloud integration gives Cloudflare access to a cloud account.
+    tests:
+      - fixture: fixtures/magic-providers-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.providers-discover-all
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/providers/discover" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Run Discovery for All Integrations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-providers-discover-all.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.providers-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/cloud/providers/{provider_id}" } }
+    class: delete
+    resource: { arg: provider_id, kind: provider }
+    card: "Delete Cloud Integration {provider_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-providers-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.providers-patch
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/cloud/providers/{provider_id}" } }
+    class: access
+    resource: { arg: provider_id, kind: provider }
+    card: "Patch Cloud Integration {provider_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Can point the integration at another cloud account or role.
+    tests:
+      - fixture: fixtures/magic-providers-patch.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.providers-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/cloud/providers/{provider_id}" } }
+    class: access
+    resource: { arg: provider_id, kind: provider }
+    card: "Update Cloud Integration {provider_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Can point the integration at another cloud account or role.
+    tests:
+      - fixture: fixtures/magic-providers-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.providers-discover
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/providers/{provider_id}/discover" } }
+    class: write
+    resource: { arg: provider_id, kind: provider }
+    card: "Run Discovery {provider_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-providers-discover.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.resources-catalog-policy-preview
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/cloud/resources/policy-preview" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Runs a Rego query against the resource catalog; nothing is saved.
+    tests:
+      - fixture: fixtures/magic-resources-catalog-policy-preview.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.mconn-connectors-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/connectors" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create Connector"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-mconn-connectors-create.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.mconn-connectors-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/connectors/{connector_id}" } }
+    class: delete
+    resource: { arg: connector_id, kind: connector }
+    card: "Delete Connector {connector_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-mconn-connectors-delete.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.mconn-connectors-edit
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/connectors/{connector_id}" } }
+    class: write
+    resource: { arg: connector_id, kind: connector }
+    card: "Edit Connector {connector_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-mconn-connectors-edit.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.mconn-connectors-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/connectors/{connector_id}" } }
+    class: write
+    resource: { arg: connector_id, kind: connector }
+    card: "Update Connector {connector_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-mconn-connectors-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.mconn-connector-interrupts-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/connectors/{connector_id}/interrupts" } }
+    class: write
+    resource: { arg: connector_id, kind: connector }
+    card: "Create Interrupt {connector_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-mconn-connector-interrupts-create.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.gre-tunnels-create-gre-tunnels
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/gre_tunnels" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a GRE tunnel"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-gre-tunnels-create-gre-tunnels.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.gre-tunnels-update-multiple-gre-tunnels
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/gre_tunnels" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Update multiple GRE tunnels"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-gre-tunnels-update-multiple-gre-tunnels.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.gre-tunnels-delete-gre-tunnel
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/gre_tunnels/{gre_tunnel_id}" } }
+    class: delete
+    resource: { arg: gre_tunnel_id, kind: gre-tunnel }
+    card: "Delete GRE Tunnel {gre_tunnel_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-gre-tunnels-delete-gre-tunnel.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.gre-tunnels-update-gre-tunnel
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/gre_tunnels/{gre_tunnel_id}" } }
+    class: write
+    resource: { arg: gre_tunnel_id, kind: gre-tunnel }
+    card: "Update GRE Tunnel {gre_tunnel_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-gre-tunnels-update-gre-tunnel.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.ipsec-tunnels-create-ipsec-tunnels
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels" } }
+    class: write
+    when:
+      - if: { arg: body.psk, present: true }
+        class: credential
+      - if: { arg: body.ipsec_tunnels.psk, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create an IPsec tunnel"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A tunnel's pre-shared key is a secret-store value: setting it is credential.
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-create-ipsec-tunnels.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/magic-ipsec-tunnels-create-ipsec-tunnels-psk.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.ipsec-tunnels-update-multiple-ipsec-tunnels
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels" } }
+    class: write
+    when:
+      - if: { arg: body.psk, present: true }
+        class: credential
+      - if: { arg: body.ipsec_tunnels.psk, present: true }
+        class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Update multiple IPsec tunnels"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A tunnel's pre-shared key is a secret-store value: setting it is credential.
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-update-multiple-ipsec-tunnels.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/magic-ipsec-tunnels-update-multiple-ipsec-tunnels-psk.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.ipsec-tunnels-set-pre-shared-keys-for-ipsec-tunnels
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels/psk" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Set Pre-Shared Keys (PSK) for IPsec tunnels"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Sets tunnels' pre-shared keys, a secret-store value.
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-set-pre-shared-keys-for-ipsec-tunnels.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.ipsec-tunnels-delete-ipsec-tunnel
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels/{ipsec_tunnel_id}" } }
+    class: delete
+    resource: { arg: ipsec_tunnel_id, kind: ipsec-tunnel }
+    card: "Delete IPsec Tunnel {ipsec_tunnel_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-delete-ipsec-tunnel.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.ipsec-tunnels-update-ipsec-tunnel
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels/{ipsec_tunnel_id}" } }
+    class: write
+    when:
+      - if: { arg: body.psk, present: true }
+        class: credential
+      - if: { arg: body.ipsec_tunnels.psk, present: true }
+        class: credential
+    resource: { arg: ipsec_tunnel_id, kind: ipsec-tunnel }
+    card: "Update IPsec Tunnel {ipsec_tunnel_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      A tunnel's pre-shared key is a secret-store value: setting it is credential.
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-update-ipsec-tunnel.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+      - fixture: fixtures/magic-ipsec-tunnels-update-ipsec-tunnel-psk.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.ipsec-tunnels-generate-pre-shared-key-psk-for-ipsec-tunnels
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/ipsec_tunnels/{ipsec_tunnel_id}/psk_generate" } }
+    class: credential
+    resource: { arg: ipsec_tunnel_id, kind: ipsec-tunnel }
+    card: "Generate Pre-Shared Key (PSK) for IPsec tunnels {ipsec_tunnel_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns a new pre-shared key for the tunnel.
+    tests:
+      - fixture: fixtures/magic-ipsec-tunnels-generate-pre-shared-key-psk-for-ipsec-tunnels.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.redundancy-groups-create-redundancy-group
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/redundancy_groups" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a Redundancy Group"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-redundancy-groups-create-redundancy-group.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.redundancy-groups-delete-redundancy-group
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/redundancy_groups/{redundancy_group_id}" } }
+    class: delete
+    resource: { arg: redundancy_group_id, kind: redundancy-group }
+    card: "Delete a Redundancy Group {redundancy_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-redundancy-groups-delete-redundancy-group.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.redundancy-groups-update-redundancy-group
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/redundancy_groups/{redundancy_group_id}" } }
+    class: write
+    resource: { arg: redundancy_group_id, kind: redundancy-group }
+    card: "Update a Redundancy Group {redundancy_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-redundancy-groups-update-redundancy-group.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.static-routes-delete-many-routes
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/routes" } }
+    class: delete
+    resource: { arg: account_id, kind: account }
+    card: "Delete Many Routes"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-static-routes-delete-many-routes.http
+        expect: delete
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.static-routes-create-routes
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/routes" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a Route"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-static-routes-create-routes.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.static-routes-update-many-routes
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/routes" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Update Many Routes"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-static-routes-update-many-routes.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.static-routes-delete-route
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/routes/{route_id}" } }
+    class: delete
+    resource: { arg: route_id, kind: route }
+    card: "Delete Route {route_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-static-routes-delete-route.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.static-routes-update-route
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/routes/{route_id}" } }
+    class: write
+    resource: { arg: route_id, kind: route }
+    card: "Update Route {route_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-static-routes-update-route.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.sites-create-site
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites" } }
+    class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a new Site"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-sites-create-site.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.magic.sites-delete-site
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}" } }
+    class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Delete Site {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-sites-delete-site.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.sites-patch-site
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Patch Site {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-sites-patch-site.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.sites-update-site
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Update Site {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-sites-update-site.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-acls-create-acl
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/acls" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Create a new Site ACL {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-acls-create-acl.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-acls-delete-acl
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/acls/{acl_id}" } }
+    class: access
+    resource: { arg: acl_id, kind: acl }
+    card: "Delete Site ACL {acl_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-acls-delete-acl.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-acls-patch-acl
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/acls/{acl_id}" } }
+    class: access
+    resource: { arg: acl_id, kind: acl }
+    card: "Patch Site ACL {acl_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-acls-patch-acl.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-acls-update-acl
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/acls/{acl_id}" } }
+    class: access
+    resource: { arg: acl_id, kind: acl }
+    card: "Update Site ACL {acl_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-acls-update-acl.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-app-configs-add-app-config
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/app_configs" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Create a new App Config {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-app-configs-add-app-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-app-configs-delete-app-config
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/app_configs/{app_config_id}" } }
+    class: access
+    resource: { arg: app_config_id, kind: app-config }
+    card: "Delete App Config {app_config_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-app-configs-delete-app-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-app-configs-patch-app-config
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/app_configs/{app_config_id}" } }
+    class: access
+    resource: { arg: app_config_id, kind: app-config }
+    card: "Update an App Config {app_config_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-app-configs-patch-app-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-app-configs-update-app-config
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/app_configs/{app_config_id}" } }
+    class: access
+    resource: { arg: app_config_id, kind: app-config }
+    card: "Update an App Config {app_config_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Site ACLs and app configurations decide which traffic the site lets through or sends around
+      Cloudflare.
+    tests:
+      - fixture: fixtures/magic-site-app-configs-update-app-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-lans-create-lan
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/lans" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Create a new Site LAN {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-lans-create-lan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-lans-delete-lan
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/lans/{lan_id}" } }
+    class: delete
+    resource: { arg: lan_id, kind: lan }
+    card: "Delete Site LAN {lan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-lans-delete-lan.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-lans-patch-lan
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/lans/{lan_id}" } }
+    class: write
+    resource: { arg: lan_id, kind: lan }
+    card: "Patch Site LAN {lan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-lans-patch-lan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-lans-update-lan
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/lans/{lan_id}" } }
+    class: write
+    resource: { arg: lan_id, kind: lan }
+    card: "Update Site LAN {lan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-lans-update-lan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-netflow-config-delete-netflow-config
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/netflow_config" } }
+    class: delete
+    resource: { arg: site_id, kind: site }
+    card: "Delete NetFlow Configuration {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-netflow-config-delete-netflow-config.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-netflow-config-patch-netflow-config
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/netflow_config" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Update NetFlow Configuration {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Can change which collector receives the site's traffic records.
+    tests:
+      - fixture: fixtures/magic-site-netflow-config-patch-netflow-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-netflow-config-create-netflow-config
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/netflow_config" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Create NetFlow Configuration {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      NetFlow sends the site's traffic records to a collector.
+    tests:
+      - fixture: fixtures/magic-site-netflow-config-create-netflow-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-netflow-config-update-netflow-config
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/netflow_config" } }
+    class: access
+    resource: { arg: site_id, kind: site }
+    card: "Update NetFlow Configuration {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Can change which collector receives the site's traffic records.
+    tests:
+      - fixture: fixtures/magic-site-netflow-config-update-netflow-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-wans-create-wan
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/wans" } }
+    class: write
+    resource: { arg: site_id, kind: site }
+    card: "Create a new Site WAN {site_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-wans-create-wan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-wans-delete-wan
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/wans/{wan_id}" } }
+    class: delete
+    resource: { arg: wan_id, kind: wan }
+    card: "Delete Site WAN {wan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-wans-delete-wan.http
+        expect: delete
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-wans-patch-wan
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/wans/{wan_id}" } }
+    class: write
+    resource: { arg: wan_id, kind: wan }
+    card: "Patch Site WAN {wan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-wans-patch-wan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.magic.site-wans-update-wan
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/magic/sites/{site_id}/wans/{wan_id}" } }
+    class: write
+    resource: { arg: wan_id, kind: wan }
+    card: "Update Site WAN {wan_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/magic-site-wans-update-wan.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"

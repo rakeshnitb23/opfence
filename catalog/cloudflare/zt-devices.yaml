@@ -1,0 +1,749 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): zt-devices
+operations:
+  - id: cloudflare.zt-devices.create-deployment-group
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/deployment-groups" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create deployment group"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-create-deployment-group.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-deployment-group
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/deployment-groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: group }
+    card: "Delete deployment group {group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-deployment-group.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.update-deployment-group
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/deployment-groups/{group_id}" } }
+    class: access
+    resource: { arg: group_id, kind: group }
+    card: "Update deployment group {group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-update-deployment-group.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.create-ip-profile
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/ip-profiles" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create IP profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-create-ip-profile.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-ip-profile
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/ip-profiles/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Delete IP profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-ip-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.update-ip-profile
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/ip-profiles/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Update IP profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-update-ip-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.managed-networks-create-device-managed-network
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/networks" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a device managed network"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-managed-networks-create-device-managed-network.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.managed-networks-delete-device-managed-network
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/networks/{network_id}" } }
+    class: access
+    resource: { arg: network_id, kind: network }
+    card: "Delete a device managed network {network_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-managed-networks-delete-device-managed-network.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.managed-networks-update-device-managed-network
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/networks/{network_id}" } }
+    class: access
+    resource: { arg: network_id, kind: network }
+    card: "Update a device managed network {network_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-managed-networks-update-device-managed-network.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.create-override-code
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/override_codes" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Generate an uninstall protection override code"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      An uninstall protection override code lets whoever holds it remove the WARP client.
+    tests:
+      - fixture: fixtures/zt-devices-create-override-code.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-device
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/physical-devices/{device_id}" } }
+    class: access
+    resource: { arg: device_id, kind: device }
+    card: "Delete device {device_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-device.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.patch-device
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/physical-devices/{device_id}" } }
+    class: write
+    resource: { arg: device_id, kind: device }
+    card: "Update device {device_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/zt-devices-patch-device.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.revoke-device
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/physical-devices/{device_id}/revoke" } }
+    class: access
+    resource: { arg: device_id, kind: device }
+    card: "Revoke device registrations {device_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-revoke-device.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.update-default-device-settings-policy
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/policy" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update the default device settings profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-update-default-device-settings-policy.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.create-device-settings-policy
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/policy" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a device settings profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-create-device-settings-policy.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.update-policy-certificates
+    match: { rest: { method: PATCH, path: "/client/v4/zones/{zone_id}/devices/policy/certificates" } }
+    class: access
+    resource: { arg: zone_id, kind: zone }
+    card: "Update device certificate provisioning status"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-update-policy-certificates.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-split-tunnel-exclude-list
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/policy/exclude" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Reset Split Tunnel exclude list"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-split-tunnel-exclude-list.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.set-split-tunnel-exclude-list
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/exclude" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Set the Split Tunnel exclude list"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-split-tunnel-exclude-list.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-local-domain-fallback-list
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/policy/fallback_domains" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Reset Local Domain Fallback"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-local-domain-fallback-list.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.set-local-domain-fallback-list
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/fallback_domains" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Set your Local Domain Fallback list"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-local-domain-fallback-list.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.set-split-tunnel-include-list
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/include" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Set the Split Tunnel include list"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-split-tunnel-include-list.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-device-settings-policy
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Delete a device settings profile {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.update-device-settings-policy
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Update a device settings profile {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-update-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.delete-split-tunnel-exclude-list-for-a-device-settings-policy
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}/exclude" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Reset Split Tunnel exclude list {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-split-tunnel-exclude-list-for-a-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.set-split-tunnel-exclude-list-for-a-device-settings-policy
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}/exclude" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Set the Split Tunnel exclude list for a device settings profile {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-split-tunnel-exclude-list-for-a-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.delete-local-domain-fallback-list-for-a-device-settings-policy
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}/fallback_domains" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Reset Local Domain Fallback {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-local-domain-fallback-list-for-a-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.set-local-domain-fallback-list-for-a-device-settings-policy
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}/fallback_domains" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Set the Local Domain Fallback list for a device settings profile {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-local-domain-fallback-list-for-a-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.set-split-tunnel-include-list-for-a-device-settings-policy
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/policy/{policy_id}/include" } }
+    class: access
+    resource: { arg: policy_id, kind: policy }
+    card: "Set the Split Tunnel include list for a device settings profile {policy_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-set-split-tunnel-include-list-for-a-device-settings-policy.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.posture-rules-create-device-posture-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/posture" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create posture rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-posture-rules-create-device-posture-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.posture-integrations-create-device-posture-integration
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/posture/integration" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create posture integration"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The integration's config holds the third-party API's client secret.
+    tests:
+      - fixture: fixtures/zt-devices-posture-integrations-create-device-posture-integration.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.posture-integrations-delete-device-posture-integration
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/posture/integration/{integration_id}" } }
+    class: access
+    resource: { arg: integration_id, kind: integration }
+    card: "Delete posture integration {integration_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-posture-integrations-delete-device-posture-integration.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.posture-integrations-update-device-posture-integration
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/posture/integration/{integration_id}" } }
+    class: credential
+    resource: { arg: integration_id, kind: integration }
+    card: "Update posture integration {integration_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The integration's config holds the third-party API's client secret.
+    tests:
+      - fixture: fixtures/zt-devices-posture-integrations-update-device-posture-integration.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.posture-rules-delete-device-posture-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/posture/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Delete posture rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-posture-rules-delete-device-posture-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.posture-rules-update-device-posture-rule
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/posture/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Update posture rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-posture-rules-update-device-posture-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.delete-registrations
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/registrations" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete registrations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-registrations.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.revoke-registrations
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/registrations/revoke" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Revoke registrations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-revoke-registrations.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.unrevoke-registrations
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/registrations/unrevoke" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Unrevoke registrations"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-unrevoke-registrations.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-registration
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/registrations/{registration_id}" } }
+    class: access
+    resource: { arg: registration_id, kind: registration }
+    card: "Delete registration {registration_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-registration.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.zt-devices.resilience-set-global-warp-override
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/resilience/disconnect" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Set Global Disconnect"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-resilience-set-global-warp-override.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.revoke-devices
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/revoke" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Revoke devices (deprecated)"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-revoke-devices.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.delete-device-settings-for-zero-trust-account
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/devices/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Reset device settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-delete-device-settings-for-zero-trust-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.patch-device-settings-for-the-zero-trust-account
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/devices/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update device settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access.
+    tests:
+      - fixture: fixtures/zt-devices-patch-device-settings-for-the-zero-trust-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.update-device-settings-for-the-zero-trust-account
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/devices/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update device settings (deprecated)"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-update-device-settings-for-the-zero-trust-account.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.zt-devices.unrevoke-devices
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/devices/unrevoke" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Unrevoke devices (deprecated)"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Device settings, posture rules, split tunnels and registrations decide which devices reach the
+      Zero Trust network and what traffic skips inspection; every change is access. Cloudflare has
+      deprecated this endpoint.
+    tests:
+      - fixture: fixtures/zt-devices-unrevoke-devices.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"

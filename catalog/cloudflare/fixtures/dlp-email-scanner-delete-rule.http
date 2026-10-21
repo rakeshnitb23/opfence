@@ -1,0 +1,5 @@
+# description: Delete email scanner rule f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/dlp/email/rules/f174e90a-fafe-4643-bbbc-4a0ed4fc8415 HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

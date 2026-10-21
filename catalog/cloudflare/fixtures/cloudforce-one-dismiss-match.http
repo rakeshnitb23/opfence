@@ -1,0 +1,7 @@
+# description: Dismiss a match f174e90a-fafe-4643-bbbc-4a0ed4fc8415
+POST /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/cloudforce-one/v2/brand-protection/queries/f174e90a-fafe-4643-bbbc-4a0ed4fc8415/matches/f174e90a-fafe-4643-bbbc-4a0ed4fc8415/dismiss HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}

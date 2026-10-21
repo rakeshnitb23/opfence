@@ -1,0 +1,1113 @@
+# Cloudflare REST API (api.cloudflare.com/client/v4): dlp
+operations:
+  - id: cloudflare.dlp.custom-prompt-topics-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/custom_prompt_topics" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create custom prompt topic"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-custom-prompt-topics-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.custom-prompt-topics-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/custom_prompt_topics/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Delete custom prompt topic {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-custom-prompt-topics-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.custom-prompt-topics-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/custom_prompt_topics/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Update custom prompt topic {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-custom-prompt-topics-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-classes-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/data_classes" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new data class"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-classes-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.data-classes-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/data_classes/{data_class_id}" } }
+    class: access
+    resource: { arg: data_class_id, kind: data-class }
+    card: "Delete a single data class {data_class_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-classes-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-classes-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/data_classes/{data_class_id}" } }
+    class: access
+    resource: { arg: data_class_id, kind: data-class }
+    card: "Update the attributes of a single data class {data_class_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-classes-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-tag-categories-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new data tag category"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tag-categories-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.data-tag-categories-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories/{category_id}" } }
+    class: access
+    resource: { arg: category_id, kind: category }
+    card: "Delete a single data tag category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tag-categories-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-tag-categories-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories/{category_id}" } }
+    class: access
+    resource: { arg: category_id, kind: category }
+    card: "Update the attributes of a single data tag category {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tag-categories-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-tags-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories/{category_id}/data_tags" } }
+    class: access
+    resource: { arg: category_id, kind: category }
+    card: "Creates a new data tag {category_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tags-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-tags-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories/{category_id}/data_tags/{tag_id}" } }
+    class: access
+    resource: { arg: tag_id, kind: tag }
+    card: "Delete a single data tag {tag_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tags-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.data-tags-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/data_tag_categories/{category_id}/data_tags/{tag_id}" } }
+    class: access
+    resource: { arg: tag_id, kind: tag }
+    card: "Update the attributes of a single data tag {tag_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-data-tags-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.datasets-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/datasets" } }
+    class: credential
+    when:
+      - if: { arg: body.secret, equals: "false" }
+        class: write
+    resource: { arg: account_id, kind: account }
+    card: "Create a new dataset"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Unless secret is false, the dataset is an Exact Data Match one and the response holds the
+      secret the EDM encoder hashes it with.
+    tests:
+      - fixture: fixtures/dlp-datasets-create.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/dlp-datasets-create-secret.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+      - fixture: fixtures/dlp-datasets-create-plaintext.http
+        expect: write
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.datasets-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}" } }
+    class: access
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Delete a dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-datasets-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.datasets-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}" } }
+    class: write
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Update details about a dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dlp-datasets-update.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.datasets-create-version
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}/upload" } }
+    class: credential
+    resource: { arg: dataset_id, kind: dataset }
+    card: "Prepare to upload a new version of a dataset {dataset_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      For an Exact Data Match dataset the response holds the secret the EDM encoder hashes the new
+      version with.
+    tests:
+      - fixture: fixtures/dlp-datasets-create-version.http
+        expect: credential
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.datasets-upload-version
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}/upload/{version}" } }
+    class: write
+    resource: { arg: version, kind: version }
+    card: "Upload a new version of a dataset {version}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dlp-datasets-upload-version.http
+        expect: write
+        resource: "1"
+
+  - id: cloudflare.dlp.datasets-define-columns
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}/versions/{version}" } }
+    class: write
+    resource: { arg: version, kind: version }
+    card: "Sets the column information for a multi-column upload {version}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dlp-datasets-define-columns.http
+        expect: write
+        resource: "1"
+
+  - id: cloudflare.dlp.datasets-upload-dataset-column
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/datasets/{dataset_id}/versions/{version}/entries/{entry_id}" } }
+    class: write
+    resource: { arg: entry_id, kind: entry }
+    card: "Upload a new version of a multi-column dataset {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dlp-datasets-upload-dataset-column.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.document-fingerprints-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/document_fingerprints" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new document fingerprint"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-document-fingerprints-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.document-fingerprints-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/document_fingerprints/{document_fingerprint_id}" } }
+    class: access
+    resource: { arg: document_fingerprint_id, kind: document-fingerprint }
+    card: "Delete a single document fingerprint {document_fingerprint_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-document-fingerprints-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.document-fingerprints-update
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/document_fingerprints/{document_fingerprint_id}" } }
+    class: access
+    resource: { arg: document_fingerprint_id, kind: document-fingerprint }
+    card: "Update the attributes of a single document fingerprint {document_fingerprint_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-document-fingerprints-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.document-fingerprints-upload
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/document_fingerprints/{document_fingerprint_id}" } }
+    class: write
+    resource: { arg: document_fingerprint_id, kind: document-fingerprint }
+    card: "Uploads a new version for a document fingerprint {document_fingerprint_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    tests:
+      - fixture: fixtures/dlp-document-fingerprints-upload.http
+        expect: write
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.email-scanner-get-account-mapping
+    match: { rest: { method: GET, path: "/client/v4/accounts/{account_id}/dlp/email/account_mapping" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Read get mapping"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Returns the add-in identifier token the email add-in presents for the account.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-get-account-mapping.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.email-scanner-create-account-mapping
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/email/account_mapping" } }
+    class: credential
+    resource: { arg: account_id, kind: account }
+    card: "Create mapping"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      The response holds the add-in identifier token the email add-in presents for the account.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-create-account-mapping.http
+        expect: credential
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.email-scanner-update-rule-priorities
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/dlp/email/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update email scanner rule priorities"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-update-rule-priorities.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.email-scanner-create-rule
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/email/rules" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create email scanner rule"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-create-rule.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.email-scanner-delete-rule
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/email/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Delete email scanner rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-delete-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.email-scanner-update-rule
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/email/rules/{rule_id}" } }
+    class: access
+    resource: { arg: rule_id, kind: rule }
+    card: "Update email scanner rule {rule_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-email-scanner-update-rule.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-create-entry
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/entries" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create custom entry"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-create-entry.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.entries-update-custom-entry
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/entries/custom/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Update custom entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-update-custom-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-create-integration-entry
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/entries/integration" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create integration entry"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-create-integration-entry.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.entries-delete-integration-entry
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/entries/integration/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Delete integration entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-delete-integration-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-update-integration-entry
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/entries/integration/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Update integration entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-update-integration-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-create-predefined-entry
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/entries/predefined" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create predefined entry"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-create-predefined-entry.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.entries-delete-predefined-entry
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/entries/predefined/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Delete predefined entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-delete-predefined-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-update-predefined-entry
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/entries/predefined/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Update predefined entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-update-predefined-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-delete-entry
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/entries/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Delete custom entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-delete-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.entries-update-entry
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/entries/{entry_id}" } }
+    class: access
+    resource: { arg: entry_id, kind: entry }
+    card: "Update entry {entry_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-entries-update-entry.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.pattern-validate
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/patterns/validate" } }
+    class: read
+    resource: { arg: account_id, kind: account }
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Checks a regular expression; nothing is saved.
+    tests:
+      - fixture: fixtures/dlp-pattern-validate.http
+        expect: read
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.payload-log-put
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/payload_log" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Set payload log settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      Payload logging stores matched content, encrypted to the public key given: whoever holds the
+      private key reads it. Cloudflare has deprecated this endpoint.
+    tests:
+      - fixture: fixtures/dlp-payload-log-put.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.profiles-create-custom-profiles
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/profiles/custom" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create custom profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-create-custom-profiles.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.profiles-delete-custom-profile
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/profiles/custom/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Delete custom profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-delete-custom-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-update-custom-profile
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/profiles/custom/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Update custom profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-update-custom-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-delete-integration-profile
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/profiles/integration/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Delete integration profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-delete-integration-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-create-predefined-profile
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/profiles/predefined" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create predefined profile"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-create-predefined-profile.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.profiles-delete-predefined-profile
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/profiles/predefined/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Delete predefined profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-delete-predefined-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-update-predefined-profile
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/profiles/predefined/{profile_id}" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Update predefined profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-update-predefined-profile.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-create-predefined-profile-config
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/profiles/predefined/{profile_id}/config" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Create predefined profile {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-create-predefined-profile-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.profiles-update-predefined-profile-config
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/profiles/predefined/{profile_id}/config" } }
+    class: access
+    resource: { arg: profile_id, kind: profile }
+    card: "Update predefined profile config {profile_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-profiles-update-predefined-profile-config.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-groups-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Creates a new sensitivity group"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-groups-create.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.sensitivity-groups-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}" } }
+    class: access
+    resource: { arg: sensitivity_group_id, kind: sensitivity-group }
+    card: "Delete a single sensitivity group {sensitivity_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-groups-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-groups-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}" } }
+    class: access
+    resource: { arg: sensitivity_group_id, kind: sensitivity-group }
+    card: "Update the attributes of a single sensitivity group {sensitivity_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-groups-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-groups-put-level-order
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}/level_order" } }
+    class: access
+    resource: { arg: sensitivity_group_id, kind: sensitivity-group }
+    card: "Set the ordering of levels within a sensitivity group {sensitivity_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-groups-put-level-order.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-levels-create
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}/levels" } }
+    class: access
+    resource: { arg: sensitivity_group_id, kind: sensitivity-group }
+    card: "Creates a new sensitivity level {sensitivity_group_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-levels-create.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-levels-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}/levels/{sensitivity_level_id}" } }
+    class: access
+    resource: { arg: sensitivity_level_id, kind: sensitivity-level }
+    card: "Delete a single sensitivity level {sensitivity_level_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-levels-delete.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.sensitivity-levels-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/sensitivity_groups/{sensitivity_group_id}/levels/{sensitivity_level_id}" } }
+    class: access
+    resource: { arg: sensitivity_level_id, kind: sensitivity-level }
+    card: "Update the attributes of a single sensitivity level {sensitivity_level_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-sensitivity-levels-update.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.settings-delete
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Delete (reset) DLP account-level settings to initial values"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-settings-delete.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.settings-edit
+    match: { rest: { method: PATCH, path: "/client/v4/accounts/{account_id}/dlp/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Partially update DLP account-level settings"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-settings-edit.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.settings-update
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/settings" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Update DLP account-level settings (full replacement)"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-settings-update.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.validators-create-proximity-words-validator
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/validators/proximity_words" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a proximity word validator"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-create-proximity-words-validator.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.validators-delete-proximity-words-validator
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/validators/proximity_words/{validator_id}" } }
+    class: access
+    resource: { arg: validator_id, kind: validator }
+    card: "Delete a proximity word validator {validator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-delete-proximity-words-validator.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.validators-update-proximity-words-validator
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/validators/proximity_words/{validator_id}" } }
+    class: access
+    resource: { arg: validator_id, kind: validator }
+    card: "Update a proximity word validator {validator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-update-proximity-words-validator.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.validators-create-worker-validator
+    match: { rest: { method: POST, path: "/client/v4/accounts/{account_id}/dlp/validators/worker" } }
+    class: access
+    resource: { arg: account_id, kind: account }
+    card: "Create a worker validator"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-create-worker-validator.http
+        expect: access
+        resource: "023e105f4ecef8ad9ca31a8372d0c353"
+
+  - id: cloudflare.dlp.validators-delete-worker-validator
+    match: { rest: { method: DELETE, path: "/client/v4/accounts/{account_id}/dlp/validators/worker/{validator_id}" } }
+    class: access
+    resource: { arg: validator_id, kind: validator }
+    card: "Delete a worker validator {validator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-delete-worker-validator.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"
+
+  - id: cloudflare.dlp.validators-update-worker-validator
+    match: { rest: { method: PUT, path: "/client/v4/accounts/{account_id}/dlp/validators/worker/{validator_id}" } }
+    class: access
+    resource: { arg: validator_id, kind: validator }
+    card: "Update a worker validator {validator_id}"
+    status: verified
+    verified: 2026-10-22
+    sources:
+      - https://github.com/cloudflare/api-schemas/blob/main/openapi.json
+    notes: >-
+      DLP profiles, entries and settings decide what data Gateway lets leave; as with firewall
+      rules, every change to them is access.
+    tests:
+      - fixture: fixtures/dlp-validators-update-worker-validator.http
+        expect: access
+        resource: "f174e90a-fafe-4643-bbbc-4a0ed4fc8415"

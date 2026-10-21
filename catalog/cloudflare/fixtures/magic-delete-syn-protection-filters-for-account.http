@@ -1,0 +1,5 @@
+# description: Delete all SYN Protection filters
+DELETE /client/v4/accounts/023e105f4ecef8ad9ca31a8372d0c353/magic/advanced_tcp_protection/configs/syn_protection/filters HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+

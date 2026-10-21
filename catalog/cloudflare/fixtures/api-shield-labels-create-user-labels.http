@@ -1,0 +1,7 @@
+# description: Create user-defined operation labels
+POST /client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/api_gateway/labels/user HTTP/1.1
+Host: api.cloudflare.com
+Authorization: Bearer opf_cloudflare_EXAMPLE
+Content-Type: application/json
+
+{}
