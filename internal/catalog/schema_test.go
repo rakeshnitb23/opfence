@@ -149,6 +149,7 @@ func TestSchemaRejects(t *testing.T) {
 		{ps, "unknown provider field", goodProvider + "colour: red\n"},
 		{ps, "auth with two locations", strings.Replace(goodProvider, "scheme: Bearer", "query: t", 1)},
 		{ps, "database port 443", goodProvider + "database_ports: [443]\n"},
+		{ps, "header arg with a bad parse", goodProvider + "header_args: [{header: X-Conn, arg: conn, parse: json}]\n"},
 		{ps, "host with two wildcards", strings.Replace(goodProvider, "hosts: [api.acme.dev]", `hosts: ["api.*.*.acme.dev"]`, 1)},
 		{rs, "unknown rule field", strings.Replace(goodRules, "class: delete", "class: delete\n    severity: high", 1)},
 		{rs, "two matchers", strings.Replace(goodRules, "match: { graphql: { type: mutation, field: dbWipe } }", "match: { graphql: { type: mutation, field: dbWipe }, mcp: { tool: x } }", 1)},

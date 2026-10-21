@@ -69,7 +69,11 @@ func (c *Catalog) ProviderForMCPName(name string) *Provider {
 
 // Hints tells the decoder what the provider speaks on host.
 func (p *Provider) Hints(host string) decode.Hints {
-	return decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
+	h := decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
+	for _, a := range p.HeaderArgs {
+		h.HeaderArgs = append(h.HeaderArgs, decode.HeaderArg{Header: a.Header, Arg: a.Arg, Parse: a.Parse})
+	}
+	return h
 }
 
 // Match returns the rule for op and any path parameters it captured, or nil

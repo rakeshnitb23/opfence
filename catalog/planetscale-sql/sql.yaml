@@ -4,7 +4,8 @@ operations:
     match: { rest: { method: POST, path: "/psdb.v1alpha1.Database/Execute" } }
     class: unknown
     classify: { sql: body.query, dialect: mysql }
-    card: "Run SQL on a PlanetScale database over HTTP"
+    resource: { arg: credentials.username, kind: password }
+    card: "Run SQL on a PlanetScale database as {credentials.username}"
     status: verified
     verified: 2026-10-21
     sources:
@@ -14,20 +15,26 @@ operations:
       database-js posts {"query", "session"}: one statement per request, with the session
       carrying a transaction from BEGIN to COMMIT across requests, so each request is classified
       on its own. database-js speaks only to Vitess (MySQL) databases, so the SQL is read as
-      MySQL with Vitess' parser, versioned comments at every version they name. The database is
-      named only by the credentials in Basic auth, so the rule names no resource and the
-      operation counts as production.
+      MySQL with Vitess' parser, versioned comments at every version they name. A PlanetScale
+      password belongs to one branch of one database, and its username travels in Basic auth, so
+      the username is the resource and opfence.yaml can map it to an environment; the password is
+      never read.
     tests:
       - fixture: fixtures/execute-read.http
         expect: read
+        resource: "r8m2k1xexample"
       - fixture: fixtures/execute-delete.http
         expect: delete
+        resource: "r8m2k1xexample"
       - fixture: fixtures/execute-truncate.http
         expect: irreversible
+        resource: "r8m2k1xexample"
       - fixture: fixtures/execute-versioned.http
         expect: irreversible
+        resource: "r8m2k1xexample"
       - fixture: fixtures/execute-replace.http
         expect: delete
+        resource: "r8m2k1xexample"
 
   - id: planetscale-sql.session.create
     match: { rest: { method: POST, path: "/psdb.v1alpha1.Database/CreateSession" } }

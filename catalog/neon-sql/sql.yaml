@@ -4,7 +4,8 @@ operations:
     match: { rest: { method: POST, path: "/sql" } }
     class: unknown
     classify: { sql: [body.query, body.queries.query] }
-    card: "Run SQL on a Neon database over HTTP"
+    resource: { arg: connection.host, kind: endpoint }
+    card: "Run SQL on database {connection.database} at Neon endpoint {connection.host}"
     status: verified
     verified: 2026-10-21
     sources:
@@ -15,19 +16,25 @@ operations:
       "params"}, ...]}, run as one transaction. Every statement is classified as Postgres;
       parameters ($1) are values, never SQL. The Neon-Batch-Read-Only header asks for a read-only
       transaction, but a statement can switch the transaction back before its first query, so the
-      SQL decides the class, not the header. The database is named only in the
-      Neon-Connection-String header, which also carries the password, so the rule names no
-      resource and the operation counts as production.
+      SQL decides the class, not the header. Neon routes the query to the endpoint named by the
+      Neon-Connection-String header's host, so that host is the resource, and opfence.yaml can
+      map it (with its -pooler form) to an environment; the header's password is never read.
     tests:
       - fixture: fixtures/query-read.http
         expect: read
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"
       - fixture: fixtures/query-delete.http
         expect: delete
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"
       - fixture: fixtures/query-drop.http
         expect: irreversible
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"
       - fixture: fixtures/transaction.http
         expect: irreversible
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"
       - fixture: fixtures/transaction-read.http
         expect: read
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"
       - fixture: fixtures/query-unparsed.http
         expect: unknown
+        resource: "ep-cool-darkness-123456.us-east-2.aws.neon.tech"

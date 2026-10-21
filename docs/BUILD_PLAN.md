@@ -66,6 +66,7 @@ flowchart LR
   S13 --> S16["16 MySQL + SQLite"]
   S5 --> S17["17 Fast hook"]
   S16 --> S18["18 SQL over HTTP"]
+  S18 --> S19["19 Database environments"]
   S11 --> V1(["v1.0 ready (after external review)"])
   S12 --> V1
   S14 --> V1
@@ -73,6 +74,7 @@ flowchart LR
   S16 --> V1
   S17 --> V1
   S18 --> V1
+  S19 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -96,6 +98,7 @@ flowchart LR
 | 16 | MySQL and SQLite | SQL classifiers for MySQL (Vitess) and SQLite (libSQL, D1), `classify.dialect`, libSQL HTTP bodies | D1, Turso and PlanetScale reads are reads; every Postgres case keeps its class; each dialect's lexing traps tested; fuzzers clean | done |
 | 17 | Fast hook | The hook loads provider metadata and only the rules of the provider a call reaches | Hook decisions identical to a full load for every MCP fixture; the hook reads one provider's rule files; a hook call well under 100 ms | done |
 | 18 | SQL over HTTP | Neon's serverless driver and PlanetScale's database-js decided by their SQL; `label.*.suffix` host patterns; `database_ports` | A `SELECT` sent by either driver is a read and a `DROP` irreversible; Postgres, MySQL and Neon's WebSocket connections behave as before in both modes | done |
+| 19 | Database environments | `header_args`: the database a Neon or PlanetScale HTTP query reaches, without its password, as the resource | A mapped Neon endpoint or PlanetScale username decides as development; no password in cards, block messages, `explain` or the audit log | done |
 
 v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
@@ -266,4 +269,8 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 - **Tests:** host-pattern matching (including `api.neon.tech`, `apiauth.` against `api.*`, and look-alike suffixes), lookups for the new hosts and for `ep-` database hosts (outside the catalog), validation and schema cases for both new fields, the CA's name constraints (`neon.tech`), the OpenShell export leaving pattern hosts out with a note, and a proxy test that 3306 on a PlanetScale host is refused in strict mode, tunnelled with passthrough and in open mode, that 8443 is still refused, and that HTTPS there is still decided.
 - **Changed from the plan:** none. The proxy test's fake dialer now sends only port 443 of catalog hosts to the fake API, since other ports can now be tunnelled.
 - **Follow-ups:** environments for these operations, read from the database host in the connection string or credentials without exposing the password; holding database passwords as placeholders where every client goes through Opfence; Neon's WebSocket transport and the databases' own protocols remain unread (LIMITS).
+
+**Stage 19 · Database environments (done 21 Oct 2026).** Stage 18's queries all counted as production, because the database they reach is named only in a header that also holds the password. A provider can now list `header_args`: a header whose non-secret parts become an argument, read as a URL (`host`, `port`, `user`, `database`) or as HTTP Basic auth (`username`). The password is never read. `neon-sql` takes `connection` from `Neon-Connection-String` and names `connection.host`, the endpoint Neon routes the query to; `planetscale-sql` takes `credentials` from `Authorization` and names `credentials.username`, since a PlanetScale password belongs to one branch of one database. Cards now say which database a query runs on, and `opfence.yaml` maps either to an environment like any other argument.
+- **Tests:** URL and Basic parsing (ports, case, missing parts, malformed values, other schemes), header arguments on every operation of a request (method overrides included) with no password in them, validation and schema cases (bad header names, reserved and repeated arg names, unknown parse modes, an arg that would shadow a path parameter), a proxy test that the password reaches neither the block message nor the audit log, and a manual run mapping both fixtures to development (a Neon `DROP` became ask, a PlanetScale delete allow).
+- **Changed from the plan:** stage 18's follow-up asked for this. Holding database passwords as placeholders stays a follow-up: the same passwords serve connections that do not pass through Opfence.
 

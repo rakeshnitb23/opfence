@@ -45,6 +45,10 @@ type Provider struct {
 	Detect   Detect   `yaml:"detect"`
 	Defaults Defaults `yaml:"defaults"`
 	MCP      *MCPInfo `yaml:"mcp"`
+	// HeaderArgs turn the non-secret parts of request headers into
+	// arguments rules can name (resource, conditions, cards), such as the
+	// database host in a connection string. Passwords are never read.
+	HeaderArgs []HeaderArg `yaml:"header_args"`
 	// DatabasePorts are ports where the provider's hosts speak a database's
 	// own protocol (MySQL on 3306), which Opfence cannot read. The proxy
 	// handles them as it handles hosts outside the catalog, instead of
@@ -58,6 +62,14 @@ type Provider struct {
 	Dir   string  `yaml:"-"` // folder within the catalog FS
 
 	lazy *lazyRules // set in a lazily loaded catalog
+}
+
+// HeaderArg names a header and how to read its non-secret parts: url
+// (host, port, user, database) or basic (the Basic-auth username).
+type HeaderArg struct {
+	Header string `yaml:"header"`
+	Arg    string `yaml:"arg"`
+	Parse  string `yaml:"parse"`
 }
 
 // lazyRules loads a provider's rules once, on first use.

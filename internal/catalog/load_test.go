@@ -165,6 +165,11 @@ func TestLoadInvalid(t *testing.T) {
 			m["other/r.yaml"] = &fstest.MapFile{Data: []byte("operations:\n  - id: other.x.read\n    match: { rest: { method: GET, path: /x } }\n    class: read\n    status: community\n")}
 		}, `overlaps "api.eu.acme.dev"`},
 		{"wildcard git host", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [\"git.*.acme.dev\"]\ngit: [\"git.*.acme.dev\"]"), "without a wildcard"},
+		{"header arg bad header", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nheader_args: [{header: \"Bad Header\", arg: conn, parse: url}]"), "bad header name"},
+		{"header arg named body", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nheader_args: [{header: X-Conn, arg: body, parse: url}]"), "other than query and body"},
+		{"header arg bad parse", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nheader_args: [{header: X-Conn, arg: conn, parse: json}]"), "must be url or basic"},
+		{"header arg twice", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nheader_args: [{header: X-A, arg: conn, parse: url}, {header: X-B, arg: conn, parse: basic}]"), "is used twice"},
+		{"header arg shadows a path parameter", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nheader_args: [{header: X-Conn, arg: id, parse: url}]"), "has the name of a header_args arg"},
 		{"database port 443", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [443]"), "other than 443"},
 		{"database port 0", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [0]"), "from 1 to 65535"},
 		{"database port twice", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [3306, 3306]"), "lists 3306 twice"},

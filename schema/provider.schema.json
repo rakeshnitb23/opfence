@@ -17,6 +17,20 @@
     },
     "graphql": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that carry GraphQL" },
     "sigv4": { "type": "boolean", "description": "Requests are AWS SigV4-signed" },
+    "header_args": {
+      "type": "array",
+      "description": "Headers whose non-secret parts become arguments: url gives host, port, user and database; basic gives the Basic-auth username. Passwords are never read",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["header", "arg", "parse"],
+        "properties": {
+          "header": { "type": "string", "pattern": "^[!#$%&'*+.^_`|~0-9A-Za-z-]+$" },
+          "arg": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$", "not": { "enum": ["query", "body"] } },
+          "parse": { "enum": ["url", "basic"] }
+        }
+      }
+    },
     "database_ports": {
       "type": "array",
       "items": { "type": "integer", "minimum": 1, "maximum": 65535, "not": { "const": 443 } },

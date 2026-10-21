@@ -14,18 +14,19 @@ import (
 )
 
 var (
-	providerIDRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
-	ruleIDRe     = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$`)
-	hostRe       = regexp.MustCompile(`^(\*\.|[a-z0-9]([a-z0-9-]*[a-z0-9])?\.\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$`)
-	graphqlName  = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
-	headerNameRe = regexp.MustCompile("^[!#$%&'*+.^_`|~0-9A-Za-z-]+$")
-	envNameRe    = regexp.MustCompile(`^[A-Z_][A-Z0-9_]*$`)
-	mcpNameRe    = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
-	awsServiceRe = regexp.MustCompile(`^[a-z0-9-]+$`)
-	awsActionRe  = regexp.MustCompile(`^[A-Z][A-Za-z0-9]*$`)
-	cardParamRe  = regexp.MustCompile(`\{([^{}]*)\}`)
-	gitRefRe     = regexp.MustCompile(`^refs/[A-Za-z0-9._/-]*\*?$`)
-	argPathRe    = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	providerIDRe    = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
+	ruleIDRe        = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$`)
+	hostRe          = regexp.MustCompile(`^(\*\.|[a-z0-9]([a-z0-9-]*[a-z0-9])?\.\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$`)
+	graphqlName     = regexp.MustCompile(`^[_A-Za-z][_0-9A-Za-z]*$`)
+	headerNameRe    = regexp.MustCompile("^[!#$%&'*+.^_`|~0-9A-Za-z-]+$")
+	envNameRe       = regexp.MustCompile(`^[A-Z_][A-Z0-9_]*$`)
+	mcpNameRe       = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+	awsServiceRe    = regexp.MustCompile(`^[a-z0-9-]+$`)
+	awsActionRe     = regexp.MustCompile(`^[A-Z][A-Za-z0-9]*$`)
+	cardParamRe     = regexp.MustCompile(`\{([^{}]*)\}`)
+	gitRefRe        = regexp.MustCompile(`^refs/[A-Za-z0-9._/-]*\*?$`)
+	headerArgNameRe = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+	argPathRe       = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 )
 
 var restMethods = map[string]bool{
@@ -161,6 +162,21 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			l.addf(file, 0, "git host %q must be one of the provider's hosts, without a wildcard", h)
 		}
 	}
+	for i, a := range p.HeaderArgs {
+		switch {
+		case !headerNameRe.MatchString(a.Header):
+			l.addf(file, 0, "header_args[%d]: bad header name %q", i, a.Header)
+		case !headerArgNameRe.MatchString(a.Arg) || a.Arg == "query" || a.Arg == "body":
+			l.addf(file, 0, "header_args[%d]: arg %q must be a plain name other than query and body", i, a.Arg)
+		case a.Parse != "url" && a.Parse != "basic":
+			l.addf(file, 0, "header_args[%d]: parse %q must be url or basic", i, a.Parse)
+		}
+		for _, b := range p.HeaderArgs[:i] {
+			if b.Arg == a.Arg {
+				l.addf(file, 0, "header_args[%d]: arg %q is used twice", i, a.Arg)
+			}
+		}
+	}
 	seenPorts := map[int]bool{}
 	for _, port := range p.DatabasePorts {
 		switch {
@@ -265,6 +281,15 @@ func (l *loader) validateRule(r *Rule) {
 	}
 
 	l.validateMatch(r)
+	if m := r.Match.REST; m != nil && m.Template != nil {
+		for _, seg := range m.Template.Segments {
+			for _, a := range p.HeaderArgs {
+				if seg.Param != "" && seg.Param == a.Arg {
+					l.addf(f, ln, "%s: path parameter {%s} has the name of a header_args arg", r.ID, seg.Param)
+				}
+			}
+		}
+	}
 
 	if !r.Class.Valid() {
 		l.addf(f, ln, "%s: unknown class %q", r.ID, r.Class)
