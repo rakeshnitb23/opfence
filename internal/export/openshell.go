@@ -33,17 +33,30 @@ func OpenShell(c *catalog.Catalog, p *policy.Effective, env string) ([]byte, err
 		p = policy.Resolve(nil, nil)
 	}
 	policies := mapping()
-	var skipped []string
+	var skipped, unmatched []string
 	for _, prov := range c.Providers {
 		if prov.SigV4 {
 			skipped = append(skipped, prov.ID)
+			continue
+		}
+		var hosts []string
+		for _, host := range prov.Hosts {
+			if strings.Contains(host, ".*.") {
+				// OpenShell's host globs are documented for a leading *.
+				// only; a pattern it reads differently could open more.
+				unmatched = append(unmatched, host)
+				continue
+			}
+			hosts = append(hosts, host)
+		}
+		if len(hosts) == 0 {
 			continue
 		}
 		key := "opfence_" + strings.ReplaceAll(prov.ID, "-", "_")
 		np := mapping()
 		addPair(np, "name", scalar(key))
 		eps := seq()
-		for _, host := range prov.Hosts {
+		for _, host := range hosts {
 			eps.Content = append(eps.Content, openShellEndpoints(p, prov, host, env)...)
 		}
 		addPair(np, "endpoints", eps)
@@ -59,10 +72,16 @@ func OpenShell(c *catalog.Catalog, p *policy.Effective, env string) ([]byte, err
 		"Merge network_policies into your sandbox policy. Checked against the OpenShell",
 		"policy schema reference on " + OpenShellSchemaChecked + "; run `openshell policy validate` after merging.",
 	}, "\n")
+	var foot []string
 	if len(skipped) > 0 {
-		root.FootComment = "Not exported: " + strings.Join(skipped, ", ") + ". AWS Query and JSON actions travel in the request body\n" +
-			"or the X-Amz-Target header, which OpenShell's REST matchers cannot see; use `opfence run` for them."
+		foot = append(foot, "Not exported: "+strings.Join(skipped, ", ")+". AWS Query and JSON actions travel in the request body\n"+
+			"or the X-Amz-Target header, which OpenShell's REST matchers cannot see; use `opfence run` for them.")
 	}
+	if len(unmatched) > 0 {
+		foot = append(foot, "Hosts not exported: "+strings.Join(unmatched, ", ")+". OpenShell host patterns may only start\n"+
+			"with *., so these stay outside the policy (and blocked by it); use `opfence run` for them.")
+	}
+	root.FootComment = strings.Join(foot, "\n")
 	doc := &yaml.Node{Kind: yaml.DocumentNode, Content: []*yaml.Node{root}}
 	var buf bytes.Buffer
 	enc := yaml.NewEncoder(&buf)

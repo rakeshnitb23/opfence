@@ -45,6 +45,11 @@ type Provider struct {
 	Detect   Detect   `yaml:"detect"`
 	Defaults Defaults `yaml:"defaults"`
 	MCP      *MCPInfo `yaml:"mcp"`
+	// DatabasePorts are ports where the provider's hosts speak a database's
+	// own protocol (MySQL on 3306), which Opfence cannot read. The proxy
+	// handles them as it handles hosts outside the catalog, instead of
+	// refusing every port but 443.
+	DatabasePorts []int `yaml:"database_ports"`
 	// Schemas are the published schemas the rules were built from, which
 	// `opfence catalog check-sources` compares them with.
 	Schemas []SchemaSource `yaml:"schemas"`

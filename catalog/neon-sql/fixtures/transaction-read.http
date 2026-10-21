@@ -1,0 +1,9 @@
+# description: A transaction() batch of reads
+POST /sql HTTP/1.1
+Host: api.eastus2.azure.neon.tech
+Neon-Connection-String: postgresql://neondb_owner:npg_EXAMPLE@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
+Neon-Raw-Text-Output: true
+Neon-Array-Mode: true
+Content-Type: text/plain;charset=UTF-8
+
+{"queries":[{"query":"SELECT * FROM users WHERE id = $1","params":["42"]},{"query":"SELECT * FROM orders WHERE user_id = $1","params":["42"]}]}

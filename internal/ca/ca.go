@@ -207,13 +207,17 @@ func (c *CA) Leaf(host string) (*tls.Certificate, error) {
 }
 
 // PermittedDomains turns catalog host patterns into name constraints:
-// "*.amazonaws.com" becomes "amazonaws.com" (which covers its subdomains),
-// exact hosts stay, and names covered by another entry are dropped.
+// "*.amazonaws.com" and "api.*.neon.tech" become "amazonaws.com" and
+// "neon.tech" (which cover their subdomains), exact hosts stay, and names
+// covered by another entry are dropped.
 func PermittedDomains(hosts []string) []string {
 	set := map[string]bool{}
 	for _, h := range hosts {
 		h = strings.TrimSuffix(strings.ToLower(strings.TrimSpace(h)), ".")
 		h = strings.TrimPrefix(h, "*.")
+		if _, suffix, ok := strings.Cut(h, ".*."); ok {
+			h = suffix // label.*.suffix: the CA may sign names under suffix
+		}
 		if h != "" && net.ParseIP(h) == nil {
 			set[h] = true
 		}

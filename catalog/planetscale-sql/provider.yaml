@@ -1,0 +1,16 @@
+provider: planetscale-sql
+title: PlanetScale serverless driver (SQL over HTTP)
+docs: https://planetscale.com/docs/tutorials/using-the-serverless-driver
+# @planetscale/database (database-js) posts each query to
+# https://<host>/psdb.v1alpha1.Database/Execute, where <host> comes from the
+# database's credentials: aws.connect.psdb.cloud, gcp.connect.psdb.cloud and
+# regional names under connect.psdb.cloud. The same hosts serve MySQL's own
+# protocol on 3306 to every other MySQL client, which Opfence cannot read, so
+# that port keeps the handling it has outside the catalog: tunnelled in open
+# mode, refused in strict mode unless the host is listed under passthrough.
+#
+# database-js sends the database's username and password in Basic auth. The
+# same password serves MySQL connections that do not pass through Opfence, so
+# it is not turned into a placeholder: there is no auth or detect section.
+hosts: ["*.connect.psdb.cloud"]
+database_ports: [3306]

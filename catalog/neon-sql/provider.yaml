@@ -1,0 +1,16 @@
+provider: neon-sql
+title: Neon serverless driver (SQL over HTTP)
+docs: https://neon.com/docs/serverless/serverless-driver
+# @neondatabase/serverless sends neon() queries to https://api.<host>/sql, where
+# <host> is the connection string's host without its first label (the endpoint
+# id): ep-cool-darkness-123456.us-east-2.aws.neon.tech queries
+# api.us-east-2.aws.neon.tech, and a cell host (ep-....c-2.us-east-2...) its own
+# api. host. With a JWT (authToken) the driver uses apiauth. instead. The
+# endpoint hosts themselves serve Postgres on 5432 and the driver's WebSocket
+# transport (Pool, Client), which Opfence cannot read, so they stay outside the
+# catalog and keep the strict or open mode handling they had.
+#
+# The database password travels in the Neon-Connection-String header. The same
+# password serves Postgres connections that do not pass through Opfence, so it
+# is not turned into a placeholder: there is no auth or detect section.
+hosts: ["api.*.neon.tech", "apiauth.*.neon.tech"]

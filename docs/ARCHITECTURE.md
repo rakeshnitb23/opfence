@@ -237,6 +237,8 @@ defaults:                             # classify unlisted operations
 
 `defaults` is how the catalog classifies **every** operation without listing thousands of them (review suggestion 1): GraphQL queries and safe HTTP methods are reads on most APIs, and the exceptions (a `GET` that returns a decrypted secret) get explicit rules, which always beat defaults. Anything not covered by a rule or a default is `unknown`. GraphQL rules match root fields, but a query can reach a secret through a nested selection (`app { addOns { password } }`); `graphql_secret_fields` names the fields that hold secrets in the provider's schema, and an operation that selects one anywhere (aliases and fragments followed) also gets `credential`. Exporters, which cannot see selection sets, treat every query on such a provider as possibly `credential`.
 
+Hosts are exact names, `*.suffix` (any name under suffix) or, since stage 18, `label.*.suffix`: a name that starts with one label and ends under suffix, with at least one label between. Neon's serverless driver sends SQL over HTTPS to `api.<region>.aws.neon.tech`, while `ep-<id>.<region>.aws.neon.tech` serves the database's own protocol; `api.*.neon.tech` claims the first without the second. Two providers' hosts may not overlap in any form. A provider may also list `database_ports:` where its hosts speak a database's own protocol (PlanetScale serves MySQL on 3306 from the hosts its HTTP driver uses); §8.2 says what the proxy does with them.
+
 A provider whose hosts also serve git lists them under `git:`; GitHub has `hosts: [api.github.com, github.com]`, `git: [github.com]` and `auth: [{header: Authorization}, {basic: password}]`, since git sends the token as a Basic-auth password.
 
 MCP providers name the servers they describe so both the proxy (by host) and Claude Code (by `mcp__<server>__<tool>`) can find them:
@@ -536,6 +538,7 @@ Per destination host:
 | --- | --- | --- |
 | A catalog provider host, port 443 | intercept | intercept |
 | A catalog provider host, any other port, or plain HTTP | refuse (Opfence only inspects HTTPS on 443) | refuse |
+| A catalog provider host, one of its `database_ports` | as for a host outside the catalog: refuse unless the user lists it under passthrough | tunnel |
 | On the passthrough list | tunnel without TLS interception | tunnel |
 | Anything else | refuse | tunnel, logged |
 
@@ -707,6 +710,7 @@ An error exits 2 with the message on stderr, which Codex treats as a deny. Codex
 | The sandbox may not write the project's Claude Code settings files (stage 10d) | Rely on Claude Code's own protection | Hooks in those files run unsandboxed at the next start; a write from inside the sandbox would be an escape |
 | AWS re-signing refuses customer-run hosts under amazonaws.com (stage 10d) | Re-sign for every AWS host | API Gateway, load balancers, EC2 names and VPC endpoints are run by whoever made them; IAM-authenticated API Gateway calls with a placeholder key are the cost |
 | Built-in passthrough hosts on port 443 only (stage 10d) | Any port | Off 443 nothing checks the server name, so a registry's shared CDN address could carry anything |
+| SQL over HTTP gets its own providers, `label.*.suffix` hosts and `database_ports` (stage 18) | Add `*.neon.tech` and `*.connect.psdb.cloud` to the existing providers | The proxy refuses every non-HTTPS connection to a catalog host and blocks upgrades, so claiming the databases' whole domains would have refused Postgres on 5432, MySQL on 3306 and Neon's WebSocket transport, which work in open mode and with passthrough today. The narrower forms claim only what Opfence can read |
 | Hooks load only the provider a call reaches (stage 17) | A prebuilt JSON or gob snapshot of the parsed catalog; a long-lived hook process | A snapshot is a generated file to keep in step and still costs tens of milliseconds to decode per call; a daemon adds a socket, a lifetime and trust questions to fix latency. Lazy loading keeps one source of truth and brings a call to 10 to 40 ms |
 | MySQL and SQLite are classified with their own parsers, not the Postgres one (stage 16) | Keep a fixed class for their tools | A fixed irreversible class made every read through D1 or PlanetScale's write tool need the database id typed in production; reading their SQL as Postgres would misread quoting and comments (`'a\'` ends a string in MySQL and not in Postgres). Each parser is the server's own grammar or held to it, and unknown SQL keeps the rule's worst case |
 | SQL a rule cannot read keeps the rule's class as well as unknown (stage 16) | Unknown alone, as before | Unknown asks; irreversible needs the name typed. Without the floor, moving a rule from a fixed class to the classifier could lower its decision for SQL crafted to fail the parse |

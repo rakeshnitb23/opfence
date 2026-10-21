@@ -1,0 +1,43 @@
+# PlanetScale serverless driver: SQL over HTTP on <region>.connect.psdb.cloud
+operations:
+  - id: planetscale-sql.query.execute
+    match: { rest: { method: POST, path: "/psdb.v1alpha1.Database/Execute" } }
+    class: unknown
+    classify: { sql: body.query, dialect: mysql }
+    card: "Run SQL on a PlanetScale database over HTTP"
+    status: verified
+    verified: 2026-10-21
+    sources:
+      - https://github.com/planetscale/database-js/blob/main/src/index.ts
+      - https://planetscale.com/docs/tutorials/using-the-serverless-driver
+    notes: >-
+      database-js posts {"query", "session"}: one statement per request, with the session
+      carrying a transaction from BEGIN to COMMIT across requests, so each request is classified
+      on its own. database-js speaks only to Vitess (MySQL) databases, so the SQL is read as
+      MySQL with Vitess' parser, versioned comments at every version they name. The database is
+      named only by the credentials in Basic auth, so the rule names no resource and the
+      operation counts as production.
+    tests:
+      - fixture: fixtures/execute-read.http
+        expect: read
+      - fixture: fixtures/execute-delete.http
+        expect: delete
+      - fixture: fixtures/execute-truncate.http
+        expect: irreversible
+      - fixture: fixtures/execute-versioned.http
+        expect: irreversible
+      - fixture: fixtures/execute-replace.http
+        expect: delete
+
+  - id: planetscale-sql.session.create
+    match: { rest: { method: POST, path: "/psdb.v1alpha1.Database/CreateSession" } }
+    class: read
+    status: verified
+    verified: 2026-10-21
+    sources:
+      - https://github.com/planetscale/database-js/blob/main/src/index.ts
+    notes: >-
+      Opens a session (connection.refresh()); it runs no SQL.
+    tests:
+      - fixture: fixtures/session-create.http
+        expect: read

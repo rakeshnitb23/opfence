@@ -1,0 +1,8 @@
+# description: REPLACE deletes the rows the new one conflicts with
+POST /psdb.v1alpha1.Database/Execute HTTP/1.1
+Host: aws.connect.psdb.cloud
+Authorization: Basic cjhtMmsxeGV4YW1wbGU6cHNjYWxlX3B3X0VYQU1QTEU=
+User-Agent: database-js/1.19.0
+Content-Type: application/json
+
+{"query":"REPLACE INTO users (id, email) VALUES (42, 'a@example.com')","session":null}

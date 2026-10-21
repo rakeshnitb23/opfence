@@ -157,6 +157,17 @@ func TestLoadInvalid(t *testing.T) {
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},
 		{"response bad path", responseRule(`{ redact: ["a b"], class: read }`), "not a dotted path"},
 		{"response untested", responseRule(`{ redact: [secret], class: read }`), "needs a test with a recorded response"},
+		{"host pattern with two wildcards", replace("acme/provider.yaml", "hosts: [api.acme.dev]", `hosts: ["api.*.*.acme.dev"]`), "must be a lower-case DNS name"},
+		{"host pattern ending in a wildcard", replace("acme/provider.yaml", "hosts: [api.acme.dev]", `hosts: ["api.*"]`), "must be a lower-case DNS name"},
+		{"host pattern overlap", func(m fstest.MapFS) {
+			replace("acme/provider.yaml", "hosts: [api.acme.dev]", `hosts: ["api.*.acme.dev"]`)(m)
+			m["other/provider.yaml"] = &fstest.MapFile{Data: []byte("provider: other\ntitle: Other\nhosts: [api.eu.acme.dev]\n")}
+			m["other/r.yaml"] = &fstest.MapFile{Data: []byte("operations:\n  - id: other.x.read\n    match: { rest: { method: GET, path: /x } }\n    class: read\n    status: community\n")}
+		}, `overlaps "api.eu.acme.dev"`},
+		{"wildcard git host", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [\"git.*.acme.dev\"]\ngit: [\"git.*.acme.dev\"]"), "without a wildcard"},
+		{"database port 443", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [443]"), "other than 443"},
+		{"database port 0", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [0]"), "from 1 to 65535"},
+		{"database port twice", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\ndatabase_ports: [3306, 3306]"), "lists 3306 twice"},
 		{"classify without sql", classifyRule(`{ dialect: sqlite }`), "classify needs sql"},
 		{"classify bad path", classifyRule(`{ sql: "a b" }`), "not an argument path"},
 		{"classify path twice", classifyRule(`{ sql: [q, q] }`), "lists \"q\" twice"},

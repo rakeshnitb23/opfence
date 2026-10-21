@@ -8,8 +8,9 @@ import (
 )
 
 func TestPermittedDomains(t *testing.T) {
-	got := PermittedDomains([]string{"*.amazonaws.com", "s3.us-east-1.amazonaws.com", "api.github.com", "API.GitHub.com.", "10.0.0.1", "backboard.railway.com"})
-	want := []string{"amazonaws.com", "api.github.com", "backboard.railway.com"}
+	got := PermittedDomains([]string{"*.amazonaws.com", "s3.us-east-1.amazonaws.com", "api.github.com", "API.GitHub.com.", "10.0.0.1", "backboard.railway.com",
+		"api.*.neon.tech", "apiauth.*.neon.tech", "console.neon.tech"})
+	want := []string{"amazonaws.com", "api.github.com", "backboard.railway.com", "neon.tech"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %v, want %v", got, want)
 	}

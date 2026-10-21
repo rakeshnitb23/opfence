@@ -275,3 +275,60 @@ func TestPossibleClassesSQL(t *testing.T) {
 		}
 	}
 }
+
+func TestHostMatches(t *testing.T) {
+	for _, tc := range []struct {
+		pattern, host string
+		want          bool
+	}{
+		{"api.example.com", "api.example.com", true},
+		{"api.example.com", "x.api.example.com", false},
+		{"*.turso.io", "db-acme.turso.io", true},
+		{"*.turso.io", "a.b.turso.io", true},
+		{"*.turso.io", "turso.io", false},
+		{"*.turso.io", "evilturso.io", false},
+		{"api.*.neon.tech", "api.us-east-2.aws.neon.tech", true},
+		{"api.*.neon.tech", "api.c-2.us-east-2.aws.neon.tech", true},
+		{"api.*.neon.tech", "api.neon.tech", false},
+		{"api.*.neon.tech", "ep-cool-darkness-123456.us-east-2.aws.neon.tech", false},
+		{"api.*.neon.tech", "apiauth.us-east-2.aws.neon.tech", false},
+		{"api.*.neon.tech", "xapi.us-east-2.aws.neon.tech", false},
+		{"api.*.neon.tech", "api.us-east-2.aws.neon.tech.evil.com", false},
+		{"api.*.neon.tech", "api.evilneon.tech", false},
+	} {
+		if got := HostMatches(tc.pattern, tc.host); got != tc.want {
+			t.Errorf("HostMatches(%q, %q) = %v, want %v", tc.pattern, tc.host, got, tc.want)
+		}
+	}
+}
+
+// The SQL-over-HTTP hosts belong to their own providers, and a database's
+// own hosts stay outside the catalog.
+func TestProviderForSQLHosts(t *testing.T) {
+	c, err := Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for host, want := range map[string]string{
+		"api.us-east-2.aws.neon.tech":                                "neon-sql",
+		"api.c-2.us-east-2.aws.neon.tech":                            "neon-sql",
+		"apiauth.eastus2.azure.neon.tech":                            "neon-sql",
+		"console.neon.tech":                                          "neon",
+		"ep-cool-darkness-123456.us-east-2.aws.neon.tech":            "",
+		"ep-cool-darkness-123456-pooler.c-2.us-east-2.aws.neon.tech": "",
+		"aws.connect.psdb.cloud":                                     "planetscale-sql",
+		"aws-us-east-2.connect.psdb.cloud":                           "planetscale-sql",
+		"api.planetscale.com":                                        "planetscale",
+	} {
+		got := ""
+		if p := c.ProviderForHost(host); p != nil {
+			got = p.ID
+		}
+		if got != want {
+			t.Errorf("ProviderForHost(%q) = %q, want %q", host, got, want)
+		}
+	}
+	if p := c.Provider("planetscale-sql"); !slices.Equal(p.DatabasePorts, []int{3306}) {
+		t.Errorf("planetscale-sql database_ports = %v", p.DatabasePorts)
+	}
+}

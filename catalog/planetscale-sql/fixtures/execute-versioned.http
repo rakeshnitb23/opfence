@@ -1,0 +1,8 @@
+# description: A versioned comment holds the WHERE, so servers older than 8.0 delete every row
+POST /psdb.v1alpha1.Database/Execute HTTP/1.1
+Host: aws.connect.psdb.cloud
+Authorization: Basic cjhtMmsxeGV4YW1wbGU6cHNjYWxlX3B3X0VYQU1QTEU=
+User-Agent: database-js/1.19.0
+Content-Type: application/json
+
+{"query":"DELETE FROM orders /*!80000 WHERE id = 1042 */","session":null}

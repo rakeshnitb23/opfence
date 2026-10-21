@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -302,6 +303,17 @@ func (s *Server) record(e audit.Entry) {
 // isCatalogHost reports whether the proxy intercepts host.
 func (s *Server) isCatalogHost(host string) bool {
 	return s.cfg.Engine.Catalog.ProviderForHost(host) != nil
+}
+
+// databasePort reports whether port is one where host's provider speaks a
+// database's own protocol, which Opfence cannot read.
+func (s *Server) databasePort(host, port string) bool {
+	p := s.cfg.Engine.Catalog.ProviderForHost(host)
+	if p == nil {
+		return false
+	}
+	n, err := strconv.Atoi(port)
+	return err == nil && slices.Contains(p.DatabasePorts, n)
 }
 
 // passthrough reports whether host is on the passthrough list or is one of
