@@ -9,7 +9,10 @@
 package decode
 
 import (
+	"encoding/base64"
 	"github.com/rakeshnitb23/opfence/internal/request"
+	"net/url"
+	"strings"
 )
 
 // Protocols.
@@ -58,10 +61,22 @@ type Operation struct {
 
 // Hints tell the decoder what a provider speaks.
 type Hints struct {
-	GraphQLPaths []string // request paths that carry GraphQL
-	SigV4        bool     // AWS SigV4-signed API
-	MCP          bool     // remote MCP server
-	Git          bool     // host serves git's smart HTTP protocol
+	GraphQLPaths []string    // request paths that carry GraphQL
+	SigV4        bool        // AWS SigV4-signed API
+	MCP          bool        // remote MCP server
+	Git          bool        // host serves git's smart HTTP protocol
+	HeaderArgs   []HeaderArg // headers whose non-secret parts become arguments
+}
+
+// HeaderArg turns the non-secret parts of a request header into an
+// argument that rules can name, such as the database a connection string
+// points at. The parts never include a password.
+type HeaderArg struct {
+	Header string // header name
+	Arg    string // argument name
+	// Parse says how to read the value: "url" gives host, port, user and
+	// database (the path); "basic" gives the username of HTTP Basic auth.
+	Parse string
 }
 
 // Decode returns the operations in r. It always returns at least one.
@@ -85,7 +100,61 @@ func Decode(r *request.Request, h Hints) []Operation {
 	if len(ops) > MaxOperations {
 		ops = []Operation{failed(r, ops[0].Protocol, "request carries more than 200 operations")}
 	}
+	for _, ha := range h.HeaderArgs {
+		v := headerArg(r.Header.Get(ha.Header), ha.Parse)
+		if v == nil {
+			continue
+		}
+		for i := range ops {
+			if ops[i].Args == nil {
+				ops[i].Args = map[string]any{}
+			}
+			ops[i].Args[ha.Arg] = v
+		}
+	}
 	return ops
+}
+
+// headerArg reads the non-secret parts of a header value, or returns nil
+// when it holds none. Passwords are never read.
+func headerArg(v, parse string) map[string]any {
+	v = strings.TrimSpace(v)
+	if v == "" {
+		return nil
+	}
+	switch parse {
+	case "url":
+		u, err := url.Parse(v)
+		if err != nil || u.Host == "" {
+			return nil
+		}
+		out := map[string]any{"host": strings.ToLower(u.Hostname())}
+		if p := u.Port(); p != "" {
+			out["port"] = p
+		}
+		if u.User != nil && u.User.Username() != "" {
+			out["user"] = u.User.Username()
+		}
+		if db := strings.TrimPrefix(u.Path, "/"); db != "" {
+			out["database"] = db
+		}
+		return out
+	case "basic":
+		scheme, cred, ok := strings.Cut(v, " ")
+		if !ok || !strings.EqualFold(scheme, "Basic") {
+			return nil
+		}
+		raw, err := base64.StdEncoding.DecodeString(strings.TrimSpace(cred))
+		if err != nil {
+			return nil
+		}
+		user, _, ok := strings.Cut(string(raw), ":")
+		if !ok || user == "" {
+			return nil
+		}
+		return map[string]any{"username": user}
+	}
+	return nil
 }
 
 func failed(r *request.Request, protocol, msg string) Operation {

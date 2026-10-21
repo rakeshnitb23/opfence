@@ -239,6 +239,8 @@ defaults:                             # classify unlisted operations
 
 Hosts are exact names, `*.suffix` (any name under suffix) or, since stage 18, `label.*.suffix`: a name that starts with one label and ends under suffix, with at least one label between. Neon's serverless driver sends SQL over HTTPS to `api.<region>.aws.neon.tech`, while `ep-<id>.<region>.aws.neon.tech` serves the database's own protocol; `api.*.neon.tech` claims the first without the second. Two providers' hosts may not overlap in any form. A provider may also list `database_ports:` where its hosts speak a database's own protocol (PlanetScale serves MySQL on 3306 from the hosts its HTTP driver uses); §8.2 says what the proxy does with them.
 
+A provider may turn the non-secret parts of a request header into an argument with `header_args` (stage 19): `parse: url` reads a connection string's host, port, user and database, `parse: basic` the username of HTTP Basic auth. Passwords are never read, so they never reach a card, an approval or the audit log. Neon's serverless driver names the endpoint a query runs on only in its `Neon-Connection-String` header, and PlanetScale's `database-js` only in the Basic-auth username (a password belongs to one branch of one database); with `header_args` their rules name that as the resource, and `opfence.yaml` can map it to an environment.
+
 A provider whose hosts also serve git lists them under `git:`; GitHub has `hosts: [api.github.com, github.com]`, `git: [github.com]` and `auth: [{header: Authorization}, {basic: password}]`, since git sends the token as a Basic-auth password.
 
 MCP providers name the servers they describe so both the proxy (by host) and Claude Code (by `mcp__<server>__<tool>`) can find them:
@@ -407,6 +409,8 @@ environments:
   development:
     supabase-mcp: { project_id: [devproj99] }
 ```
+
+Header arguments map the same way: `neon-sql: { connection.host: [ep-cool-darkness-123456.us-east-2.aws.neon.tech] }`, `planetscale-sql: { credentials.username: [r8m2k1x] }`.
 
 An operation is in environment E if any of its args matches any listed value for its provider under E. Production is checked first, then staging, then development, so an operation that names both a dev and a prod id is production. When nothing matches, `default_environment` applies, and it defaults to `production`. That is noisy on purpose until the user maps their ids, and `opfence explain` says "environment: production (default; map ids in opfence.yaml to change)". The runner's read-only lookups (resolving a Railway volume id to its environment) arrive in stage 9.
 

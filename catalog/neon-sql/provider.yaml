@@ -14,3 +14,10 @@ docs: https://neon.com/docs/serverless/serverless-driver
 # password serves Postgres connections that do not pass through Opfence, so it
 # is not turned into a placeholder: there is no auth or detect section.
 hosts: ["api.*.neon.tech", "apiauth.*.neon.tech"]
+# The connection string's host names the endpoint the query runs on (Neon
+# routes by it), so rules can name it and opfence.yaml can map it to an
+# environment: connection.host, .user, .database and .port. Never the password.
+header_args:
+  - header: Neon-Connection-String
+    arg: connection
+    parse: url

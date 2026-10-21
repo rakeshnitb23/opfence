@@ -597,6 +597,28 @@ func TestDatabasePorts(t *testing.T) {
 	}
 }
 
+// The database a connection-string header names becomes the resource, and
+// the password in it reaches neither the block message nor the audit log.
+func TestHeaderArgsKeepPasswordsOut(t *testing.T) {
+	e := newEnv(t, opts{})
+	resp, body := post(t, e.client(false), "https://api.us-east-2.aws.neon.tech/sql", `{"query":"DROP TABLE users","params":[]}`,
+		"Neon-Connection-String", "postgresql://owner:npg_TOPSECRET@ep-x.us-east-2.aws.neon.tech/neondb")
+	if resp.StatusCode != http.StatusForbidden || !strings.Contains(body, "ep-x.us-east-2.aws.neon.tech") {
+		t.Fatalf("%d %s", resp.StatusCode, body)
+	}
+	if strings.Contains(body, "TOPSECRET") {
+		t.Fatalf("the password reached the response: %s", body)
+	}
+	es := e.entries()
+	last := es[len(es)-1]
+	if last.Operations[0].Rule != "neon-sql.query.run" || last.Outcome != "blocked" {
+		t.Fatalf("audit entry %+v", last)
+	}
+	if strings.Contains(fmt.Sprint(es), "TOPSECRET") {
+		t.Fatal("the password reached the audit log")
+	}
+}
+
 func TestAgentHosts(t *testing.T) {
 	e := newEnv(t, opts{agentHosts: []string{"api.openai.com", "*.cursor.sh"}})
 	for _, host := range []string{"api.openai.com", "api2.cursor.sh"} {
