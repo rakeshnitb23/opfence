@@ -332,3 +332,34 @@ func TestProviderForSQLHosts(t *testing.T) {
 		t.Errorf("planetscale-sql database_ports = %v", p.DatabasePorts)
 	}
 }
+
+func TestClassifyRedis(t *testing.T) {
+	R, D, I, U := classes.Read, classes.Delete, classes.Irreversible, classes.Unknown
+	r := &Rule{Class: I, Classify: &Classify{Redis: Strings{"commands"}}}
+	for _, tc := range []struct {
+		args map[string]any
+		want []classes.Class
+		src  string
+	}{
+		{map[string]any{"commands": []any{[]any{"GET", "k"}}}, []classes.Class{R}, "Redis commands in commands (redis)"},
+		{map[string]any{"commands": []any{[]any{"GET", "k"}, []any{"DEL", "k"}}}, []classes.Class{R, D}, "Redis commands"},
+		{map[string]any{"commands": []any{"DEL", "k"}}, []classes.Class{D}, "Redis commands"},
+		{map[string]any{"commands": []any{[]any{"FLUSHALL"}}}, []classes.Class{I}, "Redis commands"},
+		// Unknown commands keep the rule's class too.
+		{map[string]any{"commands": []any{[]any{"EVAL", "return 1", "0"}}}, []classes.Class{U, I}, "Redis commands"},
+		{map[string]any{"commands": []any{}}, []classes.Class{I}, "no Redis commands"},
+		{map[string]any{"commands": "GET k"}, []classes.Class{I}, "no Redis commands"},
+		{map[string]any{}, []classes.Class{I}, "no Redis commands"},
+	} {
+		got, src := r.ClassesFor(decode.Operation{}, tc.args)
+		if !slices.Equal(got, tc.want) || !strings.Contains(src, tc.src) {
+			t.Errorf("ClassesFor(%v) = %v (%s), want %v (%s)", tc.args, got, src, tc.want, tc.src)
+		}
+	}
+	cs := r.PossibleClasses()
+	for _, want := range []classes.Class{R, classes.Write, D, I, classes.Access, classes.Credential, U} {
+		if !slices.Contains(cs, want) {
+			t.Errorf("PossibleClasses %v lacks %s", cs, want)
+		}
+	}
+}

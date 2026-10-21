@@ -3,29 +3,42 @@ operations:
   - id: upstash-mcp.redis.run-commands
     match: { mcp: { tool: redis_database_run_redis_commands } }
     class: irreversible
+    classify: { redis: commands }
     resource: { arg: database_id, kind: database }
     card: "Run Redis commands {commands} on Upstash database {database_id} {database_rest_url}"
     status: verified
-    verified: 2026-10-19
+    verified: 2026-10-22
     sources:
       - https://github.com/upstash/mcp-server/blob/main/src/tools/redis/command.ts
       - https://github.com/upstash/mcp-server/blob/main/src/server.ts
+      - https://github.com/valkey-io/valkey/tree/unstable/src/commands
+      - https://upstash.com/docs/redis/commands/json/overview
     notes: >-
-      Sends any Redis commands (a pipeline when there are several) to the
-      database's REST endpoint: FLUSHALL, FLUSHDB, DEL, EVAL scripts and ACL
-      SETUSER as easily as GET. Redis is not SQL, so classify.sql does not
-      apply, and commands is a list of lists the condition engine cannot look
-      inside, so the tool is always irreversible. The server marks it
-      readonly, which only means it stays listed with a read-only API key,
-      where it uses read_only_rest_token; a call cannot show which key the
-      server has, and database_rest_url/database_rest_token can target any
-      database with full rights.
+      Sends the commands to the database's REST endpoint, as a pipeline when there are several,
+      so every command is classified: GET is a read, SET a write, DEL a delete, FLUSHALL and
+      FLUSHDB irreversible, EVAL and other scripts unknown, CONFIG GET and ACL LIST credential.
+      Commands Opfence does not know, and anything that is not a list of commands, keep the
+      rule's class, irreversible. The server marks the tool readonly, which only means it stays
+      listed with a read-only API key; a call cannot show which key the server has, and
+      database_rest_url/database_rest_token can target any database with full rights.
     tests:
       - fixture: fixtures/redis-run-commands.json
-        expect: irreversible
+        expect: read
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-run-commands-set.json
+        expect: write
         resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
       - fixture: fixtures/redis-run-commands-flushall.json
         expect: irreversible
         resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
       - fixture: fixtures/redis-run-commands-url.json
+        expect: delete
+      - fixture: fixtures/redis-run-commands-pipeline.json
+        expect: delete
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-run-commands-eval.json
         expect: irreversible
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"
+      - fixture: fixtures/redis-run-commands-config.json
+        expect: credential
+        resource: "9a4f3c1e-7b2d-4e8f-a6c5-1d0e9f8a7b6c"

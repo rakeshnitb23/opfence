@@ -67,6 +67,7 @@ flowchart LR
   S5 --> S17["17 Fast hook"]
   S16 --> S18["18 SQL over HTTP"]
   S18 --> S19["19 Database environments"]
+  S16 --> S20["20 Redis commands"]
   S11 --> V1(["v1.0 ready (after external review)"])
   S12 --> V1
   S14 --> V1
@@ -75,6 +76,7 @@ flowchart LR
   S17 --> V1
   S18 --> V1
   S19 --> V1
+  S20 --> V1
 ```
 
 | # | Stage | Delivers | Exit criteria | Status |
@@ -99,6 +101,7 @@ flowchart LR
 | 17 | Fast hook | The hook loads provider metadata and only the rules of the provider a call reaches | Hook decisions identical to a full load for every MCP fixture; the hook reads one provider's rule files; a hook call well under 100 ms | done |
 | 18 | SQL over HTTP | Neon's serverless driver and PlanetScale's database-js decided by their SQL; `label.*.suffix` host patterns; `database_ports` | A `SELECT` sent by either driver is a read and a `DROP` irreversible; Postgres, MySQL and Neon's WebSocket connections behave as before in both modes | done |
 | 19 | Database environments | `header_args`: the database a Neon or PlanetScale HTTP query reaches, without its password, as the resource | A mapped Neon endpoint or PlanetScale username decides as development; no password in cards, block messages, `explain` or the audit log | done |
+| 20 | Redis commands | `decode.ClassifyRedis` from Valkey's command table plus reviewed overrides; `classify: {redis: …}`; Upstash's command tool decided per command | `GET` is a read, `DEL` a delete, `FLUSHALL` irreversible, `EVAL` unknown; every Valkey command classified; the table regenerates from source | done |
 
 v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
 
@@ -273,4 +276,17 @@ Two independent security reviews (proxy and injection; launcher and approvals) f
 **Stage 19 · Database environments (done 21 Oct 2026).** Stage 18's queries all counted as production, because the database they reach is named only in a header that also holds the password. A provider can now list `header_args`: a header whose non-secret parts become an argument, read as a URL (`host`, `port`, `user`, `database`) or as HTTP Basic auth (`username`). The password is never read. `neon-sql` takes `connection` from `Neon-Connection-String` and names `connection.host`, the endpoint Neon routes the query to; `planetscale-sql` takes `credentials` from `Authorization` and names `credentials.username`, since a PlanetScale password belongs to one branch of one database. Cards now say which database a query runs on, and `opfence.yaml` maps either to an environment like any other argument.
 - **Tests:** URL and Basic parsing (ports, case, missing parts, malformed values, other schemes), header arguments on every operation of a request (method overrides included) with no password in them, validation and schema cases (bad header names, reserved and repeated arg names, unknown parse modes, an arg that would shadow a path parameter), a proxy test that the password reaches neither the block message nor the audit log, and a manual run mapping both fixtures to development (a Neon `DROP` became ask, a PlanetScale delete allow).
 - **Changed from the plan:** stage 18's follow-up asked for this. Holding database passwords as placeholders stays a follow-up: the same passwords serve connections that do not pass through Opfence.
+
+**Stage 20 · Redis commands (plan, 22 Oct 2026).** Upstash's MCP server runs any Redis commands through `redis_database_run_redis_commands` (`commands: [["GET", "k"], ...]`, a pipeline when there are several), so the tool is a fixed irreversible and every `GET` needs the database id typed in production. The plan:
+- **Table from source.** `tools/redisgen` reads Valkey's `src/commands/*.json` (BSD-3, the Redis command set plus Valkey's additions; checked out at 9a029ba) and writes `internal/decode/redis_commands.go`: each command and subcommand with its `WRITE`, `READONLY` and `ADMIN` flags, whether it is `DANGEROUS`, and whether a key spec removes keys or their contents (`RM`, `DELETE`). Regenerating against a newer Valkey shows every change in review.
+- **Classes:** read-only commands are read; writes that remove keys or members (`DEL`, `UNLINK`, `HDEL`, `LTRIM`, the pops, `ZREMRANGEBY*`, `XTRIM`, `RENAME`) are delete; other writes are write; commands with neither flag (transactions, pub/sub, `PING`, `SELECT`) are read. Reviewed overrides: `FLUSHALL`, `FLUSHDB` and `FUNCTION FLUSH` irreversible; scripts (`EVAL*`, `FCALL*`, `SCRIPT KILL`, `FUNCTION KILL`), `MIGRATE`, `CONFIG SET/REWRITE/RESETSTAT`, `CLIENT KILL/PAUSE`, `DEBUG`, `SHUTDOWN`, replication, cluster changes and modules unknown; `AUTH`, `HELLO … AUTH` and `ACL` changes access; `ACL LIST/GETUSER`, `CONFIG GET` and `MONITOR` credential; `SORT` a write only with `STORE`; `EXPIRE`/`PEXPIRE` (and the hash-field forms) with a TTL of zero or less, and every `EXPIREAT`/`PEXPIREAT`, delete, because they delete the key or field. Every other admin command is unknown unless listed as a read. A command Opfence does not know is unknown. Upstash's RedisJSON commands (`JSON.GET`, `JSON.SET`, `JSON.DEL`, …) are listed by hand from the RedisJSON docs.
+- **Catalog:** `classify` gains `redis: <path>` (one or more paths, exclusive with `sql`), reading a list of commands or a single command; anything else keeps the rule's class, and unknown commands keep it too (the stage 16 floor). `upstash-mcp.redis.run-commands` uses it.
+- **Out of scope, in LIMITS:** Upstash's Redis REST API reached directly (the `@upstash/redis` SDK): its hosts (`<name>-<id>.upstash.io`) share a domain with QStash and Vector that no host pattern separates, so the proxy cannot claim them without catching those too.
+- **Tests:** a table over every command group and override, argument-dependent cases (`EXPIRE` values, `SORT … STORE`, `HELLO … AUTH`, subcommand case), malformed shapes, a test that every command in the generated table gets a valid class, fixtures for the tool (read, delete, `FLUSHALL`, a pipeline mixing them, `EVAL`), and a fuzz target.
+- **Plan review:** removes the last fixed-class SQL-like tool from the catalog's MCP servers with a published argument schema; same failure model as the SQL classifiers. Risk: Upstash supporting a command differently from Valkey; mitigated by the floor and by unknown names being unknown.
+
+**Stage 20 · Redis commands (done 22 Oct 2026).** `tools/redisgen` writes `internal/decode/redis_commands.go` (425 commands and subcommands from Valkey 9a029ba, reproduced byte for byte by regenerating), `decode.ClassifyRedis` applies the flags and overrides as planned, and `classify: {redis: …}` reads a list of commands or one command. Upstash's `redis_database_run_redis_commands` now decides per command: a `GET` is allowed in production where it needed the database id typed. 4 new fixtures (11 in the rule).
+- **Tests:** a table of 140 cases over every flag group and override, argument-dependent cases (`EXPIRE` with zero, negative and unreadable TTLs, `SORT … STORE`, `HELLO … AUTH`, lower case), every entry of the generated table getting one valid class, command shapes (nested lists, single commands, numbers, malformed values), the rule-class floor for unknown commands, and a fuzz target (45 s clean).
+- **Changed from the plan:** the review found four commands whose Valkey flags understate them: `PUBLISH`/`SPUBLISH` and `SCRIPT LOAD`/`SCRIPT FLUSH` carry no `WRITE` flag, and `FUNCTION DELETE` no removal flag, so they are overrides (write, write, delete). Credential is among the rule's possible classes, since `CONFIG GET` and `ACL LIST` return secrets.
+- **Follow-ups:** Upstash's REST API reached directly, if Upstash ever separates Redis hosts from QStash and Vector by name; the official Redis MCP server (`redis/mcp-redis`), whose tools wrap single commands.
 
