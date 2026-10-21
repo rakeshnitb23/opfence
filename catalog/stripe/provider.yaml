@@ -3,8 +3,9 @@ title: Stripe
 docs: https://docs.stripe.com/api
 # api.stripe.com serves v1 and v2; files.stripe.com takes file uploads
 # (POST /v1/files) and quote PDFs; meter-events.stripe.com takes the v2 meter
-# event stream.
-hosts: [api.stripe.com, files.stripe.com, meter-events.stripe.com]
+# event stream; connect.stripe.com serves Connect OAuth (oauth.yaml), with the
+# platform's secret key. These are stripe-node's four base addresses.
+hosts: [api.stripe.com, files.stripe.com, meter-events.stripe.com, connect.stripe.com]
 auth:
   - header: Authorization          # "Bearer sk_..." (Stripe-Account is not a secret)
     scheme: Bearer
