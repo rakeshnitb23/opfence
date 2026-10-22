@@ -213,7 +213,27 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 		}
 	}
 	ev.Card = card(ev, host)
+	if ev.Rule != nil {
+		if sum := ev.Rule.Classify.Summary(ev.Args); len(sum) > 0 {
+			// What the SQL does, from its parse: the card alone says "Run
+			// SQL on project …" whether the SQL reads or drops a table.
+			ev.Card += ": " + sqlSummaryText(sum)
+		}
+	}
 	return ev
+}
+
+// maxSummaryStatements bounds the statements a card describes.
+const maxSummaryStatements = 3
+
+// sqlSummaryText joins statement summaries for a card, at most
+// maxSummaryStatements of them, cut at 300 characters.
+func sqlSummaryText(sum []string) string {
+	text := strings.Join(sum, "; ")
+	if len(sum) > maxSummaryStatements {
+		text = fmt.Sprintf("%s; and %d more statements", strings.Join(sum[:maxSummaryStatements], "; "), len(sum)-maxSummaryStatements)
+	}
+	return Sanitize(text, 300)
 }
 
 // secretField returns the first field op selects that p lists as secret.

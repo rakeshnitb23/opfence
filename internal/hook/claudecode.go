@@ -95,7 +95,9 @@ func claudeDecision(ev engine.Evaluation) (string, string) {
 	if ev.Rule != nil {
 		rule = ev.Rule.ID
 	}
-	what := fmt.Sprintf("%s: %s in %s (%s; %s)", ev.Card, ev.Class, ev.Environment, rule, ev.DecisionSource)
+	// A card can end in its own colon clause (what the SQL does), so the
+	// class follows a dash.
+	what := fmt.Sprintf("%s — %s in %s (%s; %s)", ev.Card, ev.Class, ev.Environment, rule, ev.DecisionSource)
 	switch ev.Decision {
 	case classes.Allow:
 		return "allow", "Opfence allows " + what

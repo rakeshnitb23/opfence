@@ -53,6 +53,7 @@ func TestDecisions(t *testing.T) {
 	}{
 		{"read SQL", "mcp__supabase__execute_sql", `{"project_id":"p1","query":"select 1"}`, "allow", "Opfence allows"},
 		{"destructive SQL", "mcp__supabase__execute_sql", `{"project_id":"p1","query":"drop table users"}`, "ask", "Opfence needs confirmation: check that"},
+		{"the SQL in the reason", "mcp__supabase__execute_sql", `{"project_id":"p1","query":"/* tidy */ delete from orders"}`, "ask", "Run SQL on project p1: DELETE from orders (every row) — irreversible in production"},
 		{"delete", "mcp__supabase__delete_branch", `{"branch_id":"br1"}`, "ask", "Opfence asks before"},
 		{"money", "mcp__supabase__create_project", `{"name":"x"}`, "ask", "money"},
 		{"unknown tool", "mcp__supabase__brand_new_tool", `{}`, "ask", "no catalog rule"},
