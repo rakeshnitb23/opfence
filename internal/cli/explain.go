@@ -57,6 +57,22 @@ func (g *globalOptions) engine() (*engine.Engine, error) {
 	return engine.New(c, p), nil
 }
 
+// lazyEngine is engine for callers that decide requests one at a time (the
+// proxy, explain): the embedded catalog loads a provider's rules the first
+// time a request reaches it, so starting takes milliseconds instead of
+// parsing every rule. A --catalog folder is still loaded and checked whole.
+func (g *globalOptions) lazyEngine() (*engine.Engine, error) {
+	c, err := g.loadCatalogLazy()
+	if err != nil {
+		return nil, err
+	}
+	p, err := g.loadPolicy()
+	if err != nil {
+		return nil, err
+	}
+	return engine.New(c, p), nil
+}
+
 func newExplainCmd(g *globalOptions) *cobra.Command {
 	var asJSON bool
 	cmd := &cobra.Command{
@@ -68,7 +84,7 @@ the catalog and shows the decision your policy gives it. Use "-" to read a
 request from standard input.`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			eng, err := g.engine()
+			eng, err := g.lazyEngine()
 			if err != nil {
 				return err
 			}
