@@ -432,7 +432,7 @@ environments:
 
 Header arguments map the same way: `neon-sql: { connection.host: [ep-cool-darkness-123456.us-east-2.aws.neon.tech] }`, `planetscale-sql: { credentials.username: [r8m2k1x] }`.
 
-An operation is in environment E if any of its args matches any listed value for its provider under E. Production is checked first, then staging, then development, so an operation that names both a dev and a prod id is production. When nothing matches, `default_environment` applies, and it defaults to `production`. That is noisy on purpose until the user maps their ids, and `opfence explain` says "environment: production (default; map ids in opfence.yaml to change)". The runner's read-only lookups (resolving a Railway volume id to its environment) arrive in stage 9.
+An operation is in environment E if any of its args matches any listed value for its provider under E. Production is checked first, then staging, then development, so an operation that names both a dev and a prod id is production. When nothing matches, `default_environment` applies, and it defaults to `production`. That is noisy on purpose until the user maps their ids, and `opfence explain` says "environment: production (default; map ids in ~/.config/opfence/config.yaml to change)". The runner's read-only lookups (resolving a Railway volume id to its environment) arrive in stage 9.
 
 ### 5.2 Decision table
 

@@ -274,7 +274,7 @@ func (e *Effective) CatalogWarnings(ruleIDs, providerIDs []string) []string {
 func (e *Effective) Environment(provider string, lookup func(arg string) (string, bool)) (string, string) {
 	userEnv, userSrc := mapped(e.user, provider, lookup)
 	repoEnv, repoSrc := mapped(e.repo, provider, lookup)
-	env, src := e.DefaultEnvironment, "default; map ids in opfence.yaml to change"
+	env, src := e.DefaultEnvironment, "default; map ids in ~/.config/opfence/config.yaml to change"
 	if userEnv != "" {
 		env, src = userEnv, userSrc
 	}

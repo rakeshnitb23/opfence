@@ -36,7 +36,7 @@ Coding agents run with real cloud credentials. In April 2026 one deleted a start
 opfence export --target claude-code -o opfence-settings.json
 ```
 
-Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` or Cloudflare's `d1_database_query` is allowed, a `DROP TABLE` needs confirmation; SQL is read as Postgres, MySQL or SQLite, whichever the server speaks, Redis commands through Upstash's MCP server one by one, and AWS CLI commands through the AWS API MCP server by the AWS rules they reach), and adds ask rules for tools that are risky whatever their arguments. Map your production and development project ids in `opfence.yaml` so the hook knows which is which; until then everything counts as production.
+Merge the result into `.claude/settings.json`. It installs a PreToolUse hook that decides every MCP tool call from the catalog, with its arguments (a `SELECT` through Supabase's `execute_sql` or Cloudflare's `d1_database_query` is allowed, a `DROP TABLE` needs confirmation; SQL is read as Postgres, MySQL or SQLite, whichever the server speaks, Redis commands through Upstash's MCP server one by one, and AWS CLI commands through the AWS API MCP server by the AWS rules they reach), and adds ask rules for tools that are risky whatever their arguments. Map your development and staging ids in your user config (`~/.config/opfence/config.yaml`) so the hook knows which is which; until then everything counts as production. A repository's `opfence.yaml` can only make decisions stricter, so it can mark ids as production but not as development.
 
 ## Use with Codex, Cursor or Gemini CLI
 
@@ -49,6 +49,10 @@ opfence run --srt -- gemini
 Each runs inside Anthropic's sandbox runtime (`npm install -g @anthropic-ai/sandbox-runtime`) behind Opfence, with your keys as placeholders and its own sandbox turned off, since srt is the sandbox. Its model backend is tunnelled; everything else it or its tools reach goes through the catalog. For Codex, Opfence also installs its hook for this session only, so each local MCP tool call is decided with its arguments like in Claude Code, and passes the proxy settings to Codex's MCP servers. Nothing in `~/.codex` changes.
 
 For NVIDIA OpenShell, `opfence export --target openshell --environment production` writes network policies to merge into your sandbox policy.
+
+## Quick start
+
+[docs/QUICKSTART.md](docs/QUICKSTART.md) goes from install to the first blocked call: see a decision with `opfence explain`, protect Claude Code's MCP tool calls, run an agent behind the proxy, and map your environments.
 
 ## Install
 

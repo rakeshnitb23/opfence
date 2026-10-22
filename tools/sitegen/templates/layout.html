@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{if eq .Title "Opfence"}}Opfence — guardrails for AI agents{{else}}{{.Title}} · Opfence{{end}}</title>
+<meta name="description" content="{{.Description}}">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="{{.Base}}assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="{{.Base}}assets/style.css">
+</head>
+<body class="{{.Class}}">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="{{.Base}}index.html"><img src="{{.Base}}assets/icon.svg" alt="" width="22" height="22"><span>Opfence</span></a>
+    <nav aria-label="Site">
+      <a href="{{.Base}}quickstart.html"{{if eq .Current "quickstart.html"}} aria-current="page"{{end}}>Quick start</a>
+      <a href="{{.Base}}catalog/index.html"{{if eq .Current "catalog/index.html"}} aria-current="page"{{end}}>Catalog</a>
+      <a href="{{.Base}}docs/architecture.html"{{if eq .Current "docs/architecture.html"}} aria-current="page"{{end}}>How it works</a>
+      <a href="{{.Base}}docs/limits.html"{{if eq .Current "docs/limits.html"}} aria-current="page"{{end}}>Limits</a>
+      <a href="{{.RepoURL}}">GitHub</a>
+    </nav>
+  </div>
+</header>
+{{if eq .Class "doc"}}
+<div class="doc-wrap">
+  <aside class="sidebar" aria-label="Documentation">
+    <p class="side-h">Guides</p>
+    <ul>
+      <li><a href="{{.Base}}quickstart.html"{{if eq .Current "quickstart.html"}} aria-current="page"{{end}}>Quick start</a></li>
+      <li><a href="{{.Base}}docs/architecture.html"{{if eq .Current "docs/architecture.html"}} aria-current="page"{{end}}>Architecture</a></li>
+      <li><a href="{{.Base}}docs/limits.html"{{if eq .Current "docs/limits.html"}} aria-current="page"{{end}}>Limits</a></li>
+      <li><a href="{{.Base}}docs/security.html"{{if eq .Current "docs/security.html"}} aria-current="page"{{end}}>Security</a></li>
+      <li><a href="{{.Base}}docs/contributing.html"{{if eq .Current "docs/contributing.html"}} aria-current="page"{{end}}>Contributing</a></li>
+    </ul>
+    <p class="side-h">Project</p>
+    <ul>
+      <li><a href="{{.Base}}docs/plan.html"{{if eq .Current "docs/plan.html"}} aria-current="page"{{end}}>Plan</a></li>
+      <li><a href="{{.Base}}docs/progress.html"{{if eq .Current "docs/progress.html"}} aria-current="page"{{end}}>Build progress</a></li>
+    </ul>
+    {{if .TOC}}
+    <p class="side-h">On this page</p>
+    <ul class="toc">
+      {{range .TOC}}<li class="l{{.Level}}"><a href="#{{.ID}}">{{.Text}}</a></li>{{end}}
+    </ul>
+    {{end}}
+  </aside>
+  <main id="main" class="prose">
+    <h1>{{.Title}}</h1>
+    {{.Body}}
+  </main>
+</div>
+{{else}}
+<main id="main">{{.Body}}</main>
+{{end}}
+<footer class="foot">
+  <div class="foot-inner">
+    <span>Opfence · Apache License 2.0</span>
+    <span>Built {{.Built}}{{if .Commit}} from <a href="{{.RepoURL}}/commit/{{.Commit}}">{{.Commit}}</a>{{end}}</span>
+  </div>
+</footer>
+{{if .Mermaid}}
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs";
+mermaid.initialize({ startOnLoad: true, theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "neutral" });
+</script>
+{{end}}
+</body>
+</html>

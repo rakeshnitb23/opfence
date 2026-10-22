@@ -1,0 +1,34 @@
+<section class="page-head">
+  <div class="inner">
+    <h1>Catalog</h1>
+    <p class="lede">{{.Total}} rules across {{len .Providers}} APIs and MCP servers. Every verified rule has a recorded request that <code>opfence test</code> replays, and the rules built from a published schema are checked against it every night.</p>
+  </div>
+</section>
+<section class="inner">
+  <div class="search" role="search">
+    <label for="q" class="sr">Search rules</label>
+    <input id="q" type="search" placeholder="Search rules: volumeDelete, delete_branch, DeleteDBInstance, /v1/refunds…" autocomplete="off" spellcheck="false">
+    <div class="filters" aria-label="Filter by class">
+      {{range .Classes}}<button type="button" class="chip c-{{.}}" data-class="{{.}}" aria-pressed="false">{{.}}</button>{{end}}
+    </div>
+    <p id="count" class="count" aria-live="polite"></p>
+    <ol id="results" class="results"></ol>
+  </div>
+
+  <h2 class="section-h">Providers and MCP servers</h2>
+  <table class="providers">
+    <thead><tr><th>Name</th><th>Kind</th><th>Rules</th><th>Classes</th></tr></thead>
+    <tbody>
+    {{range .Providers}}
+      <tr>
+        <td><a href="{{.ID}}.html">{{.Title}}</a><span class="pid">{{.ID}}</span></td>
+        <td>{{.Kind}}</td>
+        <td class="num">{{.Rules}}</td>
+        <td><span class="mix" role="img" aria-label="{{range .Classes}}{{.N}} {{.Class}}, {{end}}">{{range .Classes}}<span class="seg c-{{.Class}}" style="width: {{printf "%.2f" .Pct}}%" title="{{.N}} {{.Class}}"></span>{{end}}</span></td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+  <p class="legend">{{range .Classes}}<span class="key"><span class="sw c-{{.}}"></span>{{.}}</span>{{end}}</p>
+</section>
+<script src="../assets/search.js" defer></script>
