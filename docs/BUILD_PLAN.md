@@ -109,7 +109,7 @@ flowchart LR
 | 23 | Smaller fixes | Tokens a hosted MCP server shares with its vendor's API (`secrets_from`), more SQL tautologies, an optional button-only ntfy token, providers loaded on first use in the proxy | A Stripe key reaches mcp.stripe.com; `DELETE … WHERE x LIKE '%'` is irreversible in every dialect; pushes carry no publish token; the proxy starts without parsing every rule | done (23a to 23d) |
 | 24 | Documentation site | `tools/sitegen` builds a static site from the docs and the catalog, with a quick start guide and a page per provider; GitHub Pages workflow | Every page, asset and in-site link resolves in CI; the home page's examples are decided by the engine when the site is built; the catalog is searchable with no server | done |
 
-v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account.
+v1.0 also needs an external security review of the proxy and approver (PLAN.md phase 5), which the owner arranges, and the catalog split into its own repository, which needs the owner's GitHub account. What only a Mac, signed-in agents and a phone can check (the macOS sandbox and keychain, desktop dialogs, Cursor and Gemini CLI, phone approvals through ntfy.sh, publishing the site) is listed in [MAC_CHECKS.md](MAC_CHECKS.md).
 
 Stages 4 and 5 can interleave; stage 6 does not depend on 4 or 5. The order above front-loads Launch 1 (catalog + exporters), matching PLAN.md's roadmap.
 
