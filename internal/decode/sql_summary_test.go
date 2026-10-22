@@ -31,6 +31,7 @@ func TestSummarizeSQL(t *testing.T) {
 		{"postgres", "with d as (delete from users returning *) select count(*) from d", []string{"SELECT from d, which also runs DELETE from users (every row)"}},
 		{"postgres", "select pg_terminate_backend(pid) from pg_stat_activity", []string{"SELECT from pg_stat_activity, which also calls pg_terminate_backend"}},
 		{"postgres", "select * from vault.decrypted_secrets", []string{"SELECT from vault.decrypted_secrets"}},
+		{"postgres", "create function f() returns void language sql as $$ delete from users $$; select f()", []string{"CREATE FUNCTION", "SELECT, which also calls f"}},
 		// A comment is never shown; the statement is.
 		{"postgres", "/* read only, safe */ delete from orders", []string{"DELETE from orders (every row)"}},
 		// Names that are not plain are quoted, so they read as names.

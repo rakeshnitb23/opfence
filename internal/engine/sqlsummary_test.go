@@ -61,6 +61,35 @@ func TestSQLSummaryInCards(t *testing.T) {
 	}
 }
 
+// The summary is added only when the class came from the SQL. DynamoDB's
+// PartiQL is read by the Postgres parser, which nests block comments where
+// PartiQL does not, so a statement with one is unknown by a when condition
+// and its Postgres reading must not reach the card.
+func TestSQLSummaryOnlyFromSQLClass(t *testing.T) {
+	c, err := catalog.Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := New(c, policy.Resolve(nil, nil))
+	for _, f := range []struct{ file, card string }{
+		{"dynamodb-execute-statement.http", "Run a PartiQL statement: SELECT from orders"},
+		{"dynamodb-execute-statement-delete.http", "Run a PartiQL statement: DELETE from orders"},
+		{"dynamodb-execute-statement-comment.http", "Run a PartiQL statement"},
+	} {
+		data, err := os.ReadFile("../../catalog/aws/fixtures/" + f.file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		req, _, err := request.ParseFixture(data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := e.Evaluate(req).Evaluations[0].Card; got != f.card {
+			t.Errorf("%s: card %q, want %q", f.file, got, f.card)
+		}
+	}
+}
+
 // libSQL bodies sent over HTTP are summarised statement by statement.
 func TestSQLSummaryLibSQL(t *testing.T) {
 	c, err := catalog.Embedded()

@@ -251,7 +251,7 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		return hit, label + strings.Join(why, ", ")
 	}
 	if r.Classify.Active() {
-		what := "SQL"
+		what := strings.TrimSuffix(SQLClassSource, " in ")
 		if len(r.Classify.Redis) > 0 {
 			what = "Redis commands"
 		}
@@ -342,6 +342,10 @@ func (c *Classify) classes(args map[string]any) []classes.Class {
 	}
 	return out // nil for an empty list of statements: the rule's class
 }
+
+// SQLClassSource starts the class source of an operation whose class came
+// from classifying its SQL.
+const SQLClassSource = "SQL in "
 
 // Summary describes the SQL in args for an approval card, statement by
 // statement (decode.SummarizeSQL), found the way classes finds it. Text that

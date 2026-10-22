@@ -213,10 +213,13 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 		}
 	}
 	ev.Card = card(ev, host)
-	if ev.Rule != nil {
+	if ev.Rule != nil && strings.HasPrefix(ev.ClassSource, catalog.SQLClassSource) {
+		// What the SQL does, from its parse: the card alone says "Run SQL
+		// on project …" whether the SQL reads or drops a table. Only when
+		// the class came from that parse: a when condition that decides
+		// instead (DynamoDB's PartiQL with a block comment, which Postgres
+		// reads differently) means the parse may not be what runs.
 		if sum := ev.Rule.Classify.Summary(ev.Args); len(sum) > 0 {
-			// What the SQL does, from its parse: the card alone says "Run
-			// SQL on project …" whether the SQL reads or drops a table.
 			ev.Card += ": " + sqlSummaryText(sum)
 		}
 	}

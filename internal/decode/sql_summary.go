@@ -149,19 +149,30 @@ func summarizePostgres(sql string) (out []string) {
 	if err != nil {
 		return nil
 	}
+	// Functions the batch creates run what their bodies do, which the
+	// classifier counts; calls to them are named.
+	batch := map[string]bool{}
 	for _, st := range stmts {
-		out = append(out, pgSummary(st, true).String())
+		if f, ok := st.(*ast.CreateFunctionStmt); ok {
+			if parts := nameParts(f.FuncName); len(parts) > 0 {
+				batch[parts[len(parts)-1]] = true
+			}
+		}
+	}
+	for _, st := range stmts {
+		out = append(out, pgSummary(st, true, batch).String())
 	}
 	return out
 }
 
 // pgSummary describes a statement. With runs set, it also lists what runs
-// inside it; EXPLAIN without ANALYZE runs nothing.
-func pgSummary(n ast.Node, runs bool) sqlSummary {
+// inside it; EXPLAIN without ANALYZE runs nothing. batch names the
+// functions the same batch creates.
+func pgSummary(n ast.Node, runs bool, batch map[string]bool) sqlSummary {
 	var s sqlSummary
 	switch st := n.(type) {
 	case *ast.RawStmt:
-		return pgSummary(st.Stmt, runs)
+		return pgSummary(st.Stmt, runs, batch)
 	case *ast.SelectStmt:
 		if st.IntoClause != nil && st.IntoClause.Rel != nil {
 			s = sqlSummary{verb: "SELECT INTO", names: []string{pgRelName(st.IntoClause.Rel)}}
@@ -196,7 +207,7 @@ func pgSummary(n ast.Node, runs bool) sqlSummary {
 		s.prep, s.names = "on", pgRelNames(st.Objects)
 	case *ast.ExplainStmt:
 		analyze := explainAnalyze(st.Options)
-		inner := pgSummary(st.Query, runs && analyze)
+		inner := pgSummary(st.Query, runs && analyze, batch)
 		inner.verb = "EXPLAIN " + inner.verb
 		if analyze {
 			inner.verb = "EXPLAIN ANALYZE, which runs " + strings.TrimPrefix(inner.verb, "EXPLAIN ")
@@ -208,26 +219,27 @@ func pgSummary(n ast.Node, runs bool) sqlSummary {
 		s.verb = "SQL statement"
 	}
 	if runs {
-		s.also, s.calls = pgInside(n)
+		s.also, s.calls = pgInside(n, batch)
 	}
 	return s
 }
 
 // pgInside finds what runs inside a statement beyond the statement itself:
-// data-changing CTEs at any depth, and functions the classifier counts as
-// changing something.
-func pgInside(n ast.Node) (also, calls []string) {
+// data-changing CTEs at any depth, functions the classifier counts as
+// changing something, and functions the batch creates.
+func pgInside(n ast.Node, batch map[string]bool) (also, calls []string) {
 	ast.Rewrite(n, func(cur *ast.Cursor) bool {
 		switch x := cur.Node().(type) {
 		case *ast.CommonTableExpr:
 			switch x.Ctequery.(type) {
 			case *ast.InsertStmt, *ast.UpdateStmt, *ast.DeleteStmt, *ast.MergeStmt:
-				also = append(also, pgSummary(x.Ctequery, true).String())
+				also = append(also, pgSummary(x.Ctequery, true, batch).String())
 				return false // its own summary lists what runs inside it
 			}
 		case *ast.FuncCall:
 			parts := nameParts(x.Funcname)
-			if c, ok := sqlFunctionClass(parts); ok && c != classes.Read {
+			c, known := sqlFunctionClass(parts)
+			if (known && c != classes.Read) || (len(parts) > 0 && batch[parts[len(parts)-1]]) {
 				calls = append(calls, sqlName(parts...))
 			}
 		}
