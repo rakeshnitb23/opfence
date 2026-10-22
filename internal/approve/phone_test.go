@@ -23,6 +23,9 @@ import (
 type fakeNtfy struct {
 	t     *testing.T
 	token string // required bearer token, if set
+	// buttonToken, if set, is also accepted, but only to post to a topic
+	// (what a write-only reply-topic user may do).
+	buttonToken string
 
 	mu      sync.Mutex
 	n       int
@@ -49,11 +52,17 @@ func newFakeNtfy(t *testing.T) (*fakeNtfy, *httptest.Server) {
 }
 
 func (f *fakeNtfy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if f.token != "" && r.Header.Get("Authorization") != "Bearer "+f.token {
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	auth := r.Header.Get("Authorization")
+	button := f.buttonToken != "" && auth == "Bearer "+f.buttonToken
+	if button && !(r.Method == http.MethodPost && len(parts) == 1 && parts[0] != "") {
+		http.Error(w, `{"code":40301,"error":"forbidden"}`, http.StatusForbidden)
+		return
+	}
+	if f.token != "" && auth != "Bearer "+f.token && !button {
 		http.Error(w, `{"code":40101,"error":"unauthorized"}`, http.StatusUnauthorized)
 		return
 	}
-	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	switch {
 	case r.Method == http.MethodPost && r.URL.Path == "/":
 		var m phoneMessage
@@ -472,6 +481,40 @@ func TestPhoneToken(t *testing.T) {
 	tap(t, m, "Approve")
 	if a := <-res; !a.Approved {
 		t.Fatalf("%+v", a)
+	}
+}
+
+// With a button token, pushes carry only it, and Opfence publishes and
+// reads with the access token.
+func TestPhoneButtonToken(t *testing.T) {
+	f, srv := newFakeNtfy(t)
+	f.token = "tk_" + strings.Repeat("x", 29)
+	f.buttonToken = "tk_" + strings.Repeat("b", 29)
+	cfg := PhoneConfig{Server: srv.URL, Topic: NewTopic(), Reply: NewTopic(), Token: f.token, ButtonToken: f.buttonToken}
+	p := NewPhone(cfg, nil)
+	p.grace = 0
+	b := NewBroker(5*time.Second, p)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go p.Listen(ctx, b)
+	waitSubscribed(t, f, cfg.Reply)
+	res, _ := approveAsync(t, b, pendingFor("railway.service.delete", classes.Delete, classes.Ask, "svc-1", 1))
+	m, _ := f.push(0)
+	raw, _ := json.Marshal(m)
+	if strings.Contains(string(raw), f.token) {
+		t.Fatalf("the access token travels in the push: %s", raw)
+	}
+	for _, a := range m.Actions {
+		if a.Headers["Authorization"] != "Bearer "+f.buttonToken {
+			t.Fatalf("button %q does not use the button token: %+v", a.Label, a)
+		}
+	}
+	tap(t, m, "Approve")
+	if a := <-res; !a.Approved {
+		t.Fatalf("%+v", a)
+	}
+	if err := (PhoneConfig{Server: srv.URL, Topic: "a", Reply: "b", Token: "same", ButtonToken: "same"}).validate(); err == nil {
+		t.Fatal("a button token equal to the access token was accepted")
 	}
 }
 

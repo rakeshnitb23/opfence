@@ -30,6 +30,10 @@ type PhoneConfig struct {
 	Topic  string `json:"topic"`           // the phone subscribes here
 	Reply  string `json:"reply"`           // buttons post answers here; only Opfence reads it
 	Token  string `json:"token,omitempty"` // ntfy access token, for servers that need one
+	// ButtonToken is the token the push buttons answer with, when it should
+	// not be Token: one that may only write to the reply topic, so the token
+	// that publishes pushes and reads answers never travels in a push.
+	ButtonToken string `json:"button_token,omitempty"`
 }
 
 // phoneAccount is the keychain item holding the PhoneConfig.
@@ -76,6 +80,9 @@ func (c PhoneConfig) validate() error {
 	}
 	if c.Topic == c.Reply {
 		return errors.New("the push and reply topics must differ")
+	}
+	if c.ButtonToken != "" && c.ButtonToken == c.Token {
+		return errors.New("the button token must differ from the access token, or there is no point in it")
 	}
 	return nil
 }
@@ -282,8 +289,14 @@ func (p *Phone) Show(ctx context.Context, v View, b *Broker) {
 
 func (p *Phone) button(label, token string) phoneAction {
 	a := phoneAction{Action: "http", Label: label, URL: p.topicURL(p.cfg.Reply), Method: http.MethodPost, Body: token, Clear: true}
-	if p.cfg.Token != "" {
-		a.Headers = map[string]string{"Authorization": "Bearer " + p.cfg.Token}
+	// The push carries whatever token its buttons post with, so a
+	// button-only token keeps the access token on this computer.
+	auth := p.cfg.ButtonToken
+	if auth == "" {
+		auth = p.cfg.Token
+	}
+	if auth != "" {
+		a.Headers = map[string]string{"Authorization": "Bearer " + auth}
 	}
 	return a
 }
