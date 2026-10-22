@@ -82,8 +82,14 @@ func mustWrite(t *testing.T, path, data string) {
 	}
 }
 
+// noUserConfig is a user config path that does not exist. Some systems have
+// a real /nonexistent (the home folder of Debian's nobody user).
+func noUserConfig(t *testing.T) string {
+	return filepath.Join(t.TempDir(), "none.yaml")
+}
+
 func TestExplain(t *testing.T) {
-	code, out, errOut := run(t, "--user-config", "/nonexistent", "explain", "../../catalog/railway/fixtures/volume-delete.http")
+	code, out, errOut := run(t, "--user-config", noUserConfig(t), "explain", "../../catalog/railway/fixtures/volume-delete.http")
 	if code != exitOK {
 		t.Fatalf("exit %d: %s", code, errOut)
 	}
@@ -92,7 +98,7 @@ func TestExplain(t *testing.T) {
 			t.Errorf("output lacks %q:\n%s", want, out)
 		}
 	}
-	code, out, _ = run(t, "--user-config", "/nonexistent", "explain", "--json", "../../catalog/railway/fixtures/volume-delete.http")
+	code, out, _ = run(t, "--user-config", noUserConfig(t), "explain", "--json", "../../catalog/railway/fixtures/volume-delete.http")
 	if code != exitOK || !strings.Contains(out, `"decision": "confirm"`) {
 		t.Errorf("json output:\n%s", out)
 	}
@@ -103,7 +109,7 @@ func TestExplain(t *testing.T) {
 	if code != exitOK || !strings.Contains(out, "environment development") || !strings.Contains(out, "decision    ASK") {
 		t.Errorf("user mapping not applied:\n%s", out)
 	}
-	if code, _, _ := run(t, "--user-config", "/nonexistent", "--policy", dir+"/missing.yaml", "explain", "x.http"); code != exitError {
+	if code, _, _ := run(t, "--user-config", noUserConfig(t), "--policy", dir+"/missing.yaml", "explain", "x.http"); code != exitError {
 		t.Errorf("missing --policy file accepted")
 	}
 }
@@ -126,7 +132,7 @@ func TestTestCommand(t *testing.T) {
 func TestPolicyCheck(t *testing.T) {
 	dir := t.TempDir()
 	mustWrite(t, dir+"/opfence.yaml", "version: 1\ndecisions:\n  production: { irreversible: allow }\n")
-	code, out, _ := run(t, "--user-config", "/nonexistent", "--policy", dir+"/opfence.yaml", "policy", "check")
+	code, out, _ := run(t, "--user-config", noUserConfig(t), "--policy", dir+"/opfence.yaml", "policy", "check")
 	if code != exitOK || !strings.Contains(out, "warning:") || !strings.Contains(out, "irreversible   ask          ask          confirm") {
 		t.Fatalf("exit %d:\n%s", code, out)
 	}

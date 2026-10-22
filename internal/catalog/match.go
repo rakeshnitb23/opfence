@@ -251,7 +251,7 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		return hit, label + strings.Join(why, ", ")
 	}
 	if r.Classify.Active() {
-		what := "SQL"
+		what := strings.TrimSuffix(SQLClassSource, " in ")
 		if len(r.Classify.Redis) > 0 {
 			what = "Redis commands"
 		}
@@ -341,6 +341,61 @@ func (c *Classify) classes(args map[string]any) []classes.Class {
 		}
 	}
 	return out // nil for an empty list of statements: the rule's class
+}
+
+// SQLClassSource starts the class source of an operation whose class came
+// from classifying its SQL.
+const SQLClassSource = "SQL in "
+
+// Summary describes the SQL in args for an approval card, statement by
+// statement (decode.SummarizeSQL), found the way classes finds it. Text that
+// parses in none of the rule's dialects is "SQL Opfence cannot read". It is
+// nil for rules that read no SQL (Redis commands are shown by their card),
+// and when an argument holds something other than SQL.
+func (c *Classify) Summary(args map[string]any) []string {
+	if c == nil || len(c.SQL) == 0 || len(c.Redis) > 0 {
+		return nil
+	}
+	var texts []string
+	dialects := c.Dialects()
+	unread := false
+	if c.Format == FormatLibSQL {
+		v, _ := Lookup(args, c.SQL[0])
+		t, u, ok := decode.LibSQLStatements(v)
+		if !ok {
+			return nil
+		}
+		texts, dialects, unread = t, []string{DialectSQLite}, u
+	} else {
+		for _, p := range c.SQL {
+			v, ok := Lookup(args, p)
+			if !ok {
+				continue
+			}
+			t, ok := sqlTexts(v)
+			if !ok {
+				return nil
+			}
+			texts = append(texts, t...)
+		}
+	}
+	var out []string
+	for _, t := range texts {
+		var s []string
+		for _, d := range dialects {
+			if s = decode.SummarizeSQL(d, t); s != nil {
+				break
+			}
+		}
+		if s == nil {
+			s = []string{"SQL Opfence cannot read"}
+		}
+		out = append(out, s...)
+	}
+	if unread {
+		out = append(out, "SQL Opfence cannot read") // a stored statement it was not sent
+	}
+	return out
 }
 
 // sqlTexts reads an argument holding SQL: one string, or a list of strings
