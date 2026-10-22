@@ -1,0 +1,8 @@
+# description: Call database function send-email in project abcdefghijklmnopqrst
+POST /rest/v1/rpc/send-email HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"user_id": 42}

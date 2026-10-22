@@ -1,0 +1,8 @@
+# description: Verify a sign-in code for project abcdefghijklmnopqrst
+POST /auth/v1/verify HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"type": "email", "token": "123456"}

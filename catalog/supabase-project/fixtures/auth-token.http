@@ -1,0 +1,8 @@
+# description: Sign in to project abcdefghijklmnopqrst and get a session ({query.grant_type})
+POST /auth/v1/token?grant_type=password HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"email": "ada@example.com", "password": "example-password"}

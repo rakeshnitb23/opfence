@@ -1,0 +1,6 @@
+# description: Clear the CDN cache of storage bucket avatars in project abcdefghijklmnopqrst
+DELETE /storage/v1/cdn/avatars HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

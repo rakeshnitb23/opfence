@@ -1,0 +1,8 @@
+# description: Invite {body.email} to project abcdefghijklmnopqrst
+POST /auth/v1/invite HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"email": "ada@example.com"}

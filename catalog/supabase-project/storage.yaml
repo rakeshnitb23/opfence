@@ -1,0 +1,494 @@
+# Supabase project APIs (<ref>.supabase.co): storage.
+operations:
+  - id: supabase-project.storage.bucket.create
+    match: { rest: { method: POST, path: "/storage/v1/bucket" } }
+    class: write
+    when:
+      - if: { arg: body.public, equals: "true" }
+        class: access
+    resource: { arg: ref, kind: project }
+    card: "Create storage bucket {body.name} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      A public bucket serves its files to anyone with the URL, so creating one is access.
+    tests:
+      - fixture: fixtures/storage-bucket-create.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/storage-bucket-create-public.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.bucket.update
+    match: { rest: { method: PUT, path: "/storage/v1/bucket/{bucket}" } }
+    class: write
+    when:
+      - if: { arg: body.public, present: true }
+        class: access
+    resource: { arg: ref, kind: project }
+    card: "Change storage bucket {bucket} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Changing whether the bucket is public is access.
+    tests:
+      - fixture: fixtures/storage-bucket-update.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/storage-bucket-update-public.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.bucket.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/bucket/{bucket}" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Delete storage bucket {bucket} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage deletes only an empty bucket, so only its settings go, and they can be made again.
+    tests:
+      - fixture: fixtures/storage-bucket-delete.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.bucket.empty
+    match: { rest: { method: POST, path: "/storage/v1/bucket/{bucket}/empty" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete every file in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage keeps no earlier versions of files.
+    tests:
+      - fixture: fixtures/storage-bucket-empty.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.bucket.lifecycle
+    match: { rest: { method: PUT, path: "/storage/v1/bucket/{bucket}/lifecycle" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Change the lifecycle rules of storage bucket {bucket} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Lifecycle rules delete files once they are old enough, and Storage keeps no earlier versions.
+    tests:
+      - fixture: fixtures/storage-bucket-lifecycle.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.upload
+    match: { rest: { method: POST, path: "/storage/v1/object/{bucket}/{path*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Upload {path} to storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      With x-upsert: true an upload replaces the file at that path, as S3's PutObject does.
+    tests:
+      - fixture: fixtures/storage-object-upload.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.replace
+    match: { rest: { method: PUT, path: "/storage/v1/object/{bucket}/{path*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Replace {path} in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-object-replace.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/object/{bucket}/{path*}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete {path} from storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage keeps no earlier versions of files.
+    tests:
+      - fixture: fixtures/storage-object-delete.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.delete-many
+    match: { rest: { method: DELETE, path: "/storage/v1/object/{bucket}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete files {body.prefixes} from storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage keeps no earlier versions of files.
+    tests:
+      - fixture: fixtures/storage-object-delete-many.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.move
+    match: { rest: { method: POST, path: "/storage/v1/object/move" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Move {body.sourceKey} to {body.destinationKey} in storage bucket {body.bucketId} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-object-move.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.copy
+    match: { rest: { method: POST, path: "/storage/v1/object/copy" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Copy {body.sourceKey} to {body.destinationKey} in storage bucket {body.bucketId} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-object-copy.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.sign
+    match: { rest: { method: POST, path: "/storage/v1/object/sign/{bucket}/{path*}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Make a download link for {path} in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Anyone with the link can download the file until it expires.
+    tests:
+      - fixture: fixtures/storage-object-sign.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.sign-many
+    match: { rest: { method: POST, path: "/storage/v1/object/sign/{bucket}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Make download links for files in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Anyone with a link can download the file until it expires.
+    tests:
+      - fixture: fixtures/storage-object-sign-many.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.sign-upload
+    match: { rest: { method: POST, path: "/storage/v1/object/upload/sign/{bucket}/{path*}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Make an upload link for {path} in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Anyone with the link can upload to that path until it expires.
+    tests:
+      - fixture: fixtures/storage-object-sign-upload.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.upload-signed
+    match: { rest: { method: PUT, path: "/storage/v1/object/upload/sign/{bucket}/{path*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Upload {path} to storage bucket {bucket} of project {ref} with an upload link"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-object-upload-signed.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.list
+    match: { rest: { method: POST, path: "/storage/v1/object/list/{bucket}" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Lists files; a POST only to carry the search options.
+    tests:
+      - fixture: fixtures/storage-object-list.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.object.list-v2
+    match: { rest: { method: POST, path: "/storage/v1/object/list-v2/{bucket}" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Lists files; a POST only to carry the search options.
+    tests:
+      - fixture: fixtures/storage-object-list-v2.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.upload.create
+    match: { rest: { method: POST, path: "/storage/v1/upload/resumable" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Start a resumable upload to project {ref}'s storage"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      A tus upload.
+    tests:
+      - fixture: fixtures/storage-upload-create.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.upload.post
+    match: { rest: { method: POST, path: "/storage/v1/upload/resumable/{id*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Continue or cancel resumable upload {id} to project {ref}'s storage"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Cancelling (DELETE) drops only the part uploaded so far.
+    tests:
+      - fixture: fixtures/storage-upload-post.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.upload.put
+    match: { rest: { method: PUT, path: "/storage/v1/upload/resumable/{id*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Continue or cancel resumable upload {id} to project {ref}'s storage"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Cancelling (DELETE) drops only the part uploaded so far.
+    tests:
+      - fixture: fixtures/storage-upload-put.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.upload.patch
+    match: { rest: { method: PATCH, path: "/storage/v1/upload/resumable/{id*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Continue or cancel resumable upload {id} to project {ref}'s storage"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Cancelling (DELETE) drops only the part uploaded so far.
+    tests:
+      - fixture: fixtures/storage-upload-patch.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.upload.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/upload/resumable/{id*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Continue or cancel resumable upload {id} to project {ref}'s storage"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Cancelling (DELETE) drops only the part uploaded so far.
+    tests:
+      - fixture: fixtures/storage-upload-delete.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.cdn.purge-all
+    match: { rest: { method: DELETE, path: "/storage/v1/cdn" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Clear project {ref}'s storage CDN cache"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Files are fetched again on the next request.
+    tests:
+      - fixture: fixtures/storage-cdn-purge-all.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.cdn.purge-bucket
+    match: { rest: { method: DELETE, path: "/storage/v1/cdn/{bucket}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Clear the CDN cache of storage bucket {bucket} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-cdn-purge-bucket.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.cdn.purge-object
+    match: { rest: { method: DELETE, path: "/storage/v1/cdn/{bucket}/{path*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Clear the CDN cache of {path} in storage bucket {bucket} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-cdn-purge-object.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.create-bucket
+    match: { rest: { method: PUT, path: "/storage/v1/s3/{bucket}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Create storage bucket {bucket} in project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    tests:
+      - fixture: fixtures/storage-s3-create-bucket.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.put-object
+    match: { rest: { method: PUT, path: "/storage/v1/s3/{bucket}/{key*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Upload {key} to storage bucket {bucket} of project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Also copies and uploads parts, as S3's PutObject, CopyObject and UploadPart do.
+    tests:
+      - fixture: fixtures/storage-s3-put-object.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.delete-bucket
+    match: { rest: { method: DELETE, path: "/storage/v1/s3/{bucket}" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Delete storage bucket {bucket} in project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage deletes only an empty bucket.
+    tests:
+      - fixture: fixtures/storage-s3-delete-bucket.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.delete-object
+    match: { rest: { method: DELETE, path: "/storage/v1/s3/{bucket}/{key*}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete {key} from storage bucket {bucket} of project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Storage keeps no earlier versions of files. Also aborts multipart uploads.
+    tests:
+      - fixture: fixtures/storage-s3-delete-object.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.delete-objects
+    match: { rest: { method: POST, path: "/storage/v1/s3/{bucket}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete files from storage bucket {bucket} of project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      A POST on a bucket is S3's DeleteObjects (?delete), which Storage keeps no earlier versions
+      for.
+    tests:
+      - fixture: fixtures/storage-s3-delete-objects.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.storage.s3.multipart
+    match: { rest: { method: POST, path: "/storage/v1/s3/{bucket}/{key*}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Upload {key} in parts to storage bucket {bucket} of project {ref} through the S3 protocol"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/storage/tree/master/src/http/routes
+    notes: >-
+      Starts or completes a multipart upload.
+    tests:
+      - fixture: fixtures/storage-s3-multipart.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

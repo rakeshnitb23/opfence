@@ -1,0 +1,6 @@
+# description: Revoke an app's access to the signed-in user in project abcdefghijklmnopqrst
+DELETE /auth/v1/user/oauth/grants HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

@@ -1,0 +1,6 @@
+# description: Unlink sign-in identity 1b2c3d4e-5f6a-4b7c-8d9e-0f1a2b3c4d5e from the signed-in user in project abcdefghijklmnopqrst
+DELETE /auth/v1/user/identities/1b2c3d4e-5f6a-4b7c-8d9e-0f1a2b3c4d5e HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

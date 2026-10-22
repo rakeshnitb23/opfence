@@ -1,0 +1,8 @@
+# description: Copy {body.sourceKey} to {body.destinationKey} in storage bucket {body.bucketId} of project abcdefghijklmnopqrst
+POST /storage/v1/object/copy HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"bucketId": "avatars", "sourceKey": "a.png", "destinationKey": "b.png"}

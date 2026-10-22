@@ -1,0 +1,6 @@
+# description: Delete rows from orders in project abcdefghijklmnopqrst
+DELETE /rest/v1/orders?id=eq.5 HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

@@ -1,0 +1,6 @@
+# description: Delete users/42/photo.png from storage bucket avatars of project abcdefghijklmnopqrst
+DELETE /storage/v1/object/avatars/users/42/photo.png HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

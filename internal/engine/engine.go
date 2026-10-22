@@ -223,6 +223,23 @@ func (e *Engine) evaluate(p *catalog.Provider, host string, op decode.Operation)
 			ev.Card += ": " + sqlSummaryText(sum)
 		}
 	}
+	if ev.Rule != nil && ev.Rule.Classify != nil && ev.Rule.Classify.PostgREST != "" {
+		// Which rows a PostgREST PATCH or DELETE changes: its filters, or
+		// every row when none limits them.
+		if strings.HasPrefix(ev.ClassSource, catalog.PostgRESTEveryRow) {
+			ev.Card += " (every row)"
+		} else if v, ok := catalog.Lookup(ev.Args, ev.Rule.Classify.PostgREST); ok {
+			if q, ok := v.(map[string]any); ok {
+				if f := decode.PostgRESTFilters(q); len(f) > 0 {
+					text := strings.Join(f, ", ")
+					if len(f) > 3 {
+						text = fmt.Sprintf("%s and %d more", strings.Join(f[:3], ", "), len(f)-3)
+					}
+					ev.Card += " where " + Sanitize(text, 160)
+				}
+			}
+		}
+	}
 	return ev
 }
 

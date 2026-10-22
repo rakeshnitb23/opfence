@@ -1,0 +1,6 @@
+# description: Delete rows from orders in project abcdefghijklmnopqrst, with only a limit
+DELETE /rest/v1/orders?order=id&limit=1 HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

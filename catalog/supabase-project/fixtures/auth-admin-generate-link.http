@@ -1,0 +1,8 @@
+# description: Make a {body.type} link for {body.email} in project abcdefghijklmnopqrst
+POST /auth/v1/admin/generate_link HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"type": "magiclink", "email": "ada@example.com"}

@@ -1,0 +1,515 @@
+# Supabase project APIs (<ref>.supabase.co): auth.
+operations:
+  - id: supabase-project.auth.signup
+    match: { rest: { method: POST, path: "/auth/v1/signup" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Sign up user {body.email} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Anyone with the publishable key can sign up unless sign-ups are off.
+    tests:
+      - fixture: fixtures/auth-signup.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.token
+    match: { rest: { method: POST, path: "/auth/v1/token" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Sign in to project {ref} and get a session ({query.grant_type})"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns access and refresh tokens.
+    tests:
+      - fixture: fixtures/auth-token.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.verify
+    match: { rest: { method: POST, path: "/auth/v1/verify" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Verify a sign-in code for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns a session.
+    tests:
+      - fixture: fixtures/auth-verify.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.verify-link
+    match: { rest: { method: GET, path: "/auth/v1/verify" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Open a sign-in link for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Redirects with a session.
+    tests:
+      - fixture: fixtures/auth-verify-link.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.callback
+    match: { rest: { method: GET, path: "/auth/v1/callback" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Finish an OAuth sign-in to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Exchanges the provider's code for a session.
+    tests:
+      - fixture: fixtures/auth-callback.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.callback-post
+    match: { rest: { method: POST, path: "/auth/v1/callback" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Finish an OAuth sign-in to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Exchanges the provider's code for a session.
+    tests:
+      - fixture: fixtures/auth-callback-post.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.logout
+    match: { rest: { method: POST, path: "/auth/v1/logout" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Sign out of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-logout.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.recover
+    match: { rest: { method: POST, path: "/auth/v1/recover" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Send a password reset email for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Sends an email or a text message.
+    tests:
+      - fixture: fixtures/auth-recover.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.otp
+    match: { rest: { method: POST, path: "/auth/v1/otp" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Send a sign-in code for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Sends an email or a text message.
+    tests:
+      - fixture: fixtures/auth-otp.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.magiclink
+    match: { rest: { method: POST, path: "/auth/v1/magiclink" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Send a sign-in link for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Sends an email or a text message.
+    tests:
+      - fixture: fixtures/auth-magiclink.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.resend
+    match: { rest: { method: POST, path: "/auth/v1/resend" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Resend a confirmation or code for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Sends an email or a text message.
+    tests:
+      - fixture: fixtures/auth-resend.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.user.update
+    match: { rest: { method: PUT, path: "/auth/v1/user" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change the signed-in user's email, phone, password or data in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-user-update.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.identity.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/user/identities/{identity_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Unlink sign-in identity {identity_id} from the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-identity-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.oauth-grant.revoke
+    match: { rest: { method: DELETE, path: "/auth/v1/user/oauth/grants" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Revoke an app's access to the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-oauth-grant-revoke.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.factor.enroll
+    match: { rest: { method: POST, path: "/auth/v1/factors" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add a sign-in factor for the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-factor-enroll.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.factor.verify
+    match: { rest: { method: POST, path: "/auth/v1/factors/{factor_id}/verify" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Verify sign-in factor {factor_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns a session at the higher assurance level.
+    tests:
+      - fixture: fixtures/auth-factor-verify.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.factor.challenge
+    match: { rest: { method: POST, path: "/auth/v1/factors/{factor_id}/challenge" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Challenge sign-in factor {factor_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-factor-challenge.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.factor.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/factors/{factor_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove sign-in factor {factor_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Removing a factor can turn multi-factor sign-in off.
+    tests:
+      - fixture: fixtures/auth-factor-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.recovery-codes.create
+    match: { rest: { method: POST, path: "/auth/v1/factors/recovery-codes" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Create recovery codes for the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns the codes.
+    tests:
+      - fixture: fixtures/auth-recovery-codes-create.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.recovery-codes.regenerate
+    match: { rest: { method: POST, path: "/auth/v1/factors/recovery-codes/regenerate" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Regenerate the signed-in user's recovery codes in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns the codes.
+    tests:
+      - fixture: fixtures/auth-recovery-codes-regenerate.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.recovery-codes.verify
+    match: { rest: { method: POST, path: "/auth/v1/factors/recovery-codes/verify" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Use a recovery code in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns a session.
+    tests:
+      - fixture: fixtures/auth-recovery-codes-verify.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.recovery-codes.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/factors/recovery-codes" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Delete the signed-in user's recovery codes in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-recovery-codes-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.authentication-options
+    match: { rest: { method: POST, path: "/auth/v1/passkeys/authentication/options" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Start a passkey sign-in to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-passkey-authentication-options.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.authentication-verify
+    match: { rest: { method: POST, path: "/auth/v1/passkeys/authentication/verify" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Sign in to project {ref} with a passkey"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns a session.
+    tests:
+      - fixture: fixtures/auth-passkey-authentication-verify.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.registration-options
+    match: { rest: { method: POST, path: "/auth/v1/passkeys/registration/options" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Start adding a passkey in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-passkey-registration-options.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.registration-verify
+    match: { rest: { method: POST, path: "/auth/v1/passkeys/registration/verify" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add a passkey for the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-passkey-registration-verify.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.update
+    match: { rest: { method: PATCH, path: "/auth/v1/passkeys/{passkey_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change passkey {passkey_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-passkey-update.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.passkey.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/passkeys/{passkey_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove passkey {passkey_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-passkey-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.sso
+    match: { rest: { method: POST, path: "/auth/v1/sso" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Start a single sign-on to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-sso.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.saml-acs
+    match: { rest: { method: POST, path: "/auth/v1/sso/saml/acs" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Finish a SAML sign-in to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Exchanges the assertion for a session.
+    tests:
+      - fixture: fixtures/auth-saml-acs.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.oauth.client-register
+    match: { rest: { method: POST, path: "/auth/v1/oauth/clients/register" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Register an OAuth client with project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Lets the app ask the project's users for access.
+    tests:
+      - fixture: fixtures/auth-oauth-client-register.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.oauth.token
+    match: { rest: { method: POST, path: "/auth/v1/oauth/token" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Get an OAuth token from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-oauth-token.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.oauth.consent
+    match: { rest: { method: POST, path: "/auth/v1/oauth/authorizations/{authorization_id}/consent" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Grant an OAuth app access to the signed-in user in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-oauth-consent.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth.invite
+    match: { rest: { method: POST, path: "/auth/v1/invite" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Invite {body.email} to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Creates the user and emails a sign-in link.
+    tests:
+      - fixture: fixtures/auth-invite.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"

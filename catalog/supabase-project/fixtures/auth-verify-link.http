@@ -1,0 +1,6 @@
+# description: Open a sign-in link for project abcdefghijklmnopqrst
+GET /auth/v1/verify?token=abc&type=magiclink HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+
