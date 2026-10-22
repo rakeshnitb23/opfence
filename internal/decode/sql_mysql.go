@@ -130,12 +130,12 @@ func mysqlStatement(n sqlparser.Statement) []classes.Class {
 		}
 		return one(classes.Write) // ON DUPLICATE KEY UPDATE updates, like an upsert
 	case *sqlparser.Update:
-		if mysqlLimits(st.Where) {
+		if mysqlLimits(st.Where, mysqlOuterNames(st.TableExprs)) {
 			return one(classes.Write)
 		}
 		return one(classes.Irreversible)
 	case *sqlparser.Delete:
-		if mysqlLimits(st.Where) {
+		if mysqlLimits(st.Where, mysqlOuterNames(st.TableExprs)) {
 			return one(classes.Delete)
 		}
 		return one(classes.Irreversible)
@@ -285,40 +285,161 @@ var mysqlDangerousFuncs = map[string]bool{
 }
 
 // mysqlLimits reports whether a WHERE clause limits the rows an UPDATE or
-// DELETE touches, by the rules effectiveWhere applies to Postgres.
-func mysqlLimits(w *sqlparser.Where) bool {
+// DELETE of the outer tables touches, by the rules effectiveWhere applies
+// to Postgres.
+func mysqlLimits(w *sqlparser.Where, outer map[string]bool) bool {
 	if w == nil {
 		return false
 	}
-	return mysqlExprLimits(w.Expr)
+	return mysqlExprLimits(w.Expr, outer)
 }
 
-func mysqlExprLimits(e sqlparser.Expr) bool {
+func mysqlExprLimits(e sqlparser.Expr, outer map[string]bool) bool {
 	switch n := e.(type) {
 	case nil:
 		return false
 	case *sqlparser.OrExpr:
-		return mysqlExprLimits(n.Left) && mysqlExprLimits(n.Right)
+		return mysqlExprLimits(n.Left, outer) && mysqlExprLimits(n.Right, outer)
 	case *sqlparser.XorExpr:
-		return mysqlExprLimits(n.Left) && mysqlExprLimits(n.Right)
+		return mysqlExprLimits(n.Left, outer) && mysqlExprLimits(n.Right, outer)
 	case *sqlparser.AndExpr:
-		return mysqlExprLimits(n.Left) || mysqlExprLimits(n.Right)
+		return mysqlExprLimits(n.Left, outer) || mysqlExprLimits(n.Right, outer)
+	case *sqlparser.NotExpr:
+		switch x := n.Expr.(type) {
+		case *sqlparser.IsExpr:
+			if x.Right == sqlparser.IsNullOp {
+				return false // NOT id IS NULL
+			}
+		case *sqlparser.ComparisonExpr:
+			if x.Operator == sqlparser.NullSafeEqualOp && (mysqlNull(x.Left) || mysqlNull(x.Right)) {
+				return false // NOT id <=> NULL
+			}
+		}
 	case *sqlparser.IsExpr:
 		if n.Right == sqlparser.IsNotNullOp {
 			return false // id IS NOT NULL
 		}
 	case *sqlparser.ComparisonExpr:
-		if sqlparser.String(n.Left) == sqlparser.String(n.Right) {
-			return false // id = id, id >= id
+		switch n.Operator {
+		case sqlparser.InOp:
+			if t, ok := n.Right.(sqlparser.ValTuple); ok {
+				for _, v := range t {
+					if sqlparser.String(v) == sqlparser.String(n.Left) {
+						return false // id IN (id, 7)
+					}
+				}
+			}
+		case sqlparser.NotInOp:
+		case sqlparser.LikeOp:
+			if s, ok := mysqlString(n.Right); ok && n.Escape == nil && likeMatchesAll(s) {
+				return false // x LIKE '%'
+			}
+		case sqlparser.RegexpOp:
+			if s, ok := mysqlString(n.Right); ok && regexMatchesAll(s) {
+				return false // x REGEXP ''
+			}
+		default:
+			if sqlparser.String(n.Left) == sqlparser.String(n.Right) {
+				return false // id = id, id >= id
+			}
 		}
 	}
+	return mysqlReadsOuter(e, outer)
+}
+
+func mysqlNull(e sqlparser.Expr) bool {
+	_, ok := e.(*sqlparser.NullVal)
+	return ok
+}
+
+func mysqlString(e sqlparser.Expr) (string, bool) {
+	l, ok := e.(*sqlparser.Literal)
+	if !ok || l.Type != sqlparser.StrVal {
+		return "", false
+	}
+	return l.Val, true
+}
+
+// mysqlOuterNames returns the names and aliases of the tables a statement
+// changes, which a subquery's columns may refer to.
+func mysqlOuterNames(exprs []sqlparser.TableExpr) map[string]bool {
+	names := map[string]bool{}
+	var add func(sqlparser.TableExpr)
+	add = func(te sqlparser.TableExpr) {
+		switch t := te.(type) {
+		case *sqlparser.AliasedTableExpr:
+			if tn, ok := t.Expr.(sqlparser.TableName); ok {
+				names[strings.ToLower(tn.Name.String())] = true
+			}
+			if !t.As.IsEmpty() {
+				names[strings.ToLower(t.As.String())] = true
+			}
+		case *sqlparser.JoinTableExpr:
+			add(t.LeftExpr)
+			add(t.RightExpr)
+		case *sqlparser.ParenTableExpr:
+			for _, x := range t.Exprs {
+				add(x)
+			}
+		}
+	}
+	for _, te := range exprs {
+		add(te)
+	}
+	return names
+}
+
+// mysqlReadsOuter reports whether e reads a column of the statement's own
+// rows, by the rules pgReadsOuter applies.
+func mysqlReadsOuter(e sqlparser.SQLNode, outer map[string]bool) bool {
 	reads := false
 	_ = sqlparser.Walk(func(n sqlparser.SQLNode) (bool, error) {
-		if _, ok := n.(*sqlparser.ColName); ok {
+		if reads {
+			return false, nil
+		}
+		switch x := n.(type) {
+		case *sqlparser.ColName:
 			reads = true
+			return false, nil
+		case *sqlparser.Subquery:
+			if mysqlSubqueryReadsOuter(x.Select, outer) {
+				reads = true
+			}
 			return false, nil
 		}
 		return true, nil
 	}, e)
+	return reads
+}
+
+// mysqlSubqueryReadsOuter reports whether a subquery refers to the outer
+// statement's rows: a column that is unqualified, or qualified with an
+// outer table or a name the subquery does not define.
+func mysqlSubqueryReadsOuter(sub sqlparser.SQLNode, outer map[string]bool) bool {
+	inner := map[string]bool{}
+	_ = sqlparser.Walk(func(n sqlparser.SQLNode) (bool, error) {
+		switch x := n.(type) {
+		case *sqlparser.AliasedTableExpr:
+			if tn, ok := x.Expr.(sqlparser.TableName); ok {
+				inner[strings.ToLower(tn.Name.String())] = true
+			}
+			if !x.As.IsEmpty() {
+				inner[strings.ToLower(x.As.String())] = true
+			}
+		case *sqlparser.CommonTableExpr:
+			inner[strings.ToLower(x.ID.String())] = true
+		}
+		return true, nil
+	}, sub)
+	reads := false
+	_ = sqlparser.Walk(func(n sqlparser.SQLNode) (bool, error) {
+		if c, ok := n.(*sqlparser.ColName); ok {
+			q := strings.ToLower(c.Qualifier.Name.String())
+			if q == "" || outer[q] || !inner[q] {
+				reads = true
+			}
+		}
+		return !reads, nil
+	}, sub)
 	return reads
 }
