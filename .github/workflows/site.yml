@@ -1,0 +1,93 @@
+name: site
+
+# Builds the documentation site (tools/sitegen) on every change that can
+# alter it, and publishes it to GitHub Pages from main. Publishing needs
+# Settings > Pages > Source set to "GitHub Actions"; until then the build
+# still runs and checks every link, and the deploy job is skipped.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "catalog/**"
+      - "internal/**"
+      - "tools/sitegen/**"
+      - "*.md"
+      - "go.mod"
+      - ".github/workflows/site.yml"
+  pull_request:
+    paths:
+      - "docs/**"
+      - "catalog/**"
+      - "internal/**"
+      - "tools/sitegen/**"
+      - "*.md"
+      - "go.mod"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      publish: ${{ steps.pages.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache-dependency-path: tools/sitegen/go.sum
+      - name: test (builds the site and checks every link)
+        working-directory: tools/sitegen
+        run: |
+          go vet ./...
+          go test -count=1 ./...
+      - name: build
+        run: make site
+      - name: is Pages set to deploy from Actions?
+        id: pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          build_type="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type 2>/dev/null || true)"
+          if [ "$build_type" = "workflow" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::GitHub Pages is not set to deploy from GitHub Actions, so the site was built but not published. Set Settings > Pages > Source to GitHub Actions."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.pages.outputs.publish == 'true'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

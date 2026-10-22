@@ -1,6 +1,7 @@
 /opfence
 /dist/
 /bin/
+/_site/
 *.test
 *.out
 coverage.*

@@ -1,0 +1,87 @@
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Stop your AI agent before it deletes production.</h1>
+      <p class="tagline">Opfence is the open list of things an agent must never do without asking, and the tool that enforces it.</p>
+      <p class="lede">Coding agents run with real cloud credentials. In April 2026 one deleted a startup's production database and its backups with a single API call. Opfence reads each request an agent makes, looks the operation up in a tested catalog, and decides whether it runs, waits for you, or is blocked.</p>
+      <div class="cta">
+        <a class="btn primary" href="quickstart.html">Get started</a>
+        <a class="btn" href="catalog/index.html">Browse the catalog</a>
+      </div>
+      <p class="facts"><strong>{{num .Rules}} rules</strong> for {{.Providers}} cloud APIs and MCP servers, with {{num .Fixtures}} recorded requests that CI replays on every change. Free and open source under Apache 2.0, and still in early development.</p>
+    </div>
+    {{with .Hero}}
+    <figure class="held">
+      <div class="held-card">
+        <div class="held-body">
+          <p class="held-status"><span>{{decisionText .Decision}}</span><span class="dec d-{{.Decision}}">{{.Decision}}</span></p>
+          <p class="held-line">{{.Line}}</p>
+          {{if .Body}}<pre><code>{{.Body}}</code></pre>{{end}}
+          <p class="card-text">{{.Card}}</p>
+          <dl class="held-meta">
+            <dt>Class</dt><dd><span class="cls c-{{.Class}}">{{.Class}}</span></dd>
+            <dt>Environment</dt><dd>{{.Env}}</dd>
+            <dt>Rule</dt><dd><a href="catalog/{{.Provider}}.html#{{.Rule}}"><code>{{.Rule}}</code></a></dd>
+          </dl>
+          {{if .Resource}}<p class="held-ask">To let it through, type <code>{{.Resource}}</code>. The agent cannot answer for you: approvals never use its terminal.</p>{{end}}
+        </div>
+      </div>
+      <figcaption>{{.Request}}, decided by this build of the engine with the default policy.</figcaption>
+    </figure>
+    {{end}}
+  </div>
+</section>
+
+<section class="band">
+  <div class="band-inner">
+    <h2>Decided from the request, not from what the agent says</h2>
+    <p class="sub">Each row is one of the catalog's own recorded requests, decided when this page was built. The text you approve is written from the decoded request, so an agent cannot dress up a deletion as a cleanup.</p>
+    <table class="log">
+      <thead><tr><th scope="col">What the agent sent</th><th scope="col">What you are asked</th><th scope="col">Decision in production</th></tr></thead>
+      <tbody>
+      {{range .Featured}}
+        <tr>
+          <td class="what"><code>{{.Line}}{{if .Body}}&#10;{{.Body}}{{end}}</code></td>
+          <td><span class="card-text">{{.Card}}</span></td>
+          <td class="verdict"><span class="cls c-{{.Class}}">{{.Class}}</span><span class="to" aria-label="becomes">→</span><span class="dec d-{{.Decision}}">{{.Decision}}</span><a class="rid" href="catalog/{{.Provider}}.html#{{.Rule}}">{{.Rule}}</a></td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="pillars-inner">
+    <h2>Three parts, one catalog</h2>
+    <div class="pillars-grid">
+      <article>
+        <h3>Catalog</h3>
+        <p>Versioned YAML rules for cloud APIs and MCP servers. Each operation gets a risk class: read, write, delete, irreversible, money, credential or access. Every verified rule replays a recorded request in CI, and a nightly job compares the rules with the schemas providers publish.</p>
+        <p><a href="catalog/index.html">Browse every rule</a></p>
+      </article>
+      <article>
+        <h3>Compiler</h3>
+        <p><code>opfence export</code> turns the catalog into policy for NVIDIA OpenShell, for Claude Code (permission rules and a PreToolUse hook that reads each tool call's arguments) and for MCP tool annotations.</p>
+        <p><a href="quickstart.html#3-protect-claude-codes-mcp-tool-calls">Protect Claude Code</a></p>
+      </article>
+      <article>
+        <h3>Runner</h3>
+        <p><code>opfence run -- claude</code> puts the agent behind a local proxy that holds your keys, swaps placeholders for them only on their own API, and asks before anything destructive, on your desktop or your phone.</p>
+        <p><a href="quickstart.html#4-run-an-agent-behind-the-proxy">Run an agent</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band how">
+  <div class="band-inner">
+    <h2>How a decision is made</h2>
+    <ol class="steps">
+      <li><strong>Decode</strong>REST, GraphQL, AWS SigV4, git over HTTPS, MCP JSON-RPC and tool calls become operations. SQL, Redis commands and AWS CLI lines inside tool calls are parsed too.</li>
+      <li><strong>Classify</strong>The operation's rule gives its class, made stricter by its arguments: <code>--skip-final-snapshot</code>, or a <code>DELETE</code> with no <code>WHERE</code> that limits it.</li>
+      <li><strong>Decide</strong>Your policy maps the class and the resource's environment to allow, ask, confirm or deny. A repository's policy can only make it stricter.</li>
+    </ol>
+    <p><a href="docs/architecture.html">Read how it works</a>, or see <a href="docs/limits.html">what it does not protect against</a>.</p>
+  </div>
+</section>
