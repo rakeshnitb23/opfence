@@ -61,6 +61,22 @@ func TestPhoneSetupAndOff(t *testing.T) {
 	if other.Topic == cfg.Topic || other.Server != "https://ntfy.example.com" || other.Token != "tk_abc" {
 		t.Fatalf("%+v", other)
 	}
+	// A button token is read from the next line, and kept on later runs.
+	if _, err := runPhone(t, "tk_abc\ntk_btn\n", "setup", "--no-test", "--server", "https://ntfy.example.com/", "--token-stdin", "--button-token-stdin"); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := approve.LoadPhone(m); b.Token != "tk_abc" || b.ButtonToken != "tk_btn" || b.Topic != other.Topic {
+		t.Fatalf("%+v", b)
+	}
+	if _, err := runPhone(t, "", "setup", "--no-test", "--server", "https://ntfy.example.com/"); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := approve.LoadPhone(m); b.ButtonToken != "tk_btn" {
+		t.Fatalf("button token lost: %+v", b)
+	}
+	if _, err := runPhone(t, "tk_same\ntk_same\n", "setup", "--no-test", "--server", "https://ntfy.example.com/", "--token-stdin", "--button-token-stdin"); err == nil {
+		t.Fatal("accepted a button token equal to the access token")
+	}
 	if _, err := runPhone(t, "", "setup", "--no-test", "--server", "ntfy.example.com"); err == nil {
 		t.Fatal("accepted a server without a scheme")
 	}

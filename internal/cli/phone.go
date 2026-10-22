@@ -48,7 +48,7 @@ With no subcommand, phone says whether phone approvals are set up.`,
 
 func newPhoneSetupCmd() *cobra.Command {
 	var server string
-	var tokenStdin, noTest, newTopics bool
+	var tokenStdin, buttonTokenStdin, noTest, newTopics bool
 	cmd := &cobra.Command{
 		Use:   "setup",
 		Short: "Set up phone approvals and check that they work",
@@ -62,9 +62,12 @@ Running setup again keeps the same topics (so your phone stays subscribed)
 unless the server changes or --new-topics is given.
 
 A self-hosted ntfy server that needs a login takes an access token
-(ntfy token add), read from standard input with --token-stdin. The token
-travels in every push (the buttons need it to answer), so give it to a user
-that may only read the push topic and write the reply topic.`,
+(ntfy token add), read from standard input with --token-stdin. The buttons
+need a token to answer, and a push carries the token its buttons use, so
+give the buttons their own with --button-token-stdin (read on the next
+line): a token of a user that may only write the reply topic
+(ntfy access <user> <reply topic> write-only). Without one the buttons use
+the access token, which then travels in every push.`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			out := cmd.OutOrStdout()
@@ -80,12 +83,23 @@ that may only read the push topic and write the reply topic.`,
 			if cfg.Topic == "" {
 				cfg.Topic, cfg.Reply = approve.NewTopic(), approve.NewTopic()
 			}
-			if tokenStdin {
-				line, err := bufio.NewReader(cmd.InOrStdin()).ReadString('\n')
+			in := bufio.NewReader(cmd.InOrStdin())
+			readLine := func() (string, error) {
+				line, err := in.ReadString('\n')
 				if err != nil && err != io.EOF {
+					return "", err
+				}
+				return strings.TrimSpace(line), nil
+			}
+			if tokenStdin {
+				if cfg.Token, err = readLine(); err != nil {
 					return err
 				}
-				cfg.Token = strings.TrimSpace(line)
+			}
+			if buttonTokenStdin {
+				if cfg.ButtonToken, err = readLine(); err != nil {
+					return err
+				}
 			}
 			if err := approve.SavePhone(store, cfg); err != nil {
 				return err
@@ -113,6 +127,7 @@ that may only read the push topic and write the reply topic.`,
 	}
 	cmd.Flags().StringVar(&server, "server", "https://ntfy.sh", "ntfy server")
 	cmd.Flags().BoolVar(&tokenStdin, "token-stdin", false, "read an ntfy access token from standard input")
+	cmd.Flags().BoolVar(&buttonTokenStdin, "button-token-stdin", false, "read a token for the buttons, which may only write the reply topic, from the next line of standard input")
 	cmd.Flags().BoolVar(&noTest, "no-test", false, "save without sending a test push")
 	cmd.Flags().BoolVar(&newTopics, "new-topics", false, "make new topics (unsubscribes every device)")
 	return cmd
