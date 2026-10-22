@@ -1,0 +1,46 @@
+<section class="page-head">
+  <div class="inner">
+    <p class="crumbs"><a href="index.html">Catalog</a> / {{.P.ID}}</p>
+    <h1>{{.P.Title}}</h1>
+    <p class="lede">{{.Kind}} with {{num .Rules}} rules.{{if .P.Docs}} <a href="{{.P.Docs}}">Provider documentation</a>{{end}}</p>
+    <span class="mix wide" role="img" aria-label="{{range .Classes}}{{.N}} {{.Class}}, {{end}}">{{range .Classes}}<span class="seg c-{{.Class}}" style="width: {{printf "%.2f" .Pct}}%" title="{{.N}} {{.Class}}"></span>{{end}}</span>
+    <p class="legend">{{range .Classes}}<span class="key"><span class="sw c-{{.Class}}"></span>{{.N}} {{.Class}}</span>{{end}}</p>
+  </div>
+</section>
+<section class="inner">
+  <dl class="meta">
+    {{if .Hosts}}<div><dt>Hosts</dt><dd>{{.Hosts}}</dd></div>{{end}}
+    {{if .P.MCP}}<div><dt>MCP server names</dt><dd>{{range $i, $n := .P.MCP.Names}}{{if $i}}, {{end}}<code>{{$n}}</code>{{end}}</dd></div>{{end}}
+    {{if .P.MCP}}{{if .P.MCP.Package}}<div><dt>Package</dt><dd><code>{{.P.MCP.Package}}</code></dd></div>{{end}}{{end}}
+    {{if .Auth}}<div><dt>Credentials go in</dt><dd>{{range $i, $a := .Auth}}{{if $i}}; {{end}}{{$a}}{{end}}</dd></div>{{end}}
+    {{if .Detect}}<div><dt>Keys found by <code>opfence init</code></dt><dd>{{range $i, $d := .Detect}}{{if $i}}, {{end}}<code>{{$d}}</code>{{end}}</dd></div>{{end}}
+    {{if .Shares}}<div><dt>Also takes the keys of</dt><dd>{{range $i, $s := .Shares}}{{if $i}}, {{end}}<a href="{{$s}}.html">{{$s}}</a>{{end}}</dd></div>{{end}}
+    {{if .Defaults}}<div><dt>Without a rule</dt><dd>{{range $i, $d := .Defaults}}{{if $i}}; {{end}}{{$d}}{{end}}; anything else is unknown</dd></div>{{else}}<div><dt>Without a rule</dt><dd>unknown</dd></div>{{end}}
+    {{if .Schemas}}<div><dt>Checked nightly against</dt><dd>{{range $i, $s := .Schemas}}{{if $i}}<br>{{end}}<a href="{{$s.URL}}">{{schemaName $s}}</a>{{end}}</dd></div>{{end}}
+  </dl>
+
+  {{range .Groups}}
+  <h2 class="section-h" id="{{.Name}}">{{.Name}}</h2>
+  <div class="rules">
+    {{range .Rules}}
+    <article class="rule" id="{{.ID}}">
+      <header>
+        <code class="op">{{.Operation}}</code>
+        <span class="cls c-{{.Class}}">{{.Class}}</span>
+      </header>
+      {{if .Card}}<p class="card">“{{.Card}}”</p>{{end}}
+      {{if .When}}<ul class="when">{{range .When}}<li><span class="cls c-{{.Class}}">{{.Class}}</span> when {{.Cond}}</li>{{end}}</ul>{{end}}
+      {{if .Classify}}<p class="classify">Classified by {{.Classify}}</p>{{end}}
+      {{if .Notes}}<p class="notes">{{.Notes}}</p>{{end}}
+      <footer>
+        <a class="rid" href="#{{.ID}}">{{.ID}}</a>
+        {{if .Resource}}<span>resource {{.Resource}}</span>{{end}}
+        <span>{{.Status}}{{if .Tests}}, {{.Tests}} fixture{{if gt .Tests 1}}s{{end}}{{end}}</span>
+        {{range .Sources}}<a href="{{.}}" title="Where this rule comes from">{{host .}}</a>{{end}}
+        <a href="https://github.com/rakeshnitb23/opfence/blob/main/catalog/{{.File}}">YAML</a>
+      </footer>
+    </article>
+    {{end}}
+  </div>
+  {{end}}
+</section>

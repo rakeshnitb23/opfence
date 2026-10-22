@@ -79,6 +79,7 @@ docs/
 | `github.com/aws/aws-sdk-go-v2` (signer only) | inject (stage 10) | Official SigV4 signer; re-implementing signing is a footgun |
 | `github.com/rqlite/sql` | decode/sql_sqlite (stage 16) | A SQLite parser held to accept exactly what the `sqlite3` binary accepts; pure Go with no runtime dependencies. Its two differences from SQLite's tokenizer (NUL ends the text; non-ASCII spaces are identifier characters) are emulated before parsing. Checked against real SQLite: in 160,000 generated statements, nothing it reads as a read changed a database |
 | `vitess.io/vitess` (`go/vt/sqlparser` only) | decode/sql_mysql (stage 16) | The parser PlanetScale's vtgate parses every query with, so a MySQL statement is read as the server reads it, versioned comments included. Pure Go, 5 ms process start. It brings protobuf, a little of gRPC and MySQL collation tables: the stripped binary grew from 22.8 MB to 33.9 MB. TiDB's parser was the alternative (as large, with zap) and is not what PlanetScale runs |
+| `github.com/yuin/goldmark` | `tools/sitegen` only (stage 24) | Renders the docs for the site. CommonMark-compliant, pure Go, no dependencies of its own, with an AST the generator rewrites links in. It lives in the generator's own module, so the opfence binary and `go install` never fetch it |
 | `github.com/multigres/multigres` (`go/common/parser` only) | decode/sql (stage 11) | Supabase's Go port of Postgres' grammar: pure Go, so the binary stays static and cross-compiled, and a process starts in milliseconds, which the per-call hook needs. `pg_query_go` needs cgo; `go-pgquery` (the same parser in WebAssembly) took 1.5 s to start. The package links `testify` through a helper file, about 6 MB of binary in all |
 
 Dropped from the original plan, with reasons:
@@ -432,7 +433,7 @@ environments:
 
 Header arguments map the same way: `neon-sql: { connection.host: [ep-cool-darkness-123456.us-east-2.aws.neon.tech] }`, `planetscale-sql: { credentials.username: [r8m2k1x] }`.
 
-An operation is in environment E if any of its args matches any listed value for its provider under E. Production is checked first, then staging, then development, so an operation that names both a dev and a prod id is production. When nothing matches, `default_environment` applies, and it defaults to `production`. That is noisy on purpose until the user maps their ids, and `opfence explain` says "environment: production (default; map ids in opfence.yaml to change)". The runner's read-only lookups (resolving a Railway volume id to its environment) arrive in stage 9.
+An operation is in environment E if any of its args matches any listed value for its provider under E. Production is checked first, then staging, then development, so an operation that names both a dev and a prod id is production. When nothing matches, `default_environment` applies, and it defaults to `production`. That is noisy on purpose until the user maps their ids, and `opfence explain` says "environment: production (default; map ids in ~/.config/opfence/config.yaml to change)". The runner's read-only lookups (resolving a Railway volume id to its environment) arrive in stage 9.
 
 ### 5.2 Decision table
 

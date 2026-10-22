@@ -1,7 +1,7 @@
 GO ?= go
 STATICCHECK_VERSION ?= v0.8.2
 
-.PHONY: all build test race vet fmt fmt-check lint check fuzz clean
+.PHONY: all build test race vet fmt fmt-check lint check fuzz site clean
 
 all: check build
 
@@ -37,5 +37,10 @@ fuzz:
 
 check: fmt-check vet race
 
+# The documentation site, written to _site/ (tools/sitegen is its own module,
+# so the opfence binary does not depend on a Markdown renderer).
+site:
+	cd tools/sitegen && $(GO) run . -repo ../.. -out ../../_site
+
 clean:
-	rm -rf bin dist
+	rm -rf bin dist _site
