@@ -1,0 +1,5 @@
+# description: Read project abcdefghijklmnopqrst's auth settings, with their secrets
+GET /v1/projects/abcdefghijklmnopqrst/config/auth HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

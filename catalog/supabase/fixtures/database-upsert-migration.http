@@ -1,0 +1,7 @@
+# description: Record migration body.name in project abcdefghijklmnopqrst's history without running it
+PUT /v1/projects/abcdefghijklmnopqrst/database/migrations HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

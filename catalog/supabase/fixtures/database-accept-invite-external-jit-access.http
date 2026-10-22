@@ -1,0 +1,7 @@
+# description: Accept an invitation to project abcdefghijklmnopqrst's database
+POST /v1/projects/abcdefghijklmnopqrst/database/jit/invite/accept HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

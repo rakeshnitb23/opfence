@@ -1,0 +1,7 @@
+# description: Set up a custom hostname for project abcdefghijklmnopqrst
+POST /v1/projects/abcdefghijklmnopqrst/custom-hostname/initialize HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

@@ -5,9 +5,9 @@ hosts: [mcp.supabase.com]
 auth:
   - header: Authorization
     scheme: Bearer
-detect:
-  env: [SUPABASE_ACCESS_TOKEN]
-  prefixes: [sbp_]
+# SUPABASE_ACCESS_TOKEN (sbp_...) is detected by the supabase provider, the
+# Management API the same token serves; this server takes its keys too.
+secrets_from: [supabase]
 mcp:
   names: [supabase]
   package: "@supabase/mcp-server-supabase"

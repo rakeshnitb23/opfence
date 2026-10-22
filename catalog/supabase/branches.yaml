@@ -1,0 +1,147 @@
+# Supabase Management API (api.supabase.com): branches.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.branches.get-branch-config
+    match: { rest: { method: GET, path: "/v1/branches/{branch_id_or_ref}" } }
+    class: credential
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Read database branch {branch_id_or_ref}'s password and JWT secret"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the branch database's password and JWT secret.
+    tests:
+      - fixture: fixtures/branches-get-branch-config.http
+        expect: credential
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.update-branch-config
+    match: { rest: { method: PATCH, path: "/v1/branches/{branch_id_or_ref}" } }
+    class: write
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Change the settings of database branch {branch_id_or_ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/branches-update-branch-config.http
+        expect: write
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.delete-branch
+    match: { rest: { method: DELETE, path: "/v1/branches/{branch_id_or_ref}" } }
+    class: delete
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Delete database branch {branch_id_or_ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Branch databases hold development data that can be rebuilt from migrations and seed files, and
+      a deletion is scheduled and can be restored. Map a branch to production in your config if one
+      holds data you cannot rebuild.
+    tests:
+      - fixture: fixtures/branches-delete-branch.http
+        expect: delete
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.push-branch
+    match: { rest: { method: POST, path: "/v1/branches/{branch_id_or_ref}/push" } }
+    class: write
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Push migrations to database branch {branch_id_or_ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Applies the branch's migrations to its own database.
+    tests:
+      - fixture: fixtures/branches-push-branch.http
+        expect: write
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.merge-branch
+    match: { rest: { method: POST, path: "/v1/branches/{branch_id_or_ref}/merge" } }
+    class: write
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Merge database branch {branch_id_or_ref} into production"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Applies the branch's migrations and edge functions to the production project.
+    tests:
+      - fixture: fixtures/branches-merge-branch.http
+        expect: write
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.reset-branch
+    match: { rest: { method: POST, path: "/v1/branches/{branch_id_or_ref}/reset" } }
+    class: delete
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Reset database branch {branch_id_or_ref}, discarding its data"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Discards the branch's data and untracked schema changes.
+    tests:
+      - fixture: fixtures/branches-reset-branch.http
+        expect: delete
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.restore-branch
+    match: { rest: { method: POST, path: "/v1/branches/{branch_id_or_ref}/restore" } }
+    class: write
+    resource: { arg: branch_id_or_ref, kind: branch }
+    card: "Cancel the deletion of database branch {branch_id_or_ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Cancels a scheduled branch deletion.
+    tests:
+      - fixture: fixtures/branches-restore-branch.http
+        expect: write
+        resource: "qrstuvwxyzabcdefghij"
+
+  - id: supabase.branches.create-branch
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/branches" } }
+    class: money
+    resource: { arg: ref, kind: project }
+    card: "Create database branch {body.branch_name} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Branches are billed like small projects.
+    tests:
+      - fixture: fixtures/branches-create-branch.http
+        expect: money
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.branches.disable-preview-branching
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/branches" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Turn off branching for project {ref}, deleting every branch"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Turns branching off and deletes every branch, as deleting each one would; see deleting a
+      branch.
+    tests:
+      - fixture: fixtures/branches-disable-preview-branching.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"

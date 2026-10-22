@@ -1,0 +1,7 @@
+# description: Change project abcdefghijklmnopqrst's realtime settings
+PATCH /v1/projects/abcdefghijklmnopqrst/config/realtime HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"max_concurrent_users": 500}

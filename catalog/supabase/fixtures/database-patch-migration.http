@@ -1,0 +1,7 @@
+# description: Change migration 20261022120000 in project abcdefghijklmnopqrst's history
+PATCH /v1/projects/abcdefghijklmnopqrst/database/migrations/20261022120000 HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

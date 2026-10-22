@@ -1,0 +1,7 @@
+# description: Restore project abcdefghijklmnopqrst's database to Unix time body.recovery_time_target_unix, losing later changes
+POST /v1/projects/abcdefghijklmnopqrst/database/backups/restore-pitr HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"recovery_time_target_unix": 1760000000}

@@ -1,0 +1,100 @@
+# Supabase Management API (api.supabase.com): domains.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.domains.delete-hostname-config
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/custom-hostname" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Remove project {ref}'s custom hostname"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-delete-hostname-config.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.update-hostname-config
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/custom-hostname/initialize" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Set up a custom hostname for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-update-hostname-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.verify-dns-config
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/custom-hostname/reverify" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Checks the custom hostname's DNS records.
+    tests:
+      - fixture: fixtures/domains-verify-dns-config.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.activate-custom-hostname
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/custom-hostname/activate" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Switch project {ref} to its custom hostname"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-activate-custom-hostname.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.deactivate-vanity-subdomain-config
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/vanity-subdomain" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Remove project {ref}'s vanity subdomain"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-deactivate-vanity-subdomain-config.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.check-vanity-subdomain-availability
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/vanity-subdomain/check-availability" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-check-vanity-subdomain-availability.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.domains.activate-vanity-subdomain-config
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/vanity-subdomain/activate" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Activate a vanity subdomain for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/domains-activate-vanity-subdomain-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

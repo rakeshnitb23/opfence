@@ -1,0 +1,173 @@
+# Supabase Management API (api.supabase.com): api keys.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.api-keys.get-project-api-keys
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/api-keys" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Read project {ref}'s API keys"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the legacy anon and service_role keys in full, and secret keys with reveal.
+    tests:
+      - fixture: fixtures/api-keys-get-project-api-keys.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.create-project-api-key
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/api-keys" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Create an API key for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the new key.
+    tests:
+      - fixture: fixtures/api-keys-create-project-api-key.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.get-project-legacy-api-keys
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/api-keys/legacy" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Listed so the credential rule beside it does not match this path.
+    tests:
+      - fixture: fixtures/api-keys-get-project-legacy-api-keys.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.update-project-legacy-api-keys
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/api-keys/legacy" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Turn project {ref}'s legacy anon and service_role keys on or off"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Turns the JWT-based anon and service_role keys off or back on.
+    tests:
+      - fixture: fixtures/api-keys-update-project-legacy-api-keys.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.update-project-api-key
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/api-keys/{id}" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Change API key {id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the key.
+    tests:
+      - fixture: fixtures/api-keys-update-project-api-key.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.get-project-api-key
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/api-keys/{id}" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Read API key {id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the key, in full for legacy keys and for secret keys with reveal.
+    tests:
+      - fixture: fixtures/api-keys-get-project-api-key.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.delete-project-api-key
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/api-keys/{id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Delete API key {id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Apps using the key stop working.
+    tests:
+      - fixture: fixtures/api-keys-delete-project-api-key.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.create-project-claim-token
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/claim-token" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Create a claim token for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns a token that lets an organization claim the project.
+    tests:
+      - fixture: fixtures/api-keys-create-project-claim-token.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.delete-project-claim-token
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/claim-token" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Revoke project {ref}'s claim token"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/api-keys-delete-project-claim-token.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.create-login-role
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/cli/login-role" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Create a temporary CLI login role on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Creates a Postgres login role for the CLI and returns its password.
+    tests:
+      - fixture: fixtures/api-keys-create-login-role.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.api-keys.delete-login-roles
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/cli/login-role" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Delete project {ref}'s CLI login roles"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/api-keys-delete-login-roles.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"

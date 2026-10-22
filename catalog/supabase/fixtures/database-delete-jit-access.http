@@ -1,0 +1,7 @@
+# description: Remove temporary database access of user 7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f on project abcdefghijklmnopqrst
+DELETE /v1/projects/abcdefghijklmnopqrst/database/jit/7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

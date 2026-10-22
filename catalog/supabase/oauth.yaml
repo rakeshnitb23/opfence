@@ -1,0 +1,30 @@
+# Supabase Management API (api.supabase.com): oauth.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.oauth.exchange-oauth-token
+    match: { rest: { method: POST, path: "/v1/oauth/token" } }
+    class: credential
+    card: "Exchange an OAuth code or refresh token for Supabase tokens"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns access and refresh tokens.
+    tests:
+      - fixture: fixtures/oauth-exchange-oauth-token.http
+        expect: credential
+
+  - id: supabase.oauth.revoke-token
+    match: { rest: { method: POST, path: "/v1/oauth/revoke" } }
+    class: access
+    card: "Revoke an OAuth app's access and tokens"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Revokes an app's access and its tokens.
+    tests:
+      - fixture: fixtures/oauth-revoke-token.http
+        expect: access

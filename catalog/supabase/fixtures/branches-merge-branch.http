@@ -1,0 +1,7 @@
+# description: Merge database branch qrstuvwxyzabcdefghij into production
+POST /v1/branches/qrstuvwxyzabcdefghij/merge HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

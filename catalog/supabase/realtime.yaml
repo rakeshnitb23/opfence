@@ -1,0 +1,40 @@
+# Supabase Management API (api.supabase.com): realtime.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.realtime.update-realtime-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/config/realtime" } }
+    class: write
+    when:
+      - if: { arg: body.private_only, present: true }
+        class: access
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s realtime settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Changing private_only decides whether channels need an authorized user, so it is access.
+    tests:
+      - fixture: fixtures/realtime-update-realtime-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/realtime-update-realtime-config-private-only.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.realtime.shutdown-realtime
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/realtime/shutdown" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Drop every realtime connection to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Drops every realtime connection.
+    tests:
+      - fixture: fixtures/realtime-shutdown-realtime.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

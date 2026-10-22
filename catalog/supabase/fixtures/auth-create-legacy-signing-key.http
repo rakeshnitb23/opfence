@@ -1,0 +1,7 @@
+# description: Use project abcdefghijklmnopqrst's JWT secret as a signing key
+POST /v1/projects/abcdefghijklmnopqrst/config/auth/signing-keys/legacy HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

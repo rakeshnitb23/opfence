@@ -1,0 +1,7 @@
+# description: Delete database invitation inv_01 on project abcdefghijklmnopqrst
+DELETE /v1/projects/abcdefghijklmnopqrst/database/jit/invite/inv_01 HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

@@ -1,0 +1,7 @@
+# description: Delete Supabase project abcdefghijklmnopqrst with its database, storage and backups
+DELETE /v1/projects/abcdefghijklmnopqrst HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

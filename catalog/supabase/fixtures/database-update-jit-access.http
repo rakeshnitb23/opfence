@@ -1,0 +1,7 @@
+# description: Change temporary database access on project abcdefghijklmnopqrst
+PUT /v1/projects/abcdefghijklmnopqrst/database/jit HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

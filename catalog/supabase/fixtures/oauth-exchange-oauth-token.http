@@ -1,0 +1,6 @@
+# description: Exchange an OAuth code or refresh token for Supabase tokens
+POST /v1/oauth/token HTTP/1.1
+Host: api.supabase.com
+Content-Type: application/json
+
+{}

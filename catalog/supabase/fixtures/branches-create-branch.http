@@ -1,0 +1,7 @@
+# description: Create database branch body.branch_name of project abcdefghijklmnopqrst
+POST /v1/projects/abcdefghijklmnopqrst/branches HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"branch_name": "feature-x"}

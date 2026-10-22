@@ -79,6 +79,7 @@ environments:
   development:
     railway: { volumeId: [vol-123], environmentId: [e-dev-456] }
     supabase-mcp: { project_id: [devproj99] }
+    supabase: { ref: [devproj99] }          # the same project, through the Management API
 ```
 
 Now the volume deletion above only asks instead of needing confirmation. A repository's `opfence.yaml` can only make decisions stricter, because the agent can edit it: it can mark ids as production, add `ask` rules, or shorten the approval timeout, but not mark anything as development. `opfence policy check` shows how both files combine.

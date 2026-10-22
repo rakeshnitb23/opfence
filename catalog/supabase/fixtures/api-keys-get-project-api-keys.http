@@ -1,0 +1,5 @@
+# description: Read project abcdefghijklmnopqrst's API keys
+GET /v1/projects/abcdefghijklmnopqrst/api-keys HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

@@ -1,0 +1,7 @@
+# description: Run read-only SQL on project abcdefghijklmnopqrst: read Vault's secrets
+POST /v1/projects/abcdefghijklmnopqrst/database/query/read-only HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"query": "select decrypted_secret from vault.decrypted_secrets"}

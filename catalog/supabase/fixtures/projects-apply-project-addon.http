@@ -1,0 +1,7 @@
+# description: Apply add-on body.addon_variant to project abcdefghijklmnopqrst
+PATCH /v1/projects/abcdefghijklmnopqrst/billing/addons HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"addon_type": "compute_instance", "addon_variant": "ci_small"}

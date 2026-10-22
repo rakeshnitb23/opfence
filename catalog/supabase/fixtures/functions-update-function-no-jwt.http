@@ -1,0 +1,7 @@
+# description: Update edge function send-email of project abcdefghijklmnopqrst without JWT verification
+PATCH /v1/projects/abcdefghijklmnopqrst/functions/send-email?verify_jwt=false HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}
