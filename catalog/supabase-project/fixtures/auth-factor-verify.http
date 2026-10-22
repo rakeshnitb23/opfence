@@ -1,0 +1,8 @@
+# description: Verify sign-in factor 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d in project abcdefghijklmnopqrst
+POST /auth/v1/factors/5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d/verify HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"code": "123456"}

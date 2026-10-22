@@ -1,0 +1,8 @@
+# description: Start a passkey sign-in to project abcdefghijklmnopqrst
+POST /auth/v1/passkeys/authentication/options HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

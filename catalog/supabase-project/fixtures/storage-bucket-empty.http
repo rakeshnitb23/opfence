@@ -1,0 +1,6 @@
+# description: Delete every file in storage bucket avatars of project abcdefghijklmnopqrst
+POST /storage/v1/bucket/avatars/empty HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

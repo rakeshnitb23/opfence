@@ -1,0 +1,8 @@
+# description: Change sign-in factor 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d of user 7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f in project abcdefghijklmnopqrst
+PUT /auth/v1/admin/users/7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f/factors/5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

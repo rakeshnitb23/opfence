@@ -1,0 +1,8 @@
+# description: Finish a SAML sign-in to project abcdefghijklmnopqrst
+POST /auth/v1/sso/saml/acs HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

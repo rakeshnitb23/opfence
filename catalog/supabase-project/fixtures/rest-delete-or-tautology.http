@@ -1,0 +1,6 @@
+# description: Delete rows from orders in project abcdefghijklmnopqrst, with an or= that matches every row
+DELETE /rest/v1/orders?or=(id.eq.1,id.not.is.null) HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

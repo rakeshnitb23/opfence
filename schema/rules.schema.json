@@ -35,9 +35,10 @@
           "type": "object",
           "additionalProperties": false,
           "oneOf": [
-            { "required": ["sql"], "not": { "anyOf": [{ "required": ["redis"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }] } },
-            { "required": ["redis"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }, { "required": ["dialect"] }, { "required": ["format"] }] } },
-            { "required": ["aws_cli", "provider"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["redis"] }, { "required": ["dialect"] }, { "required": ["format"] }] } }
+            { "required": ["sql"], "not": { "anyOf": [{ "required": ["redis"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }, { "required": ["postgrest"] }] } },
+            { "required": ["redis"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }, { "required": ["dialect"] }, { "required": ["format"] }, { "required": ["postgrest"] }] } },
+            { "required": ["aws_cli", "provider"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["redis"] }, { "required": ["dialect"] }, { "required": ["format"] }, { "required": ["postgrest"] }] } },
+            { "required": ["postgrest"], "not": { "anyOf": [{ "required": ["sql"] }, { "required": ["redis"] }, { "required": ["aws_cli"] }, { "required": ["provider"] }, { "required": ["dialect"] }, { "required": ["format"] }] } }
           ],
           "properties": {
             "sql": {
@@ -55,6 +56,7 @@
               ]
             },
             "format": { "enum": ["libsql"], "description": "libsql: the argument is a libSQL HTTP request body, read as SQLite" },
+            "postgrest": { "$ref": "#/$defs/argPath", "description": "Argument holding a PostgREST request's query parameters (query): the rule's class when a filter limits the rows a PATCH or DELETE changes, irreversible when none does" },
             "aws_cli": { "$ref": "#/$defs/argPath", "description": "Argument holding AWS CLI command lines (one or a list); provider names the SigV4 provider whose rules decide them" },
             "provider": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
             "redis": {

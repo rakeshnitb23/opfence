@@ -1,0 +1,8 @@
+# description: Upload users/42/photo.png to storage bucket avatars of project abcdefghijklmnopqrst with an upload link
+PUT /storage/v1/object/upload/sign/avatars/users/42/photo.png HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

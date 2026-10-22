@@ -1,0 +1,161 @@
+# Supabase project APIs (<ref>.supabase.co): functions.
+operations:
+  - id: supabase-project.functions.get
+    match: { rest: { method: GET, path: "/functions/v1/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-get.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.get-path
+    match: { rest: { method: GET, path: "/functions/v1/{function}/{path*}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref} at {path}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-get-path.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.post
+    match: { rest: { method: POST, path: "/functions/v1/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-post.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.post-path
+    match: { rest: { method: POST, path: "/functions/v1/{function}/{path*}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref} at {path}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-post-path.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.put
+    match: { rest: { method: PUT, path: "/functions/v1/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-put.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.put-path
+    match: { rest: { method: PUT, path: "/functions/v1/{function}/{path*}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref} at {path}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-put-path.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.patch
+    match: { rest: { method: PATCH, path: "/functions/v1/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-patch.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.patch-path
+    match: { rest: { method: PATCH, path: "/functions/v1/{function}/{path*}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref} at {path}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-patch-path.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.delete
+    match: { rest: { method: DELETE, path: "/functions/v1/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-delete.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.functions.delete-path
+    match: { rest: { method: DELETE, path: "/functions/v1/{function}/{path*}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call edge function {function} of project {ref} at {path}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/functions
+    notes: >-
+      An edge function runs code that can do anything its secrets allow; Opfence cannot see what.
+    tests:
+      - fixture: fixtures/functions-delete-path.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"

@@ -219,6 +219,20 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			}
 		}
 	}
+	if p.HostArg != "" {
+		wild := slices.ContainsFunc(p.Hosts, func(h string) bool { return strings.HasPrefix(h, "*.") })
+		switch {
+		case !headerArgNameRe.MatchString(p.HostArg) || p.HostArg == "query" || p.HostArg == "body":
+			l.addf(file, 0, "host_arg %q must be a plain name other than query and body", p.HostArg)
+		case !wild:
+			l.addf(file, 0, "host_arg needs a host pattern that starts with *.")
+		}
+		for _, a := range p.HeaderArgs {
+			if a.Arg == p.HostArg {
+				l.addf(file, 0, "host_arg %q is also a header_args arg", p.HostArg)
+			}
+		}
+	}
 	seenPorts := map[int]bool{}
 	for _, port := range p.DatabasePorts {
 		switch {
@@ -376,6 +390,9 @@ func (l *loader) validateRule(r *Rule) {
 					l.addf(f, ln, "%s: path parameter {%s} has the name of a header_args arg", r.ID, seg.Param)
 				}
 			}
+			if seg.Param != "" && seg.Param == p.HostArg {
+				l.addf(f, ln, "%s: path parameter {%s} has the name of the host_arg", r.ID, seg.Param)
+			}
 		}
 	}
 
@@ -414,16 +431,22 @@ func (l *loader) validateRule(r *Rule) {
 	}
 	if c := r.Classify; c != nil {
 		kinds := 0
-		for _, set := range []bool{len(c.SQL) > 0, len(c.Redis) > 0, c.AWSCLI != ""} {
+		for _, set := range []bool{len(c.SQL) > 0, len(c.Redis) > 0, c.AWSCLI != "", c.PostgREST != ""} {
 			if set {
 				kinds++
 			}
 		}
 		switch {
 		case kinds == 0:
-			l.addf(f, ln, "%s: classify needs sql: <argument>, redis: <argument> or aws_cli: <argument>", r.ID)
+			l.addf(f, ln, "%s: classify needs sql: <argument>, redis: <argument>, aws_cli: <argument> or postgrest: <argument>", r.ID)
 		case kinds > 1:
-			l.addf(f, ln, "%s: classify takes one of sql, redis and aws_cli", r.ID)
+			l.addf(f, ln, "%s: classify takes one of sql, redis, aws_cli and postgrest", r.ID)
+		case c.PostgREST != "" && !argPathRe.MatchString(c.PostgREST):
+			l.addf(f, ln, "%s: classify.postgrest %q is not an argument path", r.ID, c.PostgREST)
+		case c.PostgREST != "" && (len(c.Dialect) > 0 || c.Format != "" || c.Provider != ""):
+			l.addf(f, ln, "%s: classify.postgrest takes no dialect, format or provider", r.ID)
+		case c.PostgREST != "" && (r.Match.REST == nil || (r.Match.REST.Method != "PATCH" && r.Match.REST.Method != "DELETE")):
+			l.addf(f, ln, "%s: classify.postgrest is for PATCH and DELETE rules, whose filters choose the rows they change", r.ID)
 		case c.AWSCLI != "" && !argPathRe.MatchString(c.AWSCLI):
 			l.addf(f, ln, "%s: classify.aws_cli %q is not an argument path", r.ID, c.AWSCLI)
 		case c.AWSCLI != "" && c.Provider == "":

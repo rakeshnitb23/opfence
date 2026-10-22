@@ -1,0 +1,8 @@
+# description: Change storage bucket avatars in project abcdefghijklmnopqrst
+PUT /storage/v1/bucket/avatars HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"file_size_limit": 1048576}

@@ -1,0 +1,6 @@
+# description: Delete storage bucket avatars in project abcdefghijklmnopqrst through the S3 protocol
+DELETE /storage/v1/s3/avatars HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

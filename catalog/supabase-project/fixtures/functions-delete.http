@@ -1,0 +1,6 @@
+# description: Call edge function send-email of project abcdefghijklmnopqrst
+DELETE /functions/v1/send-email HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

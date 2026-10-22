@@ -1,0 +1,8 @@
+# description: Insert or replace a row of orders in project abcdefghijklmnopqrst
+PUT /rest/v1/orders?id=eq.5 HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"id": 5, "status": "new"}

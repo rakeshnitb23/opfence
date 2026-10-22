@@ -1,0 +1,102 @@
+# Supabase project APIs (<ref>.supabase.co): rest.
+operations:
+  - id: supabase-project.rest.insert
+    match: { rest: { method: POST, path: "/rest/v1/{table}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Insert rows into {table} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://docs.postgrest.org/en/v12/references/api/tables_views.html
+    notes: >-
+      With Prefer: resolution=merge-duplicates the insert updates the rows it conflicts with, still
+      a write.
+    tests:
+      - fixture: fixtures/rest-insert.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.rest.upsert
+    match: { rest: { method: PUT, path: "/rest/v1/{table}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Insert or replace a row of {table} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://docs.postgrest.org/en/v12/references/api/tables_views.html
+    tests:
+      - fixture: fixtures/rest-upsert.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.rest.update
+    match: { rest: { method: PATCH, path: "/rest/v1/{table}" } }
+    class: write
+    classify: { postgrest: query }
+    resource: { arg: ref, kind: project }
+    card: "Update rows of {table} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://docs.postgrest.org/en/v12/references/api/tables_views.html
+    notes: >-
+      Irreversible when no filter limits the rows, since PostgREST then updates every row; filters
+      that match every row (id=not.is.null, name=like.*) do not count, as for SQL.
+    tests:
+      - fixture: fixtures/rest-update.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/rest-update-every-row.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/rest-update-tautology.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.rest.delete
+    match: { rest: { method: DELETE, path: "/rest/v1/{table}" } }
+    class: delete
+    classify: { postgrest: query }
+    resource: { arg: ref, kind: project }
+    card: "Delete rows from {table} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://docs.postgrest.org/en/v12/references/api/tables_views.html
+    notes: >-
+      Irreversible when no filter limits the rows, since PostgREST then deletes every row; filters
+      that match every row (id=not.is.null, name=like.*, an or= with such a branch) do not count, as
+      for SQL. A limited delete is a delete: a backup or point-in-time restore can bring the rows
+      back.
+    tests:
+      - fixture: fixtures/rest-delete.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/rest-delete-every-row.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/rest-delete-or-tautology.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/rest-delete-limit-only.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.rest.rpc.call
+    match: { rest: { method: POST, path: "/rest/v1/rpc/{function}" } }
+    class: unknown
+    resource: { arg: ref, kind: project }
+    card: "Call database function {function} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://docs.postgrest.org/en/v12/references/api/functions.html
+    notes: >-
+      A function can run any SQL its owner may; Opfence cannot see its body. GET calls run in a
+      read-only transaction, so they are reads.
+    tests:
+      - fixture: fixtures/rest-rpc-call.http
+        expect: unknown
+        resource: "abcdefghijklmnopqrst"

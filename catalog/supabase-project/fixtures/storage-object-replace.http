@@ -1,0 +1,8 @@
+# description: Replace users/42/photo.png in storage bucket avatars of project abcdefghijklmnopqrst
+PUT /storage/v1/object/avatars/users/42/photo.png HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

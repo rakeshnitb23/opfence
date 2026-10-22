@@ -77,7 +77,23 @@ func (p *Provider) Hints(host string) decode.Hints {
 	for _, a := range p.HeaderArgs {
 		h.HeaderArgs = append(h.HeaderArgs, decode.HeaderArg{Header: a.Header, Arg: a.Arg, Parse: a.Parse})
 	}
+	if p.HostArg != "" {
+		h.HostArg, h.HostArgValue = p.HostArg, p.hostLabels(host)
+	}
 	return h
+}
+
+// hostLabels returns the part of host that one of the provider's "*." host
+// patterns stands for, or "" when none matches.
+func (p *Provider) hostLabels(host string) string {
+	for _, pat := range p.Hosts {
+		if suffix, ok := strings.CutPrefix(pat, "*."); ok && strings.HasSuffix(host, "."+suffix) {
+			if v := strings.TrimSuffix(host, "."+suffix); v != "" {
+				return v
+			}
+		}
+	}
+	return ""
 }
 
 // Match returns the rule for op and any path parameters it captured, or nil
@@ -250,6 +266,14 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		}
 		return hit, label + strings.Join(why, ", ")
 	}
+	if r.Classify != nil && r.Classify.PostgREST != "" {
+		v, _ := Lookup(args, r.Classify.PostgREST)
+		q, _ := v.(map[string]any)
+		if decode.PostgRESTLimitsRows(q) {
+			return []classes.Class{r.Class}, "rule class: a PostgREST filter in " + r.Classify.PostgREST + " limits the rows"
+		}
+		return []classes.Class{classes.Irreversible}, PostgRESTEveryRow + r.Classify.PostgREST + " limits the rows, so every row changes"
+	}
 	if r.Classify.Active() {
 		what := strings.TrimSuffix(SQLClassSource, " in ")
 		if len(r.Classify.Redis) > 0 {
@@ -342,6 +366,10 @@ func (c *Classify) classes(args map[string]any) []classes.Class {
 	}
 	return out // nil for an empty list of statements: the rule's class
 }
+
+// PostgRESTEveryRow starts the class source of a PostgREST PATCH or DELETE
+// that no filter limits.
+const PostgRESTEveryRow = "no PostgREST filter in "
 
 // SQLClassSource starts the class source of an operation whose class came
 // from classifying its SQL.

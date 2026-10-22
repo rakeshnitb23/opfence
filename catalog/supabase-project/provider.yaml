@@ -1,0 +1,31 @@
+provider: supabase-project
+title: Supabase project APIs
+docs: https://supabase.com/docs/guides/api
+# What each Supabase project serves on <ref>.supabase.co, which supabase-js
+# and the client libraries call: rows through PostgREST (/rest/v1), Storage
+# (/storage/v1, and its S3 protocol), Auth (/auth/v1), edge functions
+# (/functions/v1), realtime broadcast and GraphQL (/graphql/v1). Projects on
+# a custom domain are not covered: their host is not in the catalog.
+hosts: ["*.supabase.co"]
+# The project's ref is the host's first label: rules name it as their
+# resource, and environments map it ("ref", as in the Management API).
+host_arg: ref
+# db.<ref>.supabase.co, under the same pattern, serves Postgres (5432) and
+# its dedicated pooler (6543), which Opfence cannot read: those ports are
+# handled as before this provider existed, refused in strict mode unless
+# listed under passthrough and tunnelled in open mode.
+database_ports: [5432, 6543]
+graphql: ["/graphql/v1"]
+auth:
+  - header: apikey
+  - header: Authorization          # "Bearer <key>"; a signed-in user's session JWT is left as it is
+    scheme: Bearer
+# Only keys that bypass row level security are taken: the service_role key
+# and secret keys (sb_secret_...). Publishable and anon keys are meant for
+# browsers and stay as they are.
+detect:
+  env: [SUPABASE_SERVICE_ROLE_KEY, SUPABASE_SECRET_KEY, SUPABASE_SERVICE_KEY]
+  prefixes: [sb_secret_]
+defaults:
+  rest_safe_methods: read          # GET and HEAD; edge functions, which run code on any method, have rules
+  graphql_query: read              # pg_graphql queries; mutations have no rule, so they are unknown

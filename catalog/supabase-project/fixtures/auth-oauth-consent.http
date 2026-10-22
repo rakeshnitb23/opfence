@@ -1,0 +1,8 @@
+# description: Grant an OAuth app access to the signed-in user in project abcdefghijklmnopqrst
+POST /auth/v1/oauth/authorizations/auth_01/consent HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"action": "approve"}

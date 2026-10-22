@@ -1,0 +1,251 @@
+# Supabase project APIs (<ref>.supabase.co): auth admin.
+operations:
+  - id: supabase-project.auth-admin.user.create
+    match: { rest: { method: POST, path: "/auth/v1/admin/users" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Create user {body.email} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Creates someone who can sign in; the service role can set their password, role and app
+      metadata.
+    tests:
+      - fixture: fixtures/auth-admin-user-create.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.user.update
+    match: { rest: { method: PUT, path: "/auth/v1/admin/users/{user_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change user {user_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Can set the user's password, email, role, ban and app metadata.
+    tests:
+      - fixture: fixtures/auth-admin-user-update.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.user.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/users/{user_id}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete user {user_id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Deletes the user and their identities; rows that reference them can go with them through
+      foreign keys.
+    tests:
+      - fixture: fixtures/auth-admin-user-delete.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.factor.update
+    match: { rest: { method: PUT, path: "/auth/v1/admin/users/{user_id}/factors/{factor_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change sign-in factor {factor_id} of user {user_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-factor-update.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.factor.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/users/{user_id}/factors/{factor_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove sign-in factor {factor_id} of user {user_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-factor-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.passkey.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/users/{user_id}/passkeys/{passkey_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove passkey {passkey_id} of user {user_id} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-passkey-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.generate-link
+    match: { rest: { method: POST, path: "/auth/v1/admin/generate_link" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Make a {body.type} link for {body.email} in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns the link, and whoever opens a sign-in link is signed in as that user.
+    tests:
+      - fixture: fixtures/auth-admin-generate-link.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.sso-provider.post
+    match: { rest: { method: POST, path: "/auth/v1/admin/sso/providers" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add an SSO provider to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-sso-provider-post.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.oauth-client.post
+    match: { rest: { method: POST, path: "/auth/v1/admin/oauth/clients" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Register an OAuth client with project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-oauth-client-post.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.custom-provider.post
+    match: { rest: { method: POST, path: "/auth/v1/admin/custom-providers" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add a sign-in provider to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-custom-provider-post.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.sso-provider.put
+    match: { rest: { method: PUT, path: "/auth/v1/admin/sso/providers/{idp_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change SSO provider {idp_id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-sso-provider-put.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.oauth-client.put
+    match: { rest: { method: PUT, path: "/auth/v1/admin/oauth/clients/{client_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change OAuth client {client_id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-oauth-client-put.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.custom-provider.put
+    match: { rest: { method: PUT, path: "/auth/v1/admin/custom-providers/{identifier}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change sign-in provider {identifier} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-custom-provider-put.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.sso-provider.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/sso/providers/{idp_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove SSO provider {idp_id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-sso-provider-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.oauth-client.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/oauth/clients/{client_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove OAuth client {client_id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-oauth-client-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.custom-provider.delete
+    match: { rest: { method: DELETE, path: "/auth/v1/admin/custom-providers/{identifier}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove sign-in provider {identifier} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    tests:
+      - fixture: fixtures/auth-admin-custom-provider-delete.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase-project.auth-admin.oauth-client.regenerate-secret
+    match: { rest: { method: POST, path: "/auth/v1/admin/oauth/clients/{client_id}/regenerate_secret" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Make a new secret for OAuth client {client_id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://github.com/supabase/auth/blob/master/internal/api/api.go
+    notes: >-
+      Returns the secret.
+    tests:
+      - fixture: fixtures/auth-admin-oauth-client-regenerate-secret.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"

@@ -1,0 +1,6 @@
+# description: Remove OAuth client client_01 from project abcdefghijklmnopqrst
+DELETE /auth/v1/admin/oauth/clients/client_01 HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

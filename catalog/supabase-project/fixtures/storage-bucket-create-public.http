@@ -1,0 +1,8 @@
+# description: Create storage bucket {body.name} in project abcdefghijklmnopqrst, public
+POST /storage/v1/bucket HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{"name": "avatars", "public": true}

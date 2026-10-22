@@ -31,6 +31,12 @@
         }
       }
     },
+    "host_arg": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+      "not": { "enum": ["query", "body"] },
+      "description": "An argument holding the part of the request's host that a *. host pattern stands for (a project's ref in abcd.supabase.co), for resources and environments"
+    },
     "database_ports": {
       "type": "array",
       "items": { "type": "integer", "minimum": 1, "maximum": 65535, "not": { "const": 443 } },

@@ -1,0 +1,6 @@
+# description: Clear project abcdefghijklmnopqrst's storage CDN cache
+DELETE /storage/v1/cdn HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+

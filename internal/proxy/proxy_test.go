@@ -597,6 +597,26 @@ func TestDatabasePorts(t *testing.T) {
 	}
 }
 
+// Supabase's project hosts (*.supabase.co) include db.<ref>.supabase.co,
+// which serves Postgres on 5432 and a pooler on 6543: those keep working in
+// open mode, as before the hosts joined the catalog.
+func TestSupabaseDatabasePorts(t *testing.T) {
+	const host = "db.abcdefghijklmnopqrst.supabase.co"
+	open := newEnv(t, opts{mode: "open"})
+	for _, port := range []string{"5432", "6543"} {
+		c, code := connect(t, open.httpAddr, host+":"+port)
+		if code != 200 || !echoes(c) {
+			t.Fatalf("open: %s:%s got %d", host, port, code)
+		}
+		c.Close()
+	}
+	if c, code := connect(t, newEnv(t, opts{}).httpAddr, host+":5432"); code != http.StatusForbidden {
+		t.Fatalf("strict: %s:5432 got %d", host, code)
+	} else {
+		c.Close()
+	}
+}
+
 // The database a connection-string header names becomes the resource, and
 // the password in it reaches neither the block message nor the audit log.
 func TestHeaderArgsKeepPasswordsOut(t *testing.T) {

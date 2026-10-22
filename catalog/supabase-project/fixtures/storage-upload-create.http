@@ -1,0 +1,8 @@
+# description: Start a resumable upload to project abcdefghijklmnopqrst's storage
+POST /storage/v1/upload/resumable HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

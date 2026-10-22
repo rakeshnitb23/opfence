@@ -1,0 +1,15 @@
+# Supabase project APIs (<ref>.supabase.co): realtime.
+operations:
+  - id: supabase-project.realtime.broadcast
+    match: { rest: { method: POST, path: "/realtime/v1/api/broadcast" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Send realtime messages in project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://supabase.com/docs/guides/realtime/broadcast
+    tests:
+      - fixture: fixtures/realtime-broadcast.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

@@ -68,6 +68,9 @@ type Hints struct {
 	MCPPaths     []string    // paths that carry MCP, with everything under them; empty means every path
 	Git          bool        // host serves git's smart HTTP protocol
 	HeaderArgs   []HeaderArg // headers whose non-secret parts become arguments
+	// HostArg, when set, is an argument that gets HostArgValue, the part
+	// of the host a "*." host pattern stands for (a project's ref).
+	HostArg, HostArgValue string
 }
 
 // HeaderArg turns the non-secret parts of a request header into an
@@ -101,6 +104,14 @@ func Decode(r *request.Request, h Hints) []Operation {
 	}
 	if len(ops) > MaxOperations {
 		ops = []Operation{failed(r, ops[0].Protocol, "request carries more than 200 operations")}
+	}
+	if h.HostArg != "" && h.HostArgValue != "" {
+		for i := range ops {
+			if ops[i].Args == nil {
+				ops[i].Args = map[string]any{}
+			}
+			ops[i].Args[h.HostArg] = h.HostArgValue
+		}
 	}
 	for _, ha := range h.HeaderArgs {
 		v := headerArg(r.Header.Get(ha.Header), ha.Parse)

@@ -1,0 +1,8 @@
+# description: Add an SSO provider to project abcdefghijklmnopqrst
+POST /auth/v1/admin/sso/providers HTTP/1.1
+Host: abcdefghijklmnopqrst.supabase.co
+apikey: opf_supabase-project_EXAMPLE
+Authorization: Bearer opf_supabase-project_EXAMPLE
+Content-Type: application/json
+
+{}

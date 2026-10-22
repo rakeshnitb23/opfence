@@ -49,6 +49,11 @@ type Provider struct {
 	// arguments rules can name (resource, conditions, cards), such as the
 	// database host in a connection string. Passwords are never read.
 	HeaderArgs []HeaderArg `yaml:"header_args"`
+	// HostArg names an argument that holds the part of the request's host
+	// a "*." host pattern stands for: with hosts [*.supabase.co], a request
+	// to abcd.supabase.co has HostArg "abcd". Rules can name it as their
+	// resource, and environments can map it, like any argument.
+	HostArg string `yaml:"host_arg"`
 	// DatabasePorts are ports where the provider's hosts speak a database's
 	// own protocol (MySQL on 3306), which Opfence cannot read. The proxy
 	// handles them as it handles hosts outside the catalog, instead of
@@ -285,6 +290,11 @@ type Classify struct {
 	// operations they run. The engine evaluates them (engine.awsCLI).
 	AWSCLI   string `yaml:"aws_cli"`
 	Provider string `yaml:"provider"`
+	// PostgREST names the argument holding a PostgREST request's query
+	// parameters (query). The rule's class holds when a filter limits the
+	// rows a PATCH or DELETE changes; when none does, the class is
+	// irreversible (decode.PostgRESTLimitsRows).
+	PostgREST string `yaml:"postgrest"`
 }
 
 // Active reports whether the block classifies SQL or Redis commands.
@@ -295,6 +305,9 @@ func (c *Classify) Paths() []string {
 	out := slices.Concat(c.SQL, c.Redis)
 	if c.AWSCLI != "" {
 		out = append(out, c.AWSCLI)
+	}
+	if c.PostgREST != "" {
+		out = append(out, c.PostgREST)
 	}
 	return out
 }
@@ -321,6 +334,9 @@ func (c *Classify) Dialects() []string {
 // String describes where the SQL comes from and how it is read, for cards
 // and listings: "query", "body.sql, body.batch.sql (sqlite)".
 func (c *Classify) String() string {
+	if c.PostgREST != "" {
+		return c.PostgREST + " (PostgREST filters)"
+	}
 	if c.AWSCLI != "" {
 		return c.AWSCLI + " (AWS CLI, " + c.Provider + " rules)"
 	}
@@ -489,6 +505,9 @@ func (r *Rule) PossibleClasses() []classes.Class {
 				add(classes.Credential)
 			}
 		}
+	}
+	if r.Classify != nil && r.Classify.PostgREST != "" {
+		add(classes.Irreversible) // no filter: every row
 	}
 	if r.Classify != nil && r.Classify.AWSCLI != "" {
 		// Any AWS operation: every class there is.
