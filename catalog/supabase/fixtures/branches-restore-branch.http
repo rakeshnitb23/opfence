@@ -1,0 +1,7 @@
+# description: Cancel the deletion of database branch qrstuvwxyzabcdefghij
+POST /v1/branches/qrstuvwxyzabcdefghij/restore HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

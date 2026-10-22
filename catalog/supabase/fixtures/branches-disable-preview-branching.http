@@ -1,0 +1,7 @@
+# description: Turn off branching for project abcdefghijklmnopqrst, deleting every branch
+DELETE /v1/projects/abcdefghijklmnopqrst/branches HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

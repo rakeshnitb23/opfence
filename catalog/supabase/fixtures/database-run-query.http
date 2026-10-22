@@ -1,0 +1,7 @@
+# description: Run SQL on project abcdefghijklmnopqrst
+POST /v1/projects/abcdefghijklmnopqrst/database/query HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{"query": "select id, email from auth.users limit 10"}

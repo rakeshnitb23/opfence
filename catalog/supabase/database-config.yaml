@@ -1,0 +1,111 @@
+# Supabase Management API (api.supabase.com): database config.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.database-config.get-pgsodium-config
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/pgsodium" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Read project {ref}'s pgsodium root key"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the pgsodium root key.
+    tests:
+      - fixture: fixtures/database-config-get-pgsodium-config.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.update-pgsodium-config
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/pgsodium" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Set project {ref}'s pgsodium root key"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Sets the pgsodium root key: data encrypted with the old key, Vault secrets among it, can
+      become unreadable.
+    tests:
+      - fixture: fixtures/database-config-update-pgsodium-config.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.get-postgrest-service-config
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/postgrest" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Read project {ref}'s data API settings and JWT secret"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the project's JWT secret.
+    tests:
+      - fixture: fixtures/database-config-get-postgrest-service-config.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.update-postgrest-service-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/postgrest" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s data API settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Decides which schemas the data API exposes.
+    tests:
+      - fixture: fixtures/database-config-update-postgrest-service-config.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.update-ssl-enforcement-config
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/ssl-enforcement" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s SSL enforcement"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Decides whether connections without SSL are accepted.
+    tests:
+      - fixture: fixtures/database-config-update-ssl-enforcement-config.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.update-pooler-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/config/database/pooler" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s connection pooler settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-config-update-pooler-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database-config.update-postgres-config
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/config/database/postgres" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s Postgres settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-config-update-postgres-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

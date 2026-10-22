@@ -1,0 +1,7 @@
+# description: Change SSO provider 6a7b8c9d-0e1f-4a2b-8c3d-4e5f6a7b8c9d of project abcdefghijklmnopqrst
+PUT /v1/projects/abcdefghijklmnopqrst/config/auth/sso/providers/6a7b8c9d-0e1f-4a2b-8c3d-4e5f6a7b8c9d HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

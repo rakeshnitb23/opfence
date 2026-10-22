@@ -1,0 +1,5 @@
+# description: Read database branch qrstuvwxyzabcdefghij's password and JWT secret
+GET /v1/branches/qrstuvwxyzabcdefghij HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

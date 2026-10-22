@@ -1,0 +1,7 @@
+# description: Delete edge function send-email of project abcdefghijklmnopqrst
+DELETE /v1/projects/abcdefghijklmnopqrst/functions/send-email HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

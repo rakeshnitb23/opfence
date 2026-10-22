@@ -1,0 +1,326 @@
+# Supabase Management API (api.supabase.com): database.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.database.update-jit-access-config
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/jit-access" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s temporary database access settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-update-jit-access-config.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.apply-migration
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/migrations" } }
+    class: unknown
+    classify: { sql: body.query }
+    resource: { arg: ref, kind: project }
+    card: "Apply migration {body.name} to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      The class comes from the migration's SQL, as for running a query.
+    tests:
+      - fixture: fixtures/database-apply-migration.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/database-apply-migration-drop.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.upsert-migration
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/database/migrations" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Record migration {body.name} in project {ref}'s history without running it"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Records a migration in the history without running it.
+    tests:
+      - fixture: fixtures/database-upsert-migration.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.rollback-migrations
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/database/migrations" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Roll back migrations on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Runs the migrations' rollback SQL, which drops what they created, data included.
+    tests:
+      - fixture: fixtures/database-rollback-migrations.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.patch-migration
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/database/migrations/{version}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change migration {version} in project {ref}'s history"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Changes a migration's entry in the history.
+    tests:
+      - fixture: fixtures/database-patch-migration.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.run-query
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/query" } }
+    class: unknown
+    classify: { sql: body.query }
+    resource: { arg: ref, kind: project }
+    card: "Run SQL on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      The class comes from the SQL, read as Postgres: SELECT is read, INSERT and UPDATE ... WHERE
+      are write, DELETE ... WHERE is delete, DROP, TRUNCATE and UPDATE or DELETE without WHERE are
+      irreversible, GRANT, REVOKE and role changes are access, reading Vault's decrypted secrets is
+      credential, and anything the classifier cannot read is unknown.
+    tests:
+      - fixture: fixtures/database-run-query.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/database-run-query-delete-all.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/database-run-query-vault.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/database-run-query-grant.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.read-only-query
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/query/read-only" } }
+    class: read
+    classify: { sql: body.query }
+    resource: { arg: ref, kind: project }
+    card: "Run read-only SQL on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Runs as supabase_read_only_user, so the database refuses writes; the SQL is still read, so
+      reading Vault's decrypted secrets is credential.
+    tests:
+      - fixture: fixtures/database-read-only-query.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/database-read-only-query-vault.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.enable-database-webhook
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/webhooks/enable" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Turn on database webhooks for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-enable-database-webhook.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.update-database-password
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/database/password" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s database password"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Sets the database password: apps connecting with the old one stop working.
+    tests:
+      - fixture: fixtures/database-update-database-password.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.authorize-jit-access
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/jit" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Grant temporary database access on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-authorize-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.update-jit-access
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/database/jit" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change temporary database access on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-update-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.invite-external-jit-access
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/jit/invite" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Invite someone outside the organization to project {ref}'s database"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Invites someone outside the organization to the database.
+    tests:
+      - fixture: fixtures/database-invite-external-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.accept-invite-external-jit-access
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/jit/invite/accept" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Accept an invitation to project {ref}'s database"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-accept-invite-external-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.delete-invite-external-jit-access
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/database/jit/invite/{invite_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Delete database invitation {invite_id} on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-delete-invite-external-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.delete-jit-access
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/database/jit/{user_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove temporary database access of user {user_id} on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-delete-jit-access.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.restore-pitr-backup
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/backups/restore-pitr" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Restore project {ref}'s database to Unix time {body.recovery_time_target_unix}, losing later changes"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Replaces the database with its state at that time: everything written since is gone.
+    tests:
+      - fixture: fixtures/database-restore-pitr-backup.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.create-restore-point
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/backups/restore-point" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Create a restore point for project {ref}'s database"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-create-restore-point.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.restore-physical-backup
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/backups/restore" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Restore project {ref}'s database from a backup, losing later changes"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Replaces the database with the backup: everything written since is gone.
+    tests:
+      - fixture: fixtures/database-restore-physical-backup.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.update-backup-schedule
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/database/backups/schedule" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s backup schedule"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/database-update-backup-schedule.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.database.undo
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/database/backups/undo" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Return project {ref}'s database to a restore point, losing later changes"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the database to a restore point: everything written since is gone.
+    tests:
+      - fixture: fixtures/database-undo.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"

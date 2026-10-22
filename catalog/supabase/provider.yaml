@@ -1,0 +1,24 @@
+provider: supabase
+title: Supabase Management API
+docs: https://supabase.com/docs/reference/api/introduction
+# The Management API (api.supabase.com/v1): projects, branches, database SQL
+# and migrations, backups and restores, auth settings, API keys, edge
+# functions and their secrets, networking and domains. The Supabase CLI
+# (supabase link, db push, functions deploy, secrets set) and the local
+# Supabase MCP server (@supabase/mcp-server-supabase) call it with a personal
+# access token (sbp_...), which also works for the hosted MCP server.
+hosts: [api.supabase.com]
+auth:
+  - header: Authorization          # "Bearer sbp_..." (personal access token) or an OAuth access token
+    scheme: Bearer
+detect:
+  env: [SUPABASE_ACCESS_TOKEN]
+  prefixes: [sbp_]
+# The same token serves the hosted MCP server; keys init stored for
+# supabase-mcp before this provider existed keep working here.
+secrets_from: [supabase-mcp]
+defaults:
+  rest_safe_methods: read          # the GETs that return secrets have credential rules
+schemas:
+  - kind: openapi
+    url: https://api.supabase.com/api/v1-json

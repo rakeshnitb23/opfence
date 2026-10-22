@@ -1,0 +1,7 @@
+# description: Remove project abcdefghijklmnopqrst's custom hostname
+DELETE /v1/projects/abcdefghijklmnopqrst/custom-hostname HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

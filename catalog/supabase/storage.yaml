@@ -1,0 +1,16 @@
+# Supabase Management API (api.supabase.com): storage.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.storage.update-storage-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/config/storage" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s storage settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/storage-update-storage-config.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"

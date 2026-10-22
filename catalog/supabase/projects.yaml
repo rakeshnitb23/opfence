@@ -1,0 +1,223 @@
+# Supabase Management API (api.supabase.com): projects.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.projects.create-project
+    match: { rest: { method: POST, path: "/v1/projects" } }
+    class: money
+    card: "Create Supabase project {body.name}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      New projects are billed.
+    tests:
+      - fixture: fixtures/projects-create-project.http
+        expect: money
+
+  - id: supabase.projects.update-action-run-status
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/actions/{run_id}/status" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Change the status of action run {run_id} on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/projects-update-action-run-status.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.delete-project
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}" } }
+    class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Delete Supabase project {ref} with its database, storage and backups"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Deletes the project with its database, storage, edge functions and backups.
+    tests:
+      - fixture: fixtures/projects-delete-project.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.update-project
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Update project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/projects-update-project.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.upgrade-postgres-version
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/upgrade" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Upgrade project {ref}'s Postgres version"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Upgrades Postgres in place: the data stays, but the upgrade cannot be rolled back and the
+      project is offline while it runs.
+    tests:
+      - fixture: fixtures/projects-upgrade-postgres-version.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.disable-readonly-mode-temporarily
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/readonly/temporary-disable" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Allow writes on read-only project {ref} for 15 minutes"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Supabase turns read-only mode on when the disk is nearly full; this allows writes again for 15
+      minutes so space can be freed.
+    tests:
+      - fixture: fixtures/projects-disable-readonly-mode-temporarily.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.setup-read-replica
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/read-replicas/setup" } }
+    class: money
+    resource: { arg: ref, kind: project }
+    card: "Set up a read replica of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Read replicas are billed.
+    tests:
+      - fixture: fixtures/projects-setup-read-replica.http
+        expect: money
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.remove-read-replica
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/read-replicas/remove" } }
+    class: delete
+    resource: { arg: ref, kind: project }
+    card: "Remove a read replica of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      A replica is a copy of the primary database and can be set up again.
+    tests:
+      - fixture: fixtures/projects-remove-read-replica.http
+        expect: delete
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.pause-project
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/pause" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Pause project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Takes the project's database and APIs offline until restored.
+    tests:
+      - fixture: fixtures/projects-pause-project.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.restart-project
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/restart" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Restart project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/projects-restart-project.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.restore-project
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/restore" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Restore paused project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Brings a paused project back online.
+    tests:
+      - fixture: fixtures/projects-restore-project.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.cancel-project-restoration
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/restore/cancel" } }
+    class: write
+    resource: { arg: ref, kind: project }
+    card: "Cancel restoring project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/projects-cancel-project-restoration.http
+        expect: write
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.apply-project-addon
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/billing/addons" } }
+    class: money
+    resource: { arg: ref, kind: project }
+    card: "Apply add-on {body.addon_variant} to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/projects-apply-project-addon.http
+        expect: money
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.projects.remove-project-addon
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/billing/addons/{addon_variant}" } }
+    class: money
+    when:
+      - if: { arg: addon_variant, matches: "^pitr" }
+        class: irreversible
+    resource: { arg: ref, kind: project }
+    card: "Remove add-on {addon_variant} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Removing the point-in-time recovery add-on discards the recovery window, so it is
+      irreversible.
+    tests:
+      - fixture: fixtures/projects-remove-project-addon.http
+        expect: money
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/projects-remove-project-addon-pitr.http
+        expect: irreversible
+        resource: "abcdefghijklmnopqrst"

@@ -263,3 +263,34 @@ func TestInjectSecretsFrom(t *testing.T) {
 		t.Fatalf("one-way listing used both ways: %+v", res)
 	}
 }
+
+// Supabase's personal access token serves both the Management API and the
+// hosted MCP server. Keys init stores now belong to supabase; keys stored
+// for supabase-mcp before the supabase provider existed keep working on both.
+// The values are not shaped like real tokens (sbp_ and 40 hex digits), so
+// secret scanners do not flag them.
+func TestInjectSupabaseSharedToken(t *testing.T) {
+	c, err := catalog.Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	current := &secrets.Secret{Provider: "supabase", Name: "SUPABASE_ACCESS_TOKEN", Value: "sbp_EXAMPLE-not-a-real-token-current-0000", Placeholder: "sbp_EXAMPLE-not-a-real-token-current-pppp"}
+	older := &secrets.Secret{Provider: "supabase-mcp", Name: "SUPABASE_ACCESS_TOKEN", Value: "sbp_EXAMPLE-not-a-real-token-older-000000", Placeholder: "sbp_EXAMPLE-not-a-real-token-older-pppppp"}
+	s := secrets.NewSet([]*secrets.Secret{current, older, railway})
+	for _, host := range []string{"api.supabase.com", "mcp.supabase.com"} {
+		p := c.ProviderForHost(host)
+		if p == nil {
+			t.Fatalf("no provider for %s", host)
+		}
+		for _, sec := range []*secrets.Secret{current, older} {
+			h := http.Header{"Authorization": {"Bearer " + sec.Placeholder}}
+			if _, res := Request(p, h, "", s); h.Get("Authorization") != "Bearer "+sec.Value || len(res.Injected) != 1 {
+				t.Errorf("%s: %s's key not injected: %+v", host, sec.Provider, res)
+			}
+		}
+		h := http.Header{"Authorization": {"Bearer " + railway.Placeholder}}
+		if _, res := Request(p, h, "", s); len(res.Foreign) != 1 {
+			t.Errorf("%s: another provider's key injected: %+v", host, res)
+		}
+	}
+}

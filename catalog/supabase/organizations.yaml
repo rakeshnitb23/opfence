@@ -1,0 +1,30 @@
+# Supabase Management API (api.supabase.com): organizations.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.organizations.create-organization
+    match: { rest: { method: POST, path: "/v1/organizations" } }
+    class: write
+    card: "Create organization {body.name}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/organizations-create-organization.http
+        expect: write
+
+  - id: supabase.organizations.claim-project-for-organization
+    match: { rest: { method: POST, path: "/v1/organizations/{slug}/project-claim/{token}" } }
+    class: access
+    resource: { arg: slug, kind: organization }
+    card: "Move a claimed project into organization {slug}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Moves a project into the organization, which changes who controls it.
+    tests:
+      - fixture: fixtures/organizations-claim-project-for-organization.http
+        expect: access
+        resource: "acme"

@@ -1,0 +1,7 @@
+# description: Change API key 8f4c2a10-5e6d-4b7a-9c8d-0e1f2a3b4c5d of project abcdefghijklmnopqrst
+PATCH /v1/projects/abcdefghijklmnopqrst/api-keys/8f4c2a10-5e6d-4b7a-9c8d-0e1f2a3b4c5d HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

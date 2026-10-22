@@ -1,0 +1,18 @@
+# Supabase Management API (api.supabase.com): disk.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.disk.modify-database-disk
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/disk" } }
+    class: money
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s database disk"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      A larger or faster disk is billed.
+    tests:
+      - fixture: fixtures/disk-modify-database-disk.http
+        expect: money
+        resource: "abcdefghijklmnopqrst"

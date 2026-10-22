@@ -1,0 +1,253 @@
+# Supabase Management API (api.supabase.com): auth.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.auth.create-legacy-signing-key
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/auth/signing-keys/legacy" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Use project {ref}'s JWT secret as a signing key"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Signing keys decide which JWTs the project accepts.
+    tests:
+      - fixture: fixtures/auth-create-legacy-signing-key.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.create-project-signing-key
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/auth/signing-keys" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Create a standby signing key for project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Signing keys decide which JWTs the project accepts.
+    tests:
+      - fixture: fixtures/auth-create-project-signing-key.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.remove-project-signing-key
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/config/auth/signing-keys/{id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove signing key {id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/auth-remove-project-signing-key.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.update-project-signing-key
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/config/auth/signing-keys/{id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change signing key {id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Moving a key in or out of use changes which JWTs the project accepts; revoking one signs every
+      user out.
+    tests:
+      - fixture: fixtures/auth-update-project-signing-key.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.get-auth-service-config
+    match: { rest: { method: GET, path: "/v1/projects/{ref}/config/auth" } }
+    class: credential
+    resource: { arg: ref, kind: project }
+    card: "Read project {ref}'s auth settings, with their secrets"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Returns the SMTP password, OAuth providers' client secrets, SMS provider keys and auth hook
+      secrets.
+    tests:
+      - fixture: fixtures/auth-get-auth-service-config.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.update-auth-service-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/config/auth" } }
+    class: access
+    when:
+      - if: { arg: body.external_apple_secret, present: true }
+        class: credential
+      - if: { arg: body.external_azure_secret, present: true }
+        class: credential
+      - if: { arg: body.external_bitbucket_secret, present: true }
+        class: credential
+      - if: { arg: body.external_discord_secret, present: true }
+        class: credential
+      - if: { arg: body.external_facebook_secret, present: true }
+        class: credential
+      - if: { arg: body.external_figma_secret, present: true }
+        class: credential
+      - if: { arg: body.external_github_secret, present: true }
+        class: credential
+      - if: { arg: body.external_gitlab_secret, present: true }
+        class: credential
+      - if: { arg: body.external_google_secret, present: true }
+        class: credential
+      - if: { arg: body.external_kakao_secret, present: true }
+        class: credential
+      - if: { arg: body.external_keycloak_secret, present: true }
+        class: credential
+      - if: { arg: body.external_linkedin_oidc_secret, present: true }
+        class: credential
+      - if: { arg: body.external_notion_secret, present: true }
+        class: credential
+      - if: { arg: body.external_slack_oidc_secret, present: true }
+        class: credential
+      - if: { arg: body.external_slack_secret, present: true }
+        class: credential
+      - if: { arg: body.external_spotify_secret, present: true }
+        class: credential
+      - if: { arg: body.external_twitch_secret, present: true }
+        class: credential
+      - if: { arg: body.external_twitter_secret, present: true }
+        class: credential
+      - if: { arg: body.external_workos_secret, present: true }
+        class: credential
+      - if: { arg: body.external_x_secret, present: true }
+        class: credential
+      - if: { arg: body.external_zoom_secret, present: true }
+        class: credential
+      - if: { arg: body.hook_after_user_created_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_before_user_created_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_custom_access_token_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_mfa_verification_attempt_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_password_verification_attempt_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_send_email_secrets, present: true }
+        class: credential
+      - if: { arg: body.hook_send_sms_secrets, present: true }
+        class: credential
+      - if: { arg: body.nimbus_oauth_client_secret, present: true }
+        class: credential
+      - if: { arg: body.security_captcha_secret, present: true }
+        class: credential
+      - if: { arg: body.sms_messagebird_access_key, present: true }
+        class: credential
+      - if: { arg: body.sms_textlocal_api_key, present: true }
+        class: credential
+      - if: { arg: body.sms_twilio_auth_token, present: true }
+        class: credential
+      - if: { arg: body.sms_twilio_verify_auth_token, present: true }
+        class: credential
+      - if: { arg: body.sms_vonage_api_key, present: true }
+        class: credential
+      - if: { arg: body.sms_vonage_api_secret, present: true }
+        class: credential
+      - if: { arg: body.smtp_pass, present: true }
+        class: credential
+    resource: { arg: ref, kind: project }
+    card: "Change project {ref}'s auth settings"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Auth settings decide who can sign up and sign in, and where users are sent. Setting one of its
+      secrets (the SMTP password, an OAuth provider's client secret, an SMS provider's key, an auth
+      hook's secrets) is credential.
+    tests:
+      - fixture: fixtures/auth-update-auth-service-config.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/auth-update-auth-service-config-smtp-pass.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+      - fixture: fixtures/auth-update-auth-service-config-github-secret.http
+        expect: credential
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.create-project-tpa-integration
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/auth/third-party-auth" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add a third-party auth integration to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Lets users sign in with tokens from another auth provider.
+    tests:
+      - fixture: fixtures/auth-create-project-tpa-integration.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.delete-project-tpa-integration
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/config/auth/third-party-auth/{tpa_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove third-party auth integration {tpa_id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/auth-delete-project-tpa-integration.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.create-sso-provider
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/config/auth/sso/providers" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Add an SSO provider to project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/auth-create-sso-provider.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.update-sso-provider
+    match: { rest: { method: PUT, path: "/v1/projects/{ref}/config/auth/sso/providers/{provider_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change SSO provider {provider_id} of project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/auth-update-sso-provider.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.auth.delete-sso-provider
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/config/auth/sso/providers/{provider_id}" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Remove SSO provider {provider_id} from project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/auth-delete-sso-provider.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"

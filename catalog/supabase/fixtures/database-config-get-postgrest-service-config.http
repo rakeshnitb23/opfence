@@ -1,0 +1,5 @@
+# description: Read project abcdefghijklmnopqrst's data API settings and JWT secret
+GET /v1/projects/abcdefghijklmnopqrst/postgrest HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

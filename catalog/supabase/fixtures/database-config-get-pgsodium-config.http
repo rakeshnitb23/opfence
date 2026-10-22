@@ -1,0 +1,5 @@
+# description: Read project abcdefghijklmnopqrst's pgsodium root key
+GET /v1/projects/abcdefghijklmnopqrst/pgsodium HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

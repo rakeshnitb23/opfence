@@ -1,0 +1,5 @@
+# description: Check whether JWT based legacy (anon, service_role) API keys are enabled. This API endpoint will be removed in the future, check for HTTP 404 Not Found in project abcdefghijklmnopqrst
+GET /v1/projects/abcdefghijklmnopqrst/api-keys/legacy HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+

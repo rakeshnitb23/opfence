@@ -1,0 +1,7 @@
+# description: Allow writes on read-only project abcdefghijklmnopqrst for 15 minutes
+POST /v1/projects/abcdefghijklmnopqrst/readonly/temporary-disable HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}

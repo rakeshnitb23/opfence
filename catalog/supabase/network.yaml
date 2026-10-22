@@ -1,0 +1,76 @@
+# Supabase Management API (api.supabase.com): network.
+# Generated from the published OpenAPI description (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: supabase.network.list-network-bans
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/network-bans/retrieve" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/network-list-network-bans.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.network.list-network-bans-enriched
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/network-bans/retrieve/enriched" } }
+    class: read
+    resource: { arg: ref, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    tests:
+      - fixture: fixtures/network-list-network-bans-enriched.http
+        expect: read
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.network.delete-network-bans
+    match: { rest: { method: DELETE, path: "/v1/projects/{ref}/network-bans" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Unban IP addresses on project {ref}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Lets banned IP addresses connect to the database again.
+    tests:
+      - fixture: fixtures/network-delete-network-bans.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.network.patch-network-restrictions
+    match: { rest: { method: PATCH, path: "/v1/projects/{ref}/network-restrictions" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change which IP addresses can reach project {ref}'s database"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Decides which IP addresses can reach the database.
+    tests:
+      - fixture: fixtures/network-patch-network-restrictions.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"
+
+  - id: supabase.network.update-network-restrictions
+    match: { rest: { method: POST, path: "/v1/projects/{ref}/network-restrictions/apply" } }
+    class: access
+    resource: { arg: ref, kind: project }
+    card: "Change which IP addresses can reach project {ref}'s database"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://api.supabase.com/api/v1-json
+    notes: >-
+      Decides which IP addresses can reach the database.
+    tests:
+      - fixture: fixtures/network-update-network-restrictions.http
+        expect: access
+        resource: "abcdefghijklmnopqrst"

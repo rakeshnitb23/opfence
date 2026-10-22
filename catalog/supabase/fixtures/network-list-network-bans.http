@@ -1,0 +1,7 @@
+# description: Get project abcdefghijklmnopqrst's network bans
+POST /v1/projects/abcdefghijklmnopqrst/network-bans/retrieve HTTP/1.1
+Host: api.supabase.com
+Authorization: Bearer opf_supabase_EXAMPLE
+Content-Type: application/json
+
+{}
