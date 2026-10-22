@@ -152,3 +152,31 @@ func TestHookCatalogLoading(t *testing.T) {
 		t.Error("a --catalog folder was loaded lazily")
 	}
 }
+
+// The proxy and explain decide requests one at a time, so they load the
+// embedded catalog lazily, and decide exactly as a full load does.
+func TestLazyEngineDecidesLikeFull(t *testing.T) {
+	g := &globalOptions{userConfig: filepath.Join(t.TempDir(), "none.yaml")}
+	lazy, err := g.lazyEngine()
+	if err != nil {
+		t.Fatal(err)
+	}
+	full, err := g.engine()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !lazy.Catalog.Lazy() || full.Catalog.Lazy() {
+		t.Fatalf("lazy %v, full %v", lazy.Catalog.Lazy(), full.Catalog.Lazy())
+	}
+	for _, c := range []struct{ prov, tool string }{
+		{"terraform-mcp", "create_run"}, {"stripe-mcp", "create_refund"}, {"aws-api-mcp", "call_aws"}, {"github-mcp", "delete_file"},
+	} {
+		args := map[string]any{"cli_command": "aws s3 rm s3://b/k", "run_type": "is_destroy"}
+		a := lazy.EvaluateTool(lazy.Catalog.Provider(c.prov), c.tool, args)
+		b := full.EvaluateTool(full.Catalog.Provider(c.prov), c.tool, args)
+		if a.Decision != b.Decision || a.Evaluations[0].Card != b.Evaluations[0].Card || a.Evaluations[0].Class != b.Evaluations[0].Class {
+			t.Errorf("%s %s: lazy %s %s %q, full %s %s %q", c.prov, c.tool, a.Decision, a.Evaluations[0].Class, a.Evaluations[0].Card,
+				b.Decision, b.Evaluations[0].Class, b.Evaluations[0].Card)
+		}
+	}
+}

@@ -53,7 +53,7 @@ type sessionOptions struct {
 }
 
 func openSession(g *globalOptions, o sessionOptions) (*session, error) {
-	eng, err := g.engine()
+	eng, err := g.lazyEngine()
 	if err != nil {
 		return nil, err
 	}
