@@ -1,0 +1,143 @@
+# Google Cloud IAM: roles.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-iam.roles.organizations-roles-create
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/roles" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Create role in organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-organizations-roles-create.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-iam.roles.organizations-roles-delete
+    match: { rest: { method: DELETE, path: "/v1/organizations/{organization}/roles/{role}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Delete role {role} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-organizations-roles-delete.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-iam.roles.organizations-roles-patch
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/roles/{role}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change role {role} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-organizations-roles-patch.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-iam.roles.organizations-roles-undelete
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}/roles/{role}:undelete" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Undelete role {role} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-organizations-roles-undelete.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-iam.roles.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/roles" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create role in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.roles.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/roles/{role}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete role {role} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.roles.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/roles/{role}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change role {role} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.roles.undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/roles/{role}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete role {role} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/roles-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.roles.query-grantable-roles
+    match: { rest: { method: POST, path: "/v1/roles:queryGrantableRoles" } }
+    class: read
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/roles-query-grantable-roles.http
+        expect: read

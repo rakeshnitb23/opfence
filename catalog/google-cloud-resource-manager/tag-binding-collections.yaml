@@ -1,0 +1,18 @@
+# Google Cloud Resource Manager: tag binding collections.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.tag-binding-collections.patch
+    match: { rest: { method: PATCH, path: "/v3/locations/{location}/tagBindingCollections/{tagBindingCollection}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change tag binding collection {tagBindingCollection}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Tags can be conditions of IAM and organization policies.
+    tests:
+      - fixture: fixtures/tag-binding-collections-patch.http
+        expect: access
+        resource: "us-central1"

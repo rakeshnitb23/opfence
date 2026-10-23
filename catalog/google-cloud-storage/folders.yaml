@@ -1,0 +1,62 @@
+# Google Cloud Storage JSON API: folders.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.folders.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/b/{bucket}/folders/{folder}" } }
+    class: delete
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete Cloud Storage folder {folder} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Only an empty folder can be deleted.
+    tests:
+      - fixture: fixtures/folders-delete.http
+        expect: delete
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.folders.delete-recursive
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/folders/{folder}/deleteRecursive" } }
+    class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete folder {folder} of Cloud Storage bucket {bucket} with everything in it"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Deletes the folder with every object in it.
+    tests:
+      - fixture: fixtures/folders-delete-recursive.http
+        expect: irreversible
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.folders.insert
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/folders" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Create Cloud Storage folder in bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/folders-insert.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.folders.rename
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/folders/{sourceFolder}/renameTo/folders/{destinationFolder}" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Rename Cloud Storage folder {destinationFolder} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/folders-rename.http
+        expect: write
+        resource: "acme-uploads"

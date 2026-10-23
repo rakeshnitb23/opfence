@@ -1,0 +1,30 @@
+# Google Cloud Storage JSON API: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.operations.advance-relocate-bucket
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/operations/{operation}/advanceRelocateBucket" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Advance relocate bucket on Cloud Storage operation {operation} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/operations-advance-relocate-bucket.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.operations.cancel
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/operations/{operation}/cancel" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Cancel Cloud Storage operation {operation} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/operations-cancel.http
+        expect: write
+        resource: "acme-uploads"

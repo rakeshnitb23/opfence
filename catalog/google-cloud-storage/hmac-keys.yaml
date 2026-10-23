@@ -1,0 +1,48 @@
+# Google Cloud Storage JSON API: hmac keys.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.hmac-keys.create
+    match: { rest: { method: POST, path: "/storage/v1/projects/{project}/hmacKeys" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create an HMAC key for {query.serviceAccountEmail} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Returns the new HMAC key's secret.
+    tests:
+      - fixture: fixtures/hmac-keys-create.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-storage.hmac-keys.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/projects/{project}/hmacKeys/{accessId}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Storage HMAC key {accessId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/hmac-keys-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-storage.hmac-keys.update
+    match: { rest: { method: PUT, path: "/storage/v1/projects/{project}/hmacKeys/{accessId}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Storage HMAC key {accessId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Activates or deactivates an HMAC key.
+    tests:
+      - fixture: fixtures/hmac-keys-update.http
+        expect: access
+        resource: "acme-prod"

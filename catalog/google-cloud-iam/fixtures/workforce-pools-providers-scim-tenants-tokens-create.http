@@ -1,0 +1,7 @@
+# description: Create token in SCIM tenant scimtenant-1
+POST /v1/locations/us-central1/workforcePools/workforcepool-1/providers/provider-1/scimTenants/scimtenant-1/tokens HTTP/1.1
+Host: iam.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

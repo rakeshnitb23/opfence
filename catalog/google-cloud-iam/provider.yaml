@@ -1,0 +1,20 @@
+provider: google-cloud-iam
+title: Google Cloud IAM
+docs: https://cloud.google.com/iam/docs/reference/rest
+# Service accounts and their keys, custom roles, workload and workforce identity pools, OAuth clients
+# and deny policies.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [iam.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+  - kind: discovery
+    url: https://iam.googleapis.com/$discovery/rest?version=v2

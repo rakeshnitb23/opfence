@@ -6,6 +6,7 @@ package launch
 
 import (
 	"encoding/json"
+	"net"
 	"os"
 	"path/filepath"
 	"sort"
@@ -335,11 +336,18 @@ func LinuxSecretSockets(getenv func(string) string) []string {
 // NODE_USE_ENV_PROXY makes Node's built-in fetch honour the variables.
 func ProxyEnv(httpAddr string) map[string]string {
 	u := "http://" + httpAddr
-	return map[string]string{
+	env := map[string]string{
 		"HTTP_PROXY": u, "HTTPS_PROXY": u, "http_proxy": u, "https_proxy": u,
 		"NO_PROXY": "localhost,127.0.0.1,::1", "no_proxy": "localhost,127.0.0.1,::1",
 		"NODE_USE_ENV_PROXY": "1",
 	}
+	// gcloud (and gsutil) use their own proxy properties before
+	// HTTPS_PROXY, and a corporate setup or a gcloud config file may set
+	// them; these variables override both.
+	if host, port, err := net.SplitHostPort(httpAddr); err == nil {
+		env["CLOUDSDK_PROXY_TYPE"], env["CLOUDSDK_PROXY_ADDRESS"], env["CLOUDSDK_PROXY_PORT"] = "http", host, port
+	}
+	return env
 }
 
 // CAEnv points TLS clients at Opfence's CA. Variables that replace a
@@ -350,7 +358,10 @@ func ProxyEnv(httpAddr string) map[string]string {
 func CAEnv(caFile, bundleFile string) map[string]string {
 	env := map[string]string{"NODE_EXTRA_CA_CERTS": caFile}
 	if bundleFile != "" {
-		for _, k := range []string{"SSL_CERT_FILE", "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "GIT_SSL_CAINFO", "AWS_CA_BUNDLE", "DENO_CERT"} {
+		// CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE is gcloud's (and gsutil's)
+		// core/custom_ca_certs_file property, which it reads instead of
+		// REQUESTS_CA_BUNDLE.
+		for _, k := range []string{"SSL_CERT_FILE", "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "GIT_SSL_CAINFO", "AWS_CA_BUNDLE", "DENO_CERT", "CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE"} {
 			env[k] = bundleFile
 		}
 	}

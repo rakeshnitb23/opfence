@@ -248,6 +248,19 @@ func (e *Effective) CatalogWarnings(ruleIDs, providerIDs []string) []string {
 		}
 		for env, provs := range f.Environments {
 			for prov := range provs {
+				if prefix, ok := strings.CutSuffix(prov, "*"); ok {
+					covers := false
+					for id := range providers {
+						if strings.HasPrefix(id, prefix) {
+							covers = true
+							break
+						}
+					}
+					if !covers {
+						out = append(out, fmt.Sprintf("%s: environments.%s.%s: no catalog provider id starts with %s", src, env, prov, prefix))
+					}
+					continue
+				}
 				if !providers[prov] {
 					out = append(out, fmt.Sprintf("%s: environments.%s.%s: no catalog provider has that id", src, env, prov))
 				}
@@ -286,27 +299,51 @@ func (e *Effective) Environment(provider string, lookup func(arg string) (string
 
 func mapped(f *File, provider string, lookup func(string) (string, bool)) (string, string) {
 	for _, env := range Environments {
-		args := f.Environments[env][provider]
-		keys := make([]string, 0, len(args))
-		for k := range args {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, arg := range keys {
-			v, ok := lookup(arg)
-			if !ok {
-				continue
+		for _, key := range providerKeys(f.Environments[env], provider) {
+			args := f.Environments[env][key]
+			keys := make([]string, 0, len(args))
+			for k := range args {
+				keys = append(keys, k)
 			}
-			for _, want := range args[arg] {
-				if v == want {
-					where := "user config"
-					if f.Path != "" {
-						where = f.Path
+			sort.Strings(keys)
+			for _, arg := range keys {
+				v, ok := lookup(arg)
+				if !ok {
+					continue
+				}
+				for _, want := range args[arg] {
+					if v == want {
+						where := "user config"
+						if f.Path != "" {
+							where = f.Path
+						}
+						return env, fmt.Sprintf("%s maps %s=%s", where, arg, v)
 					}
-					return env, fmt.Sprintf("%s maps %s=%s", where, arg, v)
 				}
 			}
 		}
 	}
 	return "", ""
+}
+
+// providerKeys returns the keys of an environment's mappings that cover
+// provider: its own id first, then prefixes ending in * (google-cloud-*),
+// longest first.
+func providerKeys(m map[string]map[string][]string, provider string) []string {
+	var out, prefixes []string
+	if _, ok := m[provider]; ok {
+		out = append(out, provider)
+	}
+	for k := range m {
+		if p, ok := strings.CutSuffix(k, "*"); ok && strings.HasPrefix(provider, p) {
+			prefixes = append(prefixes, k)
+		}
+	}
+	sort.Slice(prefixes, func(i, j int) bool {
+		if len(prefixes[i]) != len(prefixes[j]) {
+			return len(prefixes[i]) > len(prefixes[j])
+		}
+		return prefixes[i] < prefixes[j]
+	})
+	return append(out, prefixes...)
 }

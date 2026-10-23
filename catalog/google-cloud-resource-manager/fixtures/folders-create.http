@@ -1,0 +1,7 @@
+# description: Create folder
+POST /v3/folders HTTP/1.1
+Host: cloudresourcemanager.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

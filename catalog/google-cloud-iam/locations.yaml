@@ -1,0 +1,560 @@
+# Google Cloud IAM: locations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-iam.locations.oauth-clients-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/oauthClients" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create OAuth client in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-credentials-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}/credentials" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create credential in OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Returns the OAuth client's new secret.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-credentials-create.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-credentials-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}/credentials/{credential}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete credential {credential} of OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-credentials-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.oauth-clients-credentials-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/oauthClients/{oauthClient}/credentials/{credential}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change credential {credential} of OAuth client {oauthClient} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-oauth-clients-credentials-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-add-attestation-rule
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:addAttestationRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add attestation rule on workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-add-attestation-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create workload identity pool in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-get-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-remove-attestation-rule
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:removeAttestationRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Remove attestation rule on workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-remove-attestation-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-set-attestation-rules
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:setAttestationRules" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set attestation rules on workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-set-attestation-rules.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create namespace in workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete namespace {namespace} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change namespace {namespace} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete namespace {namespace} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-add-attestation-rule
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:addAttestationRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add attestation rule on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-add-attestation-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create managed identity in namespace {namespace} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-remove-attestation-rule
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:removeAttestationRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Remove attestation rule on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-remove-attestation-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-set-attestation-rules
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:setAttestationRules" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set attestation rules on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-set-attestation-rules.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-namespaces-managed-identities-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-namespaces-managed-identities-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create provider in workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete provider {provider} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change provider {provider} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete provider {provider} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-undelete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-keys-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}/keys" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create key in provider {provider} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-keys-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-keys-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}/keys/{key}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete key {key} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-keys-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-iam.locations.workload-identity-pools-providers-keys-undelete
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/providers/{provider}/keys/{key}:undelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Undelete key {key} of workload identity pool {workloadIdentityPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/locations-workload-identity-pools-providers-keys-undelete.http
+        expect: access
+        resource: "acme-prod"

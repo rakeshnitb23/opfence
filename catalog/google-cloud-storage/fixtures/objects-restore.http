@@ -1,0 +1,7 @@
+# description: Restore Cloud Storage object reports%2F2026.csv of bucket acme-uploads
+POST /storage/v1/b/acme-uploads/o/reports%2F2026.csv/restore HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

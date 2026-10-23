@@ -1,0 +1,7 @@
+# description: Move sourceobject-1 to destinationobject-1 in Cloud Storage bucket acme-uploads
+POST /storage/v1/b/acme-uploads/o/sourceobject-1/moveTo/o/destinationobject-1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

@@ -1,0 +1,5 @@
+# description: Delete subject subject-1 of workforce pool workforcepool-1
+DELETE /v1/locations/us-central1/workforcePools/workforcepool-1/subjects/subject-1 HTTP/1.1
+Host: iam.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

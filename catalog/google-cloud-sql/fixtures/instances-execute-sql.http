@@ -1,0 +1,7 @@
+# description: Run SQL on database body.database-1 of Cloud SQL instance orders-db in project acme-prod
+POST /v1/projects/acme-prod/instances/orders-db/executeSql HTTP/1.1
+Host: sqladmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"database": "orders", "sqlStatement": "select id from orders limit 10"}

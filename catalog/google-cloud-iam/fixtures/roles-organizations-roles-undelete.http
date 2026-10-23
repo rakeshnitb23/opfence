@@ -1,0 +1,7 @@
+# description: Undelete role role-1 of organization 987654321098
+POST /v1/organizations/987654321098/roles/role-1:undelete HTTP/1.1
+Host: iam.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

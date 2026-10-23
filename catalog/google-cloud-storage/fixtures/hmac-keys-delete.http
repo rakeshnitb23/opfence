@@ -1,0 +1,5 @@
+# description: Delete Cloud Storage HMAC key accessid-1 in project acme-prod
+DELETE /storage/v1/projects/acme-prod/hmacKeys/accessid-1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,0 +1,34 @@
+# Google Cloud SQL Admin API: connect.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.connect.generate-ephemeral-cert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}:generateEphemeralCert" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Generate ephemeral cert on Cloud SQL connection {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Returns a client certificate that lets its holder connect to the instance.
+    tests:
+      - fixture: fixtures/connect-generate-ephemeral-cert.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.connect.generate-ephemeral-cert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}:generateEphemeralCert" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Generate ephemeral cert on Cloud SQL connection {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Returns a client certificate that lets its holder connect to the instance.
+    tests:
+      - fixture: fixtures/connect-generate-ephemeral-cert-v1beta4.http
+        expect: credential
+        resource: "acme-prod"

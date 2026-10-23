@@ -1,0 +1,22 @@
+provider: google-cloud-resource-manager
+title: Google Cloud Resource Manager
+docs: https://cloud.google.com/resource-manager/reference/rest
+# Projects, folders, organizations, IAM policies on them, organization policies, liens and tags.
+# gcloud projects calls v1 and v3.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [cloudresourcemanager.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest

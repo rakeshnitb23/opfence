@@ -1,0 +1,331 @@
+# Google Cloud Resource Manager: projects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.projects.create
+    match: { rest: { method: POST, path: "/v3/projects" } }
+    class: write
+    card: "Create project {body.projectId}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/projects-create.http
+        expect: write
+
+  - id: google-cloud-resource-manager.projects.delete
+    match: { rest: { method: DELETE, path: "/v3/projects/{project}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      The project shuts down at once and is deleted with everything in it after 30 days; until then
+      it can be undeleted.
+    tests:
+      - fixture: fixtures/projects-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.get-iam-policy
+    match: { rest: { method: POST, path: "/v3/projects/{project}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.move
+    match: { rest: { method: POST, path: "/v3/projects/{project}:move" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Move project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Moves the project under another folder or organization, whose policies then apply to it.
+    tests:
+      - fixture: fixtures/projects-move.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.patch
+    match: { rest: { method: PATCH, path: "/v3/projects/{project}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/projects-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.set-iam-policy
+    match: { rest: { method: POST, path: "/v3/projects/{project}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/projects-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.test-iam-permissions
+    match: { rest: { method: POST, path: "/v3/projects/{project}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.undelete
+    match: { rest: { method: POST, path: "/v3/projects/{project}:undelete" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Undelete project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/projects-undelete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.clear-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:clearOrgPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Clear org policy on project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/projects-clear-org-policy-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.create-v1
+    match: { rest: { method: POST, path: "/v1/projects" } }
+    class: write
+    card: "Create project {body.projectId}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    tests:
+      - fixture: fixtures/projects-create-v1.http
+        expect: write
+
+  - id: google-cloud-resource-manager.projects.delete-v1
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      The project shuts down at once and is deleted with everything in it after 30 days; until then
+      it can be undeleted.
+    tests:
+      - fixture: fixtures/projects-delete-v1.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.get-ancestry-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:getAncestry" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-get-ancestry-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.get-effective-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:getEffectiveOrgPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-get-effective-org-policy-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.get-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{resource}:getIamPolicy" } }
+    class: read
+    resource: { arg: resource, kind: resource }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-get-iam-policy-v1.http
+        expect: read
+        resource: "resource-1"
+
+  - id: google-cloud-resource-manager.projects.get-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:getOrgPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-get-org-policy-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.list-available-org-policy-constraints-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:listAvailableOrgPolicyConstraints" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-list-available-org-policy-constraints-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.list-org-policies-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:listOrgPolicies" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-list-org-policies-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.set-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{resource}:setIamPolicy" } }
+    class: access
+    resource: { arg: resource, kind: resource }
+    card: "Change who can access project {resource}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/projects-set-iam-policy-v1.http
+        expect: access
+        resource: "resource-1"
+
+  - id: google-cloud-resource-manager.projects.set-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:setOrgPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set org policy on project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/projects-set-org-policy-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.test-iam-permissions-v1
+    match: { rest: { method: POST, path: "/v1/projects/{resource}:testIamPermissions" } }
+    class: read
+    resource: { arg: resource, kind: resource }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/projects-test-iam-permissions-v1.http
+        expect: read
+        resource: "resource-1"
+
+  - id: google-cloud-resource-manager.projects.undelete-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}:undelete" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Undelete project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    tests:
+      - fixture: fixtures/projects-undelete-v1.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.projects.update-v1
+    match: { rest: { method: PUT, path: "/v1/projects/{project}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    tests:
+      - fixture: fixtures/projects-update-v1.http
+        expect: write
+        resource: "acme-prod"

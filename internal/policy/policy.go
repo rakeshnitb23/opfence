@@ -121,7 +121,11 @@ func (d *Duration) UnmarshalYAML(n *yaml.Node) error {
 
 var (
 	providerRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
-	argPathRe  = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	// providerKeyRe is an environments key: a provider id, or a prefix
+	// ending in * that covers every provider whose id starts with it
+	// (google-cloud-*, supabase*).
+	providerKeyRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*\*?$`)
+	argPathRe     = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 	// Rule ids are lower case, but the rules defaults.mcp_tools makes end
 	// in the tool's own name (aws-lambda-tool-mcp.tool.Orders_Get).
 	ruleGlobRe = regexp.MustCompile(`^[a-z0-9*][A-Za-z0-9*._-]*$`)
@@ -165,8 +169,8 @@ func Parse(data []byte, name string) (*File, error) {
 			add("environments: %q must be development, staging or production", env)
 		}
 		for prov, args := range providers {
-			if !providerRe.MatchString(prov) {
-				add("environments.%s: %q is not a provider id", env, prov)
+			if !providerKeyRe.MatchString(prov) {
+				add("environments.%s: %q is not a provider id, or a prefix ending in *", env, prov)
 			}
 			for arg, vals := range args {
 				if !argPathRe.MatchString(arg) {

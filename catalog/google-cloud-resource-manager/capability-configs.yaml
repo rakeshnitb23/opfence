@@ -1,0 +1,86 @@
+# Google Cloud Resource Manager: capability configs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.capability-configs.organizations-capability-configs-create
+    match: { rest: { method: POST, path: "/v3/organizations/{organization}/capabilityConfigs" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Create capability config in organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-organizations-capability-configs-create.http
+        expect: write
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.capability-configs.organizations-capability-configs-delete
+    match: { rest: { method: DELETE, path: "/v3/organizations/{organization}/capabilityConfigs/{capabilityConfig}" } }
+    class: delete
+    resource: { arg: organization, kind: organization }
+    card: "Delete capability config {capabilityConfig} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-organizations-capability-configs-delete.http
+        expect: delete
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.capability-configs.organizations-capability-configs-patch
+    match: { rest: { method: PATCH, path: "/v3/organizations/{organization}/capabilityConfigs/{capabilityConfig}" } }
+    class: write
+    resource: { arg: organization, kind: organization }
+    card: "Change capability config {capabilityConfig} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-organizations-capability-configs-patch.http
+        expect: write
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.capability-configs.create
+    match: { rest: { method: POST, path: "/v3/projects/{project}/capabilityConfigs" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create capability config in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.capability-configs.delete
+    match: { rest: { method: DELETE, path: "/v3/projects/{project}/capabilityConfigs/{capabilityConfig}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete capability config {capabilityConfig} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-resource-manager.capability-configs.patch
+    match: { rest: { method: PATCH, path: "/v3/projects/{project}/capabilityConfigs/{capabilityConfig}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change capability config {capabilityConfig} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/capability-configs-patch.http
+        expect: write
+        resource: "acme-prod"

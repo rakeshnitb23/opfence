@@ -1,0 +1,122 @@
+# Google Cloud Resource Manager: tag values.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.tag-values.create
+    match: { rest: { method: POST, path: "/v3/tagValues" } }
+    class: access
+    card: "Create tag value"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Tags can be conditions of IAM and organization policies.
+    tests:
+      - fixture: fixtures/tag-values-create.http
+        expect: access
+
+  - id: google-cloud-resource-manager.tag-values.delete
+    match: { rest: { method: DELETE, path: "/v3/tagValues/{tagValue}" } }
+    class: access
+    resource: { arg: tagValue, kind: tagValue }
+    card: "Delete tag value {tagValue}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Tags can be conditions of IAM and organization policies.
+    tests:
+      - fixture: fixtures/tag-values-delete.http
+        expect: access
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.get-iam-policy
+    match: { rest: { method: POST, path: "/v3/tagValues/{tagValue}:getIamPolicy" } }
+    class: read
+    resource: { arg: tagValue, kind: tagValue }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tag-values-get-iam-policy.http
+        expect: read
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.patch
+    match: { rest: { method: PATCH, path: "/v3/tagValues/{tagValue}" } }
+    class: access
+    resource: { arg: tagValue, kind: tagValue }
+    card: "Change tag value {tagValue}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Tags can be conditions of IAM and organization policies.
+    tests:
+      - fixture: fixtures/tag-values-patch.http
+        expect: access
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.set-iam-policy
+    match: { rest: { method: POST, path: "/v3/tagValues/{tagValue}:setIamPolicy" } }
+    class: access
+    resource: { arg: tagValue, kind: tagValue }
+    card: "Change who can access tag value {tagValue}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/tag-values-set-iam-policy.http
+        expect: access
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.test-iam-permissions
+    match: { rest: { method: POST, path: "/v3/tagValues/{tagValue}:testIamPermissions" } }
+    class: read
+    resource: { arg: tagValue, kind: tagValue }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tag-values-test-iam-permissions.http
+        expect: read
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.tag-holds-create
+    match: { rest: { method: POST, path: "/v3/tagValues/{tagValue}/tagHolds" } }
+    class: write
+    resource: { arg: tagValue, kind: tagValue }
+    card: "Create tag hold in tag value {tagValue}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/tag-values-tag-holds-create.http
+        expect: write
+        resource: "tagvalue-1"
+
+  - id: google-cloud-resource-manager.tag-values.tag-holds-delete
+    match: { rest: { method: DELETE, path: "/v3/tagValues/{tagValue}/tagHolds/{tagHold}" } }
+    class: write
+    resource: { arg: tagValue, kind: tagValue }
+    card: "Delete tag hold {tagHold} of tag value {tagValue}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/tag-values-tag-holds-delete.http
+        expect: write
+        resource: "tagvalue-1"

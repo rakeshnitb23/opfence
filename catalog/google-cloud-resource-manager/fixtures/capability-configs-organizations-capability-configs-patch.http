@@ -1,0 +1,7 @@
+# description: Change capability config capabilityconfig-1 of organization 987654321098
+PATCH /v3/organizations/987654321098/capabilityConfigs/capabilityconfig-1 HTTP/1.1
+Host: cloudresourcemanager.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

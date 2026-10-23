@@ -1,0 +1,7 @@
+# description: Create Cloud Storage bucket acme-uploads in project acme-prod (versioning.enabled)
+POST /storage/v1/b?project=acme-prod HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"name": "acme-uploads", "versioning": {"enabled": false}}

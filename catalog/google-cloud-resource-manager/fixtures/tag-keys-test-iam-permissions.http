@@ -1,0 +1,7 @@
+# description: Test permissions on tag key tagkey-1
+POST /v3/tagKeys/tagkey-1:testIamPermissions HTTP/1.1
+Host: cloudresourcemanager.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

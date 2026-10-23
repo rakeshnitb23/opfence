@@ -1,0 +1,5 @@
+# description: Delete Cloud SQL backup run id-1 of instance orders-db in project acme-prod
+DELETE /sql/v1beta4/projects/acme-prod/instances/orders-db/backupRuns/id-1 HTTP/1.1
+Host: sqladmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

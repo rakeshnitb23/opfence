@@ -1,0 +1,7 @@
+# description: Compose destinationobject-1 in Cloud Storage bucket destinationbucket-1 (destinationPredefinedAcl)
+POST /storage/v1/b/destinationbucket-1/o/destinationobject-1/compose?destinationPredefinedAcl=publicRead HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

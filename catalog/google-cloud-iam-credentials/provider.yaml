@@ -1,0 +1,17 @@
+provider: google-cloud-iam-credentials
+title: Google Cloud IAM Service Account Credentials
+docs: https://cloud.google.com/iam/docs/reference/credentials/rest
+# Short-lived credentials for service accounts: access and ID tokens, and signatures.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [iamcredentials.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/iamcredentials/v1/rest
