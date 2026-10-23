@@ -1,0 +1,98 @@
+# Google Cloud SQL Admin API: blue green deployments.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.blue-green-deployments.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/blueGreenDeployments" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL blue-green deployment in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Creates a green copy of the instance, which is billed.
+    tests:
+      - fixture: fixtures/blue-green-deployments-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.blue-green-deployments.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/blueGreenDeployments/{blueGreenDeployment}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL blue-green deployment {blueGreenDeployment} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      The green instance holds a copy of the blue one's data.
+    tests:
+      - fixture: fixtures/blue-green-deployments-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.blue-green-deployments.switchover
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/blueGreenDeployments/{blueGreenDeployment}:switchover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Switchover Cloud SQL blue-green deployment {blueGreenDeployment} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Points production at the green instance.
+    tests:
+      - fixture: fixtures/blue-green-deployments-switchover.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.blue-green-deployments.create-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/locations/{location}/blueGreenDeployments" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL blue-green deployment in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Creates a green copy of the instance, which is billed.
+    tests:
+      - fixture: fixtures/blue-green-deployments-create-v1beta4.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.blue-green-deployments.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/locations/{location}/blueGreenDeployments/{blueGreenDeployment}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL blue-green deployment {blueGreenDeployment} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      The green instance holds a copy of the blue one's data.
+    tests:
+      - fixture: fixtures/blue-green-deployments-delete-v1beta4.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.blue-green-deployments.switchover-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/locations/{location}/blueGreenDeployments/{blueGreenDeployment}:switchover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Switchover Cloud SQL blue-green deployment {blueGreenDeployment} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Points production at the green instance.
+    tests:
+      - fixture: fixtures/blue-green-deployments-switchover-v1beta4.http
+        expect: write
+        resource: "acme-prod"

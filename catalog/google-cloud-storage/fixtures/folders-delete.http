@@ -1,0 +1,5 @@
+# description: Delete Cloud Storage folder 123456789012 of bucket acme-uploads
+DELETE /storage/v1/b/acme-uploads/folders/123456789012 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

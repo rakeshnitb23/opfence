@@ -1,0 +1,5 @@
+# description: Delete database orders of Cloud SQL instance orders-db in project acme-prod
+DELETE /sql/v1beta4/projects/acme-prod/instances/orders-db/databases/orders HTTP/1.1
+Host: sqladmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

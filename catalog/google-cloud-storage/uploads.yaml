@@ -1,0 +1,35 @@
+# Google Cloud Storage JSON API: uploads.
+operations:
+  - id: google-cloud-storage.uploads.continue
+    match: { rest: { method: PUT, path: "/upload/storage/v1/b/{bucket}/o" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Continue uploading an object to bucket {bucket}"
+    unlisted: "Later requests of a resumable upload; the discovery document lists only the first."
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloud.google.com/storage/docs/json_api
+    notes: >-
+      A resumable upload sends its data to the session URI the first request returned, with PUT.
+    tests:
+      - fixture: fixtures/uploads-continue.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.uploads.cancel
+    match: { rest: { method: DELETE, path: "/upload/storage/v1/b/{bucket}/o" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Cancel an upload to bucket {bucket}"
+    unlisted: "Cancels a resumable upload; not listed in the discovery document."
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloud.google.com/storage/docs/json_api
+    notes: >-
+      Drops only the data uploaded so far.
+    tests:
+      - fixture: fixtures/uploads-cancel.http
+        expect: write
+        resource: "acme-uploads"

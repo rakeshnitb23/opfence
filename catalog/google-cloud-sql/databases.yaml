@@ -1,0 +1,118 @@
+# Google Cloud SQL Admin API: databases.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.databases.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete database {database} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Drops the database with its data.
+    tests:
+      - fixture: fixtures/databases-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.insert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create database {body.name} on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/databases-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/databases-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.update
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/databases-update.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete database {database} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Drops the database with its data.
+    tests:
+      - fixture: fixtures/databases-delete-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.insert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/databases" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create database {body.name} on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/databases-insert-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.patch-v1beta4
+    match: { rest: { method: PATCH, path: "/sql/v1beta4/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/databases-patch-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.databases.update-v1beta4
+    match: { rest: { method: PUT, path: "/sql/v1beta4/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/databases-update-v1beta4.http
+        expect: write
+        resource: "acme-prod"

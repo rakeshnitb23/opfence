@@ -120,7 +120,7 @@
         "additionalProperties": false,
         "required": ["kind", "url"],
         "properties": {
-          "kind": { "enum": ["openapi", "graphql", "heroku", "botocore"] },
+          "kind": { "enum": ["openapi", "graphql", "heroku", "botocore", "discovery"] },
           "url": { "type": "string", "pattern": "^https://" },
           "prefix": { "type": "string", "pattern": "^/.*[^/]$" },
           "service": { "type": "string" },

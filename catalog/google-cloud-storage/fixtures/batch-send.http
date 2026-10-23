@@ -1,0 +1,5 @@
+# description: Send a batch of Cloud Storage requests
+POST /batch/storage/v1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

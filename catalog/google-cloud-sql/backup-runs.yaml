@@ -1,0 +1,62 @@
+# Google Cloud SQL Admin API: backup runs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.backup-runs.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/backupRuns/{id}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL backup run {id} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backup-runs-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backup-runs.insert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backupRuns" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL backup run in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/backup-runs-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backup-runs.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/instances/{instance}/backupRuns/{id}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL backup run {id} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backup-runs-delete-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backup-runs.insert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/backupRuns" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL backup run in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/backup-runs-insert-v1beta4.http
+        expect: write
+        resource: "acme-prod"

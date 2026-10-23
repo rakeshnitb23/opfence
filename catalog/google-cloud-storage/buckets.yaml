@@ -1,0 +1,285 @@
+# Google Cloud Storage JSON API: buckets.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.buckets.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/b/{bucket}" } }
+    class: delete
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Only an empty bucket can be deleted, and soft delete keeps a deleted bucket restorable for a
+      while.
+    tests:
+      - fixture: fixtures/buckets-delete.http
+        expect: delete
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.insert
+    match: { rest: { method: POST, path: "/storage/v1/b" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: query.predefinedDefaultObjectAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: body.acl, present: true }
+        class: access
+      - if: { arg: body.defaultObjectAcl, present: true }
+        class: access
+      - if: { arg: body.iamConfiguration, present: true }
+        class: access
+      - if: { arg: body.ipFilter, present: true }
+        class: access
+      - if: { arg: body.cors, present: true }
+        class: access
+      - if: { arg: body.lifecycle, present: true }
+        class: irreversible
+      - if: { arg: body.softDeletePolicy, present: true }
+        class: irreversible
+      - if: { arg: body.versioning.enabled, equals: "false" }
+        class: irreversible
+    resource: { arg: query.project, kind: project }
+    card: "Create Cloud Storage bucket {body.name} in project {query.project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Public ACLs and changes to access control, IAM configuration, IP filtering or CORS are access;
+      lifecycle rules (which delete objects later), soft delete settings and turning versioning off
+      are irreversible.
+    tests:
+      - fixture: fixtures/buckets-insert.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when3.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when4.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when5.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when6.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when7.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when8.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when9.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/buckets-insert-when10.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-storage.buckets.lock-retention-policy
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/lockRetentionPolicy" } }
+    class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Lock the retention policy of Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Locking a retention policy is permanent: neither the policy nor the bucket can be removed
+      until every object has met it.
+    tests:
+      - fixture: fixtures/buckets-lock-retention-policy.http
+        expect: irreversible
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.patch
+    match: { rest: { method: PATCH, path: "/storage/v1/b/{bucket}" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: query.predefinedDefaultObjectAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: body.acl, present: true }
+        class: access
+      - if: { arg: body.defaultObjectAcl, present: true }
+        class: access
+      - if: { arg: body.iamConfiguration, present: true }
+        class: access
+      - if: { arg: body.ipFilter, present: true }
+        class: access
+      - if: { arg: body.cors, present: true }
+        class: access
+      - if: { arg: body.lifecycle, present: true }
+        class: irreversible
+      - if: { arg: body.softDeletePolicy, present: true }
+        class: irreversible
+      - if: { arg: body.versioning.enabled, equals: "false" }
+        class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Public ACLs and changes to access control, IAM configuration, IP filtering or CORS are access;
+      lifecycle rules (which delete objects later), soft delete settings and turning versioning off
+      are irreversible.
+    tests:
+      - fixture: fixtures/buckets-patch.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when1.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when2.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when3.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when4.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when5.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when6.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when7.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when8.http
+        expect: irreversible
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when9.http
+        expect: irreversible
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-patch-when10.http
+        expect: irreversible
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.relocate
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/relocate" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Relocate Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/buckets-relocate.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.restore
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/restore" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Restore Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/buckets-restore.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.set-iam-policy
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}/iam" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change who can access Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/buckets-set-iam-policy.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.buckets.update
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: query.predefinedDefaultObjectAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: body.acl, present: true }
+        class: access
+      - if: { arg: body.defaultObjectAcl, present: true }
+        class: access
+      - if: { arg: body.iamConfiguration, present: true }
+        class: access
+      - if: { arg: body.ipFilter, present: true }
+        class: access
+      - if: { arg: body.cors, present: true }
+        class: access
+      - if: { arg: body.lifecycle, present: true }
+        class: irreversible
+      - if: { arg: body.softDeletePolicy, present: true }
+        class: irreversible
+      - if: { arg: body.versioning.enabled, equals: "false" }
+        class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Public ACLs and changes to access control, IAM configuration, IP filtering or CORS are access;
+      lifecycle rules (which delete objects later), soft delete settings and turning versioning off
+      are irreversible.
+    tests:
+      - fixture: fixtures/buckets-update.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when1.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when2.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when3.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when4.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when5.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when6.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when7.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when8.http
+        expect: irreversible
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when9.http
+        expect: irreversible
+        resource: "acme-uploads"
+      - fixture: fixtures/buckets-update-when10.http
+        expect: irreversible
+        resource: "acme-uploads"

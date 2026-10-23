@@ -1,0 +1,94 @@
+# Google Cloud SQL Admin API: ssl certs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.ssl-certs.create-ephemeral
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/createEphemeral" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create ephemeral on Cloud SQL SSL certificate {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Returns a client certificate that lets its holder connect to the instance.
+    tests:
+      - fixture: fixtures/ssl-certs-create-ephemeral.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.ssl-certs.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/sslCerts/{sha1Fingerprint}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL SSL certificate {sha1Fingerprint} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/ssl-certs-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.ssl-certs.insert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/sslCerts" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL SSL certificate in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Returns the new client certificate with its private key.
+    tests:
+      - fixture: fixtures/ssl-certs-insert.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.ssl-certs.create-ephemeral-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/createEphemeral" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create ephemeral on Cloud SQL SSL certificate {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Returns a client certificate that lets its holder connect to the instance.
+    tests:
+      - fixture: fixtures/ssl-certs-create-ephemeral-v1beta4.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.ssl-certs.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/instances/{instance}/sslCerts/{sha1Fingerprint}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL SSL certificate {sha1Fingerprint} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/ssl-certs-delete-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.ssl-certs.insert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/sslCerts" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL SSL certificate in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Returns the new client certificate with its private key.
+    tests:
+      - fixture: fixtures/ssl-certs-insert-v1beta4.http
+        expect: credential
+        resource: "acme-prod"

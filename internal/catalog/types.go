@@ -117,7 +117,7 @@ type Defaults struct {
 
 // SchemaSource is one published schema of a provider's API.
 type SchemaSource struct {
-	Kind string `yaml:"kind"` // openapi, graphql, heroku or botocore
+	Kind string `yaml:"kind"` // openapi, graphql, heroku, botocore or discovery (Google APIs)
 	URL  string `yaml:"url"`
 	// Prefix is put in front of every path, when the schema's own base
 	// path (Swagger basePath, the first OpenAPI server URL) is missing or
@@ -131,7 +131,7 @@ type SchemaSource struct {
 }
 
 // Schema kinds.
-var SchemaKinds = []string{"openapi", "graphql", "heroku", "botocore"}
+var SchemaKinds = []string{"openapi", "graphql", "heroku", "botocore", "discovery"}
 
 // MCPInfo identifies an MCP server.
 type MCPInfo struct {

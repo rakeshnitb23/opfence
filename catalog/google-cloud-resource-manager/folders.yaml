@@ -1,0 +1,399 @@
+# Google Cloud Resource Manager: folders.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.folders.create
+    match: { rest: { method: POST, path: "/v3/folders" } }
+    class: write
+    card: "Create folder"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-create.http
+        expect: write
+
+  - id: google-cloud-resource-manager.folders.delete
+    match: { rest: { method: DELETE, path: "/v3/folders/{folder}" } }
+    class: delete
+    resource: { arg: folder, kind: folder }
+    card: "Delete folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Only an empty folder can be deleted, and it can be undeleted for 30 days.
+    tests:
+      - fixture: fixtures/folders-delete.http
+        expect: delete
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.get-iam-policy
+    match: { rest: { method: POST, path: "/v3/folders/{folder}:getIamPolicy" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-get-iam-policy.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.move
+    match: { rest: { method: POST, path: "/v3/folders/{folder}:move" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Move folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Moves the folder under another parent, whose policies then apply to it.
+    tests:
+      - fixture: fixtures/folders-move.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.patch
+    match: { rest: { method: PATCH, path: "/v3/folders/{folder}" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Change folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-patch.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.set-iam-policy
+    match: { rest: { method: POST, path: "/v3/folders/{folder}:setIamPolicy" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Change who can access folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/folders-set-iam-policy.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.test-iam-permissions
+    match: { rest: { method: POST, path: "/v3/folders/{folder}:testIamPermissions" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-test-iam-permissions.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.undelete
+    match: { rest: { method: POST, path: "/v3/folders/{folder}:undelete" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Undelete folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-undelete.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.capabilities-patch
+    match: { rest: { method: PATCH, path: "/v3/folders/{folder}/capabilities/{capability}" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Change capability {capability} of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-capabilities-patch.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.capability-configs-create
+    match: { rest: { method: POST, path: "/v3/folders/{folder}/capabilityConfigs" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Create capability config in folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-capability-configs-create.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.capability-configs-delete
+    match: { rest: { method: DELETE, path: "/v3/folders/{folder}/capabilityConfigs/{capabilityConfig}" } }
+    class: delete
+    resource: { arg: folder, kind: folder }
+    card: "Delete capability config {capabilityConfig} of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-capability-configs-delete.http
+        expect: delete
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.capability-configs-patch
+    match: { rest: { method: PATCH, path: "/v3/folders/{folder}/capabilityConfigs/{capabilityConfig}" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Change capability config {capabilityConfig} of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    tests:
+      - fixture: fixtures/folders-capability-configs-patch.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.clear-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:clearOrgPolicy" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Clear org policy on folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/folders-clear-org-policy-v1.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.get-effective-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:getEffectiveOrgPolicy" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-get-effective-org-policy-v1.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.get-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:getOrgPolicy" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-get-org-policy-v1.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.list-available-org-policy-constraints-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:listAvailableOrgPolicyConstraints" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-list-available-org-policy-constraints-v1.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.list-org-policies-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:listOrgPolicies" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-list-org-policies-v1.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.set-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/folders/{folder}:setOrgPolicy" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Set org policy on folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/folders-set-org-policy-v1.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.create-v2
+    match: { rest: { method: POST, path: "/v2/folders" } }
+    class: write
+    card: "Create folder"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    tests:
+      - fixture: fixtures/folders-create-v2.http
+        expect: write
+
+  - id: google-cloud-resource-manager.folders.delete-v2
+    match: { rest: { method: DELETE, path: "/v2/folders/{folder}" } }
+    class: delete
+    resource: { arg: folder, kind: folder }
+    card: "Delete folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Only an empty folder can be deleted, and it can be undeleted for 30 days.
+    tests:
+      - fixture: fixtures/folders-delete-v2.http
+        expect: delete
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.get-iam-policy-v2
+    match: { rest: { method: POST, path: "/v2/folders/{folder}:getIamPolicy" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-get-iam-policy-v2.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.move-v2
+    match: { rest: { method: POST, path: "/v2/folders/{folder}:move" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Move folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Moves the folder under another parent, whose policies then apply to it.
+    tests:
+      - fixture: fixtures/folders-move-v2.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.patch-v2
+    match: { rest: { method: PATCH, path: "/v2/folders/{folder}" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Change folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    tests:
+      - fixture: fixtures/folders-patch-v2.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.search-v2
+    match: { rest: { method: POST, path: "/v2/folders:search" } }
+    class: read
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-search-v2.http
+        expect: read
+
+  - id: google-cloud-resource-manager.folders.set-iam-policy-v2
+    match: { rest: { method: POST, path: "/v2/folders/{folder}:setIamPolicy" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Change who can access folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/folders-set-iam-policy-v2.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.test-iam-permissions-v2
+    match: { rest: { method: POST, path: "/v2/folders/{folder}:testIamPermissions" } }
+    class: read
+    resource: { arg: folder, kind: folder }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/folders-test-iam-permissions-v2.http
+        expect: read
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.undelete-v2
+    match: { rest: { method: POST, path: "/v2/folders/{folder}:undelete" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Undelete folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v2/rest
+    tests:
+      - fixture: fixtures/folders-undelete-v2.http
+        expect: write
+        resource: "123456789012"

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -31,6 +32,8 @@ func Extract(sc catalog.SchemaSource, hosts []string, data []byte) ([]Op, error)
 		ops, err = extractHeroku(sc, data)
 	case "botocore":
 		ops, err = extractBotocore(sc, data)
+	case "discovery":
+		ops, err = extractDiscovery(sc, data)
 	default:
 		return nil, fmt.Errorf("unknown schema kind %q", sc.Kind)
 	}
@@ -370,3 +373,101 @@ func sortedKeys[V any](m map[string]V) []string {
 	sort.Strings(keys)
 	return keys
 }
+
+// discoveryDoc is the part of a Google API discovery document the check
+// reads (https://developers.google.com/discovery/v1/reference/apis).
+type discoveryDoc struct {
+	Kind        string                       `json:"kind"`
+	ServicePath string                       `json:"servicePath"`
+	Methods     map[string]discoveryMethod   `json:"methods"`
+	Resources   map[string]discoveryResource `json:"resources"`
+}
+
+type discoveryResource struct {
+	Methods   map[string]discoveryMethod   `json:"methods"`
+	Resources map[string]discoveryResource `json:"resources"`
+}
+
+type discoveryMethod struct {
+	HTTPMethod  string `json:"httpMethod"`
+	Path        string `json:"path"`
+	FlatPath    string `json:"flatPath"`
+	MediaUpload struct {
+		Protocols struct {
+			Simple    struct{ Path string } `json:"simple"`
+			Resumable struct{ Path string } `json:"resumable"`
+		} `json:"protocols"`
+	} `json:"mediaUpload"`
+}
+
+// extractDiscovery reads a Google API discovery document: every method of
+// every resource, at any depth, at the document's servicePath followed by
+// the method's flatPath (its path when it has none), and the paths its
+// media uploads go to (/upload/storage/v1/b/{bucket}/o).
+func extractDiscovery(sc catalog.SchemaSource, data []byte) ([]Op, error) {
+	var doc discoveryDoc
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, err
+	}
+	if doc.Kind != "discovery#restDescription" {
+		return nil, errors.New("not a Google API discovery document")
+	}
+	base := "/" + strings.Trim(doc.ServicePath, "/")
+	if sc.Prefix != "" {
+		base = sc.Prefix
+	}
+	base = strings.TrimSuffix(base, "/")
+	var ops []Op
+	seen := map[string]bool{}
+	add := func(method, p string) {
+		if method == "" || p == "" {
+			return
+		}
+		key := method + " " + p
+		if !seen[key] {
+			seen[key] = true
+			ops = append(ops, Op{Kind: "rest", Method: strings.ToUpper(method), Path: p})
+		}
+	}
+	addMethods := func(ms map[string]discoveryMethod) {
+		for _, name := range sortedKeys(ms) {
+			m := ms[name]
+			p := m.FlatPath
+			if p == "" {
+				p = m.Path
+			}
+			add(m.HTTPMethod, base+"/"+discoveryTemplate(strings.TrimPrefix(p, "/")))
+			for _, up := range []string{m.MediaUpload.Protocols.Simple.Path, m.MediaUpload.Protocols.Resumable.Path} {
+				if up != "" {
+					add(m.HTTPMethod, "/"+discoveryTemplate(strings.TrimPrefix(up, "/")))
+				}
+			}
+		}
+	}
+	var walk func(rs map[string]discoveryResource, depth int) error
+	walk = func(rs map[string]discoveryResource, depth int) error {
+		if depth > 20 {
+			return errors.New("resources nest too deep")
+		}
+		for _, name := range sortedKeys(rs) {
+			addMethods(rs[name].Methods)
+			if err := walk(rs[name].Resources, depth+1); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	addMethods(doc.Methods)
+	if err := walk(doc.Resources, 0); err != nil {
+		return nil, err
+	}
+	return ops, nil
+}
+
+// discoveryTemplate turns a discovery path into a rule template: {+name}
+// (reserved expansion, which may hold slashes) becomes {name*}.
+func discoveryTemplate(p string) string {
+	return discoveryReserved.ReplaceAllString(p, "{$1*}")
+}
+
+var discoveryReserved = regexp.MustCompile(`\{\+([A-Za-z0-9_]+)\}`)

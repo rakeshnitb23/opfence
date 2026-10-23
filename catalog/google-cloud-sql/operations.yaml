@@ -1,0 +1,30 @@
+# Google Cloud SQL Admin API: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.operations.cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/operations/{operation}/cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Cloud SQL operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.operations.cancel-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/operations/{operation}/cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Cloud SQL operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/operations-cancel-v1beta4.http
+        expect: write
+        resource: "acme-prod"

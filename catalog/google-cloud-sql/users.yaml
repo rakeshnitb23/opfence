@@ -1,0 +1,94 @@
+# Google Cloud SQL Admin API: users.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.users.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/users" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete database user {query.name} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/users-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.users.insert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/users" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create database user {body.name} on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Creates a database user and sets its password.
+    tests:
+      - fixture: fixtures/users-insert.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.users.update
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/instances/{instance}/users" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Change database user {query.name} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Can set a database user's password.
+    tests:
+      - fixture: fixtures/users-update.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.users.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/instances/{instance}/users" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete database user {query.name} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/users-delete-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.users.insert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/users" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create database user {body.name} on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Creates a database user and sets its password.
+    tests:
+      - fixture: fixtures/users-insert-v1beta4.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.users.update-v1beta4
+    match: { rest: { method: PUT, path: "/sql/v1beta4/projects/{project}/instances/{instance}/users" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Change database user {query.name} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Can set a database user's password.
+    tests:
+      - fixture: fixtures/users-update-v1beta4.http
+        expect: credential
+        resource: "acme-prod"

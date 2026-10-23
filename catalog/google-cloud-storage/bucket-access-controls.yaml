@@ -1,0 +1,66 @@
+# Google Cloud Storage JSON API: bucket access controls.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.bucket-access-controls.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/b/{bucket}/acl/{entity}" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete Cloud Storage bucket ACL entry {entity} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Access control lists decide who can read and write the bucket's objects.
+    tests:
+      - fixture: fixtures/bucket-access-controls-delete.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.bucket-access-controls.insert
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/acl" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Create Cloud Storage bucket ACL entry in bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Access control lists decide who can read and write the bucket's objects.
+    tests:
+      - fixture: fixtures/bucket-access-controls-insert.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.bucket-access-controls.patch
+    match: { rest: { method: PATCH, path: "/storage/v1/b/{bucket}/acl/{entity}" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage bucket ACL entry {entity} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Access control lists decide who can read and write the bucket's objects.
+    tests:
+      - fixture: fixtures/bucket-access-controls-patch.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.bucket-access-controls.update
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}/acl/{entity}" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage bucket ACL entry {entity} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Access control lists decide who can read and write the bucket's objects.
+    tests:
+      - fixture: fixtures/bucket-access-controls-update.http
+        expect: access
+        resource: "acme-uploads"

@@ -1,0 +1,5 @@
+# description: Delete Cloud SQL SSL certificate sha1fingerprint-1 of instance orders-db in project acme-prod
+DELETE /v1/projects/acme-prod/instances/orders-db/sslCerts/sha1fingerprint-1 HTTP/1.1
+Host: sqladmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

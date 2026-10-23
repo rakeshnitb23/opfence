@@ -1,0 +1,5 @@
+# description: Delete OAuth client oauthclient-1 in project acme-prod
+DELETE /v1/projects/acme-prod/locations/us-central1/oauthClients/oauthclient-1 HTTP/1.1
+Host: iam.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

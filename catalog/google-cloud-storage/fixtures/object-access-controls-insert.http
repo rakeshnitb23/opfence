@@ -1,0 +1,7 @@
+# description: Create Cloud Storage object ACL entry in object reports%2F2026.csv
+POST /storage/v1/b/acme-uploads/o/reports%2F2026.csv/acl HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

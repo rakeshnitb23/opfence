@@ -379,6 +379,7 @@ The catalog applies the same judgement everywhere, so a reviewer can check a rul
 - **Exposing something to the internet is `access`.** A public domain or TCP proxy for a Railway service, a public function URL, a public ACL, a public gist.
 - **`delete` means it can be restored or rebuilt** (a deployment from its commit, a branch from any clone, a scheduled project deletion that can be cancelled); **`irreversible` means the data is gone** (volumes, backups, snapshots, tables, environments with their secrets).
 - **Turning off a safety net is as dangerous as what it protects**: RDS `BackupRetentionPeriod=0` deletes existing automated backups and DynamoDB disabling point-in-time recovery discards the window, so both are `irreversible`.
+- **Exchanging a credential the caller already holds for a short-lived token is `read`; acting as another identity is `credential`.** gcloud trades its refresh token for an access token at `oauth2.googleapis.com/token` before most commands, which gives it nothing it could not do already, and every call made with the token is decided by that API's rules; denying the exchange would only stop gcloud working. Minting a token for another service account (`generateAccessToken`, `signJwt`) grants new power.
 - **Old API versions match too.** Vercel keeps serving older versions of an endpoint, so its rules use a `{version}` first segment.
 
 ### 4.6 Validation
@@ -405,7 +406,8 @@ Fixtures prove a rule classifies the request it was written for; they cannot not
 schemas:
   - kind: openapi        # openapi (OpenAPI 3 or Swagger 2), graphql (SDL or introspection JSON),
     url: https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
-    coverage: partial    #   heroku (JSON hyper-schema), botocore (AWS service model, needs service)
+    coverage: partial    #   heroku (JSON hyper-schema), botocore (AWS service model, needs service),
+                         #   discovery (a Google API discovery document)
   - kind: graphql
     url: https://raw.githubusercontent.com/octokit/graphql-schema/main/schema.graphql
     coverage: partial
@@ -414,6 +416,7 @@ schemas:
 - **Stale**: a REST, GraphQL or AWS rule that overlaps no operation in its provider's schemas (same method, and a path either side matches) fails the check. A rule the schemas leave out on purpose says why with `unlisted: <reason>` (an endpoint the official CLI calls but the spec omits, a removed endpoint older API versions still serve); when the schema later gains it, the check lists the rule so the reason can go.
 - **Uncovered**: an operation that is not a read (GET, HEAD, OPTIONS, a GraphQL query or subscription, an AWS read action, all of which provider defaults classify) and that no rule covers (the rule matches the operation's sample path) fails the check for `coverage: full` schemas, the default. `coverage: partial` lists them only with `-v`: the provider's rules cover the riskiest operations and the rest are `unknown`, which asks.
 - **Elsewhere**: an OpenAPI operation whose own `servers` (on the operation or its path, or in the file an operation `$ref` points to) are on hosts the provider does not list is served out of the provider's view and skipped. DigitalOcean's spec puts its inference and agent gateway hosts in one file this way.
+- **Discovery documents** (stage 27a): every method of every resource, at the document's `servicePath` followed by the method's `flatPath`, and the paths its media uploads go to. Google's `{+name}` parameters, which may hold slashes, become `{name*}`.
 - MCP and git rules are not compared; an MCP server's tool list is read from its source when the rule is written.
 
 CI does not run the check (it needs the network and upstream schemas change under it); the nightly workflow does, so drift shows up as a red nightly run with the rules to fix. Its first run found DigitalOcean's new Insights signals endpoint, now `digitalocean.insights-resource.signals-update`.
@@ -473,6 +476,8 @@ final  = max(user, repo override for (rule, env), repo override for (class, env)
 ```
 
 So a repository can turn `write` in development into `ask`, but cannot turn `irreversible` into `allow`; a loosening entry in `opfence.yaml` is reported as a warning by `opfence explain` and `opfence policy check` and ignored. The same holds for every other setting: a repository may set a stricter `default_environment`, `mode: strict` and a shorter approval timeout, never the reverse.
+
+An environments key may also be a prefix ending in `*` (stage 27a): `google-cloud-*: { project: [acme-dev] }` maps a project for every Google Cloud API, and `supabase*` covers all three Supabase providers. A provider's own key is read before prefixes, and longer prefixes before shorter ones; production is still checked first. `opfence policy check` warns about a prefix no provider id starts with.
 
 Environment *mappings* follow the same rule: a repository mapping is honoured only when it makes the result stricter than the user's mappings and the default would. With the default `default_environment: production`, a repository can mark ids as production but cannot mark anything as development. Teams that keep their id mappings in the repository and accept that the agent can edit them set `trust_repo: true` in the user config, which treats `opfence.yaml` as user config; it is off by default and documented as weaker.
 
@@ -652,7 +657,7 @@ A forwarded request is logged when the upstream's response headers arrive, befor
    - `permissions.deny`: `Read` of the state folder and, on Linux, of `/proc` (Opfence's own environment there holds the real keys it replaced), and `Edit` of the protected paths, because Claude Code's file tools run outside the sandbox. `opfence run` also marks itself non-dumpable on Linux, so its `/proc` files are readable by root only.
    - The PreToolUse hook for `^mcp__` tools, run by absolute path with the session's catalog, policy and user config passed by absolute path, `onFailure: block`. Left to itself the hook would find the user config through `OPFENCE_CONFIG` or `XDG_CONFIG_HOME`, which a project's settings could set. The floor permission rules of `opfence export` are left out: the hook decides every call. Claude Code shows it as its own prompt, so a `confirm` decision there is a plain ask with nothing to type.
    - `disableAllHooks: false` and an `env` block with the proxy, CA, session and config variables. `--settings` outranks a project's settings, so a project cannot turn the hook off or point Claude Code and its MCP servers elsewhere.
-3. Child environment: the CA variables (`SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO`, `AWS_CA_BUNDLE`, `DENO_CERT` get the bundle; `NODE_EXTRA_CA_CERTS` gets the CA alone because it adds to Node's roots; without a system roots file only the additive variable is set), `OPFENCE_SESSION`, and `OPFENCE_AGENT_PROXY_PORT` for the doctor probe.
+3. Child environment: the CA variables (`SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO`, `AWS_CA_BUNDLE`, `DENO_CERT` and gcloud's `CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE` get the bundle; gcloud also gets `CLOUDSDK_PROXY_TYPE`, `_ADDRESS` and `_PORT`, because its own proxy properties, which a corporate setup may set, come before `HTTPS_PROXY`; `NODE_EXTRA_CA_CERTS` gets the CA alone because it adds to Node's roots; without a system roots file only the additive variable is set), `OPFENCE_SESSION`, and `OPFENCE_AGENT_PROXY_PORT` for the doctor probe.
 4. **Keys in the environment become placeholders.** A value equal to a stored secret gets its placeholder under any variable name. Any other key for a catalog provider becomes a *session secret*: a placeholder made for this run, held in memory only and added to the proxy's set; every variable holding that key gets it. Nothing is written to the keychain. Session secrets share the group `env`, so AWS keys in the environment are re-signed like stored ones. GitHub tokens included: git over HTTPS to github.com is decoded, and the token is swapped in for its placeholder in Basic auth.
 5. Warnings for the user's or administrator's Claude Code settings that undo this (`excludedCommands`, managed proxy settings, allowed unsandboxed commands, `disableAllHooks`), for hooks or environment variables in the project's settings files, and for an old Claude Code.
 6. The child runs in the foreground. Ctrl-C reaches it from the terminal and Opfence ignores it; SIGTERM and SIGHUP are passed on; Opfence exits with the child's code and closes the session.

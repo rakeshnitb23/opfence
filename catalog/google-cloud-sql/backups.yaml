@@ -1,0 +1,90 @@
+# Google Cloud SQL Admin API: backups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.backups.create-backup
+    match: { rest: { method: POST, path: "/v1/projects/{project}/backups" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create backup on Cloud SQL backup in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/backups-create-backup.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backups.delete-backup
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete backup on Cloud SQL backup {backup} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backups-delete-backup.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backups.update-backup
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/backups/{backup}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Update backup on Cloud SQL backup {backup} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/backups-update-backup.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backups.create-backup-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/backups" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create backup on Cloud SQL backup in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/backups-create-backup-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backups.delete-backup-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete backup on Cloud SQL backup {backup} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backups-delete-backup-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.backups.update-backup-v1beta4
+    match: { rest: { method: PATCH, path: "/sql/v1beta4/projects/{project}/backups/{backup}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Update backup on Cloud SQL backup {backup} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/backups-update-backup-v1beta4.http
+        expect: write
+        resource: "acme-prod"

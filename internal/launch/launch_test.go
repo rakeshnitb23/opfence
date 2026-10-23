@@ -313,3 +313,17 @@ func contains(xs []string, x string) bool {
 	}
 	return false
 }
+
+// gcloud reads its own proxy and CA variables before the standard ones.
+func TestGcloudEnv(t *testing.T) {
+	p := ProxyEnv("127.0.0.1:41234")
+	if p["CLOUDSDK_PROXY_TYPE"] != "http" || p["CLOUDSDK_PROXY_ADDRESS"] != "127.0.0.1" || p["CLOUDSDK_PROXY_PORT"] != "41234" {
+		t.Errorf("gcloud proxy variables: %v", p)
+	}
+	if c := CAEnv("/ca.pem", "/bundle.pem"); c["CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE"] != "/bundle.pem" {
+		t.Errorf("gcloud CA variable: %v", c)
+	}
+	if c := CAEnv("/ca.pem", ""); c["CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE"] != "" {
+		t.Errorf("gcloud CA variable set without a bundle: %v", c)
+	}
+}

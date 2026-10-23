@@ -1,0 +1,5 @@
+# description: Delete Cloud Storage managed folder managedfolder-1 of bucket acme-uploads (allowNonEmpty)
+DELETE /storage/v1/b/acme-uploads/managedFolders/managedfolder-1?allowNonEmpty=true HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,0 +1,6 @@
+# description: gcloud refreshes its access token
+POST /token HTTP/1.1
+Host: oauth2.googleapis.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&client_id=32555940559.apps.googleusercontent.com&client_secret=EXAMPLE&refresh_token=1%2F%2FEXAMPLE

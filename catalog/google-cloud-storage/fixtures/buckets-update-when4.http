@@ -1,0 +1,7 @@
+# description: Change Cloud Storage bucket acme-uploads (defaultObjectAcl)
+PUT /storage/v1/b/acme-uploads HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"defaultObjectAcl": "x"}

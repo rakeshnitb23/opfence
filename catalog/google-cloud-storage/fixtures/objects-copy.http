@@ -1,0 +1,7 @@
+# description: Copy sourceobject-1 from bucket sourcebucket-1 to destinationobject-1 in bucket destinationbucket-1
+POST /storage/v1/b/sourcebucket-1/o/sourceobject-1/copyTo/b/destinationbucket-1/o/destinationobject-1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

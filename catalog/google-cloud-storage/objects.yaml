@@ -1,0 +1,265 @@
+# Google Cloud Storage JSON API: objects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.objects.bulk-restore
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/o/bulkRestore" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Bulk restore on Cloud Storage object {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/objects-bulk-restore.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.compose
+    match: { rest: { method: POST, path: "/storage/v1/b/{destinationBucket}/o/{destinationObject}/compose" } }
+    class: write
+    when:
+      - if: { arg: query.destinationPredefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: destinationBucket, kind: destinationBucket }
+    card: "Compose {destinationObject} in Cloud Storage bucket {destinationBucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      A public predefined ACL is access.
+    tests:
+      - fixture: fixtures/objects-compose.http
+        expect: write
+        resource: "destinationbucket-1"
+      - fixture: fixtures/objects-compose-when1.http
+        expect: access
+        resource: "destinationbucket-1"
+
+  - id: google-cloud-storage.objects.copy
+    match: { rest: { method: POST, path: "/storage/v1/b/{sourceBucket}/o/{sourceObject}/copyTo/b/{destinationBucket}/o/{destinationObject}" } }
+    class: write
+    when:
+      - if: { arg: query.destinationPredefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: sourceBucket, kind: sourceBucket }
+    card: "Copy {sourceObject} from bucket {sourceBucket} to {destinationObject} in bucket {destinationBucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Overwrites the destination object if there is one, as S3's CopyObject does. A public
+      predefined ACL is access.
+    tests:
+      - fixture: fixtures/objects-copy.http
+        expect: write
+        resource: "sourcebucket-1"
+      - fixture: fixtures/objects-copy-when1.http
+        expect: access
+        resource: "sourcebucket-1"
+
+  - id: google-cloud-storage.objects.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/b/{bucket}/o/{object}" } }
+    class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete {object} from Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Opfence cannot see whether the bucket keeps soft-deleted or noncurrent versions, so a deleted
+      object counts as gone, as for S3.
+    tests:
+      - fixture: fixtures/objects-delete.http
+        expect: irreversible
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.insert
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/o" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Upload {query.name} to Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Overwrites the object if there is one, as S3's PutObject does. A public predefined ACL or an
+      ACL in the body is access.
+    tests:
+      - fixture: fixtures/objects-insert.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-insert-when1.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.insert-upload
+    match: { rest: { method: POST, path: "/upload/storage/v1/b/{bucket}/o" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Upload {query.name} to Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Overwrites the object if there is one, as S3's PutObject does. A public predefined ACL or an
+      ACL in the body is access.
+    tests:
+      - fixture: fixtures/objects-insert-upload.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-insert-upload-when1.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.insert-resumable
+    match: { rest: { method: POST, path: "/resumable/upload/storage/v1/b/{bucket}/o" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Upload {query.name} to Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Overwrites the object if there is one, as S3's PutObject does. A public predefined ACL or an
+      ACL in the body is access.
+    tests:
+      - fixture: fixtures/objects-insert-resumable.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-insert-resumable-when1.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.move
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/o/{sourceObject}/moveTo/o/{destinationObject}" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Move {sourceObject} to {destinationObject} in Cloud Storage bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/objects-move.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.patch
+    match: { rest: { method: PATCH, path: "/storage/v1/b/{bucket}/o/{object}" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: body.acl, present: true }
+        class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage object {object} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      A public predefined ACL or an ACL in the body is access.
+    tests:
+      - fixture: fixtures/objects-patch.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-patch-when1.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-patch-when2.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.restore
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/o/{object}/restore" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Restore Cloud Storage object {object} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/objects-restore.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.rewrite
+    match: { rest: { method: POST, path: "/storage/v1/b/{sourceBucket}/o/{sourceObject}/rewriteTo/b/{destinationBucket}/o/{destinationObject}" } }
+    class: write
+    when:
+      - if: { arg: query.destinationPredefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+    resource: { arg: sourceBucket, kind: sourceBucket }
+    card: "Rewrite {sourceObject} from bucket {sourceBucket} to {destinationObject} in bucket {destinationBucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      A public predefined ACL is access.
+    tests:
+      - fixture: fixtures/objects-rewrite.http
+        expect: write
+        resource: "sourcebucket-1"
+      - fixture: fixtures/objects-rewrite-when1.http
+        expect: access
+        resource: "sourcebucket-1"
+
+  - id: google-cloud-storage.objects.set-iam-policy
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}/o/{object}/iam" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change who can access Cloud Storage object {object} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/objects-set-iam-policy.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.objects.update
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}/o/{object}" } }
+    class: write
+    when:
+      - if: { arg: query.predefinedAcl, matches: "(?i)^(publicRead|publicReadWrite|authenticatedRead|bucketOwnerRead)$" }
+        class: access
+      - if: { arg: body.acl, present: true }
+        class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage object {object} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      A public predefined ACL or an ACL in the body is access.
+    tests:
+      - fixture: fixtures/objects-update.http
+        expect: write
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-update-when1.http
+        expect: access
+        resource: "acme-uploads"
+      - fixture: fixtures/objects-update-when2.http
+        expect: access
+        resource: "acme-uploads"

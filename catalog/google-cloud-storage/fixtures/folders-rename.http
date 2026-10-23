@@ -1,0 +1,7 @@
+# description: Rename Cloud Storage folder destinationfolder-1 of bucket acme-uploads
+POST /storage/v1/b/acme-uploads/folders/sourcefolder-1/renameTo/folders/destinationfolder-1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

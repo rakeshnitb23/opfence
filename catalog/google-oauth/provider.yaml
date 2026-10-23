@@ -1,0 +1,11 @@
+provider: google-oauth
+title: Google OAuth token endpoints
+docs: https://developers.google.com/identity/protocols/oauth2
+# gcloud and Google's client libraries exchange the credential they hold (a
+# refresh token, a service account's signed assertion, an external token for
+# workload identity federation) for a short-lived access token before
+# calling an API, often before every command. Without these hosts in the
+# catalog, strict mode refused the exchange and gcloud could not run.
+hosts: [oauth2.googleapis.com, sts.googleapis.com]
+defaults:
+  rest_safe_methods: read

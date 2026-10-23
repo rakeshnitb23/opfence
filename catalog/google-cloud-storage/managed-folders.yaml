@@ -1,0 +1,67 @@
+# Google Cloud Storage JSON API: managed folders.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-storage.managed-folders.delete
+    match: { rest: { method: DELETE, path: "/storage/v1/b/{bucket}/managedFolders/{managedFolder}" } }
+    class: delete
+    when:
+      - if: { arg: query.allowNonEmpty, equals: "true" }
+        class: irreversible
+    resource: { arg: bucket, kind: bucket }
+    card: "Delete Cloud Storage managed folder {managedFolder} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    notes: >-
+      Without allowNonEmpty, only an empty managed folder can be deleted. With allowNonEmpty it
+      deletes the objects in it, so it is irreversible.
+    tests:
+      - fixture: fixtures/managed-folders-delete.http
+        expect: delete
+        resource: "acme-uploads"
+      - fixture: fixtures/managed-folders-delete-when1.http
+        expect: irreversible
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.managed-folders.insert
+    match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/managedFolders" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Create Cloud Storage managed folder in bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/managed-folders-insert.http
+        expect: write
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.managed-folders.set-iam-policy
+    match: { rest: { method: PUT, path: "/storage/v1/b/{bucket}/managedFolders/{managedFolder}/iam" } }
+    class: access
+    resource: { arg: bucket, kind: bucket }
+    card: "Change who can access Cloud Storage managed folder {managedFolder} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/managed-folders-set-iam-policy.http
+        expect: access
+        resource: "acme-uploads"
+
+  - id: google-cloud-storage.managed-folders.update
+    match: { rest: { method: PATCH, path: "/storage/v1/b/{bucket}/managedFolders/{managedFolder}" } }
+    class: write
+    resource: { arg: bucket, kind: bucket }
+    card: "Change Cloud Storage managed folder {managedFolder} of bucket {bucket}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/storage/v1/rest
+    tests:
+      - fixture: fixtures/managed-folders-update.http
+        expect: write
+        resource: "acme-uploads"

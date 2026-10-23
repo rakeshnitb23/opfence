@@ -1,0 +1,1246 @@
+# Google Cloud SQL Admin API: instances.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.instances.rotate-entra-id-certificate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateEntraIdCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-entra-id-certificate.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.rotate-server-certificate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateServerCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate server certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-server-certificate.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.acquire-ssrs-lease
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/acquireSsrsLease" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Acquire SSRS lease on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-acquire-ssrs-lease.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-entra-id-certificate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addEntraIdCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-entra-id-certificate.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-server-ca
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addServerCa" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add server CA on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-server-ca.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-server-certificate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addServerCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add server certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-server-certificate.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.clone
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/clone" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Clone Cloud SQL instance {instance} to {body.cloneContext.destinationInstanceName} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Creates a new instance, which is billed.
+    tests:
+      - fixture: fixtures/instances-clone.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL instance {instance} in project {project} with its databases and backups"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Deletes the instance, its databases and its automated backups. A final backup is kept only
+      when the request asks for one, and a rule cannot make a call looser for an argument, so the
+      delete counts as irreversible.
+    tests:
+      - fixture: fixtures/instances-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.demote
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/demote" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Demote Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Makes the instance a replica of an external database, which replaces its data.
+    tests:
+      - fixture: fixtures/instances-demote.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.demote-master
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/demoteMaster" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Demote master on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Makes the instance a replica of an external database, which replaces its data.
+    tests:
+      - fixture: fixtures/instances-demote-master.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.execute-sql
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/executeSql" } }
+    class: unknown
+    classify: { sql: body.sqlStatement, dialect: [postgres, mysql] }
+    resource: { arg: project, kind: project }
+    card: "Run SQL on database {body.database} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      The class comes from the SQL, read as both Postgres and MySQL since Opfence cannot tell the
+      instance's engine; SQL Server's T-SQL is unknown.
+    tests:
+      - fixture: fixtures/instances-execute-sql.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/instances-execute-sql-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.export
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/export" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Export Cloud SQL instance {instance} of project {project} to {body.exportContext.uri}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Writes the instance's data to the Cloud Storage location the request names, which can belong
+      to another project.
+    tests:
+      - fixture: fixtures/instances-export.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.failover
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/failover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Failover Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-failover.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.import
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/import" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Import {body.importContext.uri} into Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Runs a SQL dump or loads a CSV file, which can drop and overwrite tables.
+    tests:
+      - fixture: fixtures/instances-import.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.insert
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL instance {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      New instances are billed.
+    tests:
+      - fixture: fixtures/instances-insert.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}" } }
+    class: write
+    when:
+      - if: { arg: body.settings.ipConfiguration.authorizedNetworks, present: true }
+        class: access
+      - if: { arg: body.settings.ipConfiguration.ipv4Enabled, equals: "true" }
+        class: access
+      - if: { arg: body.settings.backupConfiguration.enabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.pointInTimeRecoveryEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.binaryLogEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.deletionProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.tier, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the instance's settings. Opening the instance to networks (authorizedNetworks, a
+      public IP) is access; turning off backups, point-in-time recovery, binary logging or deletion
+      protection is irreversible, as dangerous as what it protects; changing the machine tier is
+      money.
+    tests:
+      - fixture: fixtures/instances-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when4.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when5.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when7.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.point-in-time-restore
+    match: { rest: { method: POST, path: "/v1/projects/{project}:pointInTimeRestore" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Restore a Cloud SQL instance to a point in time in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Restores the database to an earlier time; what was written since is gone from it.
+    tests:
+      - fixture: fixtures/instances-point-in-time-restore.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.pre-check-major-version-upgrade
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/preCheckMajorVersionUpgrade" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Checks whether an upgrade would work; changes nothing.
+    tests:
+      - fixture: fixtures/instances-pre-check-major-version-upgrade.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.promote-replica
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/promoteReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Promote replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Stops replication and makes the replica a standalone primary.
+    tests:
+      - fixture: fixtures/instances-promote-replica.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reencrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/reencrypt" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reencrypt Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-reencrypt.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.release-ssrs-lease
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/releaseSsrsLease" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Release SSRS lease on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-release-ssrs-lease.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reset-ssl-config
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/resetSslConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Reset SSL config on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Deletes every client certificate, so clients using them can no longer connect.
+    tests:
+      - fixture: fixtures/instances-reset-ssl-config.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.restart
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/restart" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restart Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-restart.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.restore-backup
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/restoreBackup" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Restore a backup onto Cloud SQL instance {instance} in project {project}, replacing its data"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Replaces the target instance's data with the backup's.
+    tests:
+      - fixture: fixtures/instances-restore-backup.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.rotate-server-ca
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateServerCa" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate server CA on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-server-ca.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.start-replica
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/startReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-start-replica.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.stop-replica
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/stopReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-stop-replica.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.switchover
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/switchover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Switchover Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-switchover.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.truncate-log
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/truncateLog" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Truncate log on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Empties the general and slow query log tables.
+    tests:
+      - fixture: fixtures/instances-truncate-log.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.update
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/instances/{instance}" } }
+    class: write
+    when:
+      - if: { arg: body.settings.ipConfiguration.authorizedNetworks, present: true }
+        class: access
+      - if: { arg: body.settings.ipConfiguration.ipv4Enabled, equals: "true" }
+        class: access
+      - if: { arg: body.settings.backupConfiguration.enabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.pointInTimeRecoveryEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.binaryLogEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.deletionProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.tier, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Changes the instance's settings. Opening the instance to networks (authorizedNetworks, a
+      public IP) is access; turning off backups, point-in-time recovery, binary logging or deletion
+      protection is irreversible, as dangerous as what it protects; changing the machine tier is
+      money.
+    tests:
+      - fixture: fixtures/instances-update.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when4.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when5.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-when7.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.perform-disk-shrink
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/performDiskShrink" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Perform disk shrink on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-perform-disk-shrink.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reschedule-maintenance
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rescheduleMaintenance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reschedule maintenance on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-reschedule-maintenance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reset-replica-size
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/resetReplicaSize" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reset replica size on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/instances-reset-replica-size.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.start-external-sync
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/startExternalSync" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Start external sync on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Starts replicating an external database into the instance, replacing its data.
+    tests:
+      - fixture: fixtures/instances-start-external-sync.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.verify-external-sync-settings
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/verifyExternalSyncSettings" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    notes: >-
+      Checks settings; changes nothing.
+    tests:
+      - fixture: fixtures/instances-verify-external-sync-settings.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.rotate-entra-id-certificate-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateEntraIdCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-entra-id-certificate-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.rotate-server-certificate-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateServerCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate server certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-server-certificate-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.acquire-ssrs-lease-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/acquireSsrsLease" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Acquire SSRS lease on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-acquire-ssrs-lease-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-entra-id-certificate-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addEntraIdCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-entra-id-certificate-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-server-ca-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addServerCa" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add server CA on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-server-ca-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.add-server-certificate-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addServerCertificate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add server certificate on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-add-server-certificate-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.clone-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/clone" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Clone Cloud SQL instance {instance} to {body.cloneContext.destinationInstanceName} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Creates a new instance, which is billed.
+    tests:
+      - fixture: fixtures/instances-clone-v1beta4.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.delete-v1beta4
+    match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud SQL instance {instance} in project {project} with its databases and backups"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Deletes the instance, its databases and its automated backups. A final backup is kept only
+      when the request asks for one, and a rule cannot make a call looser for an argument, so the
+      delete counts as irreversible.
+    tests:
+      - fixture: fixtures/instances-delete-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.demote-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/demote" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Demote Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Makes the instance a replica of an external database, which replaces its data.
+    tests:
+      - fixture: fixtures/instances-demote-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.demote-master-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/demoteMaster" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Demote master on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Makes the instance a replica of an external database, which replaces its data.
+    tests:
+      - fixture: fixtures/instances-demote-master-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.execute-sql-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/executeSql" } }
+    class: unknown
+    classify: { sql: body.sqlStatement, dialect: [postgres, mysql] }
+    resource: { arg: project, kind: project }
+    card: "Run SQL on database {body.database} of Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      The class comes from the SQL, read as both Postgres and MySQL since Opfence cannot tell the
+      instance's engine; SQL Server's T-SQL is unknown.
+    tests:
+      - fixture: fixtures/instances-execute-sql-v1beta4.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/instances-execute-sql-v1beta4-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.export-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/export" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Export Cloud SQL instance {instance} of project {project} to {body.exportContext.uri}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Writes the instance's data to the Cloud Storage location the request names, which can belong
+      to another project.
+    tests:
+      - fixture: fixtures/instances-export-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.failover-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/failover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Failover Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-failover-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.import-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/import" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Import {body.importContext.uri} into Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Runs a SQL dump or loads a CSV file, which can drop and overwrite tables.
+    tests:
+      - fixture: fixtures/instances-import-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.insert-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Cloud SQL instance {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      New instances are billed.
+    tests:
+      - fixture: fixtures/instances-insert-v1beta4.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.patch-v1beta4
+    match: { rest: { method: PATCH, path: "/sql/v1beta4/projects/{project}/instances/{instance}" } }
+    class: write
+    when:
+      - if: { arg: body.settings.ipConfiguration.authorizedNetworks, present: true }
+        class: access
+      - if: { arg: body.settings.ipConfiguration.ipv4Enabled, equals: "true" }
+        class: access
+      - if: { arg: body.settings.backupConfiguration.enabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.pointInTimeRecoveryEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.binaryLogEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.deletionProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.tier, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the instance's settings. Opening the instance to networks (authorizedNetworks, a
+      public IP) is access; turning off backups, point-in-time recovery, binary logging or deletion
+      protection is irreversible, as dangerous as what it protects; changing the machine tier is
+      money.
+    tests:
+      - fixture: fixtures/instances-patch-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when4.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when5.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-v1beta4-when7.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.point-in-time-restore-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}:pointInTimeRestore" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Restore a Cloud SQL instance to a point in time in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Restores the database to an earlier time; what was written since is gone from it.
+    tests:
+      - fixture: fixtures/instances-point-in-time-restore-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.pre-check-major-version-upgrade-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/preCheckMajorVersionUpgrade" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Checks whether an upgrade would work; changes nothing.
+    tests:
+      - fixture: fixtures/instances-pre-check-major-version-upgrade-v1beta4.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.promote-replica-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/promoteReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Promote replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Stops replication and makes the replica a standalone primary.
+    tests:
+      - fixture: fixtures/instances-promote-replica-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reencrypt-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/reencrypt" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reencrypt Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-reencrypt-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.release-ssrs-lease-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/releaseSsrsLease" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Release SSRS lease on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-release-ssrs-lease-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reset-ssl-config-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/resetSslConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Reset SSL config on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Deletes every client certificate, so clients using them can no longer connect.
+    tests:
+      - fixture: fixtures/instances-reset-ssl-config-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.restart-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/restart" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restart Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-restart-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.restore-backup-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/restoreBackup" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Restore a backup onto Cloud SQL instance {instance} in project {project}, replacing its data"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Replaces the target instance's data with the backup's.
+    tests:
+      - fixture: fixtures/instances-restore-backup-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.rotate-server-ca-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateServerCa" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Rotate server CA on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the certificates clients trust when connecting.
+    tests:
+      - fixture: fixtures/instances-rotate-server-ca-v1beta4.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.start-replica-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/startReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-start-replica-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.stop-replica-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/stopReplica" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop replica on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-stop-replica-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.switchover-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/switchover" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Switchover Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-switchover-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.truncate-log-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/truncateLog" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Truncate log on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Empties the general and slow query log tables.
+    tests:
+      - fixture: fixtures/instances-truncate-log-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.update-v1beta4
+    match: { rest: { method: PUT, path: "/sql/v1beta4/projects/{project}/instances/{instance}" } }
+    class: write
+    when:
+      - if: { arg: body.settings.ipConfiguration.authorizedNetworks, present: true }
+        class: access
+      - if: { arg: body.settings.ipConfiguration.ipv4Enabled, equals: "true" }
+        class: access
+      - if: { arg: body.settings.backupConfiguration.enabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.pointInTimeRecoveryEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.backupConfiguration.binaryLogEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.deletionProtectionEnabled, equals: "false" }
+        class: irreversible
+      - if: { arg: body.settings.tier, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Changes the instance's settings. Opening the instance to networks (authorizedNetworks, a
+      public IP) is access; turning off backups, point-in-time recovery, binary logging or deletion
+      protection is irreversible, as dangerous as what it protects; changing the machine tier is
+      money.
+    tests:
+      - fixture: fixtures/instances-update-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when4.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when5.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/instances-update-v1beta4-when7.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.perform-disk-shrink-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/performDiskShrink" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Perform disk shrink on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-perform-disk-shrink-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reschedule-maintenance-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rescheduleMaintenance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reschedule maintenance on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-reschedule-maintenance-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.reset-replica-size-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/resetReplicaSize" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reset replica size on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/instances-reset-replica-size-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.start-external-sync-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/startExternalSync" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Start external sync on Cloud SQL instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Starts replicating an external database into the instance, replacing its data.
+    tests:
+      - fixture: fixtures/instances-start-external-sync-v1beta4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.instances.verify-external-sync-settings-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/verifyExternalSyncSettings" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    notes: >-
+      Checks settings; changes nothing.
+    tests:
+      - fixture: fixtures/instances-verify-external-sync-settings-v1beta4.http
+        expect: read
+        resource: "acme-prod"

@@ -1,0 +1,430 @@
+# Google Cloud IAM: workforce pools.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-iam.workforce-pools.create
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Create workforce pool"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-create.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.get-iam-policy
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}:getIamPolicy" } }
+    class: read
+    resource: { arg: location, kind: location }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/workforce-pools-get-iam-policy.http
+        expect: read
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.patch
+    match: { rest: { method: PATCH, path: "/v1/locations/{location}/workforcePools/{workforcePool}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-patch.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}:setIamPolicy" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change who can access workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-set-iam-policy.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}:testIamPermissions" } }
+    class: read
+    resource: { arg: location, kind: location }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/workforce-pools-test-iam-permissions.http
+        expect: read
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.undelete
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}:undelete" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Undelete workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-undelete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-create
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Create provider in workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-create.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete provider {provider} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-patch
+    match: { rest: { method: PATCH, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change provider {provider} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-patch.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-undelete
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}:undelete" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Undelete provider {provider} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-undelete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-keys-create
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/keys" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Create key in provider {provider}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-keys-create.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-keys-delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/keys/{key}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete key {key} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-keys-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-keys-undelete
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/keys/{key}:undelete" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Undelete key {key} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-keys-undelete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-create
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Create SCIM tenant in provider {provider}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-create.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete SCIM tenant {scimTenant} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-get-iam-policy
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}:getIamPolicy" } }
+    class: read
+    resource: { arg: location, kind: location }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-get-iam-policy.http
+        expect: read
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-patch
+    match: { rest: { method: PATCH, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change SCIM tenant {scimTenant} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-patch.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-set-iam-policy
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}:setIamPolicy" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change who can access SCIM tenant {scimTenant} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-set-iam-policy.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}:testIamPermissions" } }
+    class: read
+    resource: { arg: location, kind: location }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-test-iam-permissions.http
+        expect: read
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-undelete
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}:undelete" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Undelete SCIM tenant {scimTenant} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-undelete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-tokens-create
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}/tokens" } }
+    class: credential
+    resource: { arg: location, kind: location }
+    card: "Create token in SCIM tenant {scimTenant}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Returns a SCIM token.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-tokens-create.http
+        expect: credential
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-tokens-delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}/tokens/{token}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete token {token} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-tokens-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.providers-scim-tenants-tokens-patch
+    match: { rest: { method: PATCH, path: "/v1/locations/{location}/workforcePools/{workforcePool}/providers/{provider}/scimTenants/{scimTenant}/tokens/{token}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Change token {token} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-providers-scim-tenants-tokens-patch.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.subjects-delete
+    match: { rest: { method: DELETE, path: "/v1/locations/{location}/workforcePools/{workforcePool}/subjects/{subject}" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Delete subject {subject} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-subjects-delete.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.subjects-revoke-sessions
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/subjects/{subject}:revokeSessions" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Revoke sessions on subject {subject} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-subjects-revoke-sessions.http
+        expect: access
+        resource: "us-central1"
+
+  - id: google-cloud-iam.workforce-pools.subjects-undelete
+    match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/subjects/{subject}:undelete" } }
+    class: access
+    resource: { arg: location, kind: location }
+    card: "Undelete subject {subject} of workforce pool {workforcePool}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/iam/v1/rest
+    notes: >-
+      Identities, roles and their keys decide who can do what in the project.
+    tests:
+      - fixture: fixtures/workforce-pools-subjects-undelete.http
+        expect: access
+        resource: "us-central1"

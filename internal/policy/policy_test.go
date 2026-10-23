@@ -33,6 +33,8 @@ func TestParseErrors(t *testing.T) {
 		"bad arg path":     "version: 1\nenvironments:\n  production:\n    railway: { \"env id\": [x] }\n",
 		"bad passthrough":  "version: 1\npassthrough: [\"registry.corp:8080\"]\n",
 		"star passthrough": "version: 1\npassthrough: [\"*\"]\n",
+		"star in provider": "version: 1\nenvironments:\n  development:\n    \"google-*-sql\": { project: [x] }\n",
+		"bare star":        "version: 1\nenvironments:\n  development:\n    \"*\": { project: [x] }\n",
 	}
 	for name, s := range cases {
 		if _, err := Parse([]byte(s), "opfence.yaml"); err == nil {
@@ -187,5 +189,51 @@ func TestPassthrough(t *testing.T) {
 	e = Resolve(user, repo)
 	if has(e, "registry.npmjs.org") || !strings.Contains(strings.Join(e.Warnings, "\n"), "passthrough_defaults true would loosen") {
 		t.Fatalf("repo re-enabling defaults: %v %v", e.Passthrough, e.Warnings)
+	}
+}
+
+// A key ending in * maps every provider whose id starts with it, so one
+// Google Cloud project maps for every Google API. A provider's own key is
+// read first, and production is still checked before development.
+func TestEnvironmentPrefixes(t *testing.T) {
+	user := mustParse(t, "config.yaml", `version: 1
+environments:
+  production:
+    google-cloud-sql: { instance: [orders-db] }
+  development:
+    google-cloud-*: { project: [acme-dev] }
+    supabase*: { ref: [devref] }
+`)
+	e := Resolve(user, nil)
+	args := func(m map[string]string) func(string) (string, bool) {
+		return func(k string) (string, bool) { v, ok := m[k]; return v, ok }
+	}
+	cases := []struct {
+		provider string
+		args     map[string]string
+		want     string
+	}{
+		{"google-cloud-storage", map[string]string{"project": "acme-dev"}, Development},
+		{"google-cloud-sql", map[string]string{"project": "acme-dev"}, Development},
+		{"google-cloud-sql", map[string]string{"project": "acme-dev", "instance": "orders-db"}, Production},
+		{"google-cloud-iam", map[string]string{"project": "acme-prod"}, Production},
+		{"supabase", map[string]string{"ref": "devref"}, Development},
+		{"supabase-project", map[string]string{"ref": "devref"}, Development},
+		{"railway", map[string]string{"project": "acme-dev"}, Production},
+	}
+	for _, c := range cases {
+		if got, src := e.Environment(c.provider, args(c.args)); got != c.want {
+			t.Errorf("%s %v: got %s (%s), want %s", c.provider, c.args, got, src, c.want)
+		}
+	}
+	if keys := providerKeys(map[string]map[string][]string{"a*": nil, "abc*": nil, "abc": nil, "b*": nil}, "abc"); strings.Join(keys, " ") != "abc abc* a*" {
+		t.Errorf("providerKeys = %v", keys)
+	}
+	warn := e.CatalogWarnings(nil, []string{"google-cloud-sql", "supabase"})
+	if got := strings.Join(warn, "\n"); strings.Contains(got, "google-cloud-*") || strings.Contains(got, "supabase*") {
+		t.Errorf("prefixes that cover providers reported: %s", got)
+	}
+	if got := strings.Join(Resolve(mustParse(t, "c.yaml", "version: 1\nenvironments:\n  development:\n    azure-*: { x: [y] }\n"), nil).CatalogWarnings(nil, []string{"supabase"}), "\n"); !strings.Contains(got, "no catalog provider id starts with azure-") {
+		t.Errorf("prefix covering nothing not reported: %q", got)
 	}
 }

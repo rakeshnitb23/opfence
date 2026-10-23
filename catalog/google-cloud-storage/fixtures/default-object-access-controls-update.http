@@ -1,0 +1,7 @@
+# description: Change Cloud Storage default object ACL entry entity-1 of bucket acme-uploads
+PUT /storage/v1/b/acme-uploads/defaultObjectAcl/entity-1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

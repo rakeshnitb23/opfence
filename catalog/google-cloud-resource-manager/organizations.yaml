@@ -1,0 +1,199 @@
+# Google Cloud Resource Manager: organizations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.organizations.get-iam-policy
+    match: { rest: { method: POST, path: "/v3/organizations/{organization}:getIamPolicy" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-get-iam-policy.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.set-iam-policy
+    match: { rest: { method: POST, path: "/v3/organizations/{organization}:setIamPolicy" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change who can access organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/organizations-set-iam-policy.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.test-iam-permissions
+    match: { rest: { method: POST, path: "/v3/organizations/{organization}:testIamPermissions" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-test-iam-permissions.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.clear-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:clearOrgPolicy" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Clear org policy on organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/organizations-clear-org-policy-v1.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.get-effective-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:getEffectiveOrgPolicy" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-get-effective-org-policy-v1.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.get-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:getIamPolicy" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-get-iam-policy-v1.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.get-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:getOrgPolicy" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-get-org-policy-v1.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.list-available-org-policy-constraints-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:listAvailableOrgPolicyConstraints" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-list-available-org-policy-constraints-v1.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.list-org-policies-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:listOrgPolicies" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-list-org-policies-v1.http
+        expect: read
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.search-v1
+    match: { rest: { method: POST, path: "/v1/organizations:search" } }
+    class: read
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-search-v1.http
+        expect: read
+
+  - id: google-cloud-resource-manager.organizations.set-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:setIamPolicy" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change who can access organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Replaces the IAM policy: who can do what on the resource and everything under it.
+    tests:
+      - fixture: fixtures/organizations-set-iam-policy-v1.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.set-org-policy-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:setOrgPolicy" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Set org policy on organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Organization policies are guardrails, such as forbidding public IPs.
+    tests:
+      - fixture: fixtures/organizations-set-org-policy-v1.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.organizations.test-iam-permissions-v1
+    match: { rest: { method: POST, path: "/v1/organizations/{organization}:testIamPermissions" } }
+    class: read
+    resource: { arg: organization, kind: organization }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/organizations-test-iam-permissions-v1.http
+        expect: read
+        resource: "987654321098"

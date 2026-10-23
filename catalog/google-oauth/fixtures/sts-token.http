@@ -1,0 +1,6 @@
+# description: Exchange a GitHub Actions token through workload identity federation
+POST /v1/token HTTP/1.1
+Host: sts.googleapis.com
+Content-Type: application/json
+
+{"grantType":"urn:ietf:params:oauth:grant-type:token-exchange","audience":"//iam.googleapis.com/projects/123/locations/global/workloadIdentityPools/gh/providers/gh","requestedTokenType":"urn:ietf:params:oauth:token-type:access_token","subjectTokenType":"urn:ietf:params:oauth:token-type:jwt","subjectToken":"EXAMPLE","scope":"https://www.googleapis.com/auth/cloud-platform"}

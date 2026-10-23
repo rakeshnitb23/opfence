@@ -1,0 +1,64 @@
+# Google Cloud Resource Manager: liens.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.liens.create
+    match: { rest: { method: POST, path: "/v3/liens" } }
+    class: write
+    card: "Create lien"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      A lien stops the project from being deleted.
+    tests:
+      - fixture: fixtures/liens-create.http
+        expect: write
+
+  - id: google-cloud-resource-manager.liens.delete
+    match: { rest: { method: DELETE, path: "/v3/liens/{lien}" } }
+    class: delete
+    resource: { arg: lien, kind: lien }
+    card: "Delete lien {lien}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Removing a lien turns off the protection against deleting the project, which is as dangerous
+      as deleting it.
+    tests:
+      - fixture: fixtures/liens-delete.http
+        expect: delete
+        resource: "lien-1"
+
+  - id: google-cloud-resource-manager.liens.create-v1
+    match: { rest: { method: POST, path: "/v1/liens" } }
+    class: write
+    card: "Create lien"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      A lien stops the project from being deleted.
+    tests:
+      - fixture: fixtures/liens-create-v1.http
+        expect: write
+
+  - id: google-cloud-resource-manager.liens.delete-v1
+    match: { rest: { method: DELETE, path: "/v1/liens/{lien}" } }
+    class: delete
+    resource: { arg: lien, kind: lien }
+    card: "Delete lien {lien}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v1/rest
+    notes: >-
+      Removing a lien turns off the protection against deleting the project, which is as dangerous
+      as deleting it.
+    tests:
+      - fixture: fixtures/liens-delete-v1.http
+        expect: delete
+        resource: "lien-1"

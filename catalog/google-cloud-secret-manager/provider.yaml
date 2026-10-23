@@ -1,0 +1,17 @@
+provider: google-cloud-secret-manager
+title: Google Cloud Secret Manager
+docs: https://cloud.google.com/secret-manager/docs/reference/rest
+# Secrets and their versions, global and regional (secretmanager.<region>.rep.googleapis.com).
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [secretmanager.googleapis.com, "secretmanager.*.rep.googleapis.com"]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/secretmanager/v1/rest

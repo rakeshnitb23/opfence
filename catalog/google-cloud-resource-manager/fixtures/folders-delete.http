@@ -1,0 +1,5 @@
+# description: Delete folder 123456789012
+DELETE /v3/folders/123456789012 HTTP/1.1
+Host: cloudresourcemanager.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

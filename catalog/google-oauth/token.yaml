@@ -1,0 +1,50 @@
+# Google OAuth token endpoints.
+operations:
+  - id: google-oauth.token.exchange
+    match: { rest: { method: POST, path: /token } }
+    class: read
+    card: "Exchange a Google credential for an access token"
+    unlisted: "OAuth 2.0 endpoint, documented apart from Google's discovery documents"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://developers.google.com/identity/protocols/oauth2/web-server#offline
+    notes: >-
+      Exchanges a refresh token, a service account's signed assertion or an authorization code
+      that the caller already holds for a short-lived access token. It gives the caller nothing
+      it could not do already, and every call made with the token is decided by that API's
+      own rules. Acting as another service account is different: iamcredentials'
+      generateAccessToken and IAM's signJwt are credential.
+    tests:
+      - fixture: fixtures/token-refresh.http
+        expect: read
+  - id: google-oauth.sts.exchange
+    match: { rest: { method: POST, path: /v1/token } }
+    class: read
+    card: "Exchange an external token for a Google access token"
+    unlisted: "Security Token Service endpoint, documented apart from Google's discovery documents"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloud.google.com/iam/docs/reference/sts/rest/v1/TopLevel/token
+    notes: >-
+      Workload identity federation: exchanges a token the caller already holds (from AWS,
+      Azure, GitHub Actions or another identity provider) for a federated Google access token,
+      as the token endpoint does for refresh tokens.
+    tests:
+      - fixture: fixtures/sts-token.http
+        expect: read
+  - id: google-oauth.token.revoke
+    match: { rest: { method: POST, path: /revoke } }
+    class: access
+    card: "Revoke a Google token"
+    unlisted: "OAuth 2.0 endpoint, documented apart from Google's discovery documents"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://developers.google.com/identity/protocols/oauth2/web-server#tokenrevoke
+    notes: >-
+      Revoking a refresh token signs the tool that holds it out, as deleting an API token does.
+    tests:
+      - fixture: fixtures/token-revoke.http
+        expect: access

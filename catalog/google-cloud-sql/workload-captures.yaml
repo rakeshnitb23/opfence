@@ -1,0 +1,114 @@
+# Google Cloud SQL Admin API: workload captures.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-sql.workload-captures.start
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures:start" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start on Cloud SQL workload capture {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/workload-captures-start.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.start-replay
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures/{workload}:startReplay" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/workload-captures-start-replay.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.stop
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures:stop" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop on Cloud SQL workload capture {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/workload-captures-stop.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.stop-replay
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures/{workload}:stopReplay" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+    tests:
+      - fixture: fixtures/workload-captures-stop-replay.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.start-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures:start" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start on Cloud SQL workload capture {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/workload-captures-start-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.start-replay-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures/{workload}:startReplay" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/workload-captures-start-replay-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.stop-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures:stop" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop on Cloud SQL workload capture {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/workload-captures-stop-v1beta4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-sql.workload-captures.stop-replay-v1beta4
+    match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures/{workload}:stopReplay" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest
+    tests:
+      - fixture: fixtures/workload-captures-stop-replay-v1beta4.http
+        expect: write
+        resource: "acme-prod"

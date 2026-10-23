@@ -1,0 +1,5 @@
+# description: Delete reports%2F2026.csv from Cloud Storage bucket acme-uploads
+DELETE /storage/v1/b/acme-uploads/o/reports%2F2026.csv HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

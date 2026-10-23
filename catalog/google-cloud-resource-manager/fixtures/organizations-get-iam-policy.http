@@ -1,0 +1,7 @@
+# description: Read who can access organization 987654321098
+POST /v3/organizations/987654321098:getIamPolicy HTTP/1.1
+Host: cloudresourcemanager.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

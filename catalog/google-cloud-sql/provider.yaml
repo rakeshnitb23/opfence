@@ -1,0 +1,20 @@
+provider: google-cloud-sql
+title: Google Cloud SQL Admin API
+docs: https://cloud.google.com/sql/docs/mysql/admin-api
+# Cloud SQL instances, databases, users, backups and SQL run through the API. gcloud sql calls
+# v1beta4.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [sqladmin.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/sqladmin/v1/rest
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest

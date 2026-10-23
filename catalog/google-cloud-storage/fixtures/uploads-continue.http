@@ -1,0 +1,5 @@
+# description: Continue uploading an object to bucket acme-uploads
+PUT /upload/storage/v1/b/acme-uploads/o?uploadType=resumable&upload_id=ADPycd123 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

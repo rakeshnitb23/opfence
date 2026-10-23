@@ -1,0 +1,7 @@
+# description: Change who can access Cloud Storage bucket acme-uploads
+PUT /storage/v1/b/acme-uploads/iam HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

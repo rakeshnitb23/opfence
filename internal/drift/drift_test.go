@@ -404,3 +404,37 @@ func TestDecodeDocDuplicateKeys(t *testing.T) {
 		t.Fatal("broken YAML read")
 	}
 }
+
+func TestExtractDiscovery(t *testing.T) {
+	doc := `{"kind": "discovery#restDescription", "servicePath": "storage/v1/",
+	  "resources": {
+	    "objects": {"methods": {
+	      "delete": {"httpMethod": "DELETE", "path": "b/{bucket}/o/{object}"},
+	      "insert": {"httpMethod": "POST", "path": "b/{bucket}/o",
+	        "mediaUpload": {"protocols": {"simple": {"path": "/upload/storage/v1/b/{bucket}/o"}, "resumable": {"path": "/resumable/upload/storage/v1/b/{bucket}/o"}}}}}},
+	    "projects": {"resources": {"secrets": {"methods": {
+	      "access": {"httpMethod": "GET", "path": "v1/{+name}:access", "flatPath": "v1/projects/{projectsId}/secrets/{secretsId}:access"},
+	      "list": {"httpMethod": "GET", "path": "v1/{+parent}/secrets"}}}}}}}`
+	ops, err := Extract(catalog.SchemaSource{Kind: "discovery"}, nil, []byte(doc))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, o := range ops {
+		got = append(got, o.Method+" "+o.Path)
+	}
+	want := []string{
+		"DELETE /storage/v1/b/{bucket}/o/{object}",
+		"POST /storage/v1/b/{bucket}/o",
+		"POST /upload/storage/v1/b/{bucket}/o",
+		"POST /resumable/upload/storage/v1/b/{bucket}/o",
+		"GET /storage/v1/v1/projects/{projectsId}/secrets/{secretsId}:access",
+		"GET /storage/v1/v1/{parent*}/secrets",
+	}
+	if strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
+	}
+	if _, err := Extract(catalog.SchemaSource{Kind: "discovery"}, nil, []byte(`{"kind": "x"}`)); err == nil {
+		t.Error("a document that is not a discovery document was read")
+	}
+}
