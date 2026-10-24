@@ -401,7 +401,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/locations/{location}/workforcePools/{workforcePool}/subjects/{subject}:revokeSessions" } }
     class: access
     resource: { arg: location, kind: location }
-    card: "Revoke sessions on subject {subject} of workforce pool {workforcePool}"
+    card: "Revoke sessions of subject {subject} of workforce pool {workforcePool}"
     status: verified
     verified: 2026-10-23
     sources:

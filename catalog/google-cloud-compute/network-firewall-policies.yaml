@@ -1,0 +1,225 @@
+# Google Compute Engine: network firewall policies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.network-firewall-policies.add-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/addAssociation" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add association to Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-add-association.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.add-packet-mirroring-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/addPacketMirroringRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add packet mirroring rule to Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-add-packet-mirroring-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.add-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/addRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add rule to Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-add-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.clone-rules
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/cloneRules" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Clone rules of Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-clone-rules.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine network firewall policy {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.patch-packet-mirroring-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/patchPacketMirroringRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change packet mirroring rule of Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-patch-packet-mirroring-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.patch-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/patchRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change rule of Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-patch-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.remove-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/removeAssociation" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Remove association from Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-remove-association.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.remove-packet-mirroring-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/removePacketMirroringRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Remove packet mirroring rule from Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-remove-packet-mirroring-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.remove-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{firewallPolicy}/removeRule" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Remove rule from Compute Engine network firewall policy {firewallPolicy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/network-firewall-policies-remove-rule.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine network firewall policy {resource} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/network-firewall-policies-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.network-firewall-policies.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/firewallPolicies/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/network-firewall-policies-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

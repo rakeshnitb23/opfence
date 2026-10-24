@@ -1,0 +1,66 @@
+# Google App Engine Admin API: firewall.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-app-engine.firewall.ingress-rules-batch-update
+    match: { rest: { method: POST, path: "/v1/apps/{project}/firewall/ingressRules:batchUpdate" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Batch update of App Engine firewall rule in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Firewall rules decide which addresses reach the app.
+    tests:
+      - fixture: fixtures/firewall-ingress-rules-batch-update.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.firewall.ingress-rules-create
+    match: { rest: { method: POST, path: "/v1/apps/{project}/firewall/ingressRules" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create App Engine firewall rule in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Firewall rules decide which addresses reach the app.
+    tests:
+      - fixture: fixtures/firewall-ingress-rules-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.firewall.ingress-rules-delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{project}/firewall/ingressRules/{ingressRule}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine firewall rule {ingressRule} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Firewall rules decide which addresses reach the app.
+    tests:
+      - fixture: fixtures/firewall-ingress-rules-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.firewall.ingress-rules-patch
+    match: { rest: { method: PATCH, path: "/v1/apps/{project}/firewall/ingressRules/{ingressRule}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change App Engine firewall rule {ingressRule} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Firewall rules decide which addresses reach the app.
+    tests:
+      - fixture: fixtures/firewall-ingress-rules-patch.http
+        expect: access
+        resource: "acme-prod"

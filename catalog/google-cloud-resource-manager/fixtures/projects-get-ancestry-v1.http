@@ -1,4 +1,4 @@
-# description: Get ancestry on project acme-prod
+# description: Read ancestry of project acme-prod
 POST /v1/projects/acme-prod:getAncestry HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

@@ -1,0 +1,155 @@
+# Google Compute Engine: target pools.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.target-pools.add-health-check
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/addHealthCheck" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Add health check to Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-pools-add-health-check.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.add-instance
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/addInstance" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add instance to Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Serves the VM at the load balancer's address.
+    tests:
+      - fixture: fixtures/target-pools-add-instance.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-pools-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.get-health
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/getHealth" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports health; changes nothing.
+    tests:
+      - fixture: fixtures/target-pools-get-health.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine target pool {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-pools-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.remove-health-check
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/removeHealthCheck" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Remove health check from Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-pools-remove-health-check.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.remove-instance
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/removeInstance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Remove instance from Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-pools-remove-instance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.set-backup
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/setBackup" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set backup of Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-pools-set-backup.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.set-security-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{targetPool}/setSecurityPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set security policy of Compute Engine target pool {targetPool} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-pools-set-security-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-pools.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetPools/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/target-pools-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

@@ -1,0 +1,7 @@
+# description: Setup function upgrade config of Cloud Functions function send-email in project acme-prod
+POST /v2/projects/acme-prod/locations/us-central1/functions/send-email:setupFunctionUpgradeConfig HTTP/1.1
+Host: cloudfunctions.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

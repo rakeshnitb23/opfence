@@ -1,0 +1,7 @@
+# description: Remove rule from Compute Engine security policy securitypolicy-1 (us-central1) in project acme-prod
+POST /compute/v1/projects/acme-prod/regions/us-central1/securityPolicies/securitypolicy-1/removeRule HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

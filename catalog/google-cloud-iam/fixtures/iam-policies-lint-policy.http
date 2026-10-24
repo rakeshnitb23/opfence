@@ -1,4 +1,4 @@
-# description: Lint policy on IAM policy
+# description: Lint IAM policy
 POST /v1/iamPolicies:lintPolicy HTTP/1.1
 Host: iam.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

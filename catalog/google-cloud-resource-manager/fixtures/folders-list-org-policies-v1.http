@@ -1,4 +1,4 @@
-# description: List org policies on folder 123456789012
+# description: List org policies of folder 123456789012
 POST /v1/folders/123456789012:listOrgPolicies HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

@@ -1,0 +1,62 @@
+# Google Cloud Run: domainmappings.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.domainmappings.create-v1
+    match: { rest: { method: POST, path: "/apis/domains.cloudrun.com/v1/namespaces/{project}/domainmappings" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Serve Cloud Run service {body.spec.routeName} at {body.metadata.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Serves the service at a public domain.
+    tests:
+      - fixture: fixtures/domainmappings-create-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.domainmappings.delete-v1
+    match: { rest: { method: DELETE, path: "/apis/domains.cloudrun.com/v1/namespaces/{project}/domainmappings/{domainmapping}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run domain mapping {domainmapping} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/domainmappings-delete-v1.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-run.domainmappings.create-v1-by-location
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/domainmappings" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Serve Cloud Run service {body.spec.routeName} at {body.metadata.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Serves the service at a public domain.
+    tests:
+      - fixture: fixtures/domainmappings-create-v1-by-location.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.domainmappings.delete-v1-by-location
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/domainmappings/{domainmapping}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run domain mapping {domainmapping} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/domainmappings-delete-v1-by-location.http
+        expect: delete
+        resource: "acme-prod"

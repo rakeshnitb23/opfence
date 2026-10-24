@@ -5,7 +5,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures:start" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start on Cloud SQL workload capture {instance} in project {project}"
+    card: "Start Cloud SQL workload capture {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -19,7 +19,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures/{workload}:startReplay" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    card: "Start replay of Cloud SQL workload capture {workload} of instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -33,7 +33,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures:stop" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop on Cloud SQL workload capture {instance} in project {project}"
+    card: "Stop Cloud SQL workload capture {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -47,7 +47,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/workloadCaptures/{workload}:stopReplay" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    card: "Stop replay of Cloud SQL workload capture {workload} of instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -61,7 +61,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures:start" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start on Cloud SQL workload capture {instance} in project {project}"
+    card: "Start Cloud SQL workload capture {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -75,7 +75,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures/{workload}:startReplay" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    card: "Start replay of Cloud SQL workload capture {workload} of instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -89,7 +89,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures:stop" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop on Cloud SQL workload capture {instance} in project {project}"
+    card: "Stop Cloud SQL workload capture {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -103,7 +103,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/workloadCaptures/{workload}:stopReplay" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop replay on Cloud SQL workload capture {workload} of instance {instance} in project {project}"
+    card: "Stop replay of Cloud SQL workload capture {workload} of instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:

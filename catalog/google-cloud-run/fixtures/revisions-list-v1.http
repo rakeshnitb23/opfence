@@ -1,0 +1,5 @@
+# description: List Cloud Run revisions in project acme-prod
+GET /apis/serving.knative.dev/v1/namespaces/acme-prod/revisions HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,0 +1,21 @@
+provider: google-cloud-run
+title: Google Cloud Run
+docs: https://cloud.google.com/run/docs/reference/rest
+# Services, jobs, worker pools and their revisions and executions: v2, and v1's Knative-style API that
+# gcloud run calls on each region's host (<region>-run.googleapis.com). Environment variables are
+# held: the agent sees tokens that a write of the same object may carry back.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [run.googleapis.com, africa-south1-run.googleapis.com, asia-east1-run.googleapis.com, asia-east2-run.googleapis.com, asia-northeast1-run.googleapis.com, asia-northeast2-run.googleapis.com, asia-northeast3-run.googleapis.com, asia-south1-run.googleapis.com, asia-south2-run.googleapis.com, asia-southeast1-run.googleapis.com, asia-southeast2-run.googleapis.com, asia-southeast3-run.googleapis.com, australia-southeast1-run.googleapis.com, australia-southeast2-run.googleapis.com, europe-central2-run.googleapis.com, europe-north1-run.googleapis.com, europe-north2-run.googleapis.com, europe-southwest1-run.googleapis.com, europe-west1-run.googleapis.com, europe-west10-run.googleapis.com, europe-west12-run.googleapis.com, europe-west2-run.googleapis.com, europe-west3-run.googleapis.com, europe-west4-run.googleapis.com, europe-west6-run.googleapis.com, europe-west8-run.googleapis.com, europe-west9-run.googleapis.com, me-central1-run.googleapis.com, me-central2-run.googleapis.com, me-west1-run.googleapis.com, northamerica-northeast1-run.googleapis.com, northamerica-northeast2-run.googleapis.com, northamerica-south1-run.googleapis.com, southamerica-east1-run.googleapis.com, southamerica-west1-run.googleapis.com, us-central1-run.googleapis.com, us-east1-run.googleapis.com, us-east4-run.googleapis.com, us-east5-run.googleapis.com, us-south1-run.googleapis.com, us-west1-run.googleapis.com, us-west2-run.googleapis.com, us-west3-run.googleapis.com, us-west4-run.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://run.googleapis.com/$discovery/rest?version=v2
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/run/v1/rest

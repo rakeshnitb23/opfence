@@ -1,0 +1,383 @@
+# Google Cloud Run: services.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.services.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/services" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run service {query.serviceId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/services-create.http
+        expect: write
+        response: fixtures/services-create.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/services/{service}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/services-delete.http
+        expect: delete
+        response: fixtures/services-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/services/{service}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-get.http
+        expect: credential
+        response: fixtures/services-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/services" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run services in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-list.http
+        expect: credential
+        response: fixtures/services-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/locations/{location}/services/{service}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/services-patch.http
+        expect: write
+        response: fixtures/services-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/services/{service}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Decides who can call or change it; allUsers makes a service public.
+    tests:
+      - fixture: fixtures/services-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/services/{service}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/services-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.revisions-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/services/{service}/revisions/{revision}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run revision {revision} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/services-revisions-delete.http
+        expect: delete
+        response: fixtures/services-revisions-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.revisions-get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/services/{service}/revisions/{revision}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run revision {revision} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-revisions-get.http
+        expect: credential
+        response: fixtures/services-revisions-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.revisions-list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/services/{service}/revisions" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run revisions of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-revisions-list.http
+        expect: credential
+        response: fixtures/services-revisions-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.create-v1
+    match: { rest: { method: POST, path: "/apis/serving.knative.dev/v1/namespaces/{project}/services" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run service {body.metadata.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/services-create-v1.http
+        expect: write
+        response: fixtures/services-create-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.delete-v1
+    match: { rest: { method: DELETE, path: "/apis/serving.knative.dev/v1/namespaces/{project}/services/{service}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/services-delete-v1.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.get-v1
+    match: { rest: { method: GET, path: "/apis/serving.knative.dev/v1/namespaces/{project}/services/{service}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-get-v1.http
+        expect: credential
+        response: fixtures/services-get-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.list-v1
+    match: { rest: { method: GET, path: "/apis/serving.knative.dev/v1/namespaces/{project}/services" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run services in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-list-v1.http
+        expect: credential
+        response: fixtures/services-list-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.replace-service-v1
+    match: { rest: { method: PUT, path: "/apis/serving.knative.dev/v1/namespaces/{project}/services/{service}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Replace Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/services-replace-service-v1.http
+        expect: write
+        response: fixtures/services-replace-service-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.create-v1-by-location
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/services" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run service {body.metadata.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/services-create-v1-by-location.http
+        expect: write
+        response: fixtures/services-create-v1-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.delete-v1-by-location
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/services/{service}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/services-delete-v1-by-location.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.get-v1-by-location
+    match: { rest: { method: GET, path: "/v1/projects/{project}/locations/{location}/services/{service}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-get-v1-by-location.http
+        expect: credential
+        response: fixtures/services-get-v1-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.list-v1-by-location
+    match: { rest: { method: GET, path: "/v1/projects/{project}/locations/{location}/services" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run services in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/services-list-v1-by-location.http
+        expect: credential
+        response: fixtures/services-list-v1-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.replace-service-v1-by-location
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/locations/{location}/services/{service}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Replace Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/services-replace-service-v1-by-location.http
+        expect: write
+        response: fixtures/services-replace-service-v1-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.set-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/services/{service}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Run service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Decides who can call or change it; allUsers makes a service public.
+    tests:
+      - fixture: fixtures/services-set-iam-policy-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.services.test-iam-permissions-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/services/{service}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/services-test-iam-permissions-v1.http
+        expect: read
+        resource: "acme-prod"

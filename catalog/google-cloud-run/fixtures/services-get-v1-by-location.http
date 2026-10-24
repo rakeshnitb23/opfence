@@ -1,0 +1,5 @@
+# description: Read Cloud Run service orders-api in project acme-prod
+GET /v1/projects/acme-prod/locations/us-central1/services/orders-api HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

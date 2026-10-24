@@ -5,7 +5,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateEntraIdCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate Entra ID certificate of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -21,7 +21,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateServerCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate server certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate server certificate of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -37,7 +37,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/acquireSsrsLease" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Acquire SSRS lease on Cloud SQL instance {instance} in project {project}"
+    card: "Acquire SSRS lease of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -51,7 +51,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addEntraIdCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Add Entra ID certificate to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -67,7 +67,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addServerCa" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add server CA on Cloud SQL instance {instance} in project {project}"
+    card: "Add server CA to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -83,7 +83,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/addServerCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add server certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Add server certificate to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -149,7 +149,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/demoteMaster" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Demote master on Cloud SQL instance {instance} in project {project}"
+    card: "Demote master of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -335,7 +335,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/promoteReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Promote replica on Cloud SQL instance {instance} in project {project}"
+    card: "Promote replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -365,7 +365,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/releaseSsrsLease" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Release SSRS lease on Cloud SQL instance {instance} in project {project}"
+    card: "Release SSRS lease of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -379,7 +379,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/resetSslConfig" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Reset SSL config on Cloud SQL instance {instance} in project {project}"
+    card: "Reset SSL config of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -425,7 +425,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rotateServerCa" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate server CA on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate server CA of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -441,7 +441,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/startReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start replica on Cloud SQL instance {instance} in project {project}"
+    card: "Start replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -455,7 +455,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/stopReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop replica on Cloud SQL instance {instance} in project {project}"
+    card: "Stop replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -483,7 +483,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/truncateLog" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Truncate log on Cloud SQL instance {instance} in project {project}"
+    card: "Truncate log of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -554,7 +554,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/performDiskShrink" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Perform disk shrink on Cloud SQL instance {instance} in project {project}"
+    card: "Perform disk shrink of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -568,7 +568,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/rescheduleMaintenance" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Reschedule maintenance on Cloud SQL instance {instance} in project {project}"
+    card: "Reschedule maintenance of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -582,7 +582,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/resetReplicaSize" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Reset replica size on Cloud SQL instance {instance} in project {project}"
+    card: "Reset replica size of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -596,7 +596,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/startExternalSync" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Start external sync on Cloud SQL instance {instance} in project {project}"
+    card: "Start external sync of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -627,7 +627,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateEntraIdCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate Entra ID certificate of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -643,7 +643,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateServerCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate server certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate server certificate of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -659,7 +659,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/acquireSsrsLease" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Acquire SSRS lease on Cloud SQL instance {instance} in project {project}"
+    card: "Acquire SSRS lease of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -673,7 +673,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addEntraIdCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add Entra ID certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Add Entra ID certificate to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -689,7 +689,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addServerCa" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add server CA on Cloud SQL instance {instance} in project {project}"
+    card: "Add server CA to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -705,7 +705,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/addServerCertificate" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add server certificate on Cloud SQL instance {instance} in project {project}"
+    card: "Add server certificate to Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -771,7 +771,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/demoteMaster" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Demote master on Cloud SQL instance {instance} in project {project}"
+    card: "Demote master of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -957,7 +957,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/promoteReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Promote replica on Cloud SQL instance {instance} in project {project}"
+    card: "Promote replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -987,7 +987,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/releaseSsrsLease" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Release SSRS lease on Cloud SQL instance {instance} in project {project}"
+    card: "Release SSRS lease of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1001,7 +1001,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/resetSslConfig" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Reset SSL config on Cloud SQL instance {instance} in project {project}"
+    card: "Reset SSL config of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1047,7 +1047,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rotateServerCa" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Rotate server CA on Cloud SQL instance {instance} in project {project}"
+    card: "Rotate server CA of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1063,7 +1063,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/startReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Start replica on Cloud SQL instance {instance} in project {project}"
+    card: "Start replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1077,7 +1077,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/stopReplica" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Stop replica on Cloud SQL instance {instance} in project {project}"
+    card: "Stop replica of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1105,7 +1105,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/truncateLog" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Truncate log on Cloud SQL instance {instance} in project {project}"
+    card: "Truncate log of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1176,7 +1176,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/performDiskShrink" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Perform disk shrink on Cloud SQL instance {instance} in project {project}"
+    card: "Perform disk shrink of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1190,7 +1190,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/rescheduleMaintenance" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Reschedule maintenance on Cloud SQL instance {instance} in project {project}"
+    card: "Reschedule maintenance of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1204,7 +1204,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/resetReplicaSize" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Reset replica size on Cloud SQL instance {instance} in project {project}"
+    card: "Reset replica size of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -1218,7 +1218,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/instances/{instance}/startExternalSync" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Start external sync on Cloud SQL instance {instance} in project {project}"
+    card: "Start external sync of Cloud SQL instance {instance} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:

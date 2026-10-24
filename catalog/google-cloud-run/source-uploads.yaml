@@ -1,0 +1,30 @@
+# Google Cloud Run: source uploads.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.source-uploads.upload
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}:uploadSource" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Upload Cloud Run source upload in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/source-uploads-upload.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-run.source-uploads.upload-upload
+    match: { rest: { method: POST, path: "/upload/v2/projects/{project}/locations/{location}:uploadSource" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Upload Cloud Run source upload in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/source-uploads-upload-upload.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,7 @@
+# description: Change who can access Compute Engine instant snapshot resource-1 (us-central1-a) in project acme-prod
+POST /compute/v1/projects/acme-prod/zones/us-central1-a/instantSnapshots/resource-1/setIamPolicy HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

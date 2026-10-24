@@ -1,0 +1,5 @@
+# description: Delete App Engine instance orders-db of service orders-api in project acme-prod
+DELETE /v1/apps/acme-prod/services/orders-api/versions/3/instances/orders-db HTTP/1.1
+Host: appengine.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

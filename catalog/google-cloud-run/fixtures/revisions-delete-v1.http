@@ -1,0 +1,5 @@
+# description: Delete Cloud Run revision revision-1 in project acme-prod
+DELETE /apis/serving.knative.dev/v1/namespaces/acme-prod/revisions/revision-1 HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

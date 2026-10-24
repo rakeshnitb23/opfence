@@ -124,7 +124,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}:clearOrgPolicy" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Clear org policy on project {project}"
+    card: "Clear org policy of project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -275,7 +275,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}:setOrgPolicy" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Set org policy on project {project}"
+    card: "Set org policy of project {project}"
     status: verified
     verified: 2026-10-23
     sources:

@@ -1,0 +1,103 @@
+# Google Compute Engine: subnetworks.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.subnetworks.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{subnetwork}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/subnetworks-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.expand-ip-cidr-range
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{subnetwork}/expandIpCidrRange" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Expand ip cidr range of Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/subnetworks-expand-ip-cidr-range.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine subnetwork {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/subnetworks-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{subnetwork}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/subnetworks-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine subnetwork {resource} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/subnetworks-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.set-private-ip-google-access
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{subnetwork}/setPrivateIpGoogleAccess" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set private ip google access of Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/subnetworks-set-private-ip-google-access.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.subnetworks.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/subnetworks/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/subnetworks-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

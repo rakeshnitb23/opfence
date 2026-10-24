@@ -1,0 +1,46 @@
+# Google Compute Engine: region instance groups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-instance-groups.list-instances
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instanceGroups/{instanceGroup}/listInstances" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Lists; changes nothing.
+    tests:
+      - fixture: fixtures/region-instance-groups-list-instances.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instance-groups.set-named-ports
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instanceGroups/{instanceGroup}/setNamedPorts" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set named ports of Compute Engine instance group {instanceGroup} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-instance-groups-set-named-ports.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instance-groups.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instanceGroups/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/region-instance-groups-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

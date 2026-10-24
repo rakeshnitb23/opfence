@@ -1,0 +1,18 @@
+# Google Compute Engine: global organization operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.global-organization-operations.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/locations/global/operations/{operation}" } }
+    class: write
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Delete Compute Engine organization operation {operation}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Deletes the record of an operation, not what it did.
+    tests:
+      - fixture: fixtures/global-organization-operations-delete.http
+        expect: write
+        resource: "v1"

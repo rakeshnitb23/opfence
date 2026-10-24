@@ -1,0 +1,5 @@
+# description: Delete Compute Engine organization security policy securitypolicy-1
+DELETE /compute/v1/locations/global/securityPolicies/securitypolicy-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

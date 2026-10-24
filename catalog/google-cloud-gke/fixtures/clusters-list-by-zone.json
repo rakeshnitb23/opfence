@@ -1,0 +1,9 @@
+{
+  "name": "orders-cluster",
+  "masterAuth": {
+    "username": "admin",
+    "password": "example-password",
+    "clientKey": "LS0tLS1CRUdJTiBFWEFNUExFIEtFWS0tLS0t",
+    "clusterCaCertificate": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t"
+  }
+}

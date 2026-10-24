@@ -1,0 +1,944 @@
+# Google Kubernetes Engine: clusters.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-gke.clusters.complete-control-plane-upgrade
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:completeControlPlaneUpgrade" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Complete control plane upgrade of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-complete-control-plane-upgrade.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.complete-ip-rotation
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:completeIpRotation" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Complete ip rotation of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-complete-ip-rotation.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.create
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create GKE cluster {body.cluster.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      A cluster's nodes and control plane are billed.
+    tests:
+      - fixture: fixtures/clusters-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.delete
+    match: { rest: { method: DELETE, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Deletes the cluster with its nodes; its Kubernetes objects, Secrets among them, are gone
+      unless Backup for GKE kept them.
+    tests:
+      - fixture: fixtures/clusters-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.get
+    match: { rest: { method: GET, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}" } }
+    class: credential
+    response: { redact: ["**.masterAuth.password", "**.masterAuth.clientKey"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clusters made with basic auth or a client certificate return the password and the
+      certificate's private key; the proxy redacts them.
+    tests:
+      - fixture: fixtures/clusters-get.http
+        expect: credential
+        response: fixtures/clusters-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.list
+    match: { rest: { method: GET, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters" } }
+    class: credential
+    response: { redact: ["**.masterAuth.password", "**.masterAuth.clientKey"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List GKE clusters in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clusters made with basic auth or a client certificate return the password and the
+      certificate's private key; the proxy redacts them.
+    tests:
+      - fixture: fixtures/clusters-list.http
+        expect: credential
+        response: fixtures/clusters-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-addons
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setAddons" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set addons of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-addons.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-legacy-abac
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setLegacyAbac" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set legacy abac of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Legacy ABAC gives every service account in the cluster broad permissions.
+    tests:
+      - fixture: fixtures/clusters-set-legacy-abac.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-locations
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setLocations" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set locations of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes in more zones are billed. Google has deprecated this method.
+    tests:
+      - fixture: fixtures/clusters-set-locations.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-logging
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setLogging" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set logging of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-logging.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-maintenance-policy
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setMaintenancePolicy" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set maintenance policy of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-maintenance-policy.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-master-auth
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setMasterAuth" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Set master auth of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Sets the cluster's basic-auth password or client certificate.
+    tests:
+      - fixture: fixtures/clusters-set-master-auth.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-monitoring
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setMonitoring" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set monitoring of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-monitoring.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-network-policy
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setNetworkPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set network policy of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Network policy decides which pods can reach each other.
+    tests:
+      - fixture: fixtures/clusters-set-network-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-resource-labels
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:setResourceLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set resource labels of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-resource-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.start-ip-rotation
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:startIpRotation" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start ip rotation of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clients need the cluster's new address and certificate once it completes.
+    tests:
+      - fixture: fixtures/clusters-start-ip-rotation.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.update
+    match: { rest: { method: PUT, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}" } }
+    class: write
+    when:
+      - if: { arg: body.update.desiredMasterAuthorizedNetworksConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredControlPlaneEndpointsConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredPrivateClusterConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredEnablePrivateEndpoint, present: true }
+        class: access
+      - if: { arg: body.update.desiredDefaultEnablePrivateNodes, present: true }
+        class: access
+      - if: { arg: body.update.desiredAuthenticatorGroupsConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredAnonymousAuthenticationConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredRbacBindingConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredIdentityServiceConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredWorkloadIdentityConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredBinaryAuthorization, present: true }
+        class: access
+      - if: { arg: body.update.desiredShieldedNodes, present: true }
+        class: access
+      - if: { arg: body.update.desiredNodePoolAutoConfigNetworkTags, present: true }
+        class: access
+      - if: { arg: body.update.desiredNodePoolAutoscaling, present: true }
+        class: money
+      - if: { arg: body.update.desiredLocations, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Opening the control plane or the nodes to networks, and changing who can authenticate, which
+      bindings RBAC allows, what images may run or the nodes' network tags, are access; node
+      autoscaling and zones are money.
+    tests:
+      - fixture: fixtures/clusters-update.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when3.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when4.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when5.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when6.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when7.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when8.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when9.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when10.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when11.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when12.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when13.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when14.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-when15.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.update-master
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}:updateMaster" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change master of GKE cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-update-master.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-complete-upgrade
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}:completeUpgrade" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Complete upgrade of GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-complete-upgrade.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-create
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create GKE node pool {body.nodePool.name} in cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-delete
+    match: { rest: { method: DELETE, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Deletes the pool's nodes; their pods are rescheduled where they fit, and the pool can be
+      created again.
+    tests:
+      - fixture: fixtures/clusters-node-pools-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-rollback
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}:rollback" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Rollback GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-rollback.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-set-autoscaling
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}:setAutoscaling" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set autoscaling of GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Autoscaling decides how many nodes run, and nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-set-autoscaling.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-set-management
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}:setManagement" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set management of GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-set-management.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-set-size
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}:setSize" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set size of GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-set-size.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-update
+    match: { rest: { method: PUT, path: "/{apiVersion}/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{nodePool}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change GKE node pool {nodePool} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-update.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.addons
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/addons" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set the add-ons of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-addons.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.complete-control-plane-upgrade-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:completeControlPlaneUpgrade" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Complete control plane upgrade of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-complete-control-plane-upgrade-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.complete-ip-rotation-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:completeIpRotation" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Complete ip rotation of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-complete-ip-rotation-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.create-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create GKE cluster {body.cluster.name} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      A cluster's nodes and control plane are billed.
+    tests:
+      - fixture: fixtures/clusters-create-by-zone.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.delete-by-zone
+    match: { rest: { method: DELETE, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Deletes the cluster with its nodes; its Kubernetes objects, Secrets among them, are gone
+      unless Backup for GKE kept them.
+    tests:
+      - fixture: fixtures/clusters-delete-by-zone.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.get-by-zone
+    match: { rest: { method: GET, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}" } }
+    class: credential
+    response: { redact: ["**.masterAuth.password", "**.masterAuth.clientKey"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clusters made with basic auth or a client certificate return the password and the
+      certificate's private key; the proxy redacts them.
+    tests:
+      - fixture: fixtures/clusters-get-by-zone.http
+        expect: credential
+        response: fixtures/clusters-get-by-zone.json
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.legacy-abac
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/legacyAbac" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set legacy ABAC on GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Legacy ABAC gives every service account in the cluster broad permissions.
+    tests:
+      - fixture: fixtures/clusters-legacy-abac.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.list-by-zone
+    match: { rest: { method: GET, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters" } }
+    class: credential
+    response: { redact: ["**.masterAuth.password", "**.masterAuth.clientKey"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List GKE clusters ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clusters made with basic auth or a client certificate return the password and the
+      certificate's private key; the proxy redacts them.
+    tests:
+      - fixture: fixtures/clusters-list-by-zone.http
+        expect: credential
+        response: fixtures/clusters-list-by-zone.json
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.locations
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/locations" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set the zones of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes in more zones are billed. Google has deprecated this method.
+    tests:
+      - fixture: fixtures/clusters-locations.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.logging
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/logging" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set logging of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-logging.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.master
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/master" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Upgrade the control plane of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-master.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.monitoring
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/monitoring" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set monitoring of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-monitoring.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.resource-labels
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/resourceLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set the labels of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-resource-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-maintenance-policy-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:setMaintenancePolicy" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set maintenance policy of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-set-maintenance-policy-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-master-auth-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:setMasterAuth" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Set master auth of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Sets the cluster's basic-auth password or client certificate.
+    tests:
+      - fixture: fixtures/clusters-set-master-auth-by-zone.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.set-network-policy-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:setNetworkPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set network policy of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Network policy decides which pods can reach each other.
+    tests:
+      - fixture: fixtures/clusters-set-network-policy-by-zone.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.start-ip-rotation-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}:startIpRotation" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Start ip rotation of GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Clients need the cluster's new address and certificate once it completes.
+    tests:
+      - fixture: fixtures/clusters-start-ip-rotation-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.update-by-zone
+    match: { rest: { method: PUT, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}" } }
+    class: write
+    when:
+      - if: { arg: body.update.desiredMasterAuthorizedNetworksConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredControlPlaneEndpointsConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredPrivateClusterConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredEnablePrivateEndpoint, present: true }
+        class: access
+      - if: { arg: body.update.desiredDefaultEnablePrivateNodes, present: true }
+        class: access
+      - if: { arg: body.update.desiredAuthenticatorGroupsConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredAnonymousAuthenticationConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredRbacBindingConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredIdentityServiceConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredWorkloadIdentityConfig, present: true }
+        class: access
+      - if: { arg: body.update.desiredBinaryAuthorization, present: true }
+        class: access
+      - if: { arg: body.update.desiredShieldedNodes, present: true }
+        class: access
+      - if: { arg: body.update.desiredNodePoolAutoConfigNetworkTags, present: true }
+        class: access
+      - if: { arg: body.update.desiredNodePoolAutoscaling, present: true }
+        class: money
+      - if: { arg: body.update.desiredLocations, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change GKE cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Opening the control plane or the nodes to networks, and changing who can authenticate, which
+      bindings RBAC allows, what images may run or the nodes' network tags, are access; node
+      autoscaling and zones are money.
+    tests:
+      - fixture: fixtures/clusters-update-by-zone.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when2.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when3.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when4.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when5.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when6.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when7.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when8.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when9.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when10.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when11.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when12.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when13.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when14.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-update-by-zone-when15.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-autoscaling
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}/autoscaling" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set autoscaling of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Autoscaling decides how many nodes run, and nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-autoscaling.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-create-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create GKE node pool {body.nodePool.name} in cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-create-by-zone.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-delete-by-zone
+    match: { rest: { method: DELETE, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Deletes the pool's nodes; their pods are rescheduled where they fit, and the pool can be
+      created again.
+    tests:
+      - fixture: fixtures/clusters-node-pools-delete-by-zone.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-rollback-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}:rollback" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Rollback GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-rollback-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-set-management-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}/setManagement" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set management of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-set-management-by-zone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-set-size-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}/setSize" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set size of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-node-pools-set-size-by-zone.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-gke.clusters.node-pools-update-by-zone
+    match: { rest: { method: POST, path: "/{apiVersion}/projects/{project}/zones/{zone}/clusters/{cluster}/nodePools/{nodePool}/update" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
+    tests:
+      - fixture: fixtures/clusters-node-pools-update-by-zone.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,432 @@
+# Google Cloud Functions: functions.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-functions.functions.abort-function-upgrade
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:abortFunctionUpgrade" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Abort function upgrade of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-abort-function-upgrade.http
+        expect: write
+        response: fixtures/functions-abort-function-upgrade.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.commit-function-upgrade
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:commitFunctionUpgrade" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Commit function upgrade of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-commit-function-upgrade.http
+        expect: write
+        response: fixtures/functions-commit-function-upgrade.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.commit-function-upgrade-as-gen2
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:commitFunctionUpgradeAsGen2" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Commit function upgrade as gen2 of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-commit-function-upgrade-as-gen2.http
+        expect: write
+        response: fixtures/functions-commit-function-upgrade-as-gen2.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Functions function {query.functionId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-create.http
+        expect: write
+        response: fixtures/functions-create.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/functions/{function}" } }
+    class: delete
+    response: { hold: ["**.environmentVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its source.
+    tests:
+      - fixture: fixtures/functions-delete.http
+        expect: delete
+        response: fixtures/functions-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.detach-function
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:detachFunction" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Detach Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-detach-function.http
+        expect: write
+        response: fixtures/functions-detach-function.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.generate-download-url
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:generateDownloadUrl" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns a signed URL to the function's source, which the caller may already read.
+    tests:
+      - fixture: fixtures/functions-generate-download-url.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.generate-upload-url
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions:generateUploadUrl" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Generate upload url for Cloud Functions function in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns a signed URL to upload new source to.
+    tests:
+      - fixture: fixtures/functions-generate-upload-url.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/functions/{function}" } }
+    class: credential
+    response: { hold: ["**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/functions-get.http
+        expect: credential
+        response: fixtures/functions-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/functions" } }
+    class: credential
+    response: { hold: ["**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Functions functions in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/functions-list.http
+        expect: credential
+        response: fixtures/functions-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/locations/{location}/functions/{function}" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    restore: ["**.environmentVariables"]
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-patch.http
+        expect: write
+        response: fixtures/functions-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.redirect-function-upgrade-traffic
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:redirectFunctionUpgradeTraffic" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Redirect function upgrade traffic of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-redirect-function-upgrade-traffic.http
+        expect: write
+        response: fixtures/functions-redirect-function-upgrade-traffic.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.rollback-function-upgrade-traffic
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:rollbackFunctionUpgradeTraffic" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Rollback function upgrade traffic of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-rollback-function-upgrade-traffic.http
+        expect: write
+        response: fixtures/functions-rollback-function-upgrade-traffic.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Decides who can call or change the function; allUsers makes it public.
+    tests:
+      - fixture: fixtures/functions-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.setup-function-upgrade-config
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:setupFunctionUpgradeConfig" } }
+    class: write
+    response: { hold: ["**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Setup function upgrade config of Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/functions-setup-function-upgrade-config.http
+        expect: write
+        response: fixtures/functions-setup-function-upgrade-config.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/functions/{function}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/functions-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.call-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions/{function}:call" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Call Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Runs the function with the data given; it does whatever the function does.
+    tests:
+      - fixture: fixtures/functions-call-v1.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.create-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions" } }
+    class: write
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Functions function {query.functionId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    tests:
+      - fixture: fixtures/functions-create-v1.http
+        expect: write
+        response: fixtures/functions-create-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.delete-v1
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/functions/{function}" } }
+    class: delete
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Can be deployed again from its source.
+    tests:
+      - fixture: fixtures/functions-delete-v1.http
+        expect: delete
+        response: fixtures/functions-delete-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.generate-download-url-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions/{function}:generateDownloadUrl" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns a signed URL to the function's source, which the caller may already read.
+    tests:
+      - fixture: fixtures/functions-generate-download-url-v1.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.generate-upload-url-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions:generateUploadUrl" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Generate upload url for Cloud Functions function in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns a signed URL to upload new source to.
+    tests:
+      - fixture: fixtures/functions-generate-upload-url-v1.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.get-v1
+    match: { rest: { method: GET, path: "/v1/projects/{project}/locations/{location}/functions/{function}" } }
+    class: credential
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/functions-get-v1.http
+        expect: credential
+        response: fixtures/functions-get-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.list-v1
+    match: { rest: { method: GET, path: "/v1/projects/{project}/locations/{location}/functions" } }
+    class: credential
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Functions functions in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/functions-list-v1.http
+        expect: credential
+        response: fixtures/functions-list-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.patch-v1
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/functions/{function}" } }
+    class: write
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: write }
+    restore: ["**.buildEnvironmentVariables", "**.environmentVariables"]
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    tests:
+      - fixture: fixtures/functions-patch-v1.http
+        expect: write
+        response: fixtures/functions-patch-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.set-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions/{function}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Functions function {function} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Decides who can call or change the function; allUsers makes it public.
+    tests:
+      - fixture: fixtures/functions-set-iam-policy-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.functions.test-iam-permissions-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/functions/{function}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/functions-test-iam-permissions-v1.http
+        expect: read
+        resource: "acme-prod"

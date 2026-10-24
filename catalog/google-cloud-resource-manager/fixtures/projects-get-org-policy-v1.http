@@ -1,4 +1,4 @@
-# description: Get org policy on project acme-prod
+# description: Read org policy of project acme-prod
 POST /v1/projects/acme-prod:getOrgPolicy HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

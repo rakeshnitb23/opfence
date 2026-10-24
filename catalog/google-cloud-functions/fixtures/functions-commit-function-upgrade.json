@@ -1,0 +1,6 @@
+{
+  "name": "example",
+  "environmentVariables": {
+    "API_KEY": "example-secret-value-1"
+  }
+}

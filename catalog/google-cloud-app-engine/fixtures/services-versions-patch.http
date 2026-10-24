@@ -1,0 +1,7 @@
+# description: Change App Engine version 3 of service orders-api in project acme-prod
+PATCH /v1/apps/acme-prod/services/orders-api/versions/3 HTTP/1.1
+Host: appengine.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

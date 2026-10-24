@@ -1,4 +1,4 @@
-# description: Remove attestation rule on workload identity pool workloadidentitypool-1 in project acme-prod
+# description: Remove attestation rule from workload identity pool workloadidentitypool-1 in project acme-prod
 POST /v1/projects/acme-prod/locations/us-central1/workloadIdentityPools/workloadidentitypool-1:removeAttestationRule HTTP/1.1
 Host: iam.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

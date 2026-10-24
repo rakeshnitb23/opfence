@@ -1,0 +1,193 @@
+# Google Compute Engine: firewall policies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.firewall-policies.add-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/addAssociation" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Add association to Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-add-association.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.add-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/addRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Add rule to Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-add-rule.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.clone-rules
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/cloneRules" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Clone rules of Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-clone-rules.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Delete Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-delete.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Create Compute Engine firewall policy {body.name}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-insert.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.move
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/move" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Move Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-move.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Change Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-patch.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.patch-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/patchRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Change rule of Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-patch-rule.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.remove-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/removeAssociation" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Remove association from Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-remove-association.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.remove-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{firewallPolicy}/removeRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Remove rule from Compute Engine firewall policy {firewallPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Firewall rules decide what traffic reaches the network's VMs.
+    tests:
+      - fixture: fixtures/firewall-policies-remove-rule.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Change who can access Compute Engine firewall policy {resource}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/firewall-policies-set-iam-policy.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.firewall-policies.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/firewallPolicies/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: apiVersion, kind: apiVersion }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/firewall-policies-test-iam-permissions.http
+        expect: read
+        resource: "v1"

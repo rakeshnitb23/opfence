@@ -1,4 +1,4 @@
-# description: Advance relocate bucket on Cloud Storage operation operation-1 of bucket acme-uploads
+# description: Advance relocate bucket of Cloud Storage operation operation-1 of bucket acme-uploads
 POST /storage/v1/b/acme-uploads/operations/operation-1/advanceRelocateBucket HTTP/1.1
 Host: storage.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

@@ -119,6 +119,74 @@ operations:
         expect: write
         resource: "123456789012"
 
+  - id: google-cloud-resource-manager.folders.update-boundary-config
+    match: { rest: { method: PATCH, path: "/v3/folders/{folder}/boundaryConfig" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Change boundary config of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/folders-update-boundary-config.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.boundaries-create
+    match: { rest: { method: POST, path: "/v3/folders/{folder}/boundaries" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Create boundary in folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/folders-boundaries-create.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.boundaries-delete
+    match: { rest: { method: DELETE, path: "/v3/folders/{folder}/boundaries/{boundary}" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Delete boundary {boundary} of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/folders-boundaries-delete.http
+        expect: access
+        resource: "123456789012"
+
+  - id: google-cloud-resource-manager.folders.boundaries-patch
+    match: { rest: { method: PATCH, path: "/v3/folders/{folder}/boundaries/{boundary}" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Change boundary {boundary} of folder {folder}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/folders-boundaries-patch.http
+        expect: access
+        resource: "123456789012"
+
   - id: google-cloud-resource-manager.folders.capabilities-patch
     match: { rest: { method: PATCH, path: "/v3/folders/{folder}/capabilities/{capability}" } }
     class: write
@@ -179,7 +247,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/folders/{folder}:clearOrgPolicy" } }
     class: access
     resource: { arg: folder, kind: folder }
-    card: "Clear org policy on folder {folder}"
+    card: "Clear org policy of folder {folder}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -255,7 +323,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/folders/{folder}:setOrgPolicy" } }
     class: access
     resource: { arg: folder, kind: folder }
-    card: "Set org policy on folder {folder}"
+    card: "Set org policy of folder {folder}"
     status: verified
     verified: 2026-10-23
     sources:

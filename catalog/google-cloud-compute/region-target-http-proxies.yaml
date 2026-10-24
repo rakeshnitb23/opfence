@@ -1,0 +1,50 @@
+# Google Compute Engine: region target http proxies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-target-http-proxies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetHttpProxies/{targetHttpProxy}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine target http proxy {targetHttpProxy} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-target-http-proxies-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-target-http-proxies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetHttpProxies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine target http proxy {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/region-target-http-proxies-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-target-http-proxies.set-url-map
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetHttpProxies/{targetHttpProxy}/setUrlMap" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set url map of Compute Engine target http proxy {targetHttpProxy} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/region-target-http-proxies-set-url-map.http
+        expect: access
+        resource: "acme-prod"

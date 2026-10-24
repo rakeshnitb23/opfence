@@ -1,0 +1,175 @@
+# Google Compute Engine: projects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.projects.disable-xpn-host
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/disableXpnHost" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Disable xpn host of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shared VPC lets other projects use this project's networks.
+    tests:
+      - fixture: fixtures/projects-disable-xpn-host.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.disable-xpn-resource
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/disableXpnResource" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Disable xpn resource of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shared VPC lets other projects use this project's networks.
+    tests:
+      - fixture: fixtures/projects-disable-xpn-resource.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.enable-xpn-host
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/enableXpnHost" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Enable xpn host of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shared VPC lets other projects use this project's networks.
+    tests:
+      - fixture: fixtures/projects-enable-xpn-host.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.enable-xpn-resource
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/enableXpnResource" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Enable xpn resource of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shared VPC lets other projects use this project's networks.
+    tests:
+      - fixture: fixtures/projects-enable-xpn-resource.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.list-xpn-hosts
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/listXpnHosts" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Lists; changes nothing.
+    tests:
+      - fixture: fixtures/projects-list-xpn-hosts.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.move-disk
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/moveDisk" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Move disk of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Google has deprecated this method.
+    tests:
+      - fixture: fixtures/projects-move-disk.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.move-instance
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/moveInstance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Move instance of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Google has deprecated this method.
+    tests:
+      - fixture: fixtures/projects-move-instance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.set-cloud-armor-tier
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/setCloudArmorTier" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set cloud armor tier of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      The Cloud Armor tier is billed.
+    tests:
+      - fixture: fixtures/projects-set-cloud-armor-tier.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.set-common-instance-metadata
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/setCommonInstanceMetadata" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change the metadata (startup scripts, SSH keys) of every Compute Engine VM in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Project metadata applies to every VM in the project. Metadata holds startup scripts, which run
+      as root when a VM boots, and SSH keys, which let their holders log in; running commands on a
+      VM can do anything it can.
+    tests:
+      - fixture: fixtures/projects-set-common-instance-metadata.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.set-default-network-tier
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/setDefaultNetworkTier" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set default network tier of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/projects-set-default-network-tier.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.projects.set-usage-export-bucket
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/setUsageExportBucket" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set usage export bucket of Compute Engine project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/projects-set-usage-export-bucket.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,5 @@
+# description: Delete Cloud Run worker pool workerpool-1 in project acme-prod
+DELETE /apis/run.googleapis.com/v1/namespaces/acme-prod/workerpools/workerpool-1 HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

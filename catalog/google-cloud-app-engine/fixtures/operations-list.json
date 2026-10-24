@@ -1,0 +1,9 @@
+{
+  "name": "example",
+  "buildEnvVariables": {
+    "API_KEY": "example-secret-value-1"
+  },
+  "envVariables": {
+    "API_KEY": "example-secret-value-2"
+  }
+}

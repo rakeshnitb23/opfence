@@ -1,0 +1,130 @@
+# Google Compute Engine: target ssl proxies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.target-ssl-proxies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-ssl-proxies-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine target SSL proxy {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.set-backend-service
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}/setBackendService" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set backend service of Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-set-backend-service.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.set-certificate-map
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}/setCertificateMap" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set certificate map of Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-set-certificate-map.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.set-proxy-header
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}/setProxyHeader" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set proxy header of Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-ssl-proxies-set-proxy-header.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.set-ssl-certificates
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}/setSslCertificates" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set SSL certificates of Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-set-ssl-certificates.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.set-ssl-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{targetSslProxy}/setSslPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set SSL policy of Compute Engine target SSL proxy {targetSslProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-set-ssl-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-ssl-proxies.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetSslProxies/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/target-ssl-proxies-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

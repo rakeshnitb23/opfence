@@ -1,4 +1,4 @@
-# description: Update backup on Cloud SQL backup backup-1 in project acme-prod
+# description: Change Cloud SQL backup backup-1 in project acme-prod
 PATCH /sql/v1beta4/projects/acme-prod/backups/backup-1 HTTP/1.1
 Host: sqladmin.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

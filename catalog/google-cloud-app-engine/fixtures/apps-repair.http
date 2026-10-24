@@ -1,0 +1,7 @@
+# description: Repair App Engine application in project acme-prod
+POST /v1/apps/acme-prod:repair HTTP/1.1
+Host: appengine.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

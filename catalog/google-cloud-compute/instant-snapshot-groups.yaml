@@ -1,0 +1,63 @@
+# Google Compute Engine: instant snapshot groups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.instant-snapshot-groups.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instantSnapshotGroups/{instantSnapshotGroup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine instant snapshot group {instantSnapshotGroup} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A deleted snapshot cannot be restored from.
+    tests:
+      - fixture: fixtures/instant-snapshot-groups-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instant-snapshot-groups.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instantSnapshotGroups" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine instant snapshot group {body.name} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instant-snapshot-groups-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instant-snapshot-groups.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instantSnapshotGroups/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine instant snapshot group {resource} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/instant-snapshot-groups-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instant-snapshot-groups.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instantSnapshotGroups/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/instant-snapshot-groups-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

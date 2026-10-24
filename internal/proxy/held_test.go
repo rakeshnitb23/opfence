@@ -178,3 +178,64 @@ func TestHeldValues(t *testing.T) {
 		t.Fatalf("a blocked request reached the API")
 	}
 }
+
+// The catalog's own Cloud Run rules: gcloud run services update reads the
+// Knative service on the region's host and writes it back whole. The
+// environment's values reach the API again and never the agent, and the
+// GKE cluster read loses its basic-auth password.
+func TestCloudRunHeldValuesFromCatalog(t *testing.T) {
+	secret := "pg-" + strings.Repeat("Z9", 10)
+	svc := `{"apiVersion":"serving.knative.dev/v1","kind":"Service","metadata":{"name":"orders-api","namespace":"acme-prod"},` +
+		`"spec":{"template":{"spec":{"containers":[{"image":"img:1","env":[{"name":"DATABASE_URL","value":"postgres://app:` + secret + `@db/orders"},` +
+		`{"name":"SECRET_REF","valueFrom":{"secretKeyRef":{"name":"db","key":"latest"}}}]}]}}}}`
+	e := newEnv(t, opts{respond: func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case r.Host == "container.googleapis.com":
+			io.WriteString(w, `{"clusters":[{"name":"c","masterAuth":{"username":"admin","password":"`+secret+`","clusterCaCertificate":"Q0E="}}]}`)
+		case r.Method == http.MethodGet:
+			io.WriteString(w, svc)
+		default:
+			io.Copy(w, r.Body)
+		}
+	}})
+	e.srv.cfg.Approver = &approveAll{}
+	c := e.client(true)
+	do := func(method, u, body string) string {
+		t.Helper()
+		var rd io.Reader
+		if body != "" {
+			rd = strings.NewReader(body)
+		}
+		req, _ := http.NewRequest(method, u, rd)
+		req.Header.Set("Authorization", "Bearer x")
+		resp, err := c.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		b, _ := io.ReadAll(resp.Body)
+		if resp.StatusCode != 200 {
+			t.Fatalf("%s %s: %d %s", method, u, resp.StatusCode, b)
+		}
+		return string(b)
+	}
+	const u = "https://us-central1-run.googleapis.com/apis/serving.knative.dev/v1/namespaces/acme-prod/services/orders-api"
+	read := do("GET", u, "")
+	if strings.Contains(read, secret) || !strings.Contains(read, inject.HeldPrefix) || !strings.Contains(read, `"secretKeyRef"`) {
+		t.Fatalf("read: %s", read)
+	}
+	echo := do("PUT", u, strings.Replace(read, "img:1", "img:2", 1))
+	e.mu.Lock()
+	sent := e.bodies[len(e.bodies)-1]
+	e.mu.Unlock()
+	if !strings.Contains(sent, secret) || !strings.Contains(sent, "img:2") || strings.Contains(sent, inject.HeldPrefix) || strings.Contains(echo, secret) {
+		t.Fatalf("the API got %s; the agent got %s", sent, echo)
+	}
+	if es := e.entries(); es[len(es)-1].Restored != 1 || es[len(es)-1].Operations[0].Rule != "google-cloud-run.services.replace-service-v1" {
+		t.Fatalf("write audited as %+v", es[len(es)-1])
+	}
+	if got := do("GET", "https://container.googleapis.com/v1/projects/acme-prod/locations/-/clusters", ""); strings.Contains(got, secret) || !strings.Contains(got, "Q0E=") {
+		t.Fatalf("cluster list: %s", got)
+	}
+}

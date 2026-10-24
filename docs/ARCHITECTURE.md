@@ -375,12 +375,12 @@ Some reads return secrets next to ordinary data. A rule can say what the proxy d
   - id: google-cloud-run.services.get
     match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/services/{service}" } }
     class: credential                                  # the hook and every export
-    response: { hold: [template.containers.env.value], class: read }
+    response: { hold: ["**.env.value"], class: read }
   - id: google-cloud-run.services.patch
     match: { rest: { method: PATCH, path: "/v2/projects/{project}/locations/{location}/services/{service}" } }
     class: write
-    restore: [template.containers.env.value]           # where held values may come back
-    response: { hold: [template.containers.env.value], class: write }   # the API echoes them
+    restore: ["**.env.value"]                          # where held values may come back
+    response: { hold: ["**.env.value"], class: write } # the API echoes them, in an operation
 ```
 
 The proxy replaces each non-empty string at or below a `hold` path with a token, `opfence-held-` and 26 random base32 characters, and keeps the value in memory for the session, bound to the provider, the object (the request path it was read from, dot segments resolved) and the hold path. The same value read from the same place gets the same token, so a client that polls an object sees stable values. A request to a provider with hold rules that carries a token is forwarded only when every string containing `opfence-held-` is a whole token this session holds, read from this same request path by this provider, found at or below one of the request rule's `restore` paths, which is the path it was held under (with `**` steps, anywhere that pattern matches in the object); the proxy then swaps the values in, byte for byte elsewhere, and sends the body decoded with a new `Content-Length`. Anything else is blocked with a message: a token taken to another object (a public service that would print it) or another field (an annotation the agent could read back), a token from an earlier session or edited, one inside a longer string or a key, one written with JSON escapes, a body that is not one JSON value, a part of a batch, or a body too large or encoded in a way Opfence cannot read while the session holds values. Values never reach the agent, the audit log, approval cards or the request hash, which all see tokens. A rule with `restore` must match `PUT`, `PATCH` or `POST` and hold its own response, because APIs echo what was written; `hold` is for REST rules. A session holds at most 10,000 values; a response that would hold more is withheld. The audit entry counts values held (`held`) and swapped back (`restored`).
@@ -390,10 +390,10 @@ The proxy replaces each non-empty string at or below a `hold` path with a token,
 The catalog applies the same judgement everywhere, so a reviewer can check a rule against a rule, not against taste:
 
 - **When the API hides the state that decides the class, assume the worse case.** S3 `DeleteObject` is `irreversible` because Opfence cannot see whether the bucket is versioned; DynamoDB `BatchWriteItem` is `delete` because a batch can carry deletes.
-- **Reading a secret value is `credential`, wherever it hides.** Lambda `GetFunction` and `ListFunctions` return environment variables, Railway's `variables` query returns values, SSM `GetParameter` with `WithDecryption` returns plain text. Listing metadata about secrets stays `read`.
+- **Reading a secret value is `credential`, wherever it hides.** Lambda `GetFunction` and `ListFunctions` return environment variables, as Cloud Run, Cloud Functions and App Engine reads do (the proxy holds those values, §4.4), Railway's `variables` query returns values, SSM `GetParameter` with `WithDecryption` returns plain text. Listing metadata about secrets stays `read`.
 - **Setting a value in a store meant for secrets is `credential`; setting a generic variable is `write`.** GitHub Actions secrets, Secrets Manager values, SSM `SecureString` and Vercel `encrypted`/`sensitive` variables are secrets. Railway variables and Vercel `plain` variables are not marked as secrets, so setting one is a write (it reveals nothing); deleting any variable is `irreversible` because no API keeps the old value.
 - **Deleting a secret is `irreversible`.** No provider returns a secret's value, so it cannot be put back.
-- **Running arbitrary commands is `irreversible`.** SSM `SendCommand` and `StartSession` can do anything the machine can.
+- **Running arbitrary commands is `irreversible`.** SSM `SendCommand` and `StartSession` can do anything the machine can, and so can what Compute Engine runs from metadata (startup scripts run as root at boot; SSH keys let their holders log in), VM extension policies, App Engine's debug access, and a Cloud Run job run whose overrides change its command.
 - **Exposing something to the internet is `access`.** A public domain or TCP proxy for a Railway service, a public function URL, a public ACL, a public gist.
 - **`delete` means it can be restored or rebuilt** (a deployment from its commit, a branch from any clone, a scheduled project deletion that can be cancelled); **`irreversible` means the data is gone** (volumes, backups, snapshots, tables, environments with their secrets).
 - **Turning off a safety net is as dangerous as what it protects**: RDS `BackupRetentionPeriod=0` deletes existing automated backups and DynamoDB disabling point-in-time recovery discards the window, so both are `irreversible`.

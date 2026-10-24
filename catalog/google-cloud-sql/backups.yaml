@@ -5,7 +5,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/backups" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Create backup on Cloud SQL backup in project {project}"
+    card: "Create Cloud SQL backup in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -19,7 +19,7 @@ operations:
     match: { rest: { method: DELETE, path: "/v1/projects/{project}/backups/{backup}" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Delete backup on Cloud SQL backup {backup} in project {project}"
+    card: "Delete Cloud SQL backup {backup} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -35,7 +35,7 @@ operations:
     match: { rest: { method: PATCH, path: "/v1/projects/{project}/backups/{backup}" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Update backup on Cloud SQL backup {backup} in project {project}"
+    card: "Change Cloud SQL backup {backup} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -49,7 +49,7 @@ operations:
     match: { rest: { method: POST, path: "/sql/v1beta4/projects/{project}/backups" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Create backup on Cloud SQL backup in project {project}"
+    card: "Create Cloud SQL backup in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -63,7 +63,7 @@ operations:
     match: { rest: { method: DELETE, path: "/sql/v1beta4/projects/{project}/backups/{backup}" } }
     class: irreversible
     resource: { arg: project, kind: project }
-    card: "Delete backup on Cloud SQL backup {backup} in project {project}"
+    card: "Delete Cloud SQL backup {backup} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -79,7 +79,7 @@ operations:
     match: { rest: { method: PATCH, path: "/sql/v1beta4/projects/{project}/backups/{backup}" } }
     class: write
     resource: { arg: project, kind: project }
-    card: "Update backup on Cloud SQL backup {backup} in project {project}"
+    card: "Change Cloud SQL backup {backup} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:

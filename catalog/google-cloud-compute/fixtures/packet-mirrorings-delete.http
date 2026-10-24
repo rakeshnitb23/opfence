@@ -1,0 +1,5 @@
+# description: Delete Compute Engine packet mirroring packetmirroring-1 (us-central1) in project acme-prod
+DELETE /compute/v1/projects/acme-prod/regions/us-central1/packetMirrorings/packetmirroring-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

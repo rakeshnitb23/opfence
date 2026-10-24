@@ -1,4 +1,4 @@
-# description: Clear org policy on folder 123456789012
+# description: Clear org policy of folder 123456789012
 POST /v1/folders/123456789012:clearOrgPolicy HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

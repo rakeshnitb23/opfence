@@ -1,0 +1,7 @@
+# description: Read version of Compute Engine host host-1 of association association-1 (us-central1-a) in project acme-prod
+POST /compute/v1/projects/acme-prod/zones/us-central1-a/association-1/hosts/host-1/getVersion HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

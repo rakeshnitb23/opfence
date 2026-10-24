@@ -47,11 +47,28 @@ operations:
         expect: read
         resource: "987654321098"
 
+  - id: google-cloud-resource-manager.organizations.update-boundary-config
+    match: { rest: { method: PATCH, path: "/v3/organizations/{organization}/boundaryConfig" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change boundary config of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/organizations-update-boundary-config.http
+        expect: access
+        resource: "987654321098"
+
   - id: google-cloud-resource-manager.organizations.clear-org-policy-v1
     match: { rest: { method: POST, path: "/v1/organizations/{organization}:clearOrgPolicy" } }
     class: access
     resource: { arg: organization, kind: organization }
-    card: "Clear org policy on organization {organization}"
+    card: "Clear org policy of organization {organization}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -171,7 +188,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/organizations/{organization}:setOrgPolicy" } }
     class: access
     resource: { arg: organization, kind: organization }
-    card: "Set org policy on organization {organization}"
+    card: "Set org policy of organization {organization}"
     status: verified
     verified: 2026-10-23
     sources:

@@ -1,4 +1,4 @@
-# description: Get org policy on organization 987654321098
+# description: Read org policy of organization 987654321098
 POST /v1/organizations/987654321098:getOrgPolicy HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

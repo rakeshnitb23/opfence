@@ -1,0 +1,5 @@
+# description: Read Cloud Run configuration configuration-1 in project acme-prod
+GET /apis/serving.knative.dev/v1/namespaces/acme-prod/configurations/configuration-1 HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

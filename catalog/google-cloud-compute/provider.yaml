@@ -1,0 +1,20 @@
+provider: google-cloud-compute
+title: Google Compute Engine
+docs: https://cloud.google.com/compute/docs/reference/rest/v1
+# VMs, disks, snapshots, images, networks, firewalls and load balancers. Rules match every API version
+# (gcloud beta and alpha call beta and alpha), and gcloud's batch requests are decided request by
+# request.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [compute.googleapis.com]
+batch: [/batch/compute/v1, /batch/compute/beta, /batch/compute/alpha]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/compute/v1/rest

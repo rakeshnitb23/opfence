@@ -1,0 +1,76 @@
+# Google Cloud Functions: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-functions.operations.get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/operations/{operation}" } }
+    class: credential
+    response: { hold: ["**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Functions operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/operations-get.http
+        expect: credential
+        response: fixtures/operations-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.operations.list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/operations" } }
+    class: credential
+    response: { hold: ["**.environmentVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Functions operations in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/operations-list.http
+        expect: credential
+        response: fixtures/operations-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-functions.operations.get-v1
+    match: { rest: { method: GET, path: "/v1/operations/{operation}" } }
+    class: credential
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: read }
+    resource: { arg: operation, kind: operation }
+    card: "Read Cloud Functions operation {operation}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/operations-get-v1.http
+        expect: credential
+        response: fixtures/operations-get-v1.json
+        resource: "operation-1"
+
+  - id: google-cloud-functions.operations.list-v1
+    match: { rest: { method: GET, path: "/v1/operations" } }
+    class: credential
+    response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: read }
+    card: "List Cloud Functions operations"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
+    notes: >-
+      Returns the function's environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same function may carry back.
+    tests:
+      - fixture: fixtures/operations-list-v1.http
+        expect: credential
+        response: fixtures/operations-list-v1.json

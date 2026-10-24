@@ -1,0 +1,7 @@
+# description: Run Cloud Run job nightly-export in project acme-prod (overrides)
+POST /apis/run.googleapis.com/v1/namespaces/acme-prod/jobs/nightly-export:run HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"overrides": "x"}

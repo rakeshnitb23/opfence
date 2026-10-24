@@ -1,0 +1,53 @@
+# Google Cloud Resource Manager: boundaries.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-resource-manager.boundaries.organizations-boundaries-create
+    match: { rest: { method: POST, path: "/v3/organizations/{organization}/boundaries" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Create boundary in organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/boundaries-organizations-boundaries-create.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.boundaries.organizations-boundaries-delete
+    match: { rest: { method: DELETE, path: "/v3/organizations/{organization}/boundaries/{boundary}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Delete boundary {boundary} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/boundaries-organizations-boundaries-delete.http
+        expect: access
+        resource: "987654321098"
+
+  - id: google-cloud-resource-manager.boundaries.organizations-boundaries-patch
+    match: { rest: { method: PATCH, path: "/v3/organizations/{organization}/boundaries/{boundary}" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change boundary {boundary} of organization {organization}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudresourcemanager/v3/rest
+    notes: >-
+      Boundaries group projects by their tags under a management project, as tags feed IAM and
+      organization policy conditions; counted as access like tags.
+    tests:
+      - fixture: fixtures/boundaries-organizations-boundaries-patch.http
+        expect: access
+        resource: "987654321098"

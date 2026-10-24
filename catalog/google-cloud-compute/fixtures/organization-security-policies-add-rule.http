@@ -1,0 +1,7 @@
+# description: Add rule to Compute Engine organization security policy securitypolicy-1
+POST /compute/v1/locations/global/securityPolicies/securitypolicy-1/addRule HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

@@ -1,0 +1,178 @@
+# Google Cloud Run: worker pools.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.worker-pools.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/workerPools" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run worker pool {query.workerPoolId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/worker-pools-create.http
+        expect: write
+        response: fixtures/worker-pools-create.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/worker-pools-delete.http
+        expect: delete
+        response: fixtures/worker-pools-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/worker-pools-get.http
+        expect: credential
+        response: fixtures/worker-pools-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/workerPools" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run worker pools in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/worker-pools-list.http
+        expect: credential
+        response: fixtures/worker-pools-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Run worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/worker-pools-patch.http
+        expect: write
+        response: fixtures/worker-pools-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Run worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Decides who can call or change it; allUsers makes a service public.
+    tests:
+      - fixture: fixtures/worker-pools-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/worker-pools-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.revisions-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}/revisions/{revision}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run revision {revision} of worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/worker-pools-revisions-delete.http
+        expect: delete
+        response: fixtures/worker-pools-revisions-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.revisions-get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}/revisions/{revision}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run revision {revision} of worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/worker-pools-revisions-get.http
+        expect: credential
+        response: fixtures/worker-pools-revisions-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.worker-pools.revisions-list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/workerPools/{workerPool}/revisions" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run revisions of worker pool {workerPool} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/worker-pools-revisions-list.http
+        expect: credential
+        response: fixtures/worker-pools-revisions-list.json
+        resource: "acme-prod"
