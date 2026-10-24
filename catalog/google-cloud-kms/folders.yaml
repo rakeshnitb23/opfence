@@ -1,0 +1,30 @@
+# Google Cloud Key Management Service: folders.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.folders.update-autokey-config
+    match: { rest: { method: PATCH, path: "/v1/folders/{folder}/autokeyConfig" } }
+    class: write
+    resource: { arg: folder, kind: folder }
+    card: "Change autokey config of Cloud KMS folder {folder}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/folders-update-autokey-config.http
+        expect: write
+        resource: "123456789012"
+
+  - id: google-cloud-kms.folders.update-kaj-policy-config
+    match: { rest: { method: PATCH, path: "/v1/folders/{folder}/kajPolicyConfig" } }
+    class: access
+    resource: { arg: folder, kind: folder }
+    card: "Change kaj policy config of Cloud KMS folder {folder}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/folders-update-kaj-policy-config.http
+        expect: access
+        resource: "123456789012"

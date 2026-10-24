@@ -1,0 +1,374 @@
+# Google Cloud Bigtable Admin API: tables.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigtable.tables.check-consistency
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:checkConsistency" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Checks replication; changes nothing.
+    tests:
+      - fixture: fixtures/tables-check-consistency.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable table in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/tables-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/tables/{table}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      A deleted table can be undeleted for a few days, but counts as gone, as SQL's DROP TABLE does.
+    tests:
+      - fixture: fixtures/tables-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.drop-row-range
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:dropRowRange" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Drop row range of Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Deletes every row with the prefix, or every row in the table.
+    tests:
+      - fixture: fixtures/tables-drop-row-range.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.generate-consistency-token
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:generateConsistencyToken" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Returns a token for checking replication; changes nothing.
+    tests:
+      - fixture: fixtures/tables-generate-consistency-token.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.modify-column-families
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:modifyColumnFamilies" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Modify column families of Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Can drop a column family with its data, or set a garbage collection rule that deletes cells.
+    tests:
+      - fixture: fixtures/tables-modify-column-families.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/tables/{table}" } }
+    class: write
+    when:
+      - if: { arg: body.deletionProtection, equals: "false" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Turning deletion protection off is as dangerous as deleting the table.
+    tests:
+      - fixture: fixtures/tables-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/tables-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.restore
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables:restore" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restore Bigtable table {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Restores into a new table.
+    tests:
+      - fixture: fixtures/tables-restore.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/tables-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.undelete
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}:undelete" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Undelete Bigtable table {table} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/tables-undelete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable authorized view in table {table} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Authorized views decide who can read which rows.
+    tests:
+      - fixture: fixtures/tables-authorized-views-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorizedView}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable authorized view {authorizedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Authorized views decide who can read which rows.
+    tests:
+      - fixture: fixtures/tables-authorized-views-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorizedView}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-authorized-views-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorizedView}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable authorized view {authorizedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Authorized views decide who can read which rows.
+    tests:
+      - fixture: fixtures/tables-authorized-views-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorizedView}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable authorized view {authorizedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/tables-authorized-views-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.authorized-views-test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorizedView}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-authorized-views-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable schema bundle in table {table} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/tables-schema-bundles-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schemaBundle}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable schema bundle {schemaBundle} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/tables-schema-bundles-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schemaBundle}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-schema-bundles-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schemaBundle}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable schema bundle {schemaBundle} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/tables-schema-bundles-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schemaBundle}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable schema bundle {schemaBundle} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/tables-schema-bundles-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.tables.schema-bundles-test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/tables/{table}/schemaBundles/{schemaBundle}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-schema-bundles-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

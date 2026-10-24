@@ -1,0 +1,7 @@
+# description: List collection ids of Firestore document documentsid1-1 of database orders in project acme-prod
+POST /v1/projects/acme-prod/databases/orders/documents/document-1/documentsid1-1:listCollectionIds HTTP/1.1
+Host: firestore.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

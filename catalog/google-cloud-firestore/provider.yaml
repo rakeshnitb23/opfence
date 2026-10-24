@@ -1,0 +1,19 @@
+provider: google-cloud-firestore
+title: Google Cloud Firestore
+docs: https://cloud.google.com/firestore/docs/reference/rest
+# Databases, documents, indexes, backups and imports and exports, through the REST API. Document paths
+# of any depth are matched. The client libraries speak gRPC, which Opfence does not decode, so their
+# requests are unknown.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [firestore.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest

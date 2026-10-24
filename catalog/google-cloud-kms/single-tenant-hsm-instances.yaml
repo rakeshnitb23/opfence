@@ -1,0 +1,74 @@
+# Google Cloud Key Management Service: single tenant hsm instances.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.single-tenant-hsm-instances.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/singleTenantHsmInstances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS single tenant hsm instance in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Single-tenant HSMs are billed.
+    tests:
+      - fixture: fixtures/single-tenant-hsm-instances-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.single-tenant-hsm-instances.proposals-approve
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/singleTenantHsmInstances/{singleTenantHsmInstance}/proposals/{proposal}:approve" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Approve Cloud KMS proposal {proposal} of single tenant hsm instance {singleTenantHsmInstance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/single-tenant-hsm-instances-proposals-approve.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.single-tenant-hsm-instances.proposals-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/singleTenantHsmInstances/{singleTenantHsmInstance}/proposals" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS proposal in single tenant hsm instance {singleTenantHsmInstance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/single-tenant-hsm-instances-proposals-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.single-tenant-hsm-instances.proposals-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/singleTenantHsmInstances/{singleTenantHsmInstance}/proposals/{proposal}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud KMS proposal {proposal} of single tenant hsm instance {singleTenantHsmInstance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/single-tenant-hsm-instances-proposals-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.single-tenant-hsm-instances.proposals-execute
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/singleTenantHsmInstances/{singleTenantHsmInstance}/proposals/{proposal}:execute" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Execute Cloud KMS proposal {proposal} of single tenant hsm instance {singleTenantHsmInstance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/single-tenant-hsm-instances-proposals-execute.http
+        expect: access
+        resource: "acme-prod"

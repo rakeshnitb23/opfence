@@ -1,0 +1,61 @@
+# Google Cloud Key Management Service: projects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.projects.update-autokey-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/autokeyConfig" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change autokey config of Cloud KMS project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/projects-update-autokey-config.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.projects.update-kaj-policy-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/kajPolicyConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change kaj policy config of Cloud KMS project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/projects-update-kaj-policy-config.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.projects.generate-random-bytes
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}:generateRandomBytes" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Returns random bytes; changes nothing.
+    tests:
+      - fixture: fixtures/projects-generate-random-bytes.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.projects.update-ekm-config
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/ekmConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change ekm config of Cloud KMS location in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      External key managers hold the keys.
+    tests:
+      - fixture: fixtures/projects-update-ekm-config.http
+        expect: access
+        resource: "acme-prod"

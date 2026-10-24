@@ -1,0 +1,192 @@
+# Google Cloud Bigtable Admin API: clusters.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigtable.clusters.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable cluster in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable cluster {cluster} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      The instance keeps its data in its other clusters; the last one cannot be deleted.
+    tests:
+      - fixture: fixtures/clusters-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.partial-update-cluster
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Partial update cluster of Bigtable cluster {cluster} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-partial-update-cluster.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.update
+    match: { rest: { method: PUT, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable cluster {cluster} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Nodes are billed.
+    tests:
+      - fixture: fixtures/clusters-update.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.update-memory-layer
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/memoryLayer" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change memory layer of Bigtable cluster {cluster} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/clusters-update-memory-layer.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-copy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups:copy" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Copy Bigtable backup {cluster} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/clusters-backups-copy.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable backup in cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/clusters-backups-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/clusters-backups-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/clusters-backups-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}" } }
+    class: write
+    when:
+      - if: { arg: body.expireTime, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      An earlier expire time deletes the backup sooner.
+    tests:
+      - fixture: fixtures/clusters-backups-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/clusters-backups-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/clusters-backups-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.clusters.backups-test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/clusters-backups-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

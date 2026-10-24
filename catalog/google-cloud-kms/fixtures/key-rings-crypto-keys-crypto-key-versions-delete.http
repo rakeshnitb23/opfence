@@ -1,0 +1,5 @@
+# description: Delete Cloud KMS crypto key version cryptokeyversion-1 of key ring keyring-1 in project acme-prod
+DELETE /v1/projects/acme-prod/locations/us-central1/keyRings/keyring-1/cryptoKeys/cryptokey-1/cryptoKeyVersions/cryptokeyversion-1 HTTP/1.1
+Host: cloudkms.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

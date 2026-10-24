@@ -1,0 +1,35 @@
+# Google Cloud Memorystore for Redis: backup collections.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-memorystore.backup-collections.backups-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/backupCollections/{backupCollection}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Memorystore backup {backup} of backup collection {backupCollection} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backup-collections-backups-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.backup-collections.backups-export
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/backupCollections/{backupCollection}/backups/{backup}:export" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Export Memorystore backup {backup} of backup collection {backupCollection} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Writes the data to the Cloud Storage location the request names, which can belong to another
+      project.
+    tests:
+      - fixture: fixtures/backup-collections-backups-export.http
+        expect: access
+        resource: "acme-prod"

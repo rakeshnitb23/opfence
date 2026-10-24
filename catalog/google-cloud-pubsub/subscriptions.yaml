@@ -1,0 +1,191 @@
+# Google Cloud Pub/Sub: subscriptions.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-pubsub.subscriptions.acknowledge
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:acknowledge" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Acknowledge Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Acknowledged messages leave the subscription; only one that retains them can seek back.
+    tests:
+      - fixture: fixtures/subscriptions-acknowledge.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.create
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/subscriptions/{subscription}" } }
+    class: write
+    when:
+      - if: { arg: body.pushConfig.pushEndpoint, present: true }
+        class: access
+    resource: { arg: project, kind: project }
+    card: "Create Pub/Sub subscription in subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      A push subscription sends every message to the endpoint it names, which can be anyone's.
+    tests:
+      - fixture: fixtures/subscriptions-create.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/subscriptions-create-when1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/subscriptions/{subscription}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Drops the messages not yet delivered.
+    tests:
+      - fixture: fixtures/subscriptions-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.detach
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:detach" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Detach Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Drops the messages not yet delivered and stops delivery.
+    tests:
+      - fixture: fixtures/subscriptions-detach.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.modify-ack-deadline
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:modifyAckDeadline" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Modify ack deadline of Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/subscriptions-modify-ack-deadline.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.modify-push-config
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:modifyPushConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Modify push config of Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Sends every message to the endpoint it names, which can be anyone's.
+    tests:
+      - fixture: fixtures/subscriptions-modify-push-config.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/subscriptions/{subscription}" } }
+    class: write
+    when:
+      - if: { arg: body.subscription.pushConfig.pushEndpoint, present: true }
+        class: access
+      - if: { arg: body.subscription.messageRetentionDuration, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      A push endpoint sends every message where it says; a shorter retention drops messages.
+    tests:
+      - fixture: fixtures/subscriptions-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/subscriptions-patch-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/subscriptions-patch-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.pull
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:pull" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Receives messages; they stay until acknowledged.
+    tests:
+      - fixture: fixtures/subscriptions-pull.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.seek
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:seek" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Seek Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Seeking to a later time or a snapshot acknowledges the messages before it.
+    tests:
+      - fixture: fixtures/subscriptions-seek.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Pub/Sub subscription {subscription} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/subscriptions-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.subscriptions.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/subscriptions/{subscription}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/subscriptions-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

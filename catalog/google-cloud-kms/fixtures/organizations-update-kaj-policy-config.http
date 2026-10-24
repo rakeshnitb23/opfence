@@ -1,0 +1,7 @@
+# description: Change kaj policy config of Cloud KMS organization 987654321098
+PATCH /v1/organizations/987654321098/kajPolicyConfig HTTP/1.1
+Host: cloudkms.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

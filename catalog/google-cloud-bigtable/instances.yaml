@@ -1,0 +1,108 @@
+# Google Cloud Bigtable Admin API: instances.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigtable.instances.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable instance in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Instances are billed by their nodes.
+    tests:
+      - fixture: fixtures/instances-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Deletes the instance with every table and backup in it.
+    tests:
+      - fixture: fixtures/instances-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/instances-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.partial-update-instance
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Partial update instance of Bigtable instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/instances-partial-update-instance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/instances-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/instances-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.instances.update
+    match: { rest: { method: PUT, path: "/v2/projects/{project}/instances/{instance}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/instances-update.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,32 @@
+# Google Cloud DNS: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-dns.operations.cancel
+    match: { rest: { method: POST, path: "/dns/v1/projects/{project}/locations/{location}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Cloud DNS operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    tests:
+      - fixture: fixtures/operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.operations.delete
+    match: { rest: { method: DELETE, path: "/dns/v1/projects/{project}/locations/{location}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud DNS operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      Deletes the record of an operation, not what it did.
+    tests:
+      - fixture: fixtures/operations-delete.http
+        expect: write
+        resource: "acme-prod"

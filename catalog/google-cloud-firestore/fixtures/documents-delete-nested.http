@@ -1,0 +1,5 @@
+# description: Delete Firestore document users/alice/orders/o-1 in database orders of project acme-prod
+DELETE /v1/projects/acme-prod/databases/orders/documents/users/alice/orders/o-1 HTTP/1.1
+Host: firestore.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

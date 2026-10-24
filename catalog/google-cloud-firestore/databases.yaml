@@ -1,0 +1,139 @@
+# Google Cloud Firestore: databases.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.databases.bulk-delete-documents
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}:bulkDeleteDocuments" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Bulk delete documents of Firestore database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Deletes every document in the collection groups it names, or in the whole database when it
+      names none.
+    tests:
+      - fixture: fixtures/databases-bulk-delete-documents.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.clone
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases:clone" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Clone Firestore database in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/databases-clone.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Firestore database in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/databases-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Deletes the database with its documents; only a backup can bring them back.
+    tests:
+      - fixture: fixtures/databases-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.export-documents
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}:exportDocuments" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Export documents of Firestore database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Writes the data to the Cloud Storage location the request names, which can belong to another
+      project.
+    tests:
+      - fixture: fixtures/databases-export-documents.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.import-documents
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}:importDocuments" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Import documents of Firestore database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Imports overwrite entities and documents with the same keys.
+    tests:
+      - fixture: fixtures/databases-import-documents.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/databases/{database}" } }
+    class: write
+    when:
+      - if: { arg: body.deleteProtectionState, equals: "DELETE_PROTECTION_DISABLED" }
+        class: irreversible
+      - if: { arg: body.pointInTimeRecoveryEnablement, equals: "POINT_IN_TIME_RECOVERY_DISABLED" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Firestore database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Turning delete protection or point-in-time recovery off is as dangerous as what they protect.
+    tests:
+      - fixture: fixtures/databases-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/databases-patch-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.databases.restore
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases:restore" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restore Firestore database in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Restores into a new database.
+    tests:
+      - fixture: fixtures/databases-restore.http
+        expect: write
+        resource: "acme-prod"

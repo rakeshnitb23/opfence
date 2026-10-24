@@ -1,0 +1,5 @@
+# description: Delete Firestore backup schedule backupschedule-1 of database orders in project acme-prod
+DELETE /v1/projects/acme-prod/databases/orders/backupSchedules/backupschedule-1 HTTP/1.1
+Host: firestore.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

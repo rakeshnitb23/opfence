@@ -1,0 +1,18 @@
+provider: google-cloud-dns
+title: Google Cloud DNS
+docs: https://cloud.google.com/dns/docs/reference/rest/v1
+# Managed zones, record sets and changes, policies and response policies. Changing where a name points
+# is access.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [dns.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/dns/v1/rest

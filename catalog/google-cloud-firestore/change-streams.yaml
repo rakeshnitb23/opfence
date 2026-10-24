@@ -1,0 +1,30 @@
+# Google Cloud Firestore: change streams.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.change-streams.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/changeStreams" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Firestore change stream in database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/change-streams-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.change-streams.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/changeStreams/{changeStream}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore change stream {changeStream} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/change-streams-delete.http
+        expect: delete
+        resource: "acme-prod"

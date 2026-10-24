@@ -1,0 +1,7 @@
+# description: Change Bigtable authorized view authorizedview-1 of instance orders-db in project acme-prod
+PATCH /v2/projects/acme-prod/instances/orders-db/tables/table-1/authorizedViews/authorizedview-1 HTTP/1.1
+Host: bigtableadmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

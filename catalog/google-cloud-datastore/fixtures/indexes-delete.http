@@ -1,0 +1,5 @@
+# description: Delete Datastore index index-1 in project acme-prod
+DELETE /v1/projects/acme-prod/indexes/index-1 HTTP/1.1
+Host: datastore.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

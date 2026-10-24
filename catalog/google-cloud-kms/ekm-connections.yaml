@@ -1,0 +1,65 @@
+# Google Cloud Key Management Service: ekm connections.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.ekm-connections.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/ekmConnections" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS ekm connection in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      External key managers hold the keys.
+    tests:
+      - fixture: fixtures/ekm-connections-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.ekm-connections.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/ekmConnections/{ekmConnection}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Cloud KMS ekm connection {ekmConnection} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      External key managers hold the keys.
+    tests:
+      - fixture: fixtures/ekm-connections-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.ekm-connections.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/ekmConnections/{ekmConnection}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud KMS ekm connection {ekmConnection} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/ekm-connections-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.ekm-connections.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/ekmConnections/{ekmConnection}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/ekm-connections-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

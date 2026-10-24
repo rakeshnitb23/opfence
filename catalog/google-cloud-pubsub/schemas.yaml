@@ -1,0 +1,133 @@
+# Google Cloud Pub/Sub: schemas.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-pubsub.schemas.commit
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas/{schema}:commit" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Commit Pub/Sub schema {schema} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/schemas-commit.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Pub/Sub schema in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/schemas-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/schemas/{schema}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Pub/Sub schema {schema} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/schemas-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.delete-revision
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/schemas/{schema}:deleteRevision" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Remove revision from Pub/Sub schema {schema} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/schemas-delete-revision.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.rollback
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas/{schema}:rollback" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Rollback Pub/Sub schema {schema} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/schemas-rollback.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas/{schema}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Pub/Sub schema {schema} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/schemas-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas/{schema}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/schemas-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.validate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas:validate" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Checks a schema; changes nothing.
+    tests:
+      - fixture: fixtures/schemas-validate.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.schemas.validate-message
+    match: { rest: { method: POST, path: "/v1/projects/{project}/schemas:validateMessage" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Checks a message; changes nothing.
+    tests:
+      - fixture: fixtures/schemas-validate-message.http
+        expect: read
+        resource: "acme-prod"

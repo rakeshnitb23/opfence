@@ -1,0 +1,32 @@
+# Google Cloud Memorystore for Redis: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-memorystore.operations.cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Memorystore operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    tests:
+      - fixture: fixtures/operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.operations.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Memorystore operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Deletes the record of an operation, not what it did.
+    tests:
+      - fixture: fixtures/operations-delete.http
+        expect: write
+        resource: "acme-prod"
