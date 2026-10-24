@@ -104,10 +104,29 @@ func Transform(body []byte, x *catalog.Response, fn Funcs) ([]byte, TransformRes
 	return bytes.TrimSuffix(buf.Bytes(), []byte("\n")), res, nil
 }
 
-// walk replaces the value at path in v with f's result.
+// walk replaces the value at path in v with f's result. A "**" step stands
+// for any number of keys, none included, so "**.env.value" reaches every
+// env.value at any depth: the long-running operations of Google's APIs
+// carry the resource they act on in untyped metadata and response fields.
 func walk(v any, path []string, f func(any) any) any {
 	if len(path) == 0 {
 		return f(v)
+	}
+	if path[0] == "**" {
+		switch t := v.(type) {
+		case map[string]any:
+			walk(t, path[1:], f) // ** as no keys; t changes in place
+			for k, el := range t {
+				t[k] = walk(el, path, f)
+			}
+		case []any:
+			// Not here as well: the elements are walked with the rest of
+			// the path as they are reached, since lists take no step.
+			for i, el := range t {
+				t[i] = walk(el, path, f)
+			}
+		}
+		return v
 	}
 	switch t := v.(type) {
 	case map[string]any:

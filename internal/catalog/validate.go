@@ -27,7 +27,10 @@ var (
 	cardParamRe     = regexp.MustCompile(`\{([^{}]*)\}`)
 	gitRefRe        = regexp.MustCompile(`^refs/[A-Za-z0-9._/-]*\*?$`)
 	headerArgNameRe = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
-	argPathRe       = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	// responsePathRe is argPathRe with "**" steps (any number of keys)
+	// anywhere but last, for response transforms and restore paths.
+	responsePathRe = regexp.MustCompile(`^(\*\*\.)*[A-Za-z_$][A-Za-z0-9_$-]*(\.(\*\*\.)*[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	argPathRe      = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 )
 
 var restMethods = map[string]bool{
@@ -433,8 +436,8 @@ func (l *loader) validateRule(r *Rule) {
 			l.addf(f, ln, "%s: response.hold is for rest rules", r.ID)
 		}
 		for _, p := range x.Paths() {
-			if !argPathRe.MatchString(p) {
-				l.addf(f, ln, "%s: response path %q is not a dotted path", r.ID, p)
+			if !responsePathRe.MatchString(p) {
+				l.addf(f, ln, "%s: response path %q is not a dotted path (a ** step may stand for any keys, but not last)", r.ID, p)
 			}
 		}
 		if !x.Class.Valid() {
@@ -458,8 +461,8 @@ func (l *loader) validateRule(r *Rule) {
 			l.addf(f, ln, "%s: a rule with restore needs response.hold for what the API sends back", r.ID)
 		}
 		for _, p := range r.Restore {
-			if !argPathRe.MatchString(p) {
-				l.addf(f, ln, "%s: restore path %q is not a dotted path", r.ID, p)
+			if !responsePathRe.MatchString(p) {
+				l.addf(f, ln, "%s: restore path %q is not a dotted path (a ** step may stand for any keys, but not last)", r.ID, p)
 			}
 		}
 	}

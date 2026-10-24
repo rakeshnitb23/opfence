@@ -140,3 +140,66 @@ func FuzzHeldRestore(f *testing.F) {
 		}
 	})
 }
+
+// A ** step reaches the environment wherever an operation carries it, and
+// a token held under a pattern may come back anywhere the pattern matches
+// in the same object.
+func TestHeldAnyDepth(t *testing.T) {
+	const pat = "**.env.value"
+	op := `{"name":"operations/1","done":true,"metadata":{"template":{"containers":[{"env":[{"name":"A","value":"a-secret"}]}]}},` +
+		`"response":{"template":{"template":{"containers":[{"env":[{"name":"B","value":"b-secret"}]}]}}},"env":{"value":"top"},"note":{"value":"kept"}}`
+	h := NewHeld()
+	out, res, err := Transform([]byte(op), &catalog.Response{Hold: []string{pat}}, Funcs{
+		Hold: func(path, v string) (string, error) { return h.Hold("run", "/v2/x", path, v) },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, secret := range []string{"a-secret", "b-secret", `"top"`} {
+		if strings.Contains(string(out), secret) {
+			t.Fatalf("%s left in %s", secret, out)
+		}
+	}
+	if res.Hits[pat] != 3 || h.Len() != 3 || !strings.Contains(string(out), `"kept"`) || !strings.Contains(string(out), `"operations/1"`) {
+		t.Fatalf("%d hits, %d held: %s", res.Hits[pat], h.Len(), out)
+	}
+	// Redact takes ** too.
+	if out, _, err := Transform([]byte(op), &catalog.Response{Redact: []string{"**.env"}}, Funcs{}); err != nil ||
+		strings.Contains(string(out), "secret") || strings.Contains(string(out), `"top"`) {
+		t.Fatalf("redact: %s %v", out, err)
+	}
+
+	tok, _ := h.Hold("run", "/v2/x", pat, "a-secret")
+	for _, body := range []string{
+		`{"template":{"containers":[{"env":[{"name":"A","value":"` + tok + `"}]}]}}`,
+		`{"env":{"value":"` + tok + `"}}`,
+	} {
+		if out, n, err := h.Restore("run", "/v2/x", []string{pat}, []byte(body)); err != nil || n != 1 || !strings.Contains(string(out), "a-secret") {
+			t.Errorf("%s: %s %d %v", body, out, n, err)
+		}
+	}
+	for _, body := range []string{
+		`{"template":{"containers":[{"env":[{"name":"A","valueFrom":"` + tok + `"}]}]}}`,
+		`{"annotations":{"value":"` + tok + `"}}`,
+	} {
+		if _, _, err := h.Restore("run", "/v2/x", []string{pat}, []byte(body)); err == nil {
+			t.Errorf("%s: restored outside the pattern", body)
+		}
+	}
+}
+
+func TestPrefixMatch(t *testing.T) {
+	cases := []struct {
+		path, pat string
+		want      bool
+	}{
+		{"a.b.c", "a.b", true}, {"a.b", "a.b.c", false}, {"x.env.value", "**.env.value", true},
+		{"env.value", "**.env.value", true}, {"env.value.k", "**.env.value", true}, {"env.valueFrom", "**.env.value", false},
+		{"a.env.b.value", "**.env.value", false}, {"a.x.b.c", "a.**.c", true}, {"a.c", "a.**.c", true}, {"a", "a.**.c", false},
+	}
+	for _, c := range cases {
+		if got := under(strings.Split(c.path, "."), c.pat); got != c.want {
+			t.Errorf("under(%s, %s) = %v", c.path, c.pat, got)
+		}
+	}
+}

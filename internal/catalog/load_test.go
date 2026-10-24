@@ -197,6 +197,8 @@ func TestLoadInvalid(t *testing.T) {
 			replace("acme/db.yaml", "method: DELETE", "method: PATCH")(m)
 			replace("acme/db.yaml", "    resource: { arg: id, kind: database }", "    restore: [\"a b\"]\n    response: { hold: [env], class: read }\n    resource: { arg: id, kind: database }")(m)
 		}, "restore path \"a b\" is not a dotted path"},
+		{"response path ending in **", responseRule(`{ redact: ["env.**"], class: read }`), "not a dotted path"},
+		{"response path with *", responseRule(`{ redact: ["env.*.value"], class: read }`), "not a dotted path"},
 		{"batch path without slash", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [batch/v1]"), "batch path \"batch/v1\" must start with /"},
 		{"batch path is graphql", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [/graphql]"), "is also a graphql path"},
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},

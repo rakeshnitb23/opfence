@@ -194,18 +194,25 @@ func (h *Held) Restore(provider, object string, restore []string, body []byte) (
 	return out.Bytes(), n, nil
 }
 
-// under reports whether path is p or below it.
+// under reports whether path is at or below the path pattern p, whose
+// "**" steps stand for any number of keys.
 func under(path []string, p string) bool {
-	ps := strings.Split(p, ".")
-	if len(path) < len(ps) {
+	return prefixMatch(path, strings.Split(p, "."))
+}
+
+func prefixMatch(path, pat []string) bool {
+	if len(pat) == 0 {
+		return true
+	}
+	if pat[0] == "**" {
+		for i := 0; i <= len(path); i++ {
+			if prefixMatch(path[i:], pat[1:]) {
+				return true
+			}
+		}
 		return false
 	}
-	for i, s := range ps {
-		if path[i] != s {
-			return false
-		}
-	}
-	return true
+	return len(path) > 0 && path[0] == pat[0] && prefixMatch(path[1:], pat[1:])
 }
 
 func containsPath(paths []string, p string) bool {
