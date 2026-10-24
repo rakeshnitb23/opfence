@@ -23,13 +23,23 @@ type TransformResult struct {
 	Minted []string
 }
 
+// Funcs are what Transform calls for minted and held values.
+type Funcs struct {
+	// Mint returns the placeholder for a token at a mint path.
+	Mint func(value string) (string, error)
+	// Hold returns the token for a string found at or below the hold
+	// path path.
+	Hold func(path, value string) (string, error)
+}
+
 // Transform applies a rule's response transform to a JSON body: every
 // string at or below a redact path becomes catalog.RedactedValue, the value
-// at a clear path becomes the empty value of its type, and each string at
-// a mint path is replaced with what mint returns for it. A path
-// steps into every element of a list on its way, as rule conditions do.
-// The body is re-encoded; anything that is not one JSON value is an error.
-func Transform(body []byte, x *catalog.Response, mint func(value string) (string, error)) ([]byte, TransformResult, error) {
+// at a clear path becomes the empty value of its type, each string at a
+// mint path is replaced with what Mint returns for it, and each non-empty
+// string at or below a hold path with what Hold returns. A path steps into
+// every element of a list on its way, as rule conditions do. The body is
+// re-encoded; anything that is not one JSON value is an error.
+func Transform(body []byte, x *catalog.Response, fn Funcs) ([]byte, TransformResult, error) {
 	res := TransformResult{Hits: map[string]int{}}
 	dec := json.NewDecoder(bytes.NewReader(body))
 	dec.UseNumber()
@@ -60,13 +70,26 @@ func Transform(body []byte, x *catalog.Response, mint func(value string) (string
 				return at
 			}
 			res.Hits[p]++
-			ph, err := mint(s)
+			ph, err := fn.Mint(s)
 			if err != nil {
 				mintErr = err
 				return catalog.RedactedValue
 			}
 			res.Minted = append(res.Minted, ph)
 			return ph
+		})
+	}
+	for _, p := range x.Hold {
+		v = walk(v, strings.Split(p, "."), func(at any) any {
+			res.Hits[p]++
+			return hold(at, func(s string) string {
+				t, err := fn.Hold(p, s)
+				if err != nil {
+					mintErr = err
+					return catalog.RedactedValue
+				}
+				return t
+			})
 		})
 	}
 	if mintErr != nil {
@@ -81,10 +104,29 @@ func Transform(body []byte, x *catalog.Response, mint func(value string) (string
 	return bytes.TrimSuffix(buf.Bytes(), []byte("\n")), res, nil
 }
 
-// walk replaces the value at path in v with f's result.
+// walk replaces the value at path in v with f's result. A "**" step stands
+// for any number of keys, none included, so "**.env.value" reaches every
+// env.value at any depth: the long-running operations of Google's APIs
+// carry the resource they act on in untyped metadata and response fields.
 func walk(v any, path []string, f func(any) any) any {
 	if len(path) == 0 {
 		return f(v)
+	}
+	if path[0] == "**" {
+		switch t := v.(type) {
+		case map[string]any:
+			walk(t, path[1:], f) // ** as no keys; t changes in place
+			for k, el := range t {
+				t[k] = walk(el, path, f)
+			}
+		case []any:
+			// Not here as well: the elements are walked with the rest of
+			// the path as they are reached, since lists take no step.
+			for i, el := range t {
+				t[i] = walk(el, path, f)
+			}
+		}
+		return v
 	}
 	switch t := v.(type) {
 	case map[string]any:
@@ -128,6 +170,28 @@ func redact(v any) any {
 	case []any:
 		for i, el := range t {
 			t[i] = redact(el)
+		}
+	}
+	return v
+}
+
+// hold replaces every non-empty string in v, at any depth, with f's
+// result. Keys are kept: they name values, as an environment variable's
+// name does.
+func hold(v any, f func(string) string) any {
+	switch t := v.(type) {
+	case string:
+		if t == "" {
+			return t
+		}
+		return f(t)
+	case map[string]any:
+		for k, el := range t {
+			t[k] = hold(el, f)
+		}
+	case []any:
+		for i, el := range t {
+			t[i] = hold(el, f)
 		}
 	}
 	return v

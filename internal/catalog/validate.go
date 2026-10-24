@@ -27,7 +27,10 @@ var (
 	cardParamRe     = regexp.MustCompile(`\{([^{}]*)\}`)
 	gitRefRe        = regexp.MustCompile(`^refs/[A-Za-z0-9._/-]*\*?$`)
 	headerArgNameRe = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
-	argPathRe       = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	// responsePathRe is argPathRe with "**" steps (any number of keys)
+	// anywhere but last, for response transforms and restore paths.
+	responsePathRe = regexp.MustCompile(`^(\*\*\.)*[A-Za-z_$][A-Za-z0-9_$-]*(\.(\*\*\.)*[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
+	argPathRe      = regexp.MustCompile(`^[A-Za-z_$][A-Za-z0-9_$-]*(\.[A-Za-z_$][A-Za-z0-9_$-]*)*$`)
 )
 
 var restMethods = map[string]bool{
@@ -251,6 +254,17 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 			l.addf(file, 0, "graphql path %q must start with /", g)
 		}
 	}
+	for _, b := range p.Batch {
+		switch {
+		case !strings.HasPrefix(b, "/"):
+			l.addf(file, 0, "batch path %q must start with /", b)
+		case slices.Contains(p.GraphQL, b):
+			l.addf(file, 0, "batch path %q is also a graphql path", b)
+		}
+	}
+	if len(p.Batch) > 0 && (p.SigV4 || p.MCP != nil) {
+		l.addf(file, 0, "batch paths need a REST provider")
+	}
 	for i, a := range p.Auth {
 		set := 0
 		if a.Header != "" {
@@ -411,11 +425,19 @@ func (l *loader) validateRule(r *Rule) {
 			l.addf(f, ln, "%s: response transforms are for rest and graphql rules", r.ID)
 		}
 		if len(x.Paths()) == 0 {
-			l.addf(f, ln, "%s: response needs redact, clear or mint paths", r.ID)
+			l.addf(f, ln, "%s: response needs redact, clear, mint or hold paths", r.ID)
+		}
+		for _, p := range x.Hold {
+			if slices.Contains(x.Redact, p) || slices.Contains(x.Clear, p) || slices.Contains(x.Mint, p) {
+				l.addf(f, ln, "%s: response path %q is held and also redacted, cleared or minted", r.ID, p)
+			}
+		}
+		if len(x.Hold) > 0 && r.Match.REST == nil {
+			l.addf(f, ln, "%s: response.hold is for rest rules", r.ID)
 		}
 		for _, p := range x.Paths() {
-			if !argPathRe.MatchString(p) {
-				l.addf(f, ln, "%s: response path %q is not a dotted path", r.ID, p)
+			if !responsePathRe.MatchString(p) {
+				l.addf(f, ln, "%s: response path %q is not a dotted path (a ** step may stand for any keys, but not last)", r.ID, p)
 			}
 		}
 		if !x.Class.Valid() {
@@ -427,6 +449,21 @@ func (l *loader) validateRule(r *Rule) {
 		}
 		if !hasResponseTest && r.Status == Verified {
 			l.addf(f, ln, "%s: a verified rule with a response transform needs a test with a recorded response", r.ID)
+		}
+	}
+	if len(r.Restore) > 0 {
+		switch {
+		case r.Match.REST == nil || (r.Match.REST.Method != "PUT" && r.Match.REST.Method != "PATCH" && r.Match.REST.Method != "POST"):
+			l.addf(f, ln, "%s: restore is for rest rules that match PUT, PATCH or POST", r.ID)
+		case r.Response == nil || len(r.Response.Hold) == 0:
+			// The API echoes what was written; without a hold the values
+			// would reach the agent in the response.
+			l.addf(f, ln, "%s: a rule with restore needs response.hold for what the API sends back", r.ID)
+		}
+		for _, p := range r.Restore {
+			if !responsePathRe.MatchString(p) {
+				l.addf(f, ln, "%s: restore path %q is not a dotted path (a ** step may stand for any keys, but not last)", r.ID, p)
+			}
 		}
 	}
 	if c := r.Classify; c != nil {

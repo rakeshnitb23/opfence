@@ -76,6 +76,9 @@ operations:
       - fixture: fixtures/objects-delete.http
         expect: irreversible
         resource: "acme-uploads"
+      - fixture: fixtures/objects-delete-batch.http
+        expect: irreversible
+        resource: "acme-uploads"
 
   - id: google-cloud-storage.objects.insert
     match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/o" } }

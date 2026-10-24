@@ -113,6 +113,7 @@ type Config struct {
 type Server struct {
 	cfg       Config
 	scrubber  *inject.Scrubber
+	held      *inject.Held  // values responses' hold transforms replaced
 	resign    chan struct{} // slots for AWS re-signing that buffers a body
 	minted    atomic.Int64  // numbers minted credentials' names
 	transport *http.Transport
@@ -158,7 +159,7 @@ func New(cfg Config) (*Server, error) {
 	if scrubber == nil {
 		scrubber = &inject.Scrubber{}
 	}
-	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: scrubber, resign: make(chan struct{}, maxResigning)}
+	s := &Server{cfg: cfg, conns: newChanListener(), scrubber: scrubber, held: inject.NewHeld(), resign: make(chan struct{}, maxResigning)}
 	s.transport = &http.Transport{
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return s.dial(ctx, network, addr, false)

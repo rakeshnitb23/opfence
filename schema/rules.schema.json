@@ -12,6 +12,7 @@
     "class": { "enum": ["read", "write", "delete", "irreversible", "money", "credential", "access", "unknown"] },
     "sqlDialect": { "enum": ["postgres", "mysql", "sqlite"] },
     "argPath": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$-]*(\\.[A-Za-z_$][A-Za-z0-9_$-]*)*$" },
+    "responsePath": { "type": "string", "pattern": "^(\\*\\*\\.)*[A-Za-z_$][A-Za-z0-9_$-]*(\\.(\\*\\*\\.)*[A-Za-z_$][A-Za-z0-9_$-]*)*$", "description": "A dotted path; a ** step stands for any number of keys" },
     "ruleId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$" },
     "rule": {
       "type": "object",
@@ -73,12 +74,14 @@
           "additionalProperties": false,
           "required": ["class"],
           "properties": {
-            "redact": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
-            "clear": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
-            "mint": { "type": "array", "items": { "$ref": "#/$defs/argPath" } },
+            "redact": { "type": "array", "items": { "$ref": "#/$defs/responsePath" } },
+            "clear": { "type": "array", "items": { "$ref": "#/$defs/responsePath" } },
+            "mint": { "type": "array", "items": { "$ref": "#/$defs/responsePath" } },
+            "hold": { "type": "array", "items": { "$ref": "#/$defs/responsePath" }, "description": "Paths whose strings the proxy replaces with tokens it can swap back when a write carries them to the same field of the same object" },
             "class": { "$ref": "#/$defs/class" }
           }
         },
+        "restore": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/responsePath" }, "description": "Body paths of a write where the proxy swaps values it held from the same object back in" },
         "resource": {
           "type": "object",
           "additionalProperties": false,
