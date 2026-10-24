@@ -511,8 +511,8 @@ func (l *loader) validateRule(r *Rule) {
 		}
 		for i, d := range c.Dialect {
 			switch {
-			case d != DialectPostgres && d != DialectMySQL && d != DialectSQLite:
-				l.addf(f, ln, "%s: classify.dialect %q is not postgres, mysql or sqlite", r.ID, d)
+			case d != DialectPostgres && d != DialectMySQL && d != DialectSQLite && d != DialectGoogle:
+				l.addf(f, ln, "%s: classify.dialect %q is not postgres, mysql, sqlite or googlesql", r.ID, d)
 			case slices.Contains(c.Dialect[:i], d):
 				l.addf(f, ln, "%s: classify.dialect lists %q twice", r.ID, d)
 			}

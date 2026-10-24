@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Batch update of App Engine firewall rule in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create App Engine firewall rule in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -39,7 +39,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine firewall rule {ingressRule} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -55,7 +55,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine firewall rule {ingressRule} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-

@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove named set from Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -35,7 +35,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove route policy from Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -49,7 +49,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine router {body.name} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -63,7 +63,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -77,7 +77,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change named set of Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -91,7 +91,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change route policy of Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -104,7 +104,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -120,7 +120,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -134,7 +134,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change named set of Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -148,7 +148,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change route policy of Compute Engine router {router} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:

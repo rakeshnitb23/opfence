@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Abort function upgrade of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -24,7 +24,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Commit function upgrade of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -40,7 +40,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Commit function upgrade as gen2 of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -56,7 +56,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Functions function {query.functionId} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -72,7 +72,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -90,7 +90,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Detach Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -104,7 +104,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -120,7 +120,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Generate upload url for Cloud Functions function in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -137,7 +137,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -156,7 +156,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Functions functions in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -176,7 +176,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -192,7 +192,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Redirect function upgrade traffic of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -208,7 +208,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Rollback function upgrade traffic of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -223,7 +223,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -240,7 +240,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Setup function upgrade config of Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -254,7 +254,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -270,7 +270,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Call Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -287,7 +287,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Functions function {query.functionId} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     tests:
@@ -303,7 +303,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -319,7 +319,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -335,7 +335,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Generate upload url for Cloud Functions function in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -352,7 +352,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -371,7 +371,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Functions functions in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -391,7 +391,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     tests:
@@ -406,7 +406,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Functions function {function} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -421,7 +421,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-

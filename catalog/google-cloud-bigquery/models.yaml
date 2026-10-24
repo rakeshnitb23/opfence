@@ -1,0 +1,38 @@
+# Google BigQuery: models.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.models.delete
+    match: { rest: { method: DELETE, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/models/{model}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete BigQuery model {model} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      A model can be trained again from its data.
+    tests:
+      - fixture: fixtures/models-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.models.patch
+    match: { rest: { method: PATCH, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/models/{model}" } }
+    class: write
+    when:
+      - if: { arg: body.expirationTime, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery model {model} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/models-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/models-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"

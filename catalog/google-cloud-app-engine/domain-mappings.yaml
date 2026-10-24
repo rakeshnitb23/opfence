@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create App Engine domain mapping in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -26,7 +26,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine domain mapping {domainMapping} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -42,7 +42,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine domain mapping {domainMapping} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -60,7 +60,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create App Engine domain mapping in application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -78,7 +78,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine domain mapping {domainMapping} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -94,7 +94,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine domain mapping {domainMapping} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-

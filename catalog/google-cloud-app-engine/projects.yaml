@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:

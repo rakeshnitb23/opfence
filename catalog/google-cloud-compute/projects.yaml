@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Disable xpn host of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Disable xpn resource of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -39,7 +39,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Enable xpn host of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -55,7 +55,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Enable xpn resource of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -70,7 +70,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -86,7 +86,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Move disk of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -102,7 +102,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Move instance of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -118,7 +118,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set cloud armor tier of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -134,7 +134,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change the metadata (startup scripts, SSH keys) of every Compute Engine VM in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -152,7 +152,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set default network tier of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -166,7 +166,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set usage export bucket of Compute Engine project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:

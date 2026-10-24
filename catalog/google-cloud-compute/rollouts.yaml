@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Advance Compute Engine rollout {rollout} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Cancel Compute Engine rollout {rollout} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -35,7 +35,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine rollout {rollout} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -49,7 +49,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Pause Compute Engine rollout {rollout} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -63,7 +63,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Resume Compute Engine rollout {rollout} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:

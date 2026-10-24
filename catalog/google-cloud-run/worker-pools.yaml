@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Run worker pool {query.workerPoolId} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -24,7 +24,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -42,7 +42,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -61,7 +61,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run worker pools in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -81,7 +81,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Cloud Run worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -96,7 +96,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Run worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -111,7 +111,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -128,7 +128,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run revision {revision} of worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -146,7 +146,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run revision {revision} of worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -165,7 +165,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run revisions of worker pool {workerPool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-

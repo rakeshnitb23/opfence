@@ -1,0 +1,7 @@
+# description: Run a BigQuery query in project acme-prod
+POST /bigquery/v2/projects/acme-prod/queries HTTP/1.1
+Host: bigquery.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"query": "SELECT id FROM `acme-prod.sales.orders` LIMIT 10", "useLegacySql": false}

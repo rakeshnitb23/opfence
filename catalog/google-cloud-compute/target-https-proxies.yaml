@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine target https proxy {body.name} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -38,7 +38,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -55,7 +55,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set certificate map of Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -72,7 +72,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set quic override of Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -86,7 +86,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set SSL certificates of Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -103,7 +103,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set SSL policy of Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -120,7 +120,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set url map of Compute Engine target https proxy {targetHttpsProxy} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

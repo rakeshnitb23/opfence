@@ -10,7 +10,7 @@
   },
   "$defs": {
     "class": { "enum": ["read", "write", "delete", "irreversible", "money", "credential", "access", "unknown"] },
-    "sqlDialect": { "enum": ["postgres", "mysql", "sqlite"] },
+    "sqlDialect": { "enum": ["postgres", "mysql", "sqlite", "googlesql"] },
     "argPath": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$-]*(\\.[A-Za-z_$][A-Za-z0-9_$-]*)*$" },
     "responsePath": { "type": "string", "pattern": "^(\\*\\*\\.)*[A-Za-z_$][A-Za-z0-9_$-]*(\\.(\\*\\*\\.)*[A-Za-z_$][A-Za-z0-9_$-]*)*$", "description": "A dotted path; a ** step stands for any number of keys" },
     "ruleId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$" },

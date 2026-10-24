@@ -1,0 +1,5 @@
+# description: Drop Spanner database orders of instance orders-db in project acme-prod
+DELETE /v1/projects/acme-prod/instances/orders-db/databases/orders HTTP/1.1
+Host: spanner.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

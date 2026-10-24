@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Expand ip cidr range of Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -35,7 +35,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine subnetwork {body.name} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -49,7 +49,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -63,7 +63,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Compute Engine subnetwork {resource} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -79,7 +79,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set private ip google access of Compute Engine subnetwork {subnetwork} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -92,7 +92,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

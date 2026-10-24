@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Complete control plane upgrade of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Complete ip rotation of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -35,7 +35,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create GKE cluster {body.cluster.name} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -51,7 +51,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -69,7 +69,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -88,7 +88,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List GKE clusters in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -106,7 +106,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set addons of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -120,7 +120,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set legacy abac of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -136,7 +136,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set locations of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -152,7 +152,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set logging of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -166,7 +166,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set maintenance policy of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -180,7 +180,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set master auth of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -196,7 +196,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set monitoring of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -210,7 +210,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set network policy of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -226,7 +226,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set resource labels of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -240,7 +240,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start ip rotation of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -287,7 +287,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -350,7 +350,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change master of GKE cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -364,7 +364,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Complete upgrade of GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -378,7 +378,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create GKE node pool {body.nodePool.name} in cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -394,7 +394,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -411,7 +411,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Rollback GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -425,7 +425,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set autoscaling of GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -441,7 +441,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set management of GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -455,7 +455,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set size of GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -471,7 +471,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change GKE node pool {nodePool} of cluster {cluster} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -485,7 +485,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set the add-ons of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -499,7 +499,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Complete control plane upgrade of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -513,7 +513,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Complete ip rotation of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -527,7 +527,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create GKE cluster {body.cluster.name} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -543,7 +543,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -561,7 +561,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -579,7 +579,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set legacy ABAC on GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -596,7 +596,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List GKE clusters ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -614,7 +614,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set the zones of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -630,7 +630,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set logging of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -644,7 +644,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Upgrade the control plane of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -658,7 +658,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set monitoring of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -672,7 +672,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set the labels of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -686,7 +686,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set maintenance policy of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -700,7 +700,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set master auth of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -716,7 +716,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set network policy of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -732,7 +732,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start ip rotation of GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -779,7 +779,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change GKE cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -842,7 +842,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set autoscaling of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -858,7 +858,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create GKE node pool {body.nodePool.name} in cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -874,7 +874,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -891,7 +891,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Rollback GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -905,7 +905,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set management of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:
@@ -919,7 +919,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set size of GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     notes: >-
@@ -935,7 +935,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change GKE node pool {nodePool} of cluster {cluster} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/container/v1/rest
     tests:

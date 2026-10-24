@@ -1,0 +1,5 @@
+# description: Delete Spanner instance config instanceconfig-1 in project acme-prod
+DELETE /v1/projects/acme-prod/instanceConfigs/instanceconfig-1 HTTP/1.1
+Host: spanner.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

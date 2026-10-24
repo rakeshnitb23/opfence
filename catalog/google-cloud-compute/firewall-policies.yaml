@@ -7,7 +7,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Add association to Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -23,7 +23,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Add rule to Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -39,7 +39,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Clone rules of Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -55,7 +55,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Delete Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -71,7 +71,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Create Compute Engine firewall policy {body.name}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -87,7 +87,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Move Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -103,7 +103,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Change Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -119,7 +119,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Change rule of Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -135,7 +135,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Remove association from Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -151,7 +151,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Remove rule from Compute Engine firewall policy {firewallPolicy}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -167,7 +167,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Change who can access Compute Engine firewall policy {resource}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -182,7 +182,7 @@ operations:
     class: read
     resource: { arg: apiVersion, kind: apiVersion }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

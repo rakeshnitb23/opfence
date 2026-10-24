@@ -56,7 +56,7 @@ func ClassifySQL(sql string) (out []classes.Class) {
 }
 
 // ClassifySQLDialect classifies SQL text in a dialect: postgres (or empty),
-// mysql or sqlite. Any other dialect is unknown.
+// mysql, sqlite or googlesql. Any other dialect is unknown.
 func ClassifySQLDialect(dialect, sql string) []classes.Class {
 	switch dialect {
 	case "", "postgres":
@@ -65,6 +65,8 @@ func ClassifySQLDialect(dialect, sql string) []classes.Class {
 		return ClassifyMySQL(sql)
 	case "sqlite":
 		return ClassifySQLite(sql)
+	case "googlesql":
+		return ClassifyGoogleSQL(sql)
 	}
 	return []classes.Class{classes.Unknown}
 }

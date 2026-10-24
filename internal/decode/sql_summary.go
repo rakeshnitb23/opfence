@@ -32,6 +32,8 @@ func SummarizeSQL(dialect, sql string) []string {
 		return summarizeMySQL(sql)
 	case "sqlite":
 		return summarizeSQLite(sql)
+	case "googlesql":
+		return summarizeGoogleSQL(sql)
 	}
 	return nil
 }

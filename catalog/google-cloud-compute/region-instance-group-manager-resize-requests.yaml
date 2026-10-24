@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Cancel Compute Engine instance group manager resize request {resizeRequest} of instance group manager {instanceGroupManager} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine instance group manager resize request {resizeRequest} of instance group manager {instanceGroupManager} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -35,7 +35,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine instance group manager resize request {body.name} in instance group manager {instanceGroupManager} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

@@ -1,0 +1,16 @@
+# Google BigQuery: tabledata.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.tabledata.insert-all
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/insertAll" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stream rows into BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/tabledata-insert-all.http
+        expect: write
+        resource: "acme-prod"

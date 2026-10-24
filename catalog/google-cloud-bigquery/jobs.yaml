@@ -1,0 +1,305 @@
+# Google BigQuery: jobs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.jobs.cancel
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/jobs/{job}/cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel BigQuery job {job} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/jobs-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.jobs.delete
+    match: { rest: { method: DELETE, path: "/bigquery/v2/projects/{project}/jobs/{job}/delete" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete BigQuery job {job} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Deletes the record of a job, not what it did.
+    tests:
+      - fixture: fixtures/jobs-delete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.jobs.insert
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/jobs" } }
+    class: unknown
+    when:
+      - if: { arg: body.configuration.query.destinationTable, present: true }
+        class: write
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.query.continuous, equals: "true" }
+        class: money
+      - if: { arg: body.configuration.load, present: true }
+        class: write
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.copy, present: true }
+        class: write
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.extract, present: true }
+        class: access
+    classify: { sql: body.configuration.query.query, dialect: [googlesql] }
+    resource: { arg: project, kind: project }
+    card: "Run a BigQuery job in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      A query job's class comes from its SQL, read as GoogleSQL (legacy SQL cannot change data).
+      Writing the results to a table is a write, and overwriting one (WRITE_TRUNCATE) irreversible,
+      as is a load or copy job that overwrites; an extract writes the table to the Cloud Storage
+      location the job names, which can belong to another project, so it is access; a continuous
+      query runs, and is billed, until it is stopped.
+    tests:
+      - fixture: fixtures/jobs-insert.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when1.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when4.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when5.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when7.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when8.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when9.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when10.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-when11.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-destination-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-script.http
+        expect: unknown
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.jobs.insert-upload
+    match: { rest: { method: POST, path: "/upload/bigquery/v2/projects/{project}/jobs" } }
+    class: unknown
+    when:
+      - if: { arg: body.configuration.query.destinationTable, present: true }
+        class: write
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.query.continuous, equals: "true" }
+        class: money
+      - if: { arg: body.configuration.load, present: true }
+        class: write
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.copy, present: true }
+        class: write
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.extract, present: true }
+        class: access
+    classify: { sql: body.configuration.query.query, dialect: [googlesql] }
+    resource: { arg: project, kind: project }
+    card: "Run a BigQuery job in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      A query job's class comes from its SQL, read as GoogleSQL (legacy SQL cannot change data).
+      Writing the results to a table is a write, and overwriting one (WRITE_TRUNCATE) irreversible,
+      as is a load or copy job that overwrites; an extract writes the table to the Cloud Storage
+      location the job names, which can belong to another project, so it is access; a continuous
+      query runs, and is billed, until it is stopped.
+    tests:
+      - fixture: fixtures/jobs-insert-upload.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when1.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when4.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when5.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when7.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when8.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when9.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when10.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-upload-when11.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.jobs.insert-resumable
+    match: { rest: { method: POST, path: "/resumable/upload/bigquery/v2/projects/{project}/jobs" } }
+    class: unknown
+    when:
+      - if: { arg: body.configuration.query.destinationTable, present: true }
+        class: write
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.query.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.query.continuous, equals: "true" }
+        class: money
+      - if: { arg: body.configuration.load, present: true }
+        class: write
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.load.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.copy, present: true }
+        class: write
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE" }
+        class: irreversible
+      - if: { arg: body.configuration.copy.writeDisposition, equals: "WRITE_TRUNCATE_DATA" }
+        class: irreversible
+      - if: { arg: body.configuration.extract, present: true }
+        class: access
+    classify: { sql: body.configuration.query.query, dialect: [googlesql] }
+    resource: { arg: project, kind: project }
+    card: "Run a BigQuery job in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      A query job's class comes from its SQL, read as GoogleSQL (legacy SQL cannot change data).
+      Writing the results to a table is a write, and overwriting one (WRITE_TRUNCATE) irreversible,
+      as is a load or copy job that overwrites; an extract writes the table to the Cloud Storage
+      location the job names, which can belong to another project, so it is access; a continuous
+      query runs, and is billed, until it is stopped.
+    tests:
+      - fixture: fixtures/jobs-insert-resumable.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when1.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when4.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when5.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when6.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when7.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when8.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when9.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when10.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-insert-resumable-when11.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.jobs.query
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/queries" } }
+    class: unknown
+    when:
+      - if: { arg: body.continuous, equals: "true" }
+        class: money
+    classify: { sql: body.query, dialect: [googlesql] }
+    resource: { arg: project, kind: project }
+    card: "Run a BigQuery query in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      The class comes from the SQL, read as GoogleSQL (legacy SQL cannot change data); a continuous
+      query runs, and is billed, until it is stopped.
+    tests:
+      - fixture: fixtures/jobs-query.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-query-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-query-when1.http
+        expect: money
+        resource: "acme-prod"

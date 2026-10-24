@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Add access config to Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Add network interface to Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -39,7 +39,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Add resource policies to Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -53,7 +53,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Attach disk to Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -67,7 +67,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine instances in bulk ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -83,7 +83,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine instance {instance} ({zone}) in project {project}, with its boot disk"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -99,7 +99,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove access config from Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -113,7 +113,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove network interface from Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -127,7 +127,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Detach disk from Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -141,7 +141,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine instance {body.name} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -157,7 +157,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Perform maintenance of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -171,7 +171,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove resource policies from Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -185,7 +185,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Report host as faulty of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -199,7 +199,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Reset Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -215,7 +215,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Resume Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -231,7 +231,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Send diagnostic interrupt of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -248,7 +248,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set deletion protection of Compute Engine instance {resource} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -270,7 +270,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set disk auto delete of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -289,7 +289,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Compute Engine instance {resource} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -305,7 +305,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set labels of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -319,7 +319,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set machine resources of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -335,7 +335,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set machine type of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -351,7 +351,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change the metadata (startup scripts, SSH keys) of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -368,7 +368,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set min cpu platform of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -382,7 +382,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set name of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -396,7 +396,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set scheduling of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -410,7 +410,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set security policy of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -426,7 +426,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set service account of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -442,7 +442,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set shielded instance integrity policy of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -458,7 +458,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set tags of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -474,7 +474,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Simulate maintenance event of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -488,7 +488,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -504,7 +504,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start with encryption key of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -520,7 +520,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Stop Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -534,7 +534,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Suspend Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -547,7 +547,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -563,7 +563,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -581,7 +581,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change access config of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -597,7 +597,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change display device of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -611,7 +611,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change network interface of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -627,7 +627,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change shielded instance config of Compute Engine instance {instance} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

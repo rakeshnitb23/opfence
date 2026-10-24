@@ -91,7 +91,7 @@ func TestSummaryAgreesWithClass(t *testing.T) {
 	wheres := []string{"", "WHERE id = 1", "WHERE id = id", "WHERE id IS NOT NULL", "WHERE 1 = 1", "WHERE id = 1 OR TRUE",
 		"WHERE id IN (1, 2)", "WHERE id IN (id)", "WHERE name LIKE '%'", "WHERE name LIKE 'a%'", "WHERE EXISTS (SELECT 1 FROM b WHERE b.x = 1)",
 		"WHERE EXISTS (SELECT 1 FROM b WHERE b.x = t.id)", "WHERE NOT id IS NULL", "WHERE (id IS NOT NULL)"}
-	for _, d := range []string{"postgres", "mysql", "sqlite"} {
+	for _, d := range []string{"postgres", "mysql", "sqlite", "googlesql"} {
 		for _, w := range wheres {
 			for _, verb := range []string{"DELETE FROM t ", "UPDATE t SET x = 1 "} {
 				sql := verb + w

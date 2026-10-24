@@ -1,0 +1,7 @@
+# description: Run a BigQuery job in project acme-prod (configuration.load.writeDisposition)
+POST /bigquery/v2/projects/acme-prod/jobs HTTP/1.1
+Host: bigquery.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"configuration": {"query": {"query": "SELECT id FROM `acme-prod.sales.orders` LIMIT 10", "useLegacySql": false}, "load": {"writeDisposition": "WRITE_TRUNCATE_DATA"}}}

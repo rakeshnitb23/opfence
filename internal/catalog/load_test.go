@@ -238,7 +238,7 @@ func TestLoadInvalid(t *testing.T) {
 		{"classify redis twice", classifyRule(`{ redis: [c, c] }`), `classify.redis lists "c" twice`},
 		{"classify bad path", classifyRule(`{ sql: "a b" }`), "not an argument path"},
 		{"classify path twice", classifyRule(`{ sql: [q, q] }`), "lists \"q\" twice"},
-		{"classify bad dialect", classifyRule(`{ sql: q, dialect: oracle }`), "is not postgres, mysql or sqlite"},
+		{"classify bad dialect", classifyRule(`{ sql: q, dialect: oracle }`), "is not postgres, mysql, sqlite or googlesql"},
 		{"classify dialect twice", classifyRule(`{ sql: q, dialect: [mysql, mysql] }`), "lists \"mysql\" twice"},
 		{"classify bad format", classifyRule(`{ sql: body, format: hrana }`), "is not libsql"},
 		{"classify libsql two paths", classifyRule(`{ sql: [body, query], format: libsql }`), "reads one argument"},

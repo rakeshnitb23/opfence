@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Functions operation {operation} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -27,7 +27,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Functions operations in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -46,7 +46,7 @@ operations:
     resource: { arg: operation, kind: operation }
     card: "Read Cloud Functions operation {operation}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
@@ -64,7 +64,7 @@ operations:
     response: { hold: ["**.buildEnvironmentVariables", "**.environmentVariables"], class: read }
     card: "List Cloud Functions operations"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest
     notes: >-
