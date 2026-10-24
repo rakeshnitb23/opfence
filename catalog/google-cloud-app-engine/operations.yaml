@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read App Engine operation {operation} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -26,7 +26,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List App Engine operations in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-

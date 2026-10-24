@@ -1,0 +1,19 @@
+provider: google-cloud-spanner
+title: Google Cloud Spanner
+docs: https://cloud.google.com/spanner/docs/reference/rest
+# Instances, databases, backups, schema changes and the SQL and mutations sent through sessions,
+# through the REST API that gcloud uses. SQL is read as both GoogleSQL and PostgreSQL. The client
+# libraries speak gRPC, which Opfence does not decode, so their requests are unknown.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [spanner.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest

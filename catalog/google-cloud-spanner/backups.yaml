@@ -1,0 +1,142 @@
+# Google Cloud Spanner: backups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.backups.copy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups:copy" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Copy Spanner backup {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/backups-copy.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Spanner backup in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/backups-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backups-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.get-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/backups-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}" } }
+    class: write
+    when:
+      - if: { arg: body.expireTime, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Spanner backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      An earlier expire time deletes the backup sooner.
+    tests:
+      - fixture: fixtures/backups-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/backups-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Spanner backup {backup} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/backups-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/backups-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.operations-cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/backups-operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.backups.operations-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/backups/{backup}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/backups-operations-delete.http
+        expect: write
+        resource: "acme-prod"

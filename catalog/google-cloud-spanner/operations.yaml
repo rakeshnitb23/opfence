@@ -1,0 +1,30 @@
+# Google Cloud Spanner: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.operations.cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.operations.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/operations-delete.http
+        expect: write
+        resource: "acme-prod"

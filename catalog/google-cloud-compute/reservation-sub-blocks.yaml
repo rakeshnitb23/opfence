@@ -6,7 +6,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -22,7 +22,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Perform maintenance of Compute Engine reservation sub block {reservationSubBlock} of reservation {reservation} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -36,7 +36,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Report faulty of Compute Engine reservation sub block {reservationSubBlock} of reservation {reservation} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -50,7 +50,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Compute Engine reservation sub block {resource} of reservation {reservation} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -65,7 +65,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

@@ -1,0 +1,133 @@
+# Google BigQuery: tables.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.tables.delete
+    match: { rest: { method: DELETE, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      A deleted table can be recovered only within the dataset's time travel window, which can be as
+      short as two days; counted as gone, as SQL's DROP TABLE is.
+    tests:
+      - fixture: fixtures/tables-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.get-iam-policy
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.insert
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create BigQuery table {body.tableReference.tableId} in dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/tables-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.patch
+    match: { rest: { method: PATCH, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}" } }
+    class: write
+    when:
+      - if: { arg: body.expirationTime, present: true }
+        class: irreversible
+      - if: { arg: body.timePartitioning.expirationMs, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      An expiration time, or partitions that expire, delete data later, so they are irreversible.
+    tests:
+      - fixture: fixtures/tables-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/tables-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/tables-patch-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.set-iam-policy
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/tables-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.test-iam-permissions
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/tables-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.tables.update
+    match: { rest: { method: PUT, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}" } }
+    class: write
+    when:
+      - if: { arg: body.expirationTime, present: true }
+        class: irreversible
+      - if: { arg: body.timePartitioning.expirationMs, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      An expiration time, or partitions that expire, delete data later, so they are irreversible.
+    tests:
+      - fixture: fixtures/tables-update.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/tables-update-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/tables-update-when2.http
+        expect: irreversible
+        resource: "acme-prod"

@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Add health check to Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -21,7 +21,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Add instance to Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -37,7 +37,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -50,7 +50,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -66,7 +66,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine target pool {body.name} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -83,7 +83,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove health check from Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -97,7 +97,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove instance from Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -111,7 +111,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set backup of Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -128,7 +128,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set security policy of Compute Engine target pool {targetPool} ({region}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -144,7 +144,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

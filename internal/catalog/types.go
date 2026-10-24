@@ -282,8 +282,8 @@ type Classify struct {
 	// SQL lists the arguments holding SQL text: each a string, or a list of
 	// strings classified one by one (a transaction's statements).
 	SQL Strings `yaml:"sql"`
-	// Dialect is the SQL the server speaks: postgres (the default), mysql
-	// or sqlite. Several mean the server may speak any of them and Opfence
+	// Dialect is the SQL the server speaks: postgres (the default), mysql,
+	// sqlite or googlesql (BigQuery, Spanner). Several mean the server may speak any of them and Opfence
 	// cannot tell which, so every dialect's classes count.
 	Dialect Strings `yaml:"dialect"`
 	// Format says how the argument holds the SQL: empty for SQL text, or
@@ -325,6 +325,7 @@ const (
 	DialectPostgres = "postgres"
 	DialectMySQL    = "mysql"
 	DialectSQLite   = "sqlite"
+	DialectGoogle   = "googlesql"
 	FormatLibSQL    = "libsql"
 )
 

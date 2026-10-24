@@ -276,7 +276,24 @@ func (r *Rule) ClassesFor(op decode.Operation, args map[string]any) ([]classes.C
 		if len(why) > 1 {
 			label = "rule conditions "
 		}
-		return hit, label + strings.Join(why, ", ")
+		label += strings.Join(why, ", ")
+		// A rule that also reads SQL or Redis commands gets their classes
+		// too: a BigQuery job that writes its results to a table is a
+		// write, and its SQL may still drop one.
+		if r.Classify.Active() {
+			if out := r.Classify.classes(args); out != nil {
+				if slices.Contains(out, classes.Unknown) && !slices.Contains(out, r.Class) {
+					out = append(out, r.Class)
+				}
+				for _, c := range out {
+					if !slices.Contains(hit, c) {
+						hit = append(hit, c)
+					}
+				}
+				label += "; " + strings.TrimSuffix(SQLClassSource, " in ") + " in " + r.Classify.String()
+			}
+		}
+		return hit, label
 	}
 	if r.Classify != nil && r.Classify.PostgREST != "" {
 		v, _ := Lookup(args, r.Classify.PostgREST)

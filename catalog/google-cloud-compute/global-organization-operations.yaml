@@ -7,7 +7,7 @@ operations:
     resource: { arg: apiVersion, kind: apiVersion }
     card: "Delete Compute Engine organization operation {operation}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

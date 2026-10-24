@@ -1,0 +1,96 @@
+# Google BigQuery: row access policies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.row-access-policies.batch-delete
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies:batchDelete" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete row access policies of BigQuery table {table} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Row access policies decide who can read which rows.
+    tests:
+      - fixture: fixtures/row-access-policies-batch-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.row-access-policies.delete
+    match: { rest: { method: DELETE, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies/{rowAccessPolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete BigQuery row access policy {rowAccessPolicy} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Row access policies decide who can read which rows.
+    tests:
+      - fixture: fixtures/row-access-policies-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.row-access-policies.get-iam-policy
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies/{rowAccessPolicy}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/row-access-policies-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.row-access-policies.insert
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create BigQuery row access policy in table {table} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Row access policies decide who can read which rows.
+    tests:
+      - fixture: fixtures/row-access-policies-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.row-access-policies.test-iam-permissions
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies/{rowAccessPolicy}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/row-access-policies-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.row-access-policies.update
+    match: { rest: { method: PUT, path: "/bigquery/v2/projects/{project}/datasets/{dataset}/tables/{table}/rowAccessPolicies/{rowAccessPolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery row access policy {rowAccessPolicy} of dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Row access policies decide who can read which rows.
+    tests:
+      - fixture: fixtures/row-access-policies-update.http
+        expect: access
+        resource: "acme-prod"

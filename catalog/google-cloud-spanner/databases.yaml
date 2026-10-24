@@ -1,0 +1,603 @@
+# Google Cloud Spanner: databases.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.databases.add-split-points
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}:addSplitPoints" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Add split points to Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-add-split-points.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.changequorum
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}:changequorum" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change the quorum of Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-changequorum.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Spanner database ({body.createStatement}) in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.drop-database
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Drop Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Drops the database with its data.
+    tests:
+      - fixture: fixtures/databases-drop-database.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.get-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/databases-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/databases/{database}" } }
+    class: write
+    when:
+      - if: { arg: body.enableDropProtection, equals: "false" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Turning drop protection off is as dangerous as dropping the database.
+    tests:
+      - fixture: fixtures/databases-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.restore
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases:restore" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restore Spanner database {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Restores into a new database.
+    tests:
+      - fixture: fixtures/databases-restore.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/databases-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/databases-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.update-ddl
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/ddl" } }
+    class: irreversible
+    classify: { sql: body.statements, dialect: [googlesql, postgres] }
+    resource: { arg: project, kind: project }
+    card: "Change the schema of Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      The class comes from the SQL, read as both GoogleSQL and PostgreSQL, since a database speaks
+      either and Opfence cannot tell which; SQL one of them cannot read keeps the rule's class.
+    tests:
+      - fixture: fixtures/databases-update-ddl.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-update-ddl-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Spanner backup schedule in database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-backup-schedules-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{backupSchedule}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner backup schedule {backupSchedule} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Removing a backup schedule turns off the database's backups, as dangerous as losing what they
+      protect.
+    tests:
+      - fixture: fixtures/databases-backup-schedules-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-get-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{backupSchedule}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/databases-backup-schedules-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{backupSchedule}" } }
+    class: write
+    when:
+      - if: { arg: body.retentionDuration, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Spanner backup schedule {backupSchedule} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      A shorter retention deletes backups sooner.
+    tests:
+      - fixture: fixtures/databases-backup-schedules-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-backup-schedules-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{backupSchedule}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Spanner backup schedule {backupSchedule} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/databases-backup-schedules-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.backup-schedules-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{backupSchedule}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/databases-backup-schedules-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.database-roles-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/databaseRoles/{databaseRole}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/databases-database-roles-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.operations-cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.operations-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/databases-operations-delete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-adapt-message
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:adaptMessage" } }
+    class: unknown
+    resource: { arg: project, kind: project }
+    card: "Adapt message of Spanner session {session} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Carries messages of another wire protocol, which Opfence does not read.
+    tests:
+      - fixture: fixtures/databases-sessions-adapt-message.http
+        expect: unknown
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-adapter
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions:adapter" } }
+    class: unknown
+    resource: { arg: project, kind: project }
+    card: "Open a protocol adapter on Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Carries messages of another wire protocol, which Opfence does not read.
+    tests:
+      - fixture: fixtures/databases-sessions-adapter.http
+        expect: unknown
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-batch-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions:batchCreate" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Opens sessions; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-batch-create.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-batch-write
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:batchWrite" } }
+    class: write
+    when:
+      - if: { arg: body.mutationGroups.mutations.delete, present: true }
+        class: delete
+      - if: { arg: body.mutationGroups.mutations.delete.keySet.all, equals: "true" }
+        class: irreversible
+      - if: { arg: body.mutationGroups.mutations.delete.keySet.ranges, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Batch write of Spanner session {session} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      A delete mutation deletes the rows its keys name; one for every key (keySet.all) or for key
+      ranges can reach every row, so it is irreversible.
+    tests:
+      - fixture: fixtures/databases-sessions-batch-write.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-batch-write-when1.http
+        expect: delete
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-batch-write-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-batch-write-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-begin-transaction
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:beginTransaction" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Starts a transaction; changes nothing until a commit.
+    tests:
+      - fixture: fixtures/databases-sessions-begin-transaction.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-commit
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:commit" } }
+    class: write
+    when:
+      - if: { arg: body.mutations.delete, present: true }
+        class: delete
+      - if: { arg: body.mutations.delete.keySet.all, equals: "true" }
+        class: irreversible
+      - if: { arg: body.mutations.delete.keySet.ranges, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Commit changes to Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      A delete mutation deletes the rows its keys name; one for every key (keySet.all) or for key
+      ranges can reach every row, so it is irreversible.
+    tests:
+      - fixture: fixtures/databases-sessions-commit.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-commit-when1.http
+        expect: delete
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-commit-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-commit-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Opens a session; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-create.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Closes a session; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-delete.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-execute-batch-dml
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:executeBatchDml" } }
+    class: irreversible
+    classify: { sql: body.statements.sql, dialect: [googlesql, postgres] }
+    resource: { arg: project, kind: project }
+    card: "Run DML on Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      The class comes from the SQL, read as both GoogleSQL and PostgreSQL, since a database speaks
+      either and Opfence cannot tell which; SQL one of them cannot read keeps the rule's class.
+    tests:
+      - fixture: fixtures/databases-sessions-execute-batch-dml.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-execute-batch-dml-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-execute-sql
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:executeSql" } }
+    class: irreversible
+    classify: { sql: body.sql, dialect: [googlesql, postgres] }
+    resource: { arg: project, kind: project }
+    card: "Run SQL on Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      The class comes from the SQL, read as both GoogleSQL and PostgreSQL, since a database speaks
+      either and Opfence cannot tell which; SQL one of them cannot read keeps the rule's class.
+    tests:
+      - fixture: fixtures/databases-sessions-execute-sql.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-execute-sql-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-execute-streaming-sql
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:executeStreamingSql" } }
+    class: irreversible
+    classify: { sql: body.sql, dialect: [googlesql, postgres] }
+    resource: { arg: project, kind: project }
+    card: "Run SQL on Spanner database {database} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      The class comes from the SQL, read as both GoogleSQL and PostgreSQL, since a database speaks
+      either and Opfence cannot tell which; SQL one of them cannot read keeps the rule's class.
+    tests:
+      - fixture: fixtures/databases-sessions-execute-streaming-sql.http
+        expect: read
+        resource: "acme-prod"
+      - fixture: fixtures/databases-sessions-execute-streaming-sql-drop.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-partition-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:partitionQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Plans a query, which may only read; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-partition-query.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-partition-read
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:partitionRead" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Plans a read; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-partition-read.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-read
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:read" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads rows.
+    tests:
+      - fixture: fixtures/databases-sessions-read.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-rollback
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:rollback" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Rolls a transaction back; changes nothing.
+    tests:
+      - fixture: fixtures/databases-sessions-rollback.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.databases.sessions-streaming-read
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/databases/{database}/sessions/{session}:streamingRead" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads rows.
+    tests:
+      - fixture: fixtures/databases-sessions-streaming-read.http
+        expect: read
+        resource: "acme-prod"

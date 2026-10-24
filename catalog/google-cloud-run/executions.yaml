@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Cancel Cloud Run execution {execution} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run execution {execution} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -40,7 +40,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run execution {execution} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -59,7 +59,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run executions in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-

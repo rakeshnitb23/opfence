@@ -1,0 +1,126 @@
+# Google Cloud Spanner: instances.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.instances.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Spanner instance {body.instanceId} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Instances are billed by their compute capacity.
+    tests:
+      - fixture: fixtures/instances-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Deletes the instance with every database and backup in it.
+    tests:
+      - fixture: fixtures/instances-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.get-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/instances-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.move
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}:move" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Move Spanner instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instances-move.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}" } }
+    class: write
+    when:
+      - if: { arg: body.instance.nodeCount, present: true }
+        class: money
+      - if: { arg: body.instance.processingUnits, present: true }
+        class: money
+      - if: { arg: body.instance.autoscalingConfig, present: true }
+        class: money
+    resource: { arg: project, kind: project }
+    card: "Change Spanner instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Compute capacity is billed.
+    tests:
+      - fixture: fixtures/instances-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when1.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when2.http
+        expect: money
+        resource: "acme-prod"
+      - fixture: fixtures/instances-patch-when3.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Spanner instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/instances-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instances.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/instances-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

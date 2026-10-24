@@ -1,0 +1,7 @@
+# description: Change the schema of Spanner database orders of instance orders-db in project acme-prod: change every row or drop a table
+PATCH /v1/projects/acme-prod/instances/orders-db/databases/orders/ddl HTTP/1.1
+Host: spanner.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"statements": ["DROP TABLE Singers"]}

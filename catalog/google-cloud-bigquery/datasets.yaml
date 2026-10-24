@@ -1,0 +1,134 @@
+# Google BigQuery: datasets.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigquery.datasets.delete
+    match: { rest: { method: DELETE, path: "/bigquery/v2/projects/{project}/datasets/{dataset}" } }
+    class: delete
+    when:
+      - if: { arg: query.deleteContents, equals: "true" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete BigQuery dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Only an empty dataset, unless deleteContents is set.
+    tests:
+      - fixture: fixtures/datasets-delete.http
+        expect: delete
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-delete-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.datasets.insert
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets" } }
+    class: write
+    when:
+      - if: { arg: body.access, present: true }
+        class: access
+    resource: { arg: project, kind: project }
+    card: "Create BigQuery dataset {body.datasetReference.datasetId} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/datasets-insert.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-insert-when1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.datasets.patch
+    match: { rest: { method: PATCH, path: "/bigquery/v2/projects/{project}/datasets/{dataset}" } }
+    class: write
+    when:
+      - if: { arg: body.access, present: true }
+        class: access
+      - if: { arg: body.defaultTableExpirationMs, present: true }
+        class: irreversible
+      - if: { arg: body.defaultPartitionExpirationMs, present: true }
+        class: irreversible
+      - if: { arg: body.maxTimeTravelHours, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Access lists are access; table expiry, partition expiry and a shorter time travel window
+      delete data later, so they are irreversible.
+    tests:
+      - fixture: fixtures/datasets-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-patch-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-patch-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-patch-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-patch-when4.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.datasets.undelete
+    match: { rest: { method: POST, path: "/bigquery/v2/projects/{project}/datasets/{dataset}:undelete" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Undelete BigQuery dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    tests:
+      - fixture: fixtures/datasets-undelete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigquery.datasets.update
+    match: { rest: { method: PUT, path: "/bigquery/v2/projects/{project}/datasets/{dataset}" } }
+    class: write
+    when:
+      - if: { arg: body.access, present: true }
+        class: access
+      - if: { arg: body.defaultTableExpirationMs, present: true }
+        class: irreversible
+      - if: { arg: body.defaultPartitionExpirationMs, present: true }
+        class: irreversible
+      - if: { arg: body.maxTimeTravelHours, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change BigQuery dataset {dataset} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest
+    notes: >-
+      Access lists are access; table expiry, partition expiry and a shorter time travel window
+      delete data later, so they are irreversible.
+    tests:
+      - fixture: fixtures/datasets-update.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-update-when1.http
+        expect: access
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-update-when2.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-update-when3.http
+        expect: irreversible
+        resource: "acme-prod"
+      - fixture: fixtures/datasets-update-when4.http
+        expect: irreversible
+        resource: "acme-prod"

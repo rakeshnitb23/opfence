@@ -1,0 +1,100 @@
+# Google Cloud Spanner: instance configs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.instance-configs.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instanceConfigs" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Spanner instance config in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Spanner instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.operations-cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.operations-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-operations-delete.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.ssd-caches-operations-cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}/ssdCaches/{ssdCache}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-ssd-caches-operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-configs.ssd-caches-operations-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instanceConfigs/{instanceConfig}/ssdCaches/{ssdCache}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance config {instanceConfig} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-configs-ssd-caches-operations-delete.http
+        expect: write
+        resource: "acme-prod"

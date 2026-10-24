@@ -1,0 +1,5 @@
+# description: Delete BigQuery table table-1 of dataset dataset-1 in project acme-prod
+DELETE /bigquery/v2/projects/acme-prod/datasets/dataset-1/tables/table-1 HTTP/1.1
+Host: bigquery.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

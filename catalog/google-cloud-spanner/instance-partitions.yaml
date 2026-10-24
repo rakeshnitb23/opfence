@@ -1,0 +1,78 @@
+# Google Cloud Spanner: instance partitions.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-spanner.instance-partitions.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/instancePartitions" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Spanner instance partition in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Instance partitions are billed by their compute capacity.
+    tests:
+      - fixture: fixtures/instance-partitions-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-partitions.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/instancePartitions/{instancePartition}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner instance partition {instancePartition} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Counted as irreversible in case databases remain in the partition.
+    tests:
+      - fixture: fixtures/instance-partitions-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-partitions.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/instances/{instance}/instancePartitions/{instancePartition}" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change Spanner instance partition {instancePartition} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    notes: >-
+      Compute capacity is billed.
+    tests:
+      - fixture: fixtures/instance-partitions-patch.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-partitions.operations-cancel
+    match: { rest: { method: POST, path: "/v1/projects/{project}/instances/{instance}/instancePartitions/{instancePartition}/operations/{operation}:cancel" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Cancel Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-partitions-operations-cancel.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-spanner.instance-partitions.operations-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/instances/{instance}/instancePartitions/{instancePartition}/operations/{operation}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Delete Spanner operation {operation} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest
+    tests:
+      - fixture: fixtures/instance-partitions-operations-delete.http
+        expect: write
+        resource: "acme-prod"

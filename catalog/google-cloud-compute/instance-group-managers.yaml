@@ -7,7 +7,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Abandon instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Apply updates to instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -39,7 +39,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create instances in Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -55,7 +55,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -71,7 +71,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove instances from Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -87,7 +87,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Remove per instance configs from Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -103,7 +103,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Compute Engine instance group manager {body.name} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -118,7 +118,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -133,7 +133,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -149,7 +149,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -166,7 +166,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change per instance configs of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -182,7 +182,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Recreate instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -198,7 +198,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Resize Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -214,7 +214,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Resume instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -230,7 +230,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set instance template of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -244,7 +244,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Set target pools of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -260,7 +260,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-
@@ -276,7 +276,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Stop instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -290,7 +290,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Suspend instances of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     tests:
@@ -304,7 +304,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change per instance configs of Compute Engine instance group manager {instanceGroupManager} ({zone}) in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
     notes: >-

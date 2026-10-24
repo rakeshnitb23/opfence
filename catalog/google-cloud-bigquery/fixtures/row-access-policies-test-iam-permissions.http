@@ -1,0 +1,7 @@
+# description: Test permissions on BigQuery row access policy rowaccesspolicy-1 of dataset dataset-1 in project acme-prod
+POST /bigquery/v2/projects/acme-prod/datasets/dataset-1/tables/table-1/rowAccessPolicies/rowaccesspolicy-1:testIamPermissions HTTP/1.1
+Host: bigquery.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

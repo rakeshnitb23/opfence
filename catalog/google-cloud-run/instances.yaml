@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Run instance {query.instanceId} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -24,7 +24,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -42,7 +42,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -61,7 +61,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run instances in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -81,7 +81,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -96,7 +96,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -113,7 +113,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -129,7 +129,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Stop Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     tests:
@@ -143,7 +143,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://run.googleapis.com/$discovery/rest?version=v2
     notes: >-
@@ -160,7 +160,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Run instance {body.metadata.name} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -175,7 +175,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -192,7 +192,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -211,7 +211,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run instances in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -231,7 +231,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Replace Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -247,7 +247,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Start Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -263,7 +263,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Stop Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -278,7 +278,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Run instance {instance} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -293,7 +293,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-

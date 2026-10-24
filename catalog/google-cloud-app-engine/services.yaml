@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -26,7 +26,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -42,7 +42,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Deploy App Engine version {body.id} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -58,7 +58,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine version {version} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -76,7 +76,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Export app image of App Engine version {version} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -92,7 +92,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read App Engine version {version} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -110,7 +110,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List App Engine versions of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -128,7 +128,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine version {version} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -144,7 +144,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Debug App Engine instance {instance} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -163,7 +163,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine instance {instance} of service {service} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -181,7 +181,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine service {service} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -199,7 +199,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine service {service} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -215,7 +215,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine version {version} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -233,7 +233,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Export app image of App Engine version {version} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -249,7 +249,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change App Engine version {version} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     tests:
@@ -265,7 +265,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Debug App Engine instance {instance} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-
@@ -284,7 +284,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete App Engine instance {instance} of application {application} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
     notes: >-

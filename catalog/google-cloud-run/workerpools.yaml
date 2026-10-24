@@ -8,7 +8,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Create Cloud Run worker pool {body.metadata.name} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -23,7 +23,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Delete Cloud Run worker pool {workerpool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -40,7 +40,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Read Cloud Run worker pool {workerpool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -59,7 +59,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "List Cloud Run worker pools in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -79,7 +79,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Replace Cloud Run worker pool {workerpool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     tests:
@@ -94,7 +94,7 @@ operations:
     resource: { arg: project, kind: project }
     card: "Change who can access Cloud Run worker pool {workerpool} in project {project}"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-
@@ -109,7 +109,7 @@ operations:
     class: read
     resource: { arg: project, kind: project }
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
     notes: >-

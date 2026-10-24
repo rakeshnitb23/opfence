@@ -1,0 +1,5 @@
+# description: Delete BigQuery dataset dataset-1 in project acme-prod (deleteContents)
+DELETE /bigquery/v2/projects/acme-prod/datasets/dataset-1?deleteContents=true HTTP/1.1
+Host: bigquery.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+
