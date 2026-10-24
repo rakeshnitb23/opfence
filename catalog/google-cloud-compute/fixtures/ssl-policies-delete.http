@@ -1,0 +1,5 @@
+# description: Delete Compute Engine SSL policy sslpolicy-1 in project acme-prod
+DELETE /compute/v1/projects/acme-prod/global/sslPolicies/sslpolicy-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

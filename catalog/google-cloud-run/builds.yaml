@@ -1,0 +1,16 @@
+# Google Cloud Run: builds.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.builds.submit
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/builds:submit" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Submit Cloud Run build in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/builds-submit.http
+        expect: write
+        resource: "acme-prod"

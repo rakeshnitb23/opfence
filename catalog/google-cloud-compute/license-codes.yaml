@@ -1,0 +1,33 @@
+# Google Compute Engine: license codes.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.license-codes.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/licenseCodes/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine license code {resource} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/license-codes-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.license-codes.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/licenseCodes/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/license-codes-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

@@ -1,0 +1,5 @@
+# description: Delete Compute Engine forwarding rule forwardingrule-1 in project acme-prod
+DELETE /compute/v1/projects/acme-prod/global/forwardingRules/forwardingrule-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

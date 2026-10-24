@@ -1,0 +1,79 @@
+# Google Compute Engine: target tcp proxies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.target-tcp-proxies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/targetTcpProxies/{targetTcpProxy}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine target tcp proxy {targetTcpProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-tcp-proxies-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-tcp-proxies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetTcpProxies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine target tcp proxy {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-tcp-proxies-insert.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-tcp-proxies.set-backend-service
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetTcpProxies/{targetTcpProxy}/setBackendService" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set backend service of Compute Engine target tcp proxy {targetTcpProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Load balancer settings decide what is served at a public address, and with which certificates,
+      IAP and Cloud Armor settings.
+    tests:
+      - fixture: fixtures/target-tcp-proxies-set-backend-service.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-tcp-proxies.set-proxy-header
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetTcpProxies/{targetTcpProxy}/setProxyHeader" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set proxy header of Compute Engine target tcp proxy {targetTcpProxy} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-tcp-proxies-set-proxy-header.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-tcp-proxies.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/targetTcpProxies/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/target-tcp-proxies-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

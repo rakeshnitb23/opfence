@@ -117,7 +117,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:addAttestationRule" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add attestation rule on workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Add attestation rule to workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -196,7 +196,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:removeAttestationRule" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Remove attestation rule on workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Remove attestation rule from workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -212,7 +212,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}:setAttestationRules" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Set attestation rules on workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Set attestation rules of workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -339,7 +339,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:addAttestationRule" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Add attestation rule on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Add attestation rule to managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -403,7 +403,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:removeAttestationRule" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Remove attestation rule on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Remove attestation rule from managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:
@@ -419,7 +419,7 @@ operations:
     match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/workloadIdentityPools/{workloadIdentityPool}/namespaces/{namespace}/managedIdentities/{managedIdentity}:setAttestationRules" } }
     class: access
     resource: { arg: project, kind: project }
-    card: "Set attestation rules on managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
+    card: "Set attestation rules of managed identity {managedIdentity} of workload identity pool {workloadIdentityPool} in project {project}"
     status: verified
     verified: 2026-10-23
     sources:

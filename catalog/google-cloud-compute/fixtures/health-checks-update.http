@@ -1,0 +1,7 @@
+# description: Change Compute Engine health check healthcheck-1 in project acme-prod
+PUT /compute/v1/projects/acme-prod/global/healthChecks/healthcheck-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

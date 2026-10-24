@@ -1,0 +1,5 @@
+# description: List Cloud Functions functions in project acme-prod
+GET /v2/projects/acme-prod/locations/us-central1/functions HTTP/1.1
+Host: cloudfunctions.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,4 +1,4 @@
-# description: Delete backup on Cloud SQL backup backup-1 in project acme-prod
+# description: Delete Cloud SQL backup backup-1 in project acme-prod
 DELETE /sql/v1beta4/projects/acme-prod/backups/backup-1 HTTP/1.1
 Host: sqladmin.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

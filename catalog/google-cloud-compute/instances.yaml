@@ -1,0 +1,638 @@
+# Google Compute Engine: instances.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.instances.add-access-config
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/addAccessConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add access config to Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Gives the VM an external IP address.
+    tests:
+      - fixture: fixtures/instances-add-access-config.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.add-network-interface
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/addNetworkInterface" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Add network interface to Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Connects the VM to another network.
+    tests:
+      - fixture: fixtures/instances-add-network-interface.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.add-resource-policies
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/addResourcePolicies" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Add resource policies to Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-add-resource-policies.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.attach-disk
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/attachDisk" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Attach disk to Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-attach-disk.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.bulk-insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/bulkInsert" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine instances in bulk ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      New VMs are billed.
+    tests:
+      - fixture: fixtures/instances-bulk-insert.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine instance {instance} ({zone}) in project {project}, with its boot disk"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      The boot disk, and other disks set to auto-delete, are deleted with the VM.
+    tests:
+      - fixture: fixtures/instances-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.delete-access-config
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/deleteAccessConfig" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Remove access config from Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-delete-access-config.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.delete-network-interface
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/deleteNetworkInterface" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Remove network interface from Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-delete-network-interface.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.detach-disk
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/detachDisk" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Detach disk from Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-detach-disk.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine instance {body.name} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      New VMs are billed.
+    tests:
+      - fixture: fixtures/instances-insert.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.perform-maintenance
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/performMaintenance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Perform maintenance of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-perform-maintenance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.remove-resource-policies
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/removeResourcePolicies" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Remove resource policies from Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-remove-resource-policies.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.report-host-as-faulty
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/reportHostAsFaulty" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Report host as faulty of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-report-host-as-faulty.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.reset
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/reset" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reset Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A hard reset: what was in memory is lost.
+    tests:
+      - fixture: fixtures/instances-reset.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.resume
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/resume" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Resume Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A resumed VM is billed.
+    tests:
+      - fixture: fixtures/instances-resume.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.send-diagnostic-interrupt
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/sendDiagnosticInterrupt" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Send diagnostic interrupt of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-send-diagnostic-interrupt.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-deletion-protection
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{resource}/setDeletionProtection" } }
+    class: write
+    when:
+      - if: { arg: query.deletionProtection, equals: "false" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Set deletion protection of Compute Engine instance {resource} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Turning deletion protection off is as dangerous as deleting the VM.
+    tests:
+      - fixture: fixtures/instances-set-deletion-protection.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-set-deletion-protection-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-disk-auto-delete
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setDiskAutoDelete" } }
+    class: write
+    when:
+      - if: { arg: query.autoDelete, equals: "true" }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Set disk auto delete of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Setting a disk to auto-delete means deleting the VM deletes the disk too.
+    tests:
+      - fixture: fixtures/instances-set-disk-auto-delete.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/instances-set-disk-auto-delete-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine instance {resource} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/instances-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-labels
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set labels of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-set-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-machine-resources
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setMachineResources" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set machine resources of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Machine resources are billed.
+    tests:
+      - fixture: fixtures/instances-set-machine-resources.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-machine-type
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setMachineType" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Set machine type of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      The machine type decides the price.
+    tests:
+      - fixture: fixtures/instances-set-machine-type.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-metadata
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setMetadata" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change the metadata (startup scripts, SSH keys) of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Metadata holds startup scripts, which run as root when a VM boots, and SSH keys, which let
+      their holders log in; running commands on a VM can do anything it can.
+    tests:
+      - fixture: fixtures/instances-set-metadata.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-min-cpu-platform
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setMinCpuPlatform" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set min cpu platform of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-set-min-cpu-platform.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-name
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setName" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set name of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-set-name.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-scheduling
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setScheduling" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set scheduling of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-set-scheduling.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-security-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setSecurityPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set security policy of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/instances-set-security-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-service-account
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setServiceAccount" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set service account of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Changes the identity, and so the permissions, of the code running on the VM.
+    tests:
+      - fixture: fixtures/instances-set-service-account.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-shielded-instance-integrity-policy
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setShieldedInstanceIntegrityPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set shielded instance integrity policy of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shielded VM settings check that the VM boots what it should.
+    tests:
+      - fixture: fixtures/instances-set-shielded-instance-integrity-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.set-tags
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/setTags" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Set tags of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Network tags decide which firewall rules apply to the VM.
+    tests:
+      - fixture: fixtures/instances-set-tags.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.simulate-maintenance-event
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/simulateMaintenanceEvent" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Simulate maintenance event of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-simulate-maintenance-event.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.start
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/start" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Start Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A started VM is billed.
+    tests:
+      - fixture: fixtures/instances-start.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.start-with-encryption-key
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/startWithEncryptionKey" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Start with encryption key of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A started VM is billed.
+    tests:
+      - fixture: fixtures/instances-start-with-encryption-key.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.stop
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/stop" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Stop Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-stop.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.suspend
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/suspend" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Suspend Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-suspend.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/instances-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.update
+    match: { rest: { method: PUT, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Replaces the VM's properties, its metadata among them. Metadata holds startup scripts, which
+      run as root when a VM boots, and SSH keys, which let their holders log in; running commands on
+      a VM can do anything it can.
+    tests:
+      - fixture: fixtures/instances-update.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.update-access-config
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/updateAccessConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change access config of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Changes the VM's external IP address.
+    tests:
+      - fixture: fixtures/instances-update-access-config.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.update-display-device
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/updateDisplayDevice" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change display device of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/instances-update-display-device.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.update-network-interface
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/updateNetworkInterface" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change network interface of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Changes the networks the VM is connected to and its external address.
+    tests:
+      - fixture: fixtures/instances-update-network-interface.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.instances.update-shielded-instance-config
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/instances/{instance}/updateShieldedInstanceConfig" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change shielded instance config of Compute Engine instance {instance} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Shielded VM settings check that the VM boots what it should.
+    tests:
+      - fixture: fixtures/instances-update-shielded-instance-config.http
+        expect: access
+        resource: "acme-prod"

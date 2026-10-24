@@ -1,0 +1,400 @@
+# Google Cloud Run: jobs.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.jobs.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/jobs" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run job {query.jobId} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/jobs-create.http
+        expect: write
+        response: fixtures/jobs-create.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/jobs/{job}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/jobs-delete.http
+        expect: delete
+        response: fixtures/jobs-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs/{job}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-get.http
+        expect: credential
+        response: fixtures/jobs-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run jobs in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-list.http
+        expect: credential
+        response: fixtures/jobs-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/locations/{location}/jobs/{job}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Change Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/jobs-patch.http
+        expect: write
+        response: fixtures/jobs-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.run
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/jobs/{job}:run" } }
+    class: write
+    when:
+      - if: { arg: body.overrides, present: true }
+        class: irreversible
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Run Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Runs the job's containers, which do whatever the job does. Overrides change the containers'
+      command, arguments and environment, which can run anything the job's identity can.
+    tests:
+      - fixture: fixtures/jobs-run.http
+        expect: write
+        response: fixtures/jobs-run.json
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-run-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/jobs/{job}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Decides who can call or change it; allUsers makes a service public.
+    tests:
+      - fixture: fixtures/jobs-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/jobs/{job}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/jobs-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-cancel
+    match: { rest: { method: POST, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions/{execution}:cancel" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Cancel Cloud Run execution {execution} of job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    tests:
+      - fixture: fixtures/jobs-executions-cancel.http
+        expect: write
+        response: fixtures/jobs-executions-cancel.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions/{execution}" } }
+    class: delete
+    response: { hold: ["**.env.value"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run execution {execution} of job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/jobs-executions-delete.http
+        expect: delete
+        response: fixtures/jobs-executions-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions/{execution}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run execution {execution} of job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-executions-get.http
+        expect: credential
+        response: fixtures/jobs-executions-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run executions of job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-executions-list.http
+        expect: credential
+        response: fixtures/jobs-executions-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-tasks-get
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions/{execution}/tasks/{task}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run task {task} of job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-executions-tasks-get.http
+        expect: credential
+        response: fixtures/jobs-executions-tasks-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.executions-tasks-list
+    match: { rest: { method: GET, path: "/v2/projects/{project}/locations/{location}/jobs/{job}/executions/{execution}/tasks" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run tasks of execution {execution} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://run.googleapis.com/$discovery/rest?version=v2
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-executions-tasks-list.http
+        expect: credential
+        response: fixtures/jobs-executions-tasks-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.create-v1
+    match: { rest: { method: POST, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Create Cloud Run job {body.metadata.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/jobs-create-v1.http
+        expect: write
+        response: fixtures/jobs-create-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.delete-v1
+    match: { rest: { method: DELETE, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs/{job}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/jobs-delete-v1.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.get-v1
+    match: { rest: { method: GET, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs/{job}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-get-v1.http
+        expect: credential
+        response: fixtures/jobs-get-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.list-v1
+    match: { rest: { method: GET, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run jobs in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/jobs-list-v1.http
+        expect: credential
+        response: fixtures/jobs-list-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.replace-job-v1
+    match: { rest: { method: PUT, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs/{job}" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    restore: ["**.env.value"]
+    resource: { arg: project, kind: project }
+    card: "Replace Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/jobs-replace-job-v1.http
+        expect: write
+        response: fixtures/jobs-replace-job-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.run-v1
+    match: { rest: { method: POST, path: "/apis/run.googleapis.com/v1/namespaces/{project}/jobs/{job}:run" } }
+    class: write
+    when:
+      - if: { arg: body.overrides, present: true }
+        class: irreversible
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Run Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Runs the job's containers, which do whatever the job does. Overrides change the containers'
+      command, arguments and environment, which can run anything the job's identity can.
+    tests:
+      - fixture: fixtures/jobs-run-v1.http
+        expect: write
+        response: fixtures/jobs-run-v1.json
+        resource: "acme-prod"
+      - fixture: fixtures/jobs-run-v1-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.set-iam-policy-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/jobs/{job}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud Run job {job} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Decides who can call or change it; allUsers makes a service public.
+    tests:
+      - fixture: fixtures/jobs-set-iam-policy-v1.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-run.jobs.test-iam-permissions-v1
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/jobs/{job}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/jobs-test-iam-permissions-v1.http
+        expect: read
+        resource: "acme-prod"

@@ -1,0 +1,162 @@
+# Google Compute Engine: organization security policies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.organization-security-policies.add-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/addAssociation" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Add association to Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-add-association.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.add-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/addRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Add rule to Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-add-rule.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.copy-rules
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/copyRules" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Copy rules of Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-copy-rules.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Delete Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-delete.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Create Compute Engine organization security policy {body.name}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-insert.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.move
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/move" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Move Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-move.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Change Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-patch.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.patch-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/patchRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Change rule of Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-patch-rule.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.remove-association
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/removeAssociation" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Remove association from Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-remove-association.http
+        expect: access
+        resource: "v1"
+
+  - id: google-cloud-compute.organization-security-policies.remove-rule
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/locations/global/securityPolicies/{securityPolicy}/removeRule" } }
+    class: access
+    resource: { arg: apiVersion, kind: apiVersion }
+    card: "Remove rule from Compute Engine organization security policy {securityPolicy}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Cloud Armor policies decide which requests reach the backends.
+    tests:
+      - fixture: fixtures/organization-security-policies-remove-rule.http
+        expect: access
+        resource: "v1"

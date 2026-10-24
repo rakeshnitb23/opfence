@@ -1,4 +1,4 @@
-# description: Generate ephemeral cert on Cloud SQL connection orders-db in project acme-prod
+# description: Generate ephemeral cert for Cloud SQL connection orders-db in project acme-prod
 POST /sql/v1beta4/projects/acme-prod/instances/orders-db:generateEphemeralCert HTTP/1.1
 Host: sqladmin.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

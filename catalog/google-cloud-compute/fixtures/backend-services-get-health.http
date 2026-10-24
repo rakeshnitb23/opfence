@@ -1,0 +1,7 @@
+# description: Read health of Compute Engine backend service backendservice-1 in project acme-prod
+POST /compute/v1/projects/acme-prod/global/backendServices/backendservice-1/getHealth HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

@@ -1,0 +1,38 @@
+# Google App Engine Admin API: operations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-app-engine.operations.get
+    match: { rest: { method: GET, path: "/v1/apps/{project}/operations/{operation}" } }
+    class: credential
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read App Engine operation {operation} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      With view=FULL, returns the version's environment variables. The proxy holds their values.
+    tests:
+      - fixture: fixtures/operations-get.http
+        expect: credential
+        response: fixtures/operations-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.operations.list
+    match: { rest: { method: GET, path: "/v1/apps/{project}/operations" } }
+    class: credential
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List App Engine operations in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      With view=FULL, returns the version's environment variables. The proxy holds their values.
+    tests:
+      - fixture: fixtures/operations-list.http
+        expect: credential
+        response: fixtures/operations-list.json
+        resource: "acme-prod"

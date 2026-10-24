@@ -1,0 +1,81 @@
+# Google Compute Engine: region autoscalers.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-autoscalers.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/autoscalers/{autoscaler}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine autoscaler {autoscaler} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      The group keeps its current size.
+    tests:
+      - fixture: fixtures/region-autoscalers-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-autoscalers.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/autoscalers" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine autoscaler {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      An autoscaler decides how many VMs run, and VMs are billed.
+    tests:
+      - fixture: fixtures/region-autoscalers-insert.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-autoscalers.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/autoscalers" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine autoscaler ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      An autoscaler decides how many VMs run, and VMs are billed.
+    tests:
+      - fixture: fixtures/region-autoscalers-patch.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-autoscalers.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/autoscalers/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/region-autoscalers-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-autoscalers.update
+    match: { rest: { method: PUT, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/autoscalers" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine autoscaler ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      An autoscaler decides how many VMs run, and VMs are billed.
+    tests:
+      - fixture: fixtures/region-autoscalers-update.http
+        expect: money
+        resource: "acme-prod"

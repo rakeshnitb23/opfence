@@ -1,0 +1,5 @@
+# description: Delete Compute Engine instance orders-db (us-central1-a) in project acme-prod, with its boot disk
+DELETE /compute/v1/projects/acme-prod/zones/us-central1-a/instances/orders-db HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

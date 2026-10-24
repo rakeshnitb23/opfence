@@ -1,4 +1,4 @@
-# description: Search on folder
+# description: Search folder
 POST /v2/folders:search HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

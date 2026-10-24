@@ -414,7 +414,9 @@ func TestExtractDiscovery(t *testing.T) {
 	        "mediaUpload": {"protocols": {"simple": {"path": "/upload/storage/v1/b/{bucket}/o"}, "resumable": {"path": "/resumable/upload/storage/v1/b/{bucket}/o"}}}}}},
 	    "projects": {"resources": {"secrets": {"methods": {
 	      "access": {"httpMethod": "GET", "path": "v1/{+name}:access", "flatPath": "v1/projects/{projectsId}/secrets/{secretsId}:access"},
-	      "list": {"httpMethod": "GET", "path": "v1/{+parent}/secrets"}}}}}}}`
+	      "list": {"httpMethod": "GET", "path": "v1/{+parent}/secrets"},
+	      "upload": {"httpMethod": "POST", "path": "v2/{+parent}:uploadSource", "flatPath": "v2/projects/{projectsId}:uploadSource",
+	        "mediaUpload": {"protocols": {"simple": {"path": "/upload/v2/{+parent}:uploadSource"}}}}}}}}}}`
 	ops, err := Extract(catalog.SchemaSource{Kind: "discovery"}, nil, []byte(doc))
 	if err != nil {
 		t.Fatal(err)
@@ -430,6 +432,8 @@ func TestExtractDiscovery(t *testing.T) {
 		"POST /resumable/upload/storage/v1/b/{bucket}/o",
 		"GET /storage/v1/v1/projects/{projectsId}/secrets/{secretsId}:access",
 		"GET /storage/v1/v1/{parent*}/secrets",
+		"POST /storage/v1/v2/projects/{projectsId}:uploadSource",
+		"POST /upload/v2/projects/{projectsId}:uploadSource",
 	}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
 		t.Errorf("got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))

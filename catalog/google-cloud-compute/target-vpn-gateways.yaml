@@ -1,0 +1,44 @@
+# Google Compute Engine: target vpn gateways.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.target-vpn-gateways.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetVpnGateways/{targetVpnGateway}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine target vpn gateway {targetVpnGateway} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-vpn-gateways-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-vpn-gateways.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetVpnGateways" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine target vpn gateway {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-vpn-gateways-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.target-vpn-gateways.set-labels
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/targetVpnGateways/{resource}/setLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set labels of Compute Engine target vpn gateway {resource} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/target-vpn-gateways-set-labels.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,59 @@
+# Google Compute Engine: region health check services.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-health-check-services.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/healthCheckServices/{healthCheckService}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine health check service {healthCheckService} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-health-check-services-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-health-check-services.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/healthCheckServices" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine health check service {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-health-check-services-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-health-check-services.patch
+    match: { rest: { method: PATCH, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/healthCheckServices/{healthCheckService}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine health check service {healthCheckService} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-health-check-services-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-health-check-services.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/healthCheckServices/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/region-health-check-services-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

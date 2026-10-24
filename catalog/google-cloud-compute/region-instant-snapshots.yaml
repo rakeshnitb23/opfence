@@ -1,0 +1,77 @@
+# Google Compute Engine: region instant snapshots.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-instant-snapshots.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instantSnapshots/{instantSnapshot}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine instant snapshot {instantSnapshot} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A deleted snapshot cannot be restored from.
+    tests:
+      - fixture: fixtures/region-instant-snapshots-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instant-snapshots.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instantSnapshots" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine instant snapshot {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-instant-snapshots-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instant-snapshots.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instantSnapshots/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine instant snapshot {resource} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/region-instant-snapshots-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instant-snapshots.set-labels
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instantSnapshots/{resource}/setLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set labels of Compute Engine instant snapshot {resource} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-instant-snapshots-set-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-instant-snapshots.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/instantSnapshots/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/region-instant-snapshots-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

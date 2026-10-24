@@ -1,0 +1,7 @@
+# description: Create Compute Engine firewall policy acme-uploads
+POST /compute/v1/locations/global/firewallPolicies HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

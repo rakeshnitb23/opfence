@@ -1,0 +1,7 @@
+# description: Stop Cloud Run instance orders-db in project acme-prod
+POST /apis/run.googleapis.com/v1/namespaces/acme-prod/instances/orders-db:stop HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

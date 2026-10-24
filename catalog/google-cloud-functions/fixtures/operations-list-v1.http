@@ -1,0 +1,5 @@
+# description: List Cloud Functions operations
+GET /v1/operations HTTP/1.1
+Host: cloudfunctions.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

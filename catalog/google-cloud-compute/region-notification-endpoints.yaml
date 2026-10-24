@@ -1,0 +1,45 @@
+# Google Compute Engine: region notification endpoints.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.region-notification-endpoints.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/notificationEndpoints/{notificationEndpoint}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine notification endpoint {notificationEndpoint} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-notification-endpoints-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-notification-endpoints.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/notificationEndpoints" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine notification endpoint {body.name} ({region}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/region-notification-endpoints-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.region-notification-endpoints.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/regions/{region}/notificationEndpoints/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/region-notification-endpoints-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

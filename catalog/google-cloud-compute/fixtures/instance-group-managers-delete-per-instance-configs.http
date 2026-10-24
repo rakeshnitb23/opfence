@@ -1,0 +1,7 @@
+# description: Remove per instance configs from Compute Engine instance group manager instancegroupmanager-1 (us-central1-a) in project acme-prod
+POST /compute/v1/projects/acme-prod/zones/us-central1-a/instanceGroupManagers/instancegroupmanager-1/deletePerInstanceConfigs HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

@@ -1,4 +1,4 @@
-# description: Truncate log on Cloud SQL instance orders-db in project acme-prod
+# description: Truncate log of Cloud SQL instance orders-db in project acme-prod
 POST /v1/projects/acme-prod/instances/orders-db/truncateLog HTTP/1.1
 Host: sqladmin.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

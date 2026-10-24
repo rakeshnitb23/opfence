@@ -1,0 +1,7 @@
+# description: Set SSL certificates of Compute Engine target https proxy targethttpsproxy-1 in project acme-prod
+POST /compute/v1/projects/acme-prod/targetHttpsProxies/targethttpsproxy-1/setSslCertificates HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

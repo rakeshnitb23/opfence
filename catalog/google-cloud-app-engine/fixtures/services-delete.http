@@ -1,0 +1,5 @@
+# description: Delete App Engine service orders-api in project acme-prod
+DELETE /v1/apps/acme-prod/services/orders-api HTTP/1.1
+Host: appengine.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

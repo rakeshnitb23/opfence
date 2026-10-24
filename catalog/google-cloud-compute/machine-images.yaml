@@ -1,0 +1,77 @@
+# Google Compute Engine: machine images.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.machine-images.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/machineImages/{machineImage}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine machine image {machineImage} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A machine image is a VM's backup; a deleted one cannot be restored from.
+    tests:
+      - fixture: fixtures/machine-images-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.machine-images.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/machineImages" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine machine image {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/machine-images-insert.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.machine-images.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/machineImages/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine machine image {resource} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/machine-images-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.machine-images.set-labels
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/machineImages/{resource}/setLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set labels of Compute Engine machine image {resource} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/machine-images-set-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.machine-images.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/machineImages/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/machine-images-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

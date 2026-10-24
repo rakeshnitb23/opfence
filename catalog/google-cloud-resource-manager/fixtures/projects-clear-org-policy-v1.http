@@ -1,4 +1,4 @@
-# description: Clear org policy on project acme-prod
+# description: Clear org policy of project acme-prod
 POST /v1/projects/acme-prod:clearOrgPolicy HTTP/1.1
 Host: cloudresourcemanager.googleapis.com
 Authorization: Bearer opf_EXAMPLE_google_access_token

@@ -1,0 +1,5 @@
+# description: Delete Cloud Run execution execution-1 of job nightly-export in project acme-prod
+DELETE /v2/projects/acme-prod/locations/us-central1/jobs/nightly-export/executions/execution-1 HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

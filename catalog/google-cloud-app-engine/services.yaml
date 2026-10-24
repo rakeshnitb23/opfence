@@ -1,0 +1,296 @@
+# Google App Engine Admin API: services.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-app-engine.services.delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{project}/services/{service}" } }
+    class: delete
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Deletes the service with its versions, which can be deployed again from their source.
+    tests:
+      - fixture: fixtures/services-delete.http
+        expect: delete
+        response: fixtures/services-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.patch
+    match: { rest: { method: PATCH, path: "/v1/apps/{project}/services/{service}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Change App Engine service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-patch.http
+        expect: write
+        response: fixtures/services-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-create
+    match: { rest: { method: POST, path: "/v1/apps/{project}/services/{service}/versions" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Deploy App Engine version {body.id} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-versions-create.http
+        expect: write
+        response: fixtures/services-versions-create.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{project}/services/{service}/versions/{version}" } }
+    class: delete
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine version {version} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Can be deployed again from its source.
+    tests:
+      - fixture: fixtures/services-versions-delete.http
+        expect: delete
+        response: fixtures/services-versions-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-export-app-image
+    match: { rest: { method: POST, path: "/v1/apps/{project}/services/{service}/versions/{version}:exportAppImage" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Export app image of App Engine version {version} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-versions-export-app-image.http
+        expect: write
+        response: fixtures/services-versions-export-app-image.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-get
+    match: { rest: { method: GET, path: "/v1/apps/{project}/services/{service}/versions/{version}" } }
+    class: credential
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read App Engine version {version} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      With view=FULL, returns the version's environment variables. The proxy holds their values.
+    tests:
+      - fixture: fixtures/services-versions-get.http
+        expect: credential
+        response: fixtures/services-versions-get.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-list
+    match: { rest: { method: GET, path: "/v1/apps/{project}/services/{service}/versions" } }
+    class: credential
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List App Engine versions of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      With view=FULL, returns the version's environment variables. The proxy holds their values.
+    tests:
+      - fixture: fixtures/services-versions-list.http
+        expect: credential
+        response: fixtures/services-versions-list.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-patch
+    match: { rest: { method: PATCH, path: "/v1/apps/{project}/services/{service}/versions/{version}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Change App Engine version {version} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-versions-patch.http
+        expect: write
+        response: fixtures/services-versions-patch.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-instances-debug
+    match: { rest: { method: POST, path: "/v1/apps/{project}/services/{service}/versions/{version}/instances/{instance}:debug" } }
+    class: irreversible
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: irreversible }
+    resource: { arg: project, kind: project }
+    card: "Debug App Engine instance {instance} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Lets the holder of the SSH key in the request log in to the instance; running commands on it
+      can do anything it can.
+    tests:
+      - fixture: fixtures/services-versions-instances-debug.http
+        expect: irreversible
+        response: fixtures/services-versions-instances-debug.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-instances-delete
+    match: { rest: { method: DELETE, path: "/v1/apps/{project}/services/{service}/versions/{version}/instances/{instance}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine instance {instance} of service {service} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      App Engine starts another instance as needed.
+    tests:
+      - fixture: fixtures/services-versions-instances-delete.http
+        expect: write
+        response: fixtures/services-versions-instances-delete.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.delete-by-location
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}" } }
+    class: delete
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine service {service} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Deletes the service with its versions, which can be deployed again from their source.
+    tests:
+      - fixture: fixtures/services-delete-by-location.http
+        expect: delete
+        response: fixtures/services-delete-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.patch-by-location
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Change App Engine service {service} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-patch-by-location.http
+        expect: write
+        response: fixtures/services-patch-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-delete-by-location
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}/versions/{version}" } }
+    class: delete
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: delete }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine version {version} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Can be deployed again from its source.
+    tests:
+      - fixture: fixtures/services-versions-delete-by-location.http
+        expect: delete
+        response: fixtures/services-versions-delete-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-export-app-image-by-location
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}/versions/{version}:exportAppImage" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Export app image of App Engine version {version} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-versions-export-app-image-by-location.http
+        expect: write
+        response: fixtures/services-versions-export-app-image-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-patch-by-location
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}/versions/{version}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Change App Engine version {version} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/services-versions-patch-by-location.http
+        expect: write
+        response: fixtures/services-versions-patch-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-instances-debug-by-location
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}/versions/{version}/instances/{instance}:debug" } }
+    class: irreversible
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: irreversible }
+    resource: { arg: project, kind: project }
+    card: "Debug App Engine instance {instance} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      Lets the holder of the SSH key in the request log in to the instance; running commands on it
+      can do anything it can.
+    tests:
+      - fixture: fixtures/services-versions-instances-debug-by-location.http
+        expect: irreversible
+        response: fixtures/services-versions-instances-debug-by-location.json
+        resource: "acme-prod"
+
+  - id: google-cloud-app-engine.services.versions-instances-delete-by-location
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/applications/{application}/services/{service}/versions/{version}/instances/{instance}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Delete App Engine instance {instance} of application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    notes: >-
+      App Engine starts another instance as needed.
+    tests:
+      - fixture: fixtures/services-versions-instances-delete-by-location.http
+        expect: write
+        response: fixtures/services-versions-instances-delete-by-location.json
+        resource: "acme-prod"

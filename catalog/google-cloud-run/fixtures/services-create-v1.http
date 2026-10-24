@@ -1,0 +1,7 @@
+# description: Create Cloud Run service body.metadata.name-1 in project acme-prod
+POST /apis/serving.knative.dev/v1/namespaces/acme-prod/services HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

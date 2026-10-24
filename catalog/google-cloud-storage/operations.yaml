@@ -5,7 +5,7 @@ operations:
     match: { rest: { method: POST, path: "/storage/v1/b/{bucket}/operations/{operation}/advanceRelocateBucket" } }
     class: write
     resource: { arg: bucket, kind: bucket }
-    card: "Advance relocate bucket on Cloud Storage operation {operation} of bucket {bucket}"
+    card: "Advance relocate bucket of Cloud Storage operation {operation} of bucket {bucket}"
     status: verified
     verified: 2026-10-23
     sources:

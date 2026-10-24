@@ -1,0 +1,46 @@
+# Google Compute Engine: reservation slots.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.reservation-slots.get-health
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/reservationSlots/{reservationSlot}/getHealth" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports health; changes nothing.
+    tests:
+      - fixture: fixtures/reservation-slots-get-health.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-slots.get-version
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/reservationSlots/{reservationSlot}/getVersion" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports versions; changes nothing.
+    tests:
+      - fixture: fixtures/reservation-slots-get-version.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-slots.update
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/reservationSlots/{reservationSlot}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Compute Engine reservation slot {reservationSlot} of reservation {reservation} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/reservation-slots-update.http
+        expect: write
+        resource: "acme-prod"

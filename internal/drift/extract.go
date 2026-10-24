@@ -438,9 +438,17 @@ func extractDiscovery(sc catalog.SchemaSource, data []byte) ([]Op, error) {
 			}
 			add(m.HTTPMethod, base+"/"+discoveryTemplate(strings.TrimPrefix(p, "/")))
 			for _, up := range []string{m.MediaUpload.Protocols.Simple.Path, m.MediaUpload.Protocols.Resumable.Path} {
-				if up != "" {
-					add(m.HTTPMethod, "/"+discoveryTemplate(strings.TrimPrefix(up, "/")))
+				if up == "" {
+					continue
 				}
+				// An upload path that ends with the method's own path takes
+				// the flat path's parameters, as requests do:
+				// /upload/v2/{+parent}:uploadSource is sent to
+				// /upload/v2/projects/p/locations/l:uploadSource.
+				if strings.Contains(up, "{+") && m.FlatPath != "" && strings.HasSuffix(up, m.Path) {
+					up = strings.TrimSuffix(up, m.Path) + m.FlatPath
+				}
+				add(m.HTTPMethod, "/"+discoveryTemplate(strings.TrimPrefix(up, "/")))
 			}
 		}
 	}

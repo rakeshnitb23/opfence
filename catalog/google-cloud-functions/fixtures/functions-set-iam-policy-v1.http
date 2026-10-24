@@ -1,0 +1,7 @@
+# description: Change who can access Cloud Functions function send-email in project acme-prod
+POST /v1/projects/acme-prod/locations/us-central1/functions/send-email:setIamPolicy HTTP/1.1
+Host: cloudfunctions.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

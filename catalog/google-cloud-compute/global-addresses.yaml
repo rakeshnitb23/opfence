@@ -1,0 +1,77 @@
+# Google Compute Engine: global addresses.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.global-addresses.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/addresses/{address}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine address {address} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      A released address goes back to Google's pool; the same IP address cannot be reserved again.
+    tests:
+      - fixture: fixtures/global-addresses-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.global-addresses.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/addresses" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine address {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Static external addresses are billed.
+    tests:
+      - fixture: fixtures/global-addresses-insert.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.global-addresses.move
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/addresses/{address}/move" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Move Compute Engine address {address} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/global-addresses-move.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.global-addresses.set-labels
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/addresses/{resource}/setLabels" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Set labels of Compute Engine address {resource} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/global-addresses-set-labels.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.global-addresses.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/addresses/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/global-addresses-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

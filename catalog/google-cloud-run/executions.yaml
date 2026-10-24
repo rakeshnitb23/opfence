@@ -1,0 +1,72 @@
+# Google Cloud Run: executions.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-run.executions.cancel-v1
+    match: { rest: { method: POST, path: "/apis/run.googleapis.com/v1/namespaces/{project}/executions/{execution}:cancel" } }
+    class: write
+    response: { hold: ["**.env.value"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Cancel Cloud Run execution {execution} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    tests:
+      - fixture: fixtures/executions-cancel-v1.http
+        expect: write
+        response: fixtures/executions-cancel-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.executions.delete-v1
+    match: { rest: { method: DELETE, path: "/apis/run.googleapis.com/v1/namespaces/{project}/executions/{execution}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud Run execution {execution} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Can be deployed again from its image and settings.
+    tests:
+      - fixture: fixtures/executions-delete-v1.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-run.executions.get-v1
+    match: { rest: { method: GET, path: "/apis/run.googleapis.com/v1/namespaces/{project}/executions/{execution}" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "Read Cloud Run execution {execution} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/executions-get-v1.http
+        expect: credential
+        response: fixtures/executions-get-v1.json
+        resource: "acme-prod"
+
+  - id: google-cloud-run.executions.list-v1
+    match: { rest: { method: GET, path: "/apis/run.googleapis.com/v1/namespaces/{project}/executions" } }
+    class: credential
+    response: { hold: ["**.env.value"], class: read }
+    resource: { arg: project, kind: project }
+    card: "List Cloud Run executions in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/run/v1/rest
+    notes: >-
+      Returns the containers' environment variables. The proxy holds their values: the agent sees
+      tokens, which a write of the same object may carry back.
+    tests:
+      - fixture: fixtures/executions-list-v1.http
+        expect: credential
+        response: fixtures/executions-list-v1.json
+        resource: "acme-prod"

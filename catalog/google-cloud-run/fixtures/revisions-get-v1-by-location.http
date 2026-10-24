@@ -1,0 +1,5 @@
+# description: Read Cloud Run revision revision-1 in project acme-prod
+GET /v1/projects/acme-prod/locations/us-central1/revisions/revision-1 HTTP/1.1
+Host: run.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,0 +1,7 @@
+# description: Change Compute Engine subnetwork subnetwork-1 (us-central1) in project acme-prod
+PATCH /compute/v1/projects/acme-prod/regions/us-central1/subnetworks/subnetwork-1 HTTP/1.1
+Host: compute.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

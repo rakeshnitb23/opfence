@@ -1,0 +1,18 @@
+# Google App Engine Admin API: projects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-app-engine.projects.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/applications/{application}" } }
+    class: write
+    response: { hold: ["**.buildEnvVariables", "**.envVariables"], class: write }
+    resource: { arg: project, kind: project }
+    card: "Change App Engine application {application} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest
+    tests:
+      - fixture: fixtures/projects-patch.http
+        expect: write
+        response: fixtures/projects-patch.json
+        resource: "acme-prod"

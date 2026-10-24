@@ -1,0 +1,30 @@
+# Google Compute Engine: ssl certificates.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.ssl-certificates.delete
+    match: { rest: { method: DELETE, path: "/compute/{apiVersion}/projects/{project}/global/sslCertificates/{sslCertificate}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Compute Engine SSL certificate {sslCertificate} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/ssl-certificates-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.ssl-certificates.insert
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/global/sslCertificates" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Compute Engine SSL certificate {body.name} in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/ssl-certificates-insert.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,18 @@
+provider: google-cloud-app-engine
+title: Google App Engine Admin API
+docs: https://cloud.google.com/appengine/docs/admin-api/reference/rest
+# Applications, services, versions, instances, domain mappings, certificates and the firewall.
+# Environment variables in a version (view=FULL) are held.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [appengine.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest

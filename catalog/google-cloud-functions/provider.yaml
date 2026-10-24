@@ -1,0 +1,20 @@
+provider: google-cloud-functions
+title: Google Cloud Functions
+docs: https://cloud.google.com/functions/docs/reference/rest
+# Functions of both generations. Environment variables are held: the agent sees tokens that a write of
+# the same function may carry back.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [cloudfunctions.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://cloudfunctions.googleapis.com/$discovery/rest?version=v2
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/cloudfunctions/v1/rest

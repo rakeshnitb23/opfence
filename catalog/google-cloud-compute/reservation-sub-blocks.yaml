@@ -1,0 +1,76 @@
+# Google Compute Engine: reservation sub blocks.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-compute.reservation-sub-blocks.get-version
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/getVersion" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports versions; changes nothing.
+    tests:
+      - fixture: fixtures/reservation-sub-blocks-get-version.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-sub-blocks.perform-maintenance
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/performMaintenance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Perform maintenance of Compute Engine reservation sub block {reservationSubBlock} of reservation {reservation} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/reservation-sub-blocks-perform-maintenance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-sub-blocks.report-faulty
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{reservationSubBlock}/reportFaulty" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Report faulty of Compute Engine reservation sub block {reservationSubBlock} of reservation {reservation} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    tests:
+      - fixture: fixtures/reservation-sub-blocks-report-faulty.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-sub-blocks.set-iam-policy
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{resource}/setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Compute Engine reservation sub block {resource} of reservation {reservation} ({zone}) in project {project}"
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Decides who can use the resource, and can share it with other projects or everyone.
+    tests:
+      - fixture: fixtures/reservation-sub-blocks-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-compute.reservation-sub-blocks.test-iam-permissions
+    match: { rest: { method: POST, path: "/compute/{apiVersion}/projects/{project}/zones/{zone}/reservations/{reservation}/reservationBlocks/{reservationBlock}/reservationSubBlocks/{resource}/testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-23
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
+    notes: >-
+      Reports the caller's permissions; changes nothing.
+    tests:
+      - fixture: fixtures/reservation-sub-blocks-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
