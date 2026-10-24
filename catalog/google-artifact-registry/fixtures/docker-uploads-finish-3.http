@@ -1,0 +1,5 @@
+# description: Finish uploading a layer of acme-prod/web/orders
+PUT /v2/acme-prod/web/orders/blobs/uploads/u-1?digest=sha256:0123 HTTP/1.1
+Host: us-docker.pkg.dev
+Authorization: Bearer opf_EXAMPLE_registry_token
+

@@ -5,12 +5,13 @@ docs: https://cloud.google.com/pubsub/docs/reference/rest
 # API.
 # Generated from Google's discovery documents; every method that is not a
 # GET has a rule, and so do the GETs that return secrets. The bearer token
-# is a short-lived OAuth access token, which Opfence does not swap: there is
-# no detect block (see LIMITS.md).
+# is a short-lived OAuth access token that google-oauth mints, so the agent
+# holds a placeholder the proxy swaps in here (secrets_from).
 hosts: [pubsub.googleapis.com]
 auth:
   - header: Authorization
     scheme: Bearer
+secrets_from: [google-oauth]
 defaults:
   rest_safe_methods: read
 schemas:

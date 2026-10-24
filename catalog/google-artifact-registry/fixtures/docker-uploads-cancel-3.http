@@ -1,0 +1,5 @@
+# description: Cancel a layer upload of acme-prod/web/orders
+DELETE /v2/acme-prod/web/orders/blobs/uploads/u-1 HTTP/1.1
+Host: us-docker.pkg.dev
+Authorization: Bearer opf_EXAMPLE_registry_token
+

@@ -34,6 +34,9 @@ type Effective struct {
 	Servers              map[string]string
 	// Passthrough is every host pattern the runner tunnels uninspected.
 	Passthrough []string
+	// RealGoogleCredentials: the user config keeps Google refresh tokens
+	// real in sandboxed sessions.
+	RealGoogleCredentials bool
 }
 
 // DefaultApprovalTimeout is how long a request waits for an answer when no
@@ -73,6 +76,7 @@ func Resolve(user, repo *File) *Effective {
 	}
 
 	e.IncludeDraft = user.IncludeDraft
+	e.RealGoogleCredentials = user.RealGoogleCredentials
 	e.Servers = map[string]string{}
 	for k, v := range user.Servers {
 		e.Servers[k] = v

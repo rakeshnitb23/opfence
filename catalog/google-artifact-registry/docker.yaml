@@ -1,0 +1,370 @@
+# Docker's registry protocol (the OCI distribution spec), written by hand.
+operations:
+  - id: google-artifact-registry.docker.manifests-put-2
+    match: { rest: { method: PUT, path: "/v2/{project}/{image}/manifests/{reference}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Push image {project}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Pushing a tag replaces the image it named.
+    tests:
+      - fixture: fixtures/docker-manifests-put-2.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.manifests-delete-2
+    match: { rest: { method: DELETE, path: "/v2/{project}/{image}/manifests/{reference}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete image {project}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      An image can be pushed again from where it was built.
+    tests:
+      - fixture: fixtures/docker-manifests-delete-2.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-start-2
+    match: { rest: { method: POST, path: "/v2/{project}/{image}/blobs/uploads" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Start uploading a layer of {project}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-start-2.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-patch-2
+    match: { rest: { method: PATCH, path: "/v2/{project}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Upload a layer of {project}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-patch-2.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-finish-2
+    match: { rest: { method: PUT, path: "/v2/{project}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Finish uploading a layer of {project}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-finish-2.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-cancel-2
+    match: { rest: { method: DELETE, path: "/v2/{project}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Cancel a layer upload of {project}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-cancel-2.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.blobs-delete-2
+    match: { rest: { method: DELETE, path: "/v2/{project}/{image}/blobs/{digest}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete a layer of {project}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Layers can be pushed again.
+    tests:
+      - fixture: fixtures/docker-blobs-delete-2.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.manifests-put-3
+    match: { rest: { method: PUT, path: "/v2/{project}/{repository}/{image}/manifests/{reference}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Push image {project}/{repository}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Pushing a tag replaces the image it named.
+    tests:
+      - fixture: fixtures/docker-manifests-put-3.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.manifests-delete-3
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{image}/manifests/{reference}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete image {project}/{repository}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      An image can be pushed again from where it was built.
+    tests:
+      - fixture: fixtures/docker-manifests-delete-3.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-start-3
+    match: { rest: { method: POST, path: "/v2/{project}/{repository}/{image}/blobs/uploads" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Start uploading a layer of {project}/{repository}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-start-3.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-patch-3
+    match: { rest: { method: PATCH, path: "/v2/{project}/{repository}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Upload a layer of {project}/{repository}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-patch-3.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-finish-3
+    match: { rest: { method: PUT, path: "/v2/{project}/{repository}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Finish uploading a layer of {project}/{repository}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-finish-3.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-cancel-3
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Cancel a layer upload of {project}/{repository}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-cancel-3.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.blobs-delete-3
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{image}/blobs/{digest}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete a layer of {project}/{repository}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Layers can be pushed again.
+    tests:
+      - fixture: fixtures/docker-blobs-delete-3.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.manifests-put-4
+    match: { rest: { method: PUT, path: "/v2/{project}/{repository}/{path}/{image}/manifests/{reference}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Push image {project}/{repository}/{path}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Pushing a tag replaces the image it named.
+    tests:
+      - fixture: fixtures/docker-manifests-put-4.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.manifests-delete-4
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{path}/{image}/manifests/{reference}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete image {project}/{repository}/{path}/{image}:{reference}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      An image can be pushed again from where it was built.
+    tests:
+      - fixture: fixtures/docker-manifests-delete-4.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-start-4
+    match: { rest: { method: POST, path: "/v2/{project}/{repository}/{path}/{image}/blobs/uploads" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Start uploading a layer of {project}/{repository}/{path}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-start-4.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-patch-4
+    match: { rest: { method: PATCH, path: "/v2/{project}/{repository}/{path}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Upload a layer of {project}/{repository}/{path}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-patch-4.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-finish-4
+    match: { rest: { method: PUT, path: "/v2/{project}/{repository}/{path}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Finish uploading a layer of {project}/{repository}/{path}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-finish-4.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.uploads-cancel-4
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{path}/{image}/blobs/uploads/{upload}" } }
+    class: read
+    resource: { arg: project, kind: project }
+    card: "Cancel a layer upload of {project}/{repository}/{path}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      A layer is stored by its digest and changes no tag, so uploading one is a read; pushing the
+      manifest, which names the tag, is the write.
+    tests:
+      - fixture: fixtures/docker-uploads-cancel-4.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-artifact-registry.docker.blobs-delete-4
+    match: { rest: { method: DELETE, path: "/v2/{project}/{repository}/{path}/{image}/blobs/{digest}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete a layer of {project}/{repository}/{path}/{image}"
+    unlisted: "Docker's registry protocol, which Google documents apart from its discovery documents"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://github.com/opencontainers/distribution-spec/blob/main/spec.md
+    notes: >-
+      Layers can be pushed again.
+    tests:
+      - fixture: fixtures/docker-blobs-delete-4.http
+        expect: delete
+        resource: "acme-prod"

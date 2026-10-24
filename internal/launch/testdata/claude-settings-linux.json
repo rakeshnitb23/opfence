@@ -27,6 +27,8 @@
     "deny": [
       "Read(//home/dev/.local/state/opfence/**)",
       "Read(//proc/**)",
+      "Read(//run/user/1000/bus)",
+      "Read(//run/user/1000/keyring)",
       "Edit(//home/dev/.config/opfence/**)",
       "Edit(//home/dev/.local/state/opfence/**)",
       "Edit(//home/dev/.cache/opfence/**)",

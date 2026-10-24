@@ -1,0 +1,7 @@
+# description: Push image acme-prod/web/orders:v2
+PUT /v2/acme-prod/web/orders/manifests/v2 HTTP/1.1
+Host: us-docker.pkg.dev
+Authorization: Bearer opf_EXAMPLE_registry_token
+Content-Type: application/vnd.docker.distribution.manifest.v2+json
+
+{}

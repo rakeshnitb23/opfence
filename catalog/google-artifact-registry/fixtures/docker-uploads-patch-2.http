@@ -1,0 +1,7 @@
+# description: Upload a layer of acme-prod/orders
+PATCH /v2/acme-prod/orders/blobs/uploads/u-1 HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+Content-Type: application/octet-stream
+
+layer bytes

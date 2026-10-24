@@ -59,12 +59,14 @@
           "header": { "type": "string" },
           "scheme": { "type": "string" },
           "query": { "type": "string" },
-          "basic": { "enum": ["username", "password"] }
+          "basic": { "enum": ["username", "password"] },
+          "form": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$", "description": "A field of a form-encoded body that carries a secret, such as an OAuth token request's refresh_token" }
         },
         "oneOf": [
-          { "required": ["header"], "not": { "anyOf": [{ "required": ["query"] }, { "required": ["basic"] }] } },
-          { "required": ["query"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["basic"] }, { "required": ["scheme"] }] } },
-          { "required": ["basic"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["query"] }, { "required": ["scheme"] }] } }
+          { "required": ["header"], "not": { "anyOf": [{ "required": ["query"] }, { "required": ["basic"] }, { "required": ["form"] }] } },
+          { "required": ["query"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["basic"] }, { "required": ["scheme"] }, { "required": ["form"] }] } },
+          { "required": ["basic"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["query"] }, { "required": ["scheme"] }, { "required": ["form"] }] } },
+          { "required": ["form"], "not": { "anyOf": [{ "required": ["header"] }, { "required": ["query"] }, { "required": ["scheme"] }, { "required": ["basic"] }] } }
         ]
       }
     },
@@ -76,6 +78,7 @@
         "prefixes": { "type": "array", "items": { "type": "string", "minLength": 3 } }
       }
     },
+    "fallback": { "type": "boolean", "description": "A provider for every API on a domain that no other provider claims: its *. hosts may cover other providers' hosts, and it applies only where none of them do" },
     "secrets_from": {
       "type": "array",
       "description": "Providers whose secrets this provider's auth locations also take (a hosted MCP server that accepts its vendor's API token)",

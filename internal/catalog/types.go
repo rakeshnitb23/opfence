@@ -63,6 +63,11 @@ type Provider struct {
 	// handles them as it handles hosts outside the catalog, instead of
 	// refusing every port but 443.
 	DatabasePorts []int `yaml:"database_ports"`
+	// Fallback marks a provider for every API on a domain that no other
+	// provider claims, such as *.googleapis.com: its hosts may cover other
+	// providers' hosts, and it applies only to hosts none of them match
+	// (stage 27d). It has no rules of its own beyond its defaults.
+	Fallback bool `yaml:"fallback"`
 	// SecretsFrom names providers whose secrets this provider's auth
 	// locations also take: a hosted MCP server that accepts the same API
 	// token as its vendor's REST API (stripe-mcp takes stripe's keys).
@@ -98,6 +103,9 @@ type Auth struct {
 	Scheme string `yaml:"scheme"` // optional prefix in the header value, e.g. Bearer
 	Query  string `yaml:"query"`  // query parameter name
 	Basic  string `yaml:"basic"`  // "username" or "password" in HTTP Basic auth
+	// Form names a field of a form-encoded body that carries a secret,
+	// such as an OAuth token request's refresh_token (stage 27d).
+	Form string `yaml:"form"`
 }
 
 // Detect tells `opfence init` how to find this provider's credentials.

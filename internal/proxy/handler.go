@@ -130,6 +130,18 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 	}
 	rawQuery, inj := inject.Request(res.Provider, r.Header, r.URL.RawQuery, s.cfg.Secrets)
 	entry.Credentials = inj.Injected
+	if req.BodyErr == nil && len(raw) <= request.MaxBody {
+		// Form fields that carry secrets (an OAuth refresh token).
+		if body, fr := inject.Form(res.Provider, r.Header.Get("Content-Type"), r.Header.Get("Content-Encoding"), raw, s.cfg.Secrets); body != nil {
+			raw = body
+			r.Body = io.NopCloser(bytes.NewReader(nil))
+			r.ContentLength = int64(len(body))
+			r.Header.Set("Content-Length", strconv.Itoa(len(body)))
+			r.TransferEncoding = nil
+			entry.Credentials = append(entry.Credentials, fr.Injected...)
+			inj.Foreign = append(inj.Foreign, fr.Foreign...)
+		}
+	}
 	if len(inj.Foreign) > 0 {
 		entry.Reason = fmt.Sprintf("placeholder for %s sent to %s; not swapped in", strings.Join(inj.Foreign, ", "), host)
 	}

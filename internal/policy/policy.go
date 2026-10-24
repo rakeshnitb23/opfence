@@ -89,6 +89,10 @@ type File struct {
 	// Passthrough lists hosts the runner tunnels without inspecting, such
 	// as an internal registry: exact names or *.suffix patterns.
 	Passthrough []string `yaml:"passthrough"`
+	// RealGoogleCredentials leaves gcloud's and the application default
+	// credentials' refresh tokens as they are in sandboxed sessions, instead
+	// of placeholders (stage 27d).
+	RealGoogleCredentials bool `yaml:"real_google_credentials"`
 
 	Path string `yaml:"-"`
 }
@@ -276,6 +280,9 @@ func (f *File) userOnlyFields() []string {
 	}
 	if len(f.Passthrough) > 0 {
 		out = append(out, "passthrough")
+	}
+	if f.RealGoogleCredentials {
+		out = append(out, "real_google_credentials")
 	}
 	return out
 }

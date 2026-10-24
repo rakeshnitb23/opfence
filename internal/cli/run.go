@@ -104,6 +104,26 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 			if runtime.GOOS == "linux" {
 				denyRead = launch.LinuxSecretSockets(os.Getenv)
 			}
+			var google *launch.GoogleSession
+			if kind != "weak" && !s.eng.Policy.RealGoogleCredentials {
+				// Only a sandbox keeps the program out of the real files.
+				home, _ := os.UserHomeDir()
+				tmp, err := os.MkdirTemp("", "opfence-"+s.id+"-")
+				if err != nil {
+					return err
+				}
+				defer os.RemoveAll(tmp)
+				if google, err = launch.GoogleCredentials(tmp, home, runtime.GOOS, os.Getenv); err != nil {
+					return fmt.Errorf("preparing Google credentials: %w", err)
+				}
+				if google != nil {
+					for k, v := range google.Env {
+						vars[k] = v
+					}
+					s.extra = append(s.extra, google.Secrets...)
+					denyRead = append(denyRead, google.DenyRead...)
+				}
+			}
 			var agent *launch.Agent
 			var watch []string
 			if kind == "srt" {
@@ -211,6 +231,11 @@ asked in a desktop dialog or with "opfence approve" in another terminal.`,
 				effMode = s.eng.Policy.Mode
 			}
 			printRunBanner(stderr, s, kind, effMode, agent, changes, logFile.Name())
+			if google != nil {
+				for _, n := range google.Notes {
+					fmt.Fprintf(stderr, "  Google: %s\n", n)
+				}
+			}
 			if kind == "claude" {
 				claudeWarnings(stderr, args[0])
 			}

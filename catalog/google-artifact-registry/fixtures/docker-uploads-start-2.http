@@ -1,0 +1,5 @@
+# description: Start uploading a layer of acme-prod/orders
+POST /v2/acme-prod/orders/blobs/uploads HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+

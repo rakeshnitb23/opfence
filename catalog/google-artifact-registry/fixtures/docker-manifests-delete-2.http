@@ -1,0 +1,5 @@
+# description: Delete image acme-prod/orders:v2
+DELETE /v2/acme-prod/orders/manifests/v2 HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+
