@@ -1,0 +1,7 @@
+# description: Approve Cloud KMS proposal proposal-1 of single tenant hsm instance singletenanthsminstance-1 in project acme-prod
+POST /v1/projects/acme-prod/locations/us-central1/singleTenantHsmInstances/singletenanthsminstance-1/proposals/proposal-1:approve HTTP/1.1
+Host: cloudkms.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

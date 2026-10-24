@@ -1,0 +1,66 @@
+# Google Cloud DNS: response policies.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-dns.response-policies.create
+    match: { rest: { method: POST, path: "/dns/v1/projects/{project}/responsePolicies" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Cloud DNS response policy in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      Response policies rewrite the answers networks get to DNS queries.
+    tests:
+      - fixture: fixtures/response-policies-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.response-policies.delete
+    match: { rest: { method: DELETE, path: "/dns/v1/projects/{project}/responsePolicies/{responsePolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud DNS response policy {responsePolicy} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      Response policies rewrite the answers networks get to DNS queries.
+    tests:
+      - fixture: fixtures/response-policies-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.response-policies.patch
+    match: { rest: { method: PATCH, path: "/dns/v1/projects/{project}/responsePolicies/{responsePolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Cloud DNS response policy {responsePolicy} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      Response policies rewrite the answers networks get to DNS queries.
+    tests:
+      - fixture: fixtures/response-policies-patch.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.response-policies.update
+    match: { rest: { method: PUT, path: "/dns/v1/projects/{project}/responsePolicies/{responsePolicy}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Cloud DNS response policy {responsePolicy} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      Response policies rewrite the answers networks get to DNS queries.
+    tests:
+      - fixture: fixtures/response-policies-update.http
+        expect: access
+        resource: "acme-prod"

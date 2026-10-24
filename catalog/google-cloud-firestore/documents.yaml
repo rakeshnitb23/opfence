@@ -1,0 +1,302 @@
+# Google Cloud Firestore: documents.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.documents.batch-get
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:batchGet" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Reads documents.
+    tests:
+      - fixture: fixtures/documents-batch-get.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.batch-write
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:batchWrite" } }
+    class: write
+    when:
+      - if: { arg: body.writes.delete, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Batch write of Firestore document {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A write that deletes documents is irreversible, unless point-in-time recovery is on, which
+      Opfence cannot see.
+    tests:
+      - fixture: fixtures/documents-batch-write.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/documents-batch-write-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.begin-transaction
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:beginTransaction" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Starts a transaction; changes nothing until a commit.
+    tests:
+      - fixture: fixtures/documents-begin-transaction.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.commit
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:commit" } }
+    class: write
+    when:
+      - if: { arg: body.writes.delete, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Commit Firestore document {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A write that deletes documents is irreversible, unless point-in-time recovery is on, which
+      Opfence cannot see.
+    tests:
+      - fixture: fixtures/documents-commit.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/documents-commit-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.create-document
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{collection}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Firestore document {collection} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/documents-create-document.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore document {documentsId1} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A deleted document is gone, unless point-in-time recovery is on, which Opfence cannot see.
+    tests:
+      - fixture: fixtures/documents-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.execute-pipeline
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:executePipeline" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Runs a query pipeline, which reads.
+    tests:
+      - fixture: fixtures/documents-execute-pipeline.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.list-collection-ids
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}:listCollectionIds" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Lists; changes nothing.
+    tests:
+      - fixture: fixtures/documents-list-collection-ids.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.listen
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:listen" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Streams changes; changes nothing.
+    tests:
+      - fixture: fixtures/documents-listen.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.partition-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}:partitionQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Plans a query; changes nothing.
+    tests:
+      - fixture: fixtures/documents-partition-query.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Firestore document {documentsId1} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/documents-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.rollback
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:rollback" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Rolls a transaction back; changes nothing.
+    tests:
+      - fixture: fixtures/documents-rollback.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.run-aggregation-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}:runAggregationQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Runs a query.
+    tests:
+      - fixture: fixtures/documents-run-aggregation-query.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.run-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{document}/{documentsId1}:runQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Runs a query.
+    tests:
+      - fixture: fixtures/documents-run-query.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.write
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents:write" } }
+    class: write
+    when:
+      - if: { arg: body.writes.delete, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Write Firestore document {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A write that deletes documents is irreversible, unless point-in-time recovery is on, which
+      Opfence cannot see.
+    tests:
+      - fixture: fixtures/documents-write.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/documents-write-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.delete-nested
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/documents/{collection}/{document}/{path*}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore document {collection}/{document}/{path} in database {database} of project {project}"
+    unlisted: "The discovery document's flat paths cover only top-level collections; this covers subcollections at any depth."
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://cloud.google.com/firestore/docs/reference/rest
+    notes: >-
+      A deleted document is gone, unless point-in-time recovery is on, which Opfence cannot see.
+    tests:
+      - fixture: fixtures/documents-delete-nested.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.patch-nested
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/databases/{database}/documents/{collection}/{document}/{path*}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Firestore document {collection}/{document}/{path} in database {database} of project {project}"
+    unlisted: "The discovery document's flat paths cover only top-level collections; this covers subcollections at any depth."
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://cloud.google.com/firestore/docs/reference/rest
+    notes: >-
+      Updates the document, or creates it.
+    tests:
+      - fixture: fixtures/documents-patch-nested.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.documents.create-nested
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/documents/{collection}/{document}/{path*}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create a Firestore document in {collection}/{document}/{path} in database {database} of project {project}"
+    unlisted: "The discovery document's flat paths cover only top-level collections; this covers subcollections at any depth."
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://cloud.google.com/firestore/docs/reference/rest
+    notes: >-
+      Creates a document. A query or listing in a subcollection matches this rule too, and counts as
+      a write.
+    tests:
+      - fixture: fixtures/documents-create-nested.http
+        expect: write
+        resource: "acme-prod"

@@ -1,0 +1,7 @@
+# description: Commit Firestore document orders in project acme-prod (writes.delete)
+POST /v1/projects/acme-prod/databases/orders/documents:commit HTTP/1.1
+Host: firestore.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{"writes": {"delete": "x"}}

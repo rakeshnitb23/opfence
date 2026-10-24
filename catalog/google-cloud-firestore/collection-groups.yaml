@@ -1,0 +1,54 @@
+# Google Cloud Firestore: collection groups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.collection-groups.fields-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/databases/{database}/collectionGroups/{collectionGroup}/fields/{field}" } }
+    class: write
+    when:
+      - if: { arg: body.ttlConfig, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Firestore field {field} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A TTL policy deletes documents once their time passes.
+    tests:
+      - fixture: fixtures/collection-groups-fields-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/collection-groups-fields-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.collection-groups.indexes-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/collectionGroups/{collectionGroup}/indexes" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Firestore index in collection group {collectionGroup} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/collection-groups-indexes-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.collection-groups.indexes-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/collectionGroups/{collectionGroup}/indexes/{indexe}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore index {indexe} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      An index can be built again.
+    tests:
+      - fixture: fixtures/collection-groups-indexes-delete.http
+        expect: delete
+        resource: "acme-prod"

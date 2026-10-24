@@ -1,0 +1,7 @@
+# description: Create Bigtable authorized view in table table-1 in project acme-prod
+POST /v2/projects/acme-prod/instances/orders-db/tables/table-1/authorizedViews HTTP/1.1
+Host: bigtableadmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

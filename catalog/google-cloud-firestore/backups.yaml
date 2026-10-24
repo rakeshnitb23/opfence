@@ -1,0 +1,18 @@
+# Google Cloud Firestore: backups.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.backups.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/backups/{backup}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore backup {backup} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A deleted backup cannot be restored from.
+    tests:
+      - fixture: fixtures/backups-delete.http
+        expect: irreversible
+        resource: "acme-prod"

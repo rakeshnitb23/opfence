@@ -1,0 +1,55 @@
+# Google Cloud Firestore: backup schedules.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.backup-schedules.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/backupSchedules" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Firestore backup schedule in database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/backup-schedules-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.backup-schedules.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/backupSchedules/{backupSchedule}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore backup schedule {backupSchedule} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Removing a backup schedule turns off the database's backups, as dangerous as losing what they
+      protect.
+    tests:
+      - fixture: fixtures/backup-schedules-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.backup-schedules.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/databases/{database}/backupSchedules/{backupSchedule}" } }
+    class: write
+    when:
+      - if: { arg: body.retention, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Firestore backup schedule {backupSchedule} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      A shorter retention deletes backups sooner.
+    tests:
+      - fixture: fixtures/backup-schedules-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/backup-schedules-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"

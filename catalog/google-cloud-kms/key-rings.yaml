@@ -1,0 +1,444 @@
+# Google Cloud Key Management Service: key rings.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.key-rings.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS key ring in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud KMS key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Only an empty key ring can be deleted.
+    tests:
+      - fixture: fixtures/key-rings-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud KMS key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/key-rings-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS crypto key in key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-decrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}:decrypt" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Decrypt Cloud KMS crypto key {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Returns the plain text of data encrypted with the key.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-decrypt.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud KMS crypto key {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Counted as irreversible in case versions remain: data encrypted with them could not be
+      decrypted.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-encrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}:encrypt" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Encrypts data the caller sends; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-encrypt.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud KMS crypto key {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud KMS crypto key {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-update-primary-version
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}:updatePrimaryVersion" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change primary version of Cloud KMS crypto key {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-update-primary-version.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-asymmetric-decrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:asymmetricDecrypt" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Asymmetric decrypt of Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Returns the plain text of data encrypted with the key.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-asymmetric-decrypt.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-asymmetric-sign
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:asymmetricSign" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Asymmetric sign of Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Signs as the key; a signature can stand for its holder.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-asymmetric-sign.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS crypto key version in crypto key {cryptoKey} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-decapsulate
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:decapsulate" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Decapsulate Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Returns the shared secret the ciphertext carries.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-decapsulate.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Data encrypted with the version can no longer be decrypted.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-destroy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:destroy" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Destroy Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Once the scheduled time passes, which can be as soon as a day, data encrypted with the version
+      can no longer be decrypted.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-destroy.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-import
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions:import" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Import Cloud KMS crypto key version {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-import.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-import-trusted-key-wrapped-crypto-key-version
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions:importTrustedKeyWrappedCryptoKeyVersion" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Import trusted key wrapped crypto key version of Cloud KMS crypto key version {cryptoKey} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-import-trusted-key-wrapped-crypto-key-version.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-mac-sign
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:macSign" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Mac sign of Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Signs as the key; a MAC can stand for its holder.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-mac-sign.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-mac-verify
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:macVerify" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Checks a MAC; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-mac-verify.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      A disabled version cannot decrypt until it is enabled again.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-raw-decrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:rawDecrypt" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Raw decrypt of Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Returns the plain text of data encrypted with the key.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-raw-decrypt.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-raw-encrypt
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:rawEncrypt" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Encrypts data the caller sends; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-raw-encrypt.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.crypto-keys-crypto-key-versions-restore
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}:restore" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Restore Cloud KMS crypto key version {cryptoKeyVersion} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-crypto-keys-crypto-key-versions-restore.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.import-jobs-create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/importJobs" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Cloud KMS import job in key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/key-rings-import-jobs-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.import-jobs-set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/importJobs/{importJob}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud KMS import job {importJob} of key ring {keyRing} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/key-rings-import-jobs-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.key-rings.import-jobs-test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/keyRings/{keyRing}/importJobs/{importJob}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/key-rings-import-jobs-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

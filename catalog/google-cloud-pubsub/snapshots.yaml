@@ -1,0 +1,77 @@
+# Google Cloud Pub/Sub: snapshots.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-pubsub.snapshots.create
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/snapshots/{snapshot}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Pub/Sub snapshot in snapshot {snapshot} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/snapshots-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.snapshots.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/snapshots/{snapshot}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Pub/Sub snapshot {snapshot} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Subscriptions can no longer seek to it.
+    tests:
+      - fixture: fixtures/snapshots-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.snapshots.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/snapshots/{snapshot}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Pub/Sub snapshot {snapshot} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/snapshots-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.snapshots.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/snapshots/{snapshot}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Pub/Sub snapshot {snapshot} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/snapshots-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.snapshots.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/snapshots/{snapshot}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/snapshots-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

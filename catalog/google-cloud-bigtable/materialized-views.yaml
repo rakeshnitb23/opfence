@@ -1,0 +1,90 @@
+# Google Cloud Bigtable Admin API: materialized views.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigtable.materialized-views.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/materializedViews" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable materialized view in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/materialized-views-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.materialized-views.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/materializedViews/{materializedView}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable materialized view {materializedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/materialized-views-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.materialized-views.get-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/materializedViews/{materializedView}:getIamPolicy" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/materialized-views-get-iam-policy.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.materialized-views.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/materializedViews/{materializedView}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable materialized view {materializedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/materialized-views-patch.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.materialized-views.set-iam-policy
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/materializedViews/{materializedView}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Bigtable materialized view {materializedView} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/materialized-views-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.materialized-views.test-iam-permissions
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/materializedViews/{materializedView}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/materialized-views-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

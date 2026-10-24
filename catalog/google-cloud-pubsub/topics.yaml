@@ -1,0 +1,99 @@
+# Google Cloud Pub/Sub: topics.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-pubsub.topics.create
+    match: { rest: { method: PUT, path: "/v1/projects/{project}/topics/{topic}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Pub/Sub topic in topic {topic} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/topics-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.topics.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/topics/{topic}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Pub/Sub topic {topic} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Subscriptions stay, detached from the topic.
+    tests:
+      - fixture: fixtures/topics-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.topics.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/topics/{topic}" } }
+    class: write
+    when:
+      - if: { arg: body.topic.messageRetentionDuration, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Change Pub/Sub topic {topic} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      A shorter retention drops messages.
+    tests:
+      - fixture: fixtures/topics-patch.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/topics-patch-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.topics.publish
+    match: { rest: { method: POST, path: "/v1/projects/{project}/topics/{topic}:publish" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Publish Pub/Sub topic {topic} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    tests:
+      - fixture: fixtures/topics-publish.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.topics.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/topics/{topic}:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Pub/Sub topic {topic} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/topics-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-pubsub.topics.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/topics/{topic}:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/pubsub/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/topics-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

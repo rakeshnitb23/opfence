@@ -1,0 +1,16 @@
+# Google Cloud Key Management Service: organizations.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.organizations.update-kaj-policy-config
+    match: { rest: { method: PATCH, path: "/v1/organizations/{organization}/kajPolicyConfig" } }
+    class: access
+    resource: { arg: organization, kind: organization }
+    card: "Change kaj policy config of Cloud KMS organization {organization}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    tests:
+      - fixture: fixtures/organizations-update-kaj-policy-config.http
+        expect: access
+        resource: "987654321098"

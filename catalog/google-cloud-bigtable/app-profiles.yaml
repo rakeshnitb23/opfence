@@ -1,0 +1,44 @@
+# Google Cloud Bigtable Admin API: app profiles.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-bigtable.app-profiles.create
+    match: { rest: { method: POST, path: "/v2/projects/{project}/instances/{instance}/appProfiles" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Bigtable app profile in instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/app-profiles-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.app-profiles.delete
+    match: { rest: { method: DELETE, path: "/v2/projects/{project}/instances/{instance}/appProfiles/{appProfile}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Bigtable app profile {appProfile} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/app-profiles-delete.http
+        expect: delete
+        resource: "acme-prod"
+
+  - id: google-cloud-bigtable.app-profiles.patch
+    match: { rest: { method: PATCH, path: "/v2/projects/{project}/instances/{instance}/appProfiles/{appProfile}" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Change Bigtable app profile {appProfile} of instance {instance} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest
+    tests:
+      - fixture: fixtures/app-profiles-patch.http
+        expect: write
+        resource: "acme-prod"

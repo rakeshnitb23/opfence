@@ -1,0 +1,32 @@
+# Google Cloud Datastore: indexes.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-datastore.indexes.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/indexes" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Create Datastore index in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    tests:
+      - fixture: fixtures/indexes-create.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.indexes.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/indexes/{index}" } }
+    class: delete
+    resource: { arg: project, kind: project }
+    card: "Delete Datastore index {index} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      An index can be built again.
+    tests:
+      - fixture: fixtures/indexes-delete.http
+        expect: delete
+        resource: "acme-prod"

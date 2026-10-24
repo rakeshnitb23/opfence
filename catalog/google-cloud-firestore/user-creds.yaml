@@ -1,0 +1,76 @@
+# Google Cloud Firestore: user creds.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-firestore.user-creds.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/userCreds" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Create Firestore user cred in database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Returns the new user's password.
+    tests:
+      - fixture: fixtures/user-creds-create.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.user-creds.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/databases/{database}/userCreds/{userCred}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Firestore user cred {userCred} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/user-creds-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.user-creds.disable
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/userCreds/{userCred}:disable" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Disable Firestore user cred {userCred} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/user-creds-disable.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.user-creds.enable
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/userCreds/{userCred}:enable" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Enable Firestore user cred {userCred} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    tests:
+      - fixture: fixtures/user-creds-enable.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-firestore.user-creds.reset-password
+    match: { rest: { method: POST, path: "/v1/projects/{project}/databases/{database}/userCreds/{userCred}:resetPassword" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Reset password of Firestore user cred {userCred} of database {database} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/firestore/v1/rest
+    notes: >-
+      Returns a new password.
+    tests:
+      - fixture: fixtures/user-creds-reset-password.http
+        expect: credential
+        resource: "acme-prod"

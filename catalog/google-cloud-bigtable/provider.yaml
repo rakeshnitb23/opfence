@@ -1,0 +1,18 @@
+provider: google-cloud-bigtable
+title: Google Cloud Bigtable Admin API
+docs: https://cloud.google.com/bigtable/docs/reference/admin/rest
+# Instances, clusters, tables, backups, app profiles and views. Reading and writing rows is the data
+# API (bigtable.googleapis.com), which speaks gRPC and is not in the catalog.
+# Generated from Google's discovery documents; every method that is not a
+# GET has a rule, and so do the GETs that return secrets. The bearer token
+# is a short-lived OAuth access token, which Opfence does not swap: there is
+# no detect block (see LIMITS.md).
+hosts: [bigtableadmin.googleapis.com]
+auth:
+  - header: Authorization
+    scheme: Bearer
+defaults:
+  rest_safe_methods: read
+schemas:
+  - kind: discovery
+    url: https://www.googleapis.com/discovery/v1/apis/bigtableadmin/v2/rest

@@ -1,0 +1,18 @@
+# Google Cloud DNS: changes.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-dns.changes.create
+    match: { rest: { method: POST, path: "/dns/v1/projects/{project}/managedZones/{managedZone}/changes" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Cloud DNS change in managed zone {managedZone} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      DNS records decide where a name's traffic goes: a changed record can send it anywhere.
+    tests:
+      - fixture: fixtures/changes-create.http
+        expect: access
+        resource: "acme-prod"

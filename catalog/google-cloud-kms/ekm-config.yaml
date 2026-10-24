@@ -1,0 +1,33 @@
+# Google Cloud Key Management Service: ekm config.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-kms.ekm-config.set-iam-policy
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/ekmConfig:setIamPolicy" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change who can access Cloud KMS ekm config in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Decides who can read and change the resource.
+    tests:
+      - fixture: fixtures/ekm-config-set-iam-policy.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-kms.ekm-config.test-iam-permissions
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/ekmConfig:testIamPermissions" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/cloudkms/v1/rest
+    notes: >-
+      Reads; changes nothing.
+    tests:
+      - fixture: fixtures/ekm-config-test-iam-permissions.http
+        expect: read
+        resource: "acme-prod"

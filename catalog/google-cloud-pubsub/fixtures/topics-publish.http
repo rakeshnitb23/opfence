@@ -1,0 +1,7 @@
+# description: Publish Pub/Sub topic topic-1 in project acme-prod
+POST /v1/projects/acme-prod/topics/topic-1:publish HTTP/1.1
+Host: pubsub.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

@@ -1,0 +1,5 @@
+# description: Delete Cloud DNS response policy rule responsepolicyrule-1 of response policy responsepolicy-1 in project acme-prod
+DELETE /dns/v1/projects/acme-prod/responsePolicies/responsepolicy-1/rules/responsepolicyrule-1 HTTP/1.1
+Host: dns.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

@@ -1,0 +1,161 @@
+# Google Cloud Datastore: projects.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-datastore.projects.allocate-ids
+    match: { rest: { method: POST, path: "/v1/projects/{project}:allocateIds" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Allocate ids of Datastore project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    tests:
+      - fixture: fixtures/projects-allocate-ids.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.begin-transaction
+    match: { rest: { method: POST, path: "/v1/projects/{project}:beginTransaction" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Starts a transaction; changes nothing until a commit.
+    tests:
+      - fixture: fixtures/projects-begin-transaction.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.commit
+    match: { rest: { method: POST, path: "/v1/projects/{project}:commit" } }
+    class: write
+    when:
+      - if: { arg: body.mutations.delete, present: true }
+        class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Commit Datastore project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      A delete mutation is irreversible, unless point-in-time recovery is on, which Opfence cannot
+      see.
+    tests:
+      - fixture: fixtures/projects-commit.http
+        expect: write
+        resource: "acme-prod"
+      - fixture: fixtures/projects-commit-when1.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.export
+    match: { rest: { method: POST, path: "/v1/projects/{project}:export" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Export Datastore project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Writes the data to the Cloud Storage location the request names, which can belong to another
+      project.
+    tests:
+      - fixture: fixtures/projects-export.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.import
+    match: { rest: { method: POST, path: "/v1/projects/{project}:import" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Import Datastore project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Imports overwrite entities and documents with the same keys.
+    tests:
+      - fixture: fixtures/projects-import.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.lookup
+    match: { rest: { method: POST, path: "/v1/projects/{project}:lookup" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Reads entities.
+    tests:
+      - fixture: fixtures/projects-lookup.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.reserve-ids
+    match: { rest: { method: POST, path: "/v1/projects/{project}:reserveIds" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reserve ids of Datastore project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    tests:
+      - fixture: fixtures/projects-reserve-ids.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.rollback
+    match: { rest: { method: POST, path: "/v1/projects/{project}:rollback" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Rolls a transaction back; changes nothing.
+    tests:
+      - fixture: fixtures/projects-rollback.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.run-aggregation-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}:runAggregationQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Runs a query.
+    tests:
+      - fixture: fixtures/projects-run-aggregation-query.http
+        expect: read
+        resource: "acme-prod"
+
+  - id: google-cloud-datastore.projects.run-query
+    match: { rest: { method: POST, path: "/v1/projects/{project}:runQuery" } }
+    class: read
+    resource: { arg: project, kind: project }
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/datastore/v1/rest
+    notes: >-
+      Runs a query.
+    tests:
+      - fixture: fixtures/projects-run-query.http
+        expect: read
+        resource: "acme-prod"

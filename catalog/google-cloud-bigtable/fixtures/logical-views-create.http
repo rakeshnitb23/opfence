@@ -1,0 +1,7 @@
+# description: Create Bigtable logical view in instance orders-db in project acme-prod
+POST /v2/projects/acme-prod/instances/orders-db/logicalViews HTTP/1.1
+Host: bigtableadmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: application/json
+
+{}

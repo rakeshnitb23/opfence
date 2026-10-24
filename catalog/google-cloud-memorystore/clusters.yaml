@@ -1,0 +1,138 @@
+# Google Cloud Memorystore for Redis: clusters.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-memorystore.clusters.add-token-auth-user
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}:addTokenAuthUser" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Add token auth user to Memorystore cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Creates a user that signs in with tokens.
+    tests:
+      - fixture: fixtures/clusters-add-token-auth-user.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.backup
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}:backup" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Backup Memorystore cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    tests:
+      - fixture: fixtures/clusters-backup.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.create
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/clusters" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Create Memorystore cluster in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Clusters are billed by their size.
+    tests:
+      - fixture: fixtures/clusters-create.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}" } }
+    class: irreversible
+    resource: { arg: project, kind: project }
+    card: "Delete Memorystore cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Deletes the cluster with its data.
+    tests:
+      - fixture: fixtures/clusters-delete.http
+        expect: irreversible
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.patch
+    match: { rest: { method: PATCH, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}" } }
+    class: money
+    resource: { arg: project, kind: project }
+    card: "Change Memorystore cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Changes the cluster's size or settings, and size is billed.
+    tests:
+      - fixture: fixtures/clusters-patch.http
+        expect: money
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.reschedule-cluster-maintenance
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}:rescheduleClusterMaintenance" } }
+    class: write
+    resource: { arg: project, kind: project }
+    card: "Reschedule cluster maintenance of Memorystore cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    tests:
+      - fixture: fixtures/clusters-reschedule-cluster-maintenance.http
+        expect: write
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.token-auth-users-add-auth-token
+    match: { rest: { method: POST, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}/tokenAuthUsers/{tokenAuthUser}:addAuthToken" } }
+    class: credential
+    resource: { arg: project, kind: project }
+    card: "Add auth token to Memorystore token auth user {tokenAuthUser} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    notes: >-
+      Returns a new auth token.
+    tests:
+      - fixture: fixtures/clusters-token-auth-users-add-auth-token.http
+        expect: credential
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.token-auth-users-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}/tokenAuthUsers/{tokenAuthUser}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Memorystore token auth user {tokenAuthUser} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    tests:
+      - fixture: fixtures/clusters-token-auth-users-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-memorystore.clusters.token-auth-users-auth-tokens-delete
+    match: { rest: { method: DELETE, path: "/v1/projects/{project}/locations/{location}/clusters/{cluster}/tokenAuthUsers/{tokenAuthUser}/authTokens/{authToken}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Memorystore auth token {authToken} of cluster {cluster} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/redis/v1/rest
+    tests:
+      - fixture: fixtures/clusters-token-auth-users-auth-tokens-delete.http
+        expect: access
+        resource: "acme-prod"

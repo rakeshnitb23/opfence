@@ -1,0 +1,5 @@
+# description: Read auth string of Memorystore instance orders-db in project acme-prod
+GET /v1/projects/acme-prod/locations/us-central1/instances/orders-db/authString HTTP/1.1
+Host: redis.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

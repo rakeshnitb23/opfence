@@ -1,0 +1,50 @@
+# Google Cloud DNS: resource record sets.
+# Generated from Google's discovery documents (see provider.yaml); classes reviewed by hand.
+operations:
+  - id: google-cloud-dns.resource-record-sets.create
+    match: { rest: { method: POST, path: "/dns/v1/projects/{project}/managedZones/{managedZone}/rrsets" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Create Cloud DNS resource record set in managed zone {managedZone} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      DNS records decide where a name's traffic goes.
+    tests:
+      - fixture: fixtures/resource-record-sets-create.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.resource-record-sets.delete
+    match: { rest: { method: DELETE, path: "/dns/v1/projects/{project}/managedZones/{managedZone}/rrsets/{name}/{type}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Delete Cloud DNS resource record set {type} of managed zone {managedZone} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      DNS records decide where a name's traffic goes.
+    tests:
+      - fixture: fixtures/resource-record-sets-delete.http
+        expect: access
+        resource: "acme-prod"
+
+  - id: google-cloud-dns.resource-record-sets.patch
+    match: { rest: { method: PATCH, path: "/dns/v1/projects/{project}/managedZones/{managedZone}/rrsets/{name}/{type}" } }
+    class: access
+    resource: { arg: project, kind: project }
+    card: "Change Cloud DNS resource record set {type} of managed zone {managedZone} in project {project}"
+    status: verified
+    verified: 2026-10-24
+    sources:
+      - https://www.googleapis.com/discovery/v1/apis/dns/v1/rest
+    notes: >-
+      DNS records decide where a name's traffic goes.
+    tests:
+      - fixture: fixtures/resource-record-sets-patch.http
+        expect: access
+        resource: "acme-prod"

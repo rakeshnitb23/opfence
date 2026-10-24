@@ -1,0 +1,5 @@
+# description: Delete Bigtable instance orders-db in project acme-prod
+DELETE /v2/projects/acme-prod/instances/orders-db HTTP/1.1
+Host: bigtableadmin.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+

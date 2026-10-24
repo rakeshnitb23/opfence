@@ -1,0 +1,5 @@
+# description: Delete Memorystore backup backup-1 of backup collection backupcollection-1 in project acme-prod
+DELETE /v1/projects/acme-prod/locations/us-central1/backupCollections/backupcollection-1/backups/backup-1 HTTP/1.1
+Host: redis.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+
