@@ -1,6 +1,6 @@
 // Package decode turns a request into the operations it performs: REST
 // method and path, GraphQL root fields, MCP tool calls, AWS actions, git
-// ref updates.
+// ref updates, and the requests inside a Google API batch.
 //
 // Decoders fail closed. When a decoder cannot be sure what a request does
 // (a parse error, a body too large to inspect, an unsupported encoding), it
@@ -63,6 +63,7 @@ type Operation struct {
 // Hints tell the decoder what a provider speaks.
 type Hints struct {
 	GraphQLPaths []string    // request paths that carry GraphQL
+	BatchPaths   []string    // request paths that carry a Google API batch (multipart/mixed)
 	SigV4        bool        // AWS SigV4-signed API
 	MCP          bool        // remote MCP server
 	MCPPaths     []string    // paths that carry MCP, with everything under them; empty means every path
@@ -96,6 +97,8 @@ func Decode(r *request.Request, h Hints) []Operation {
 		ops = decodeGit(r)
 	case isGraphQLPath(r.Path, h.GraphQLPaths):
 		ops = decodeGraphQL(r)
+	case r.Method == "POST" && isBatchPath(r.Path, h.BatchPaths):
+		ops = decodeBatch(r, h.BatchPaths)
 	default:
 		ops = decodeREST(r)
 	}

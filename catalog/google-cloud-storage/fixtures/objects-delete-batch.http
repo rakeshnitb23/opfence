@@ -1,0 +1,29 @@
+# description: Delete two objects of Cloud Storage bucket acme-uploads in one batch
+POST /batch/storage/v1 HTTP/1.1
+Host: storage.googleapis.com
+Authorization: Bearer opf_EXAMPLE_google_access_token
+Content-Type: multipart/mixed; boundary="===============0815==="
+
+--===============0815===
+Content-Type: application/http
+MIME-Version: 1.0
+Content-Transfer-Encoding: binary
+Content-ID: <0815+1>
+
+GET /storage/v1/b/acme-uploads/o/reports%2F2026.csv HTTP/1.1
+Content-Type: application/json
+MIME-Version: 1.0
+Host: storage.googleapis.com
+
+--===============0815===
+Content-Type: application/http
+MIME-Version: 1.0
+Content-Transfer-Encoding: binary
+Content-ID: <0815+2>
+
+DELETE /storage/v1/b/acme-uploads/o/reports%2F2025.csv HTTP/1.1
+Content-Type: application/json
+MIME-Version: 1.0
+Host: storage.googleapis.com
+
+--===============0815===--

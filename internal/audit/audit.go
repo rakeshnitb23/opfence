@@ -45,9 +45,14 @@ type Entry struct {
 	// Minted names the credentials a response created, which Opfence now
 	// holds for the session (provider/name), never values.
 	Minted []string `json:"minted,omitempty"`
-	Hash   string   `json:"hash,omitempty"` // request hash approvals bind to
-	Status int      `json:"status,omitempty"`
-	Prev   string   `json:"prev"`
+	// Held counts the values a response's hold transform replaced with
+	// tokens; Restored counts the held values swapped back into this
+	// request's body. Never the values.
+	Held     int    `json:"held,omitempty"`
+	Restored int    `json:"restored,omitempty"`
+	Hash     string `json:"hash,omitempty"` // request hash approvals bind to
+	Status   int    `json:"status,omitempty"`
+	Prev     string `json:"prev"`
 }
 
 // Operation is the verdict on one operation of a request.

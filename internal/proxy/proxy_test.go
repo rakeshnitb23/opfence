@@ -68,6 +68,8 @@ type opts struct {
 	upstream    bool // go through a fake corporate proxy
 	// respond, when set, answers upstream requests instead of the default.
 	respond func(w http.ResponseWriter, r *http.Request)
+	// catalog, when set, replaces the embedded catalog.
+	catalog *catalog.Catalog
 }
 
 func newEnv(t *testing.T, o opts) *env {
@@ -75,6 +77,9 @@ func newEnv(t *testing.T, o opts) *env {
 	cat, err := catalog.Embedded()
 	if err != nil {
 		t.Fatal(err)
+	}
+	if o.catalog != nil {
+		cat = o.catalog
 	}
 	var hosts []string
 	for _, p := range cat.Providers {

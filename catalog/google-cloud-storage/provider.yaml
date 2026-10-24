@@ -2,12 +2,14 @@ provider: google-cloud-storage
 title: Google Cloud Storage JSON API
 docs: https://cloud.google.com/storage/docs/json_api
 # Buckets, objects, access control and HMAC keys, through the JSON API that gcloud storage and the
-# client libraries use. The XML API on the same host has no rules, so its writes are unknown.
+# client libraries use. The XML API on the same host has no rules, so its writes are unknown. A batch
+# (/batch/storage/v1) is decided request by request.
 # Generated from Google's discovery documents; every method that is not a
 # GET has a rule, and so do the GETs that return secrets. The bearer token
 # is a short-lived OAuth access token, which Opfence does not swap: there is
 # no detect block (see LIMITS.md).
 hosts: [storage.googleapis.com]
+batch: [/batch/storage/v1]
 auth:
   - header: Authorization
     scheme: Bearer

@@ -185,7 +185,20 @@ func TestLoadInvalid(t *testing.T) {
 		{"two documents", replace("acme/db.yaml", "operations:", "operations: []\n---\noperations:"), "only one YAML document"},
 		{"empty rule file", func(m fstest.MapFS) { m["acme/empty.yaml"] = &fstest.MapFile{Data: []byte("")} }, "empty file"},
 		{"stray folder", func(m fstest.MapFS) { m["acme/tests/x.http"] = &fstest.MapFile{Data: []byte("x")} }, "unexpected folder"},
-		{"response without paths", responseRule(`{ class: read }`), "needs redact, clear or mint"},
+		{"response without paths", responseRule(`{ class: read }`), "needs redact, clear, mint or hold"},
+		{"held and redacted", responseRule(`{ redact: [env], hold: [env], class: read }`), "is held and also redacted"},
+		{"hold on graphql", replace("acme/db.yaml", "    card: \"Wipe database {input.id}\"", "    response: { hold: [env], class: read }\n    card: \"Wipe database {input.id}\""), "response.hold is for rest rules"},
+		{"restore on DELETE", replace("acme/db.yaml", "    resource: { arg: id, kind: database }", "    restore: [env.value]\n    response: { hold: [env.value], class: read }\n    resource: { arg: id, kind: database }"), "restore is for rest rules that match PUT, PATCH or POST"},
+		{"restore without hold", func(m fstest.MapFS) {
+			replace("acme/db.yaml", "method: DELETE", "method: PUT")(m)
+			replace("acme/db.yaml", "    resource: { arg: id, kind: database }", "    restore: [env.value]\n    resource: { arg: id, kind: database }")(m)
+		}, "needs response.hold"},
+		{"restore bad path", func(m fstest.MapFS) {
+			replace("acme/db.yaml", "method: DELETE", "method: PATCH")(m)
+			replace("acme/db.yaml", "    resource: { arg: id, kind: database }", "    restore: [\"a b\"]\n    response: { hold: [env], class: read }\n    resource: { arg: id, kind: database }")(m)
+		}, "restore path \"a b\" is not a dotted path"},
+		{"batch path without slash", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [batch/v1]"), "batch path \"batch/v1\" must start with /"},
+		{"batch path is graphql", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [/graphql]"), "is also a graphql path"},
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},
 		{"response bad path", responseRule(`{ redact: ["a b"], class: read }`), "not a dotted path"},
 		{"response untested", responseRule(`{ redact: [secret], class: read }`), "needs a test with a recorded response"},

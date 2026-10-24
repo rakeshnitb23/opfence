@@ -16,6 +16,7 @@
       "description": "Exact names, *.suffix (any name under suffix) or label.*.suffix (a name that starts with label and ends under suffix)"
     },
     "graphql": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that carry GraphQL" },
+    "batch": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "description": "Request paths that take a Google API batch: a POST whose multipart/mixed body carries HTTP requests, each decided as if sent on its own" },
     "sigv4": { "type": "boolean", "description": "Requests are AWS SigV4-signed" },
     "header_args": {
       "type": "array",

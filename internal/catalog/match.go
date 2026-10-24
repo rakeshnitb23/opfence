@@ -70,7 +70,7 @@ func (c *Catalog) ProviderForMCPName(name string) *Provider {
 
 // Hints tells the decoder what the provider speaks on host.
 func (p *Provider) Hints(host string) decode.Hints {
-	h := decode.Hints{GraphQLPaths: p.GraphQL, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
+	h := decode.Hints{GraphQLPaths: p.GraphQL, BatchPaths: p.Batch, SigV4: p.SigV4, MCP: p.MCP != nil, Git: slices.Contains(p.Git, host)}
 	if p.MCP != nil {
 		h.MCPPaths = p.MCP.Paths
 	}
@@ -81,6 +81,18 @@ func (p *Provider) Hints(host string) decode.Hints {
 		h.HostArg, h.HostArgValue = p.HostArg, p.hostLabels(host)
 	}
 	return h
+}
+
+// HoldsValues reports whether any of the provider's rules holds values in
+// responses or restores them in requests, so the proxy checks its requests
+// for held tokens. Call it after the provider's rules are loaded.
+func (p *Provider) HoldsValues() bool {
+	for _, r := range p.Rules {
+		if len(r.Restore) > 0 || (r.Response != nil && len(r.Response.Hold) > 0) {
+			return true
+		}
+	}
+	return false
 }
 
 // hostLabels returns the part of host that one of the provider's "*." host

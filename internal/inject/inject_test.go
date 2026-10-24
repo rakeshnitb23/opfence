@@ -169,10 +169,10 @@ func TestTransform(t *testing.T) {
 	body := `[{"name":"a","password":"hunter2hunter2","build":{"env":{"K":"v1","N":{"deep":"v2"},"Z":3}},"token":"tok-0123456789abcdef"},` +
 		`{"name":"b","password":"","token":null}]`
 	var minted []string
-	out, res, err := Transform([]byte(body), x, func(v string) (string, error) {
+	out, res, err := Transform([]byte(body), x, Funcs{Mint: func(v string) (string, error) {
 		minted = append(minted, v)
 		return "ph-" + v[4:], nil
-	})
+	}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -186,19 +186,19 @@ func TestTransform(t *testing.T) {
 	}
 
 	// Numbers keep their exact text, and HTML stays unescaped.
-	out, _, err = Transform([]byte(`{"n":12345678901234567890,"html":"<a>&","password":"x"}`), x, nil)
+	out, _, err = Transform([]byte(`{"n":12345678901234567890,"html":"<a>&","password":"x"}`), x, Funcs{})
 	if err != nil || string(out) != `{"html":"<a>&","n":12345678901234567890,"password":"[redacted by opfence]"}` {
 		t.Fatalf("%s %v", out, err)
 	}
 
 	for _, bad := range []string{"", "<html>", `{"a":1} {"b":2}`, `{"a":`} {
-		if _, _, err := Transform([]byte(bad), x, nil); err == nil {
+		if _, _, err := Transform([]byte(bad), x, Funcs{}); err == nil {
 			t.Errorf("%q: no error", bad)
 		}
 	}
 	// clear empties a value of any shape, keeping its type; numbers stay.
 	cx := &catalog.Response{Clear: []string{"projects.protectionBypass", "projects.list", "projects.secret", "projects.n"}}
-	out, res, err = Transform([]byte(`{"projects":[{"protectionBypass":{"bypass-secret-0123456789":{"scope":"automation-bypass"}},"list":["a"],"secret":"s","n":7,"name":"web"},{"name":"api"}]}`), cx, nil)
+	out, res, err = Transform([]byte(`{"projects":[{"protectionBypass":{"bypass-secret-0123456789":{"scope":"automation-bypass"}},"list":["a"],"secret":"s","n":7,"name":"web"},{"name":"api"}]}`), cx, Funcs{})
 	if err != nil || string(out) != `{"projects":[{"list":[],"n":7,"name":"web","protectionBypass":{},"secret":""},{"name":"api"}]}` {
 		t.Fatalf("clear: %s %v", out, err)
 	}
@@ -207,7 +207,7 @@ func TestTransform(t *testing.T) {
 	}
 
 	boom := errors.New("boom")
-	if _, _, err := Transform([]byte(`{"token":"tok-0123456789abcdef"}`), x, func(string) (string, error) { return "", boom }); !errors.Is(err, boom) {
+	if _, _, err := Transform([]byte(`{"token":"tok-0123456789abcdef"}`), x, Funcs{Mint: func(string) (string, error) { return "", boom }}); !errors.Is(err, boom) {
 		t.Fatalf("mint error: %v", err)
 	}
 }

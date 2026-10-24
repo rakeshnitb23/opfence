@@ -34,13 +34,17 @@ type Catalog struct {
 // Provider describes one API or MCP server: where it lives, how it
 // authenticates, and how to classify its operations.
 type Provider struct {
-	ID       string   `yaml:"provider"`
-	Title    string   `yaml:"title"`
-	Docs     string   `yaml:"docs"`
-	Hosts    []string `yaml:"hosts"`
-	GraphQL  []string `yaml:"graphql"` // request paths that carry GraphQL
-	SigV4    bool     `yaml:"sigv4"`   // requests are AWS SigV4-signed
-	Git      []string `yaml:"git"`     // hosts that serve git's smart HTTP protocol and Git LFS
+	ID      string   `yaml:"provider"`
+	Title   string   `yaml:"title"`
+	Docs    string   `yaml:"docs"`
+	Hosts   []string `yaml:"hosts"`
+	GraphQL []string `yaml:"graphql"` // request paths that carry GraphQL
+	// Batch lists request paths that take a Google API batch: a POST
+	// whose multipart/mixed body carries HTTP requests, each decoded and
+	// decided as if sent on its own.
+	Batch    []string `yaml:"batch"`
+	SigV4    bool     `yaml:"sigv4"` // requests are AWS SigV4-signed
+	Git      []string `yaml:"git"`   // hosts that serve git's smart HTTP protocol and Git LFS
 	Auth     []Auth   `yaml:"auth"`
 	Detect   Detect   `yaml:"detect"`
 	Defaults Defaults `yaml:"defaults"`
@@ -166,8 +170,12 @@ type Rule struct {
 	When     []When        `yaml:"when"`
 	Classify *Classify     `yaml:"classify"`
 	Response *Response     `yaml:"response"`
-	Resource *Resource     `yaml:"resource"`
-	Card     string        `yaml:"card"`
+	// Restore lists body paths of a write where the proxy swaps values it
+	// held (response.hold) back in, when they were read from the same
+	// object (the same request path) under the same path.
+	Restore  []string  `yaml:"restore"`
+	Resource *Resource `yaml:"resource"`
+	Card     string    `yaml:"card"`
 	// Unlisted says why the operation is not in the provider's schemas
 	// (a CLI-only endpoint, an older schema version); the drift check then
 	// skips it.
@@ -379,7 +387,7 @@ func (s *Strings) UnmarshalYAML(n *yaml.Node) error {
 
 // Paths are every path the response transform acts on.
 func (x *Response) Paths() []string {
-	return slices.Concat(x.Redact, x.Clear, x.Mint)
+	return slices.Concat(x.Redact, x.Clear, x.Mint, x.Hold)
 }
 
 // Response describes what the proxy does to the response of a read that
@@ -397,6 +405,12 @@ type Response struct {
 	// replaced with a placeholder, and the real value is held for the
 	// session like a stored secret of the provider.
 	Mint []string `yaml:"mint"`
+	// Hold lists JSON paths whose non-empty strings, at any depth below,
+	// are replaced with tokens the proxy can swap back (stage 27b): values
+	// a client reads, changes and writes back with the rest of an object,
+	// such as a Cloud Run service's environment variables. A rule's
+	// Restore says where a request may carry them back.
+	Hold []string `yaml:"hold"`
 	// Class is the operation's class when the proxy transforms the
 	// response.
 	Class classes.Class `yaml:"class"`

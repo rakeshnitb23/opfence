@@ -42,9 +42,10 @@ type fwd struct {
 }
 
 type transform struct {
-	prov *catalog.Provider
-	rule string
-	x    *catalog.Response
+	prov   *catalog.Provider
+	rule   string
+	x      *catalog.Response
+	object string // the request path held values are bound to
 }
 
 // serveIntercepted evaluates one request on an intercepted connection and
@@ -112,6 +113,21 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 		s.block(w, req, &res, entry, http.StatusBadRequest, "Opfence could not forward this path unchanged, so it blocks it.")
 		return
 	}
+	restored, n, why := s.restoreHeld(req, &res)
+	if why != "" {
+		s.block(w, req, &res, entry, http.StatusForbidden, why)
+		return
+	}
+	if restored != nil {
+		// The body goes out decoded, with the held values swapped back in.
+		raw = restored
+		r.Body = io.NopCloser(bytes.NewReader(nil))
+		r.ContentLength = int64(len(restored))
+		r.Header.Set("Content-Length", strconv.Itoa(len(restored)))
+		r.Header.Del("Content-Encoding")
+		r.TransferEncoding = nil
+		entry.Restored = n
+	}
 	rawQuery, inj := inject.Request(res.Provider, r.Header, r.URL.RawQuery, s.cfg.Secrets)
 	entry.Credentials = inj.Injected
 	if len(inj.Foreign) > 0 {
@@ -121,7 +137,7 @@ func (s *Server) serveIntercepted(w http.ResponseWriter, r *http.Request) {
 	var transforms []transform
 	for _, ev := range res.Evaluations {
 		if ev.Transform != nil {
-			transforms = append(transforms, transform{res.Provider, ev.Rule.ID, ev.Transform})
+			transforms = append(transforms, transform{res.Provider, ev.Rule.ID, ev.Transform, objectPath(req.Path)})
 		}
 	}
 	if s.scrubber.Active() || len(transforms) > 0 {
@@ -223,8 +239,8 @@ func (s *Server) modifyResponse(resp *http.Response) error {
 		}
 	}
 	if len(transforms) > 0 {
-		minted, err := s.transformResponse(resp, transforms)
-		f.entry.Minted = minted
+		minted, held, err := s.transformResponse(resp, transforms)
+		f.entry.Minted, f.entry.Held = minted, held
 		if err != nil {
 			return err
 		}
@@ -241,37 +257,45 @@ func (s *Server) modifyResponse(resp *http.Response) error {
 }
 
 // transformResponse buffers the body and applies every transform to it,
-// returning the credentials it minted. It fails closed: a successful
-// response it cannot transform is withheld. An unsuccessful response that
-// is not JSON carries none of the data the rule describes and passes on.
-func (s *Server) transformResponse(resp *http.Response, transforms []transform) ([]string, error) {
+// returning the credentials it minted and how many values it held. It
+// fails closed: a successful response it cannot transform is withheld. An
+// unsuccessful response that is not JSON carries none of the data the rule
+// describes and passes on.
+func (s *Server) transformResponse(resp *http.Response, transforms []transform) ([]string, int, error) {
 	body, err := io.ReadAll(io.LimitReader(resp.Body, inject.MaxTransformBody+1))
 	_ = resp.Body.Close()
 	if err != nil {
-		return nil, fmt.Errorf("reading the response: %w", err)
+		return nil, 0, fmt.Errorf("reading the response: %w", err)
 	}
 	if len(body) > inject.MaxTransformBody {
-		return nil, withheldError(fmt.Sprintf("the response is larger than %d MiB, so Opfence cannot remove the credentials in it", inject.MaxTransformBody>>20))
+		return nil, 0, withheldError(fmt.Sprintf("the response is larger than %d MiB, so Opfence cannot remove the credentials in it", inject.MaxTransformBody>>20))
 	}
 	resp.Body = io.NopCloser(bytes.NewReader(body))
 	if len(bytes.TrimSpace(body)) == 0 {
-		return nil, nil // HEAD, 204, 304: headers only, kept as they are
+		return nil, 0, nil // HEAD, 204, 304: headers only, kept as they are
 	}
 	var minted []string
+	held := 0
 	for _, t := range transforms {
-		out, _, err := inject.Transform(body, t.x, func(value string) (string, error) {
-			sec, err := s.mint(t, value)
-			if err != nil {
-				return "", err
-			}
-			minted = append(minted, sec.Provider+"/"+sec.Name)
-			return sec.Placeholder, nil
+		out, _, err := inject.Transform(body, t.x, inject.Funcs{
+			Mint: func(value string) (string, error) {
+				sec, err := s.mint(t, value)
+				if err != nil {
+					return "", err
+				}
+				minted = append(minted, sec.Provider+"/"+sec.Name)
+				return sec.Placeholder, nil
+			},
+			Hold: func(path, value string) (string, error) {
+				held++
+				return s.held.Hold(t.prov.ID, t.object, path, value)
+			},
 		})
 		if err != nil {
 			if resp.StatusCode/100 != 2 && len(minted) == 0 {
-				return nil, nil // an error page, not the data the rule describes
+				return nil, 0, nil // an error page, not the data the rule describes
 			}
-			return minted, withheldError(fmt.Sprintf("Opfence could not remove the credentials from this response (%s): %v", t.rule, err))
+			return minted, held, withheldError(fmt.Sprintf("Opfence could not remove the credentials from this response (%s): %v", t.rule, err))
 		}
 		body = out
 	}
@@ -281,7 +305,59 @@ func (s *Server) transformResponse(resp *http.Response, transforms []transform) 
 	for _, h := range []string{"Content-Md5", "Digest", "Repr-Digest", "Content-Digest"} {
 		resp.Header.Del(h)
 	}
-	return minted, nil
+	return minted, held, nil
+}
+
+// objectPath is the object a request acts on, for binding held values: its
+// path with dot segments resolved and empty ones dropped.
+func objectPath(rawPath string) string {
+	segs, ok := request.NormalizePath(rawPath)
+	if !ok {
+		return rawPath
+	}
+	return "/" + strings.Join(segs, "/")
+}
+
+// restoreHeld swaps values a hold transform replaced with tokens back into
+// a request's body (docs/ARCHITECTURE.md §8.4). It returns the new body, or
+// nil when there is nothing to swap, and why when the request must be
+// blocked: it carries a token that may not go where it is, or its provider
+// holds values and its body cannot be checked. Only providers with hold
+// rules are checked; a token sent elsewhere is just text.
+func (s *Server) restoreHeld(req *request.Request, res *engine.Result) ([]byte, int, string) {
+	if res.Provider == nil || !res.Provider.HoldsValues() || res.Provider.SigV4 {
+		return nil, 0, ""
+	}
+	object := objectPath(req.Path)
+	var paths []string
+	for _, ev := range res.Evaluations {
+		// Only the request's own operations: not the parts of a batch.
+		if ev.Rule != nil && ev.Op.Protocol == decode.REST && objectPath(ev.Op.Path) == object {
+			for _, p := range ev.Rule.Restore {
+				if !slices.Contains(paths, p) {
+					paths = append(paths, p)
+				}
+			}
+		}
+	}
+	marker := []byte(inject.HeldPrefix)
+	if req.BodyErr != nil {
+		if bytes.Contains(req.Prefix, marker) || (len(paths) > 0 && s.held.Len() > 0) {
+			return nil, 0, fmt.Sprintf("Opfence cannot read this request's body (%v), so it cannot swap back the values it held from %s; it blocks the request rather than send their tokens.", req.BodyErr, res.Provider.ID)
+		}
+		return nil, 0, ""
+	}
+	if !bytes.Contains(req.Body, marker) {
+		return nil, 0, ""
+	}
+	if len(paths) == 0 {
+		return nil, 0, fmt.Sprintf("This request carries a value Opfence held back from an earlier response (%s…), and only a write to the object it was read from can carry it back; sending the token would store it in place of the value.", inject.HeldPrefix)
+	}
+	body, n, err := s.held.Restore(res.Provider.ID, object, paths, req.Body)
+	if err != nil {
+		return nil, 0, fmt.Sprintf("Opfence blocks this request: %v.", err)
+	}
+	return body, n, ""
 }
 
 // mint holds a credential a response created, like a stored secret of the

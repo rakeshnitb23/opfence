@@ -105,8 +105,9 @@ func checkResponse(c *catalog.Catalog, r *catalog.Rule, t catalog.Test) string {
 	if err != nil {
 		return err.Error()
 	}
-	_, res, err := inject.Transform(data, r.Response, func(v string) (string, error) {
-		return strings.Repeat("x", len(v)), nil
+	_, res, err := inject.Transform(data, r.Response, inject.Funcs{
+		Mint: func(v string) (string, error) { return strings.Repeat("x", len(v)), nil },
+		Hold: func(_, v string) (string, error) { return inject.HeldPrefix + "test", nil },
 	})
 	if err != nil {
 		return file + ": " + err.Error()
