@@ -1,0 +1,16 @@
+provider: google-apis
+title: Google APIs
+docs: https://cloud.google.com/apis/docs/overview
+# Every Google API on googleapis.com that no other provider claims (Vertex
+# AI, Cloud Build, Artifact Registry's REST API and the rest): reads are
+# reads and everything else is unknown, so it asks, and the access tokens
+# Opfence mints are swapped in on the way out (stage 27d). A provider with
+# rules for an API, such as google-cloud-storage, always comes first.
+hosts: ["*.googleapis.com"]
+fallback: true
+auth:
+  - header: Authorization
+    scheme: Bearer
+secrets_from: [google-oauth]
+defaults:
+  rest_safe_methods: read

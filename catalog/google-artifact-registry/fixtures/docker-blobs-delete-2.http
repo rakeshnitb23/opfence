@@ -1,0 +1,5 @@
+# description: Delete a layer of acme-prod/orders
+DELETE /v2/acme-prod/orders/blobs/sha256:0123 HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+

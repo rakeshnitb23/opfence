@@ -1,0 +1,8 @@
+{
+  "access_token": "ya29.a0AeXRPpEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLE",
+  "expires_in": 3599,
+  "refresh_token": "1//0gEXAMPLExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "scope": "openid https://www.googleapis.com/auth/cloud-platform",
+  "token_type": "Bearer",
+  "id_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIn0.c2ln"
+}

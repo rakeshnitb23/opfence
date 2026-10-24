@@ -104,7 +104,7 @@ func TestLoadInvalid(t *testing.T) {
 		{"unknown provider field", replace("acme/provider.yaml", "title:", "titel: x\ntitle:"), "field titel not found"},
 		{"folder mismatch", replace("acme/provider.yaml", "provider: acme", "provider: acme2"), "must match its folder"},
 		{"bad host", replace("acme/provider.yaml", "api.acme.dev]", "https://api.acme.dev]"), "lower-case DNS name"},
-		{"bad auth", replace("acme/provider.yaml", "scheme: Bearer", "scheme: Bearer\n    query: token"), "exactly one of header, query or basic"},
+		{"bad auth", replace("acme/provider.yaml", "scheme: Bearer", "scheme: Bearer\n    query: token"), "exactly one of header, query, basic or form"},
 		{"bad env", replace("acme/provider.yaml", "ACME_TOKEN", "acme-token"), "not an environment variable"},
 		{"bad default", replace("acme/provider.yaml", "graphql_query: read", "graphql_query: safe"), "unknown class"},
 		{"unknown rule field", replace("acme/db.yaml", "class: delete", "class: delete\n    severity: high"), "field severity not found"},
@@ -199,6 +199,16 @@ func TestLoadInvalid(t *testing.T) {
 		}, "restore path \"a b\" is not a dotted path"},
 		{"response path ending in **", responseRule(`{ redact: ["env.**"], class: read }`), "not a dotted path"},
 		{"response path with *", responseRule(`{ redact: ["env.*.value"], class: read }`), "not a dotted path"},
+		{"fallback with an exact host", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [api.acme.dev]\nfallback: true"), "fallback provider's hosts must all be *. patterns"},
+		{"fallback with graphql", replace("acme/provider.yaml", "hosts: [api.acme.dev]", "hosts: [\"*.acme.dev\"]\nfallback: true"), "takes REST defaults and auth only"},
+		{"two fallbacks overlap", func(m fstest.MapFS) {
+			replace("acme/provider.yaml", "graphql: [/graphql]", "")(m)
+			replace("acme/provider.yaml", "graphql_query: read", "rest_safe_methods: read")(m)
+			replace("acme/db.yaml", "  - id: acme.db.wipe", "  - id: acme.db.wipe-unused")(m)
+			m["acme/provider.yaml"].Data = []byte(strings.Replace(string(m["acme/provider.yaml"].Data), "hosts: [api.acme.dev]", "hosts: [\"*.acme.dev\"]\nfallback: true", 1))
+			m["beta/provider.yaml"] = &fstest.MapFile{Data: []byte("provider: beta\ntitle: Beta\nhosts: [\"*.x.acme.dev\"]\nfallback: true\n")}
+		}, "overlaps"},
+		{"form auth bad name", replace("acme/provider.yaml", "  - header: Authorization\n    scheme: Bearer", "  - form: \"refresh token\""), "must be a plain field name"},
 		{"batch path without slash", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [batch/v1]"), "batch path \"batch/v1\" must start with /"},
 		{"batch path is graphql", replace("acme/provider.yaml", "graphql: [/graphql]", "graphql: [/graphql]\nbatch: [/graphql]"), "is also a graphql path"},
 		{"response bad class", responseRule(`{ redact: [secret], class: fine }`), "response.class"},

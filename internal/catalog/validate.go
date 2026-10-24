@@ -101,11 +101,21 @@ func (l *loader) validateProviders(c *Catalog) {
 			}
 		}
 	}
+	fallback := map[string]bool{}
+	for _, p := range c.Providers {
+		fallback[p.ID] = p.Fallback
+	}
 	for h, owner := range hostOwner {
 		if !strings.Contains(h, "*") {
 			continue
 		}
 		for other, otherOwner := range hostOwner {
+			// A fallback provider's hosts may cover others': it applies
+			// only where no other provider does. Two fallbacks may not
+			// overlap.
+			if fallback[owner] != fallback[otherOwner] {
+				continue
+			}
 			if otherOwner != owner && (HostMatches(h, hostSample(other)) || HostMatches(other, hostSample(h))) {
 				l.addf(path.Join(owner, ProviderFile), 0, "host %q overlaps %q claimed by provider %s", h, other, otherOwner)
 			}
@@ -249,6 +259,14 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 	if len(p.DatabasePorts) > 0 && len(p.Hosts) == 0 {
 		l.addf(file, 0, "database_ports needs hosts")
 	}
+	if p.Fallback {
+		switch {
+		case len(p.Hosts) == 0 || slices.ContainsFunc(p.Hosts, func(h string) bool { return !strings.HasPrefix(h, "*.") }):
+			l.addf(file, 0, "a fallback provider's hosts must all be *. patterns")
+		case p.MCP != nil || p.SigV4 || len(p.Git) > 0 || len(p.GraphQL) > 0 || len(p.Batch) > 0 || p.HostArg != "":
+			l.addf(file, 0, "a fallback provider takes REST defaults and auth only")
+		}
+	}
 	for _, g := range p.GraphQL {
 		if !strings.HasPrefix(g, "/") {
 			l.addf(file, 0, "graphql path %q must start with /", g)
@@ -282,8 +300,14 @@ func (l *loader) validateProvider(p *Provider, hostOwner, mcpNameOwner map[strin
 				l.addf(file, 0, "auth[%d]: basic must be username or password", i)
 			}
 		}
+		if a.Form != "" {
+			set++
+			if !headerArgNameRe.MatchString(a.Form) {
+				l.addf(file, 0, "auth[%d]: form %q must be a plain field name", i, a.Form)
+			}
+		}
 		if set != 1 {
-			l.addf(file, 0, "auth[%d]: set exactly one of header, query or basic", i)
+			l.addf(file, 0, "auth[%d]: set exactly one of header, query, basic or form", i)
 		}
 		if a.Scheme != "" && a.Header == "" {
 			l.addf(file, 0, "auth[%d]: scheme is only valid with header", i)

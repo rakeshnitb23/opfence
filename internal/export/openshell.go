@@ -33,10 +33,16 @@ func OpenShell(c *catalog.Catalog, p *policy.Effective, env string) ([]byte, err
 		p = policy.Resolve(nil, nil)
 	}
 	policies := mapping()
-	var skipped, unmatched []string
+	var skipped, unmatched, fallbacks []string
 	for _, prov := range c.Providers {
 		if prov.SigV4 {
 			skipped = append(skipped, prov.ID)
+			continue
+		}
+		if prov.Fallback {
+			// Its *. hosts cover other providers'; OpenShell would let the
+			// broadest rule through.
+			fallbacks = append(fallbacks, prov.ID)
 			continue
 		}
 		var hosts []string
@@ -80,6 +86,10 @@ func OpenShell(c *catalog.Catalog, p *policy.Effective, env string) ([]byte, err
 	if len(unmatched) > 0 {
 		foot = append(foot, "Hosts not exported: "+strings.Join(unmatched, ", ")+". OpenShell host patterns may only start\n"+
 			"with *., so these stay outside the policy (and blocked by it); use `opfence run` for them.")
+	}
+	if len(fallbacks) > 0 {
+		foot = append(foot, "Not exported: "+strings.Join(fallbacks, ", ")+", which cover every API on a domain that no other\n"+
+			"provider claims; those APIs stay outside the policy (and blocked by it); use `opfence run` for them.")
 	}
 	root.FootComment = strings.Join(foot, "\n")
 	doc := &yaml.Node{Kind: yaml.DocumentNode, Content: []*yaml.Node{root}}

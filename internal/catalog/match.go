@@ -12,12 +12,19 @@ import (
 )
 
 // ProviderForHost returns the provider that owns host (lower case, no
-// port): an exact host first, then the longest matching pattern.
+// port): an exact host first, then the longest matching pattern, then a
+// fallback provider whose pattern matches.
 func (c *Catalog) ProviderForHost(host string) *Provider {
-	var best *Provider
+	var best, fallback *Provider
 	bestLen := 0
 	for _, p := range c.Providers {
 		for _, h := range p.Hosts {
+			if p.Fallback {
+				if fallback == nil && HostMatches(h, host) {
+					fallback = p
+				}
+				continue
+			}
 			if h == host {
 				return p
 			}
@@ -25,6 +32,9 @@ func (c *Catalog) ProviderForHost(host string) *Provider {
 				best, bestLen = p, len(h)
 			}
 		}
+	}
+	if best == nil {
+		return fallback // a fallback provider: only where no other applies
 	}
 	return best
 }

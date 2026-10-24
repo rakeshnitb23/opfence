@@ -6,6 +6,21 @@ docs: https://developers.google.com/identity/protocols/oauth2
 # workload identity federation) for a short-lived access token before
 # calling an API, often before every command. Without these hosts in the
 # catalog, strict mode refused the exchange and gcloud could not run.
+#
+# Since stage 27d the agent never holds a usable Google token: under
+# opfence run, gcloud's and the application default credentials' refresh
+# tokens are placeholders, which the proxy swaps in only in the form
+# fields below, and the access tokens these endpoints return are minted:
+# the agent gets placeholders, which every Google API provider takes
+# (secrets_from: [google-oauth]). An access token in CLOUDSDK_AUTH_ACCESS_TOKEN
+# or GOOGLE_OAUTH_ACCESS_TOKEN becomes a placeholder the same way.
 hosts: [oauth2.googleapis.com, sts.googleapis.com]
+auth:
+  - form: refresh_token
+  - form: token
+  - query: token
+detect:
+  env: [CLOUDSDK_AUTH_ACCESS_TOKEN, GOOGLE_OAUTH_ACCESS_TOKEN]
+  prefixes: [ya29.]
 defaults:
   rest_safe_methods: read

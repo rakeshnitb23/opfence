@@ -25,14 +25,10 @@ type Result struct {
 	Foreign []string
 }
 
-// Request swaps placeholders in h and rawQuery for prov's request and
-// returns the new query string.
-func Request(prov *catalog.Provider, h http.Header, rawQuery string, set *secrets.Set) (string, Result) {
-	var res Result
-	if prov == nil || set.Len() == 0 {
-		return rawQuery, res
-	}
-	swap := func(token string) (string, bool) {
+// swapper returns the function that swaps one placeholder of prov's (or of
+// a provider it takes secrets from) for its value, recording what it did.
+func swapper(prov *catalog.Provider, set *secrets.Set, res *Result) func(string) (string, bool) {
+	return func(token string) (string, bool) {
 		s := set.ByPlaceholder(token)
 		if s == nil {
 			return token, false
@@ -44,6 +40,45 @@ func Request(prov *catalog.Provider, h http.Header, rawQuery string, set *secret
 		res.Injected = append(res.Injected, s.Provider+"/"+s.Name)
 		return s.Value, true
 	}
+}
+
+// Form swaps placeholders in the fields of a form-encoded body that prov
+// declares as auth locations (auth: form), such as an OAuth token request's
+// refresh_token, and returns the new body, or nil when nothing changed. Only
+// a body Opfence can read whole and that is not compressed is changed; any
+// other is sent as it is, with its placeholders, which the API rejects.
+func Form(prov *catalog.Provider, contentType, contentEncoding string, body []byte, set *secrets.Set) ([]byte, Result) {
+	var res Result
+	if prov == nil || set.Len() == 0 || len(body) == 0 {
+		return nil, res
+	}
+	if ct, _, _ := strings.Cut(contentType, ";"); !strings.EqualFold(strings.TrimSpace(ct), "application/x-www-form-urlencoded") {
+		return nil, res
+	}
+	if ce := strings.TrimSpace(contentEncoding); ce != "" && !strings.EqualFold(ce, "identity") {
+		return nil, res
+	}
+	swap := swapper(prov, set, &res)
+	out := string(body)
+	for _, a := range prov.Auth {
+		if a.Form != "" {
+			out = swapQuery(out, a.Form, swap)
+		}
+	}
+	if len(res.Injected) == 0 {
+		return nil, res
+	}
+	return []byte(out), res
+}
+
+// Request swaps placeholders in h and rawQuery for prov's request and
+// returns the new query string.
+func Request(prov *catalog.Provider, h http.Header, rawQuery string, set *secrets.Set) (string, Result) {
+	var res Result
+	if prov == nil || set.Len() == 0 {
+		return rawQuery, res
+	}
+	swap := swapper(prov, set, &res)
 	basicDone := false
 	for _, a := range prov.Auth {
 		switch {

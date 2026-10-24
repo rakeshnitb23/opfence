@@ -195,6 +195,12 @@ func ClaudeSettings(o ClaudeOptions) ([]byte, error) {
 		// keys it replaced with placeholders.
 		s.Permissions.Deny = append(s.Permissions.Deny, "Read(//proc/**)")
 	}
+	// Claude Code's file tools run outside the sandbox, so what the
+	// sandbox may not read (gcloud's real credentials) they may not either.
+	for _, p := range o.DenyRead {
+		st, err := os.Stat(p)
+		s.Permissions.Deny = append(s.Permissions.Deny, "Read("+ruleGlob(protectedPath{p, err == nil && st.IsDir()})+")")
+	}
 	for _, p := range writes {
 		s.Permissions.Deny = append(s.Permissions.Deny, "Edit("+ruleGlob(p)+")")
 	}

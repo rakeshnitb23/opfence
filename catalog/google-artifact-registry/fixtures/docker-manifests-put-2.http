@@ -1,0 +1,7 @@
+# description: Push image acme-prod/orders:v2
+PUT /v2/acme-prod/orders/manifests/v2 HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+Content-Type: application/vnd.docker.distribution.manifest.v2+json
+
+{}

@@ -1,0 +1,5 @@
+# description: Cancel a layer upload of acme-prod/orders
+DELETE /v2/acme-prod/orders/blobs/uploads/u-1 HTTP/1.1
+Host: gcr.io
+Authorization: Bearer opf_EXAMPLE_registry_token
+

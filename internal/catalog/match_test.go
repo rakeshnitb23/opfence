@@ -363,3 +363,30 @@ func TestClassifyRedis(t *testing.T) {
 		}
 	}
 }
+
+// A fallback provider applies only to hosts no other provider claims.
+func TestFallbackProvider(t *testing.T) {
+	c, err := Embedded()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for host, want := range map[string]string{
+		"compute.googleapis.com":                "google-cloud-compute",
+		"us-central1-run.googleapis.com":        "google-cloud-run",
+		"secretmanager.eu.rep.googleapis.com":   "google-cloud-secret-manager",
+		"oauth2.googleapis.com":                 "google-oauth",
+		"aiplatform.googleapis.com":             "google-apis",
+		"us-central1-aiplatform.googleapis.com": "google-apis",
+		"www.googleapis.com":                    "google-apis",
+		"googleapis.com":                        "",
+		"us-docker.pkg.dev":                     "google-artifact-registry",
+	} {
+		got := ""
+		if p := c.ProviderForHost(host); p != nil {
+			got = p.ID
+		}
+		if got != want {
+			t.Errorf("%s: %q, want %q", host, got, want)
+		}
+	}
+}

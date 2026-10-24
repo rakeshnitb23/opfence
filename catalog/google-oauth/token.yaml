@@ -3,10 +3,11 @@ operations:
   - id: google-oauth.token.exchange
     match: { rest: { method: POST, path: /token } }
     class: read
+    response: { mint: [access_token, refresh_token], class: read }
     card: "Exchange a Google credential for an access token"
     unlisted: "OAuth 2.0 endpoint, documented apart from Google's discovery documents"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://developers.google.com/identity/protocols/oauth2/web-server#offline
     notes: >-
@@ -14,17 +15,22 @@ operations:
       that the caller already holds for a short-lived access token. It gives the caller nothing
       it could not do already, and every call made with the token is decided by that API's
       own rules. Acting as another service account is different: iamcredentials'
-      generateAccessToken and IAM's signJwt are credential.
+      generateAccessToken and IAM's signJwt are credential. The proxy mints the access token,
+      and the refresh token an authorization code returns, so the agent gets placeholders that
+      work through Opfence only; the ID token stays as it is, since services that take it (Cloud
+      Run, IAP) are reached outside the catalog.
     tests:
       - fixture: fixtures/token-refresh.http
         expect: read
+        response: fixtures/token-response.json
   - id: google-oauth.sts.exchange
     match: { rest: { method: POST, path: /v1/token } }
     class: read
+    response: { mint: [access_token], class: read }
     card: "Exchange an external token for a Google access token"
     unlisted: "Security Token Service endpoint, documented apart from Google's discovery documents"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://cloud.google.com/iam/docs/reference/sts/rest/v1/TopLevel/token
     notes: >-
@@ -34,13 +40,14 @@ operations:
     tests:
       - fixture: fixtures/sts-token.http
         expect: read
+        response: fixtures/sts-response.json
   - id: google-oauth.token.revoke
     match: { rest: { method: POST, path: /revoke } }
     class: access
     card: "Revoke a Google token"
     unlisted: "OAuth 2.0 endpoint, documented apart from Google's discovery documents"
     status: verified
-    verified: 2026-10-23
+    verified: 2026-10-24
     sources:
       - https://developers.google.com/identity/protocols/oauth2/web-server#tokenrevoke
     notes: >-

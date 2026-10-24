@@ -1,0 +1,20 @@
+provider: google-artifact-registry
+title: Google Artifact Registry and Container Registry (Docker)
+docs: https://cloud.google.com/artifact-registry/docs/docker/authentication
+# Docker's registry protocol on Artifact Registry's hosts
+# (<region>-docker.pkg.dev and the other <format>.pkg.dev hosts) and on
+# gcr.io. Docker signs in with the username oauth2accesstoken and a Google
+# access token as the password, which gcloud's credential helper prints;
+# since stage 27d that token is a placeholder google-oauth minted, which the
+# proxy swaps in here. Image names of two to four parts are matched (gcr.io's
+# project/image, Artifact Registry's project/repository/image and one more
+# level); a deeper one, and the npm, Python and Maven protocols, are unknown.
+# Artifact Registry's REST API is on artifactregistry.googleapis.com.
+hosts: ["*.pkg.dev", gcr.io, "*.gcr.io"]
+auth:
+  - basic: password
+  - header: Authorization
+    scheme: Bearer
+secrets_from: [google-oauth]
+defaults:
+  rest_safe_methods: read
